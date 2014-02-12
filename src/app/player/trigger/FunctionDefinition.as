@@ -66,7 +66,7 @@ package player.trigger
          return mOutputVariableSpace.GetVariableByIndex (paramId);
       }
       
-      public function DoCall (inputValueSources:Parameter, returnValueTarget:Parameter):void
+      public function DoCall (callingContext:FunctionCallingContext, inputValueSources:Parameter, returnValueTarget:Parameter):void
       {
          // throw new Error ("to override");
       }

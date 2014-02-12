@@ -37,11 +37,11 @@ package player.trigger
       }
       
       // todo: best to return next calling
-      public function Call ():void
+      public function Call (callingContext:FunctionCallingContext):void
       {
          //trace ("FunctionCalling.Call");
          
-         mFunctionDefinition.DoCall (mInputValueSourceList, mReturnValueTargetList);
+         mFunctionDefinition.DoCall (callingContext, mInputValueSourceList, mReturnValueTargetList);
       }
       
       // can optimize a bit

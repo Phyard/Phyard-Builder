@@ -1306,6 +1306,10 @@ package player.entity {
                      // 
                      // [update 1]
                      // now the values passed into PhysicsProxyShape.AddXXX are all pixels values, the passed transform will transform the values into physics unit.
+                     // need to do:
+                     // 1. make player.EntityVectorShape refs ModuleVectorShape
+                     // 2. make shape.mTransform using pixel unit.
+                     // 3. CoordinateSystem.As_D2P_Vector_Transform_CombineByTransform -> CoordinateSystem.As_D2P_Vector_Transform_CombineTransform
          }
       }
       

@@ -650,11 +650,11 @@ package player.trigger {
 
    // for debug
 
-      public static function ForDebug (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ForDebug (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
       }
 
-      public static function GetDebugString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetDebugString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          if (Global._GetDebugString != null)
          {
@@ -667,13 +667,13 @@ package player.trigger {
    //*******************************************************************
       
       // now move into FunctionCalling_CommonAssign
-      //public static function CommonAssign (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function CommonAssign (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //}
       
       public static const kTempClassInstanceForNewInstance:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kVoidClassDefinition, null);
 
-      public static function CommonNewInstance (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CommonNewInstance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var aClass:ClassDefinition = valueSource.EvaluateValueObject () as ClassDefinition;
          if (aClass == null)
@@ -687,7 +687,7 @@ package player.trigger {
 
       public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kBooelanClassDefinition, false);
 
-      public static function CommonEquals (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CommonEquals (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          kTempClassInstanceForComparing._SetValueObject (CoreClasses.CompareEquals (valueSource.GetVariableInstance (), valueSource.mNextParameter.GetVariableInstance ()));
          
@@ -698,12 +698,12 @@ package player.trigger {
    // system / time
    //*******************************************************************
 
-      public static function GetProgramMilliseconds (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetProgramMilliseconds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (getTimer ());
       }
 
-      public static function GetCurrentDateTime (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetCurrentDateTime (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var isUTC:Boolean = Boolean(valueSource.EvaluateValueObject ());
 
@@ -755,7 +755,7 @@ package player.trigger {
         }
       }
 
-      public static function GetDay (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetDay (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var isUTC:Boolean = Boolean(valueSource.EvaluateValueObject ());
 
@@ -769,36 +769,36 @@ package player.trigger {
          }
       }
 
-      public static function GetTimeZone (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetTimeZone (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (- int (new Date ().getTimezoneOffset() / 60));
       }
 
-      public static function IsKeyHold (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsKeyHold (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var keyCode:int = int (valueSource.EvaluateValueObject ());
 
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsKeyHold (keyCode));
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsKeyHold (keyCode));
       }
 
-      public static function IsMouseButtonHold (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsMouseButtonHold (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsMouseButtonDown ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsMouseButtonDown ());
       }
 
-      public static function SetMouseVisible (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetMouseVisible (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
-         Global.GetCurrentWorld ().SetMouseVisible (visible);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetMouseVisible (visible);
       }
 
-      public static function IsAccelerometerSupported (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsAccelerometerSupported (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.IsAccelerometerSupported ());
       }
 
-      public static function GetAccelerationVector (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetAccelerationVector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var vector3d:Array = Global.Viewer_mLibCapabilities.GetAcceleration ();
 
@@ -811,17 +811,17 @@ package player.trigger {
          valueTarget.AssignValueObject (vector3d [2] as Number);
       }
 
-      public static function IsNativeApp (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsNativeApp (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_mLibAppp.IsNativeApp ());
       }
 
-      public static function ExitApp (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ExitApp (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          Global.Viewer_mLibAppp.OnExitApp ();
       }
 
-      public static function GetScreenResolution (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetScreenResolution (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var size:Point = Global.Viewer_mLibCapabilities.GetScreenResolution ();
 
@@ -831,17 +831,17 @@ package player.trigger {
          valueTarget.AssignValueObject (size.y);
       }
 
-      public static function GetScreenDPI (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetScreenDPI (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.GetScreenDPI ());
       }
       
-      public static function GetOsNameString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetOsNameString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Capabilities.os);
       }
       
-      public static function OpenURL (valueSource:Parameter, valueTarget:Parameter):void
+      public static function OpenURL (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var url:String = valueSource.EvaluateValueObject () as String;
          
@@ -851,7 +851,7 @@ package player.trigger {
          }
       }
       
-      public static function CopyToClipboard (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CopyToClipboard (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
          
@@ -868,7 +868,7 @@ package player.trigger {
          }
       }
       
-      public static function GetLanguageCode (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLanguageCode (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Capabilities.language);
       }
@@ -877,7 +877,7 @@ package player.trigger {
    // services
    //*******************************************************************
    
-      public static function SubmitHighScore (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SubmitHighScore (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = Number (valueSource.EvaluateValueObject ());
 
@@ -887,7 +887,7 @@ package player.trigger {
          }
       }
       
-      public static function SubmitKeyValue_Number (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SubmitKeyValue_Number (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var key:String = valueSource.EvaluateValueObject () as String;
 
@@ -900,7 +900,7 @@ package player.trigger {
          }
       }
       
-      public static function SendGlobalSocketMessage (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SendGlobalSocketMessage (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var message:String = valueSource.EvaluateValueObject () as String;
 
@@ -914,14 +914,14 @@ package player.trigger {
    // string
    //*******************************************************************
 
-      public static function AssignString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AssignString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:String = valueSource.EvaluateValueObject () as String;
 
          valueTarget.AssignValueObject (value);
       }
 
-      public static function ConditionAssignString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionAssignString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -934,7 +934,7 @@ package player.trigger {
          valueTarget.AssignValueObject (condtion ? string1 : string2);
       }
 
-      public static function SwapStringValues (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SwapStringValues (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text1:String = valueSource.EvaluateValueObject () as String;
 
@@ -947,14 +947,14 @@ package player.trigger {
          valueSource.AssignValueObject (text1); // appeneded and fixed v1.54
       }
 
-      public static function IsNullString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsNullString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
 
          valueTarget.AssignValueObject (text == null);
       }
 
-      public static function AddTwoStrings (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AddTwoStrings (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var value1:String = valueSource.EvaluateValueObject () as String;
          //
@@ -970,14 +970,14 @@ package player.trigger {
                               );
       }
 
-      public static function GetStringLength (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetStringLength (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:String = valueSource.EvaluateValueObject () as String;
 
          valueTarget.AssignValueObject (value == null ? 0 : value.length);
       }
 
-      public static function StringCharAt (valueSource:Parameter, valueTarget:Parameter):void
+      public static function StringCharAt (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
 
@@ -993,7 +993,7 @@ package player.trigger {
          valueTarget.AssignValueObject (text.charAt (index));
       }
 
-      public static function StringCharCodeAt (valueSource:Parameter, valueTarget:Parameter):void
+      public static function StringCharCodeAt (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
 
@@ -1009,33 +1009,33 @@ package player.trigger {
          valueTarget.AssignValueObject (text.charCodeAt (index));
       }
 
-      public static function CharCode2Char (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CharCode2Char (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var char_code:int = int (valueSource.EvaluateValueObject ());
 
          valueTarget.AssignValueObject (char_code == 0 ? "" : String.fromCharCode (char_code));
       }
 
-      public static function ToLowerCaseString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ToLowerCaseString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
 
          valueTarget.AssignValueObject (text == null ? null : text.toLowerCase ());
       }
 
-      public static function ToUpperCaseString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ToUpperCaseString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
 
          valueTarget.AssignValueObject (text == null ? null : text.toUpperCase ());
       }
 
-      public static function IndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IndexOfSubstring (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _IndexOfSubstring (valueSource, valueTarget, false);
       }
 
-      public static function LastIndexOfSubstring (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LastIndexOfSubstring (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _IndexOfSubstring (valueSource, valueTarget, true);
       }
@@ -1067,7 +1067,7 @@ package player.trigger {
             valueTarget.AssignValueObject (text.indexOf (substring, fromIndex));
       }
 
-      public static function SplitString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SplitString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var substrings:Array = null;
 
@@ -1096,7 +1096,7 @@ package player.trigger {
          valueTarget.AssignValueObject (substrings);
       }
       
-      public static function ReplaceString(valueSource:Parameter, valueTarget:Parameter):void
+      public static function ReplaceString(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var resultString:String = null;
 
@@ -1120,7 +1120,7 @@ package player.trigger {
          valueTarget.AssignValueObject (resultString);
       }
 
-      public static function Substring (valueSource:Parameter, valueTarget:Parameter):void
+      public static function Substring (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = valueSource.EvaluateValueObject () as String;
          if (text == null)
@@ -1138,7 +1138,7 @@ package player.trigger {
          valueTarget.AssignValueObject (text.substring (fromIndex, toIndex));
       }
 
-      public static function NumberToString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function NumberToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = Number (valueSource.EvaluateValueObject ());
 
@@ -1146,7 +1146,7 @@ package player.trigger {
          valueTarget.AssignValueObject (CoreClasses.Number2String (value));
       }
 
-      //public static function NumberToExponentialString (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function NumberToExponentialString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   var value:Number = valueSource.EvaluateValueObject () as Number;
       //
@@ -1163,7 +1163,7 @@ package player.trigger {
       //   }
       //}
 
-      public static function NumberToFixedString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function NumberToFixedString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -1179,7 +1179,7 @@ package player.trigger {
          }
       }
 
-      public static function NumberToPrecisionString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function NumberToPrecisionString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -1195,7 +1195,7 @@ package player.trigger {
          }
       }
 
-      public static function NumberToStringByRadix (valueSource:Parameter, valueTarget:Parameter):void
+      public static function NumberToStringByRadix (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = Number (valueSource.EvaluateValueObject ());
 
@@ -1208,14 +1208,14 @@ package player.trigger {
             valueTarget.AssignValueObject (value.toString (radix));
       }
 
-      public static function ParseFloat (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ParseFloat (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = String (valueSource.EvaluateValueObject ());
 
          valueTarget.AssignValueObject (parseFloat (text));
       }
 
-      public static function ParseInteger (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ParseInteger (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var text:String = String (valueSource.EvaluateValueObject ());
 
@@ -1228,7 +1228,7 @@ package player.trigger {
             valueTarget.AssignValueObject (parseInt (text, radix));
       }
 
-      public static function BooleanToString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BooleanToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -1236,7 +1236,7 @@ package player.trigger {
          valueTarget.AssignValueObject (CoreClasses.Boolean2String (value));
       }
 
-      public static function EntityToString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EntityToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          
@@ -1249,7 +1249,7 @@ package player.trigger {
          valueTarget.AssignValueObject (CoreClasses.kEntityClassDefinition.ToString (entity));
       }
 
-      public static function CollisionCategoryToString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CollisionCategoryToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var ccat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
@@ -1266,14 +1266,14 @@ package player.trigger {
    // bool
    //************************************************
 
-      public static function AssignBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AssignBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          valueTarget.AssignValueObject (value);
       }
 
-      public static function ConditionAssignBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionAssignBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -1286,7 +1286,7 @@ package player.trigger {
          valueTarget.AssignValueObject (condtion ? bool1 : bool2);
       }
 
-      public static function SwapBooleanValues (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SwapBooleanValues (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var bool1:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -1299,28 +1299,28 @@ package player.trigger {
          valueSource.AssignValueObject (bool1);
       }
 
-      public static function BooleanInvert (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BooleanInvert (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          valueTarget.AssignValueObject (! value);
       }
 
-      public static function IsTrue (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsTrue (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          valueTarget.AssignValueObject (value);
       }
 
-      public static function IsFalse (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsFalse (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          valueTarget.AssignValueObject (! value);
       }
 
-      public static function EqualsWith_Numbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_Numbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -1332,7 +1332,7 @@ package player.trigger {
          valueTarget.AssignValueObject (- Number.MIN_VALUE <= dv && dv <= Number.MIN_VALUE); // todo maybe the tolerance value is too small
       }
 
-      public static function EqualsWith_Booleans (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_Booleans (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
@@ -1342,7 +1342,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 == value2);
       }
 
-      public static function EqualsWith_Entities (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_Entities (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -1352,7 +1352,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 == value2);
       }
 
-      public static function EqualsWith_Strings (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_Strings (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:String = valueSource.EvaluateValueObject () as String;
 
@@ -1362,7 +1362,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 == value2);
       }
 
-      public static function EqualsWith_CollisiontCategories (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_CollisiontCategories (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
@@ -1372,7 +1372,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 == value2);
       }
 
-      public static function EqualsWith_Arrays (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_Arrays (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Array = valueSource.EvaluateValueObject () as Array;
 
@@ -1383,7 +1383,7 @@ package player.trigger {
       }
       
 
-      public static function ExactEqualsWith_Arrays (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ExactEqualsWith_Arrays (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var value1:Array = valueSource.EvaluateValueObject () as Array;
          //
@@ -1496,7 +1496,7 @@ package player.trigger {
       //   return true;
       //}
 
-      public static function ArrayToString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ArrayToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var values:Array = valueSource.EvaluateValueObject () as Array;
          
@@ -1509,7 +1509,7 @@ package player.trigger {
          valueTarget.AssignValueObject (CoreClasses.kArrayClassDefinition.ToString (values));
       }
 
-      public static function LargerThan (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LargerThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -1521,7 +1521,7 @@ package player.trigger {
          valueTarget.AssignValueObject (dv >= Number.MIN_VALUE);
       }
 
-      public static function LessThan (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LessThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -1533,7 +1533,7 @@ package player.trigger {
          valueTarget.AssignValueObject (dv <= - Number.MIN_VALUE);
       }
 
-      public static function BoolAnd (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BoolAnd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
@@ -1543,7 +1543,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 && value2);
       }
 
-      public static function BoolOr (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BoolOr (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
@@ -1553,14 +1553,14 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 || value2);
       }
 
-      public static function BoolNot (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BoolNot (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
          valueTarget.AssignValueObject (! value);
       }
 
-      public static function BoolXor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BoolXor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
@@ -1574,14 +1574,14 @@ package player.trigger {
    // array
    //************************************************
 
-      public static function AssignArray (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AssignArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
          valueTarget.AssignValueObject (array);
       }
 
-      public static function ConditionAssignArray (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionAssignArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -1594,7 +1594,7 @@ package player.trigger {
          valueTarget.AssignValueObject (condition ? array1 : array2);
       }
 
-      public static function SwapArrayValues(valueSource:Parameter, valueTarget:Parameter):void
+      public static function SwapArrayValues(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array1:Array = valueSource.EvaluateValueObject () as Array;
 
@@ -1607,14 +1607,14 @@ package player.trigger {
          valueSource.AssignValueObject (array1);
       }
 
-      public static function IsNullArray (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsNullArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
          valueTarget.AssignValueObject (array == null);
       }
 
-      public static function CreateArray (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CreateArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var length:int = valueSource.EvaluateValueObject () as int;
          var length:int = int (valueSource.EvaluateValueObject ());
@@ -1625,14 +1625,14 @@ package player.trigger {
          valueTarget.AssignValueObject (array);
       }
 
-      public static function GetArrayLength (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetArrayLength (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
          valueTarget.AssignValueObject (array == null ? 0 : array.length);
       }
 
-      public static function SetArrayLength (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetArrayLength (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
@@ -1648,7 +1648,7 @@ package player.trigger {
          }
       }
       
-      public static function SubArray (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SubArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var resultArray:Array = null;
          
@@ -1667,12 +1667,12 @@ package player.trigger {
          valueTarget.AssignValueObject (resultArray);
       }
 
-      public static function RemoveArrayElements (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RemoveArrayElements (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          SpliceArrayElements (valueSource, valueTarget, true);
       }
 
-      public static function InsertArrayElements (valueSource:Parameter, valueTarget:Parameter):void
+      public static function InsertArrayElements (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          SpliceArrayElements (valueSource, valueTarget, false);
       }
@@ -1715,7 +1715,7 @@ package player.trigger {
          }
       }
 
-      private static function ConcatArrays (valueSource:Parameter, valueTarget:Parameter):void
+      private static function ConcatArrays (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array1:Array = valueSource.EvaluateValueObject () as Array;
 
@@ -1741,7 +1741,7 @@ package player.trigger {
          valueTarget.AssignValueObject (resultArray);
       }
 
-      private static function SwapArrayElements (valueSource:Parameter, valueTarget:Parameter):void
+      private static function SwapArrayElements (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
@@ -1767,7 +1767,7 @@ package player.trigger {
          array [index2] = temp;
       }
 
-      private static function ReverseArray (valueSource:Parameter, valueTarget:Parameter):void
+      private static function ReverseArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
 
@@ -1777,7 +1777,7 @@ package player.trigger {
          }
       }
 
-      public static function SetArrayElement (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetArrayElement (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var array:Array = valueSource.EvaluateValueObject () as Array;
          if (array == null)
@@ -1795,12 +1795,12 @@ package player.trigger {
          array [index] = valueSource.GetVariableInstance ().CloneClassInstance ();
       }
       
-      //public static function IndexOfArrayElement (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function IndexOfArrayElement (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   _IndexOfArrayElement (valueSource, valueTarget, false);
       //}
       //
-      //public static function LastIndexOfArrayElement (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function LastIndexOfArrayElement (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   _IndexOfArrayElement (valueSource, valueTarget, true);
       //}
@@ -1846,7 +1846,7 @@ package player.trigger {
       //      valueTarget.AssignValueObject (theArray.lastIndexOf (element, fromIndex));
       //}
 
-      public static function GetArrayElement (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetArrayElement (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          do
          {
@@ -1920,82 +1920,82 @@ package player.trigger {
       //   valueTarget.AssignValueObject (null); // undefined);
       //}
 
-      //public static function SetArrayElementWithBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Boolean);
       //}
       //
-      //public static function GetArrayElementAsBoolean (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Boolean);
       //}
       //
-      //public static function SetArrayElementWithNumber (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Number);
       //}
       //
-      //public static function GetArrayElementAsNumber (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Number);
       //}
       //
-      //public static function SetArrayElementWithString (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, String);
       //}
       //
-      //public static function GetArrayElementAsString (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, String);
       //}
       //
-      //public static function SetArrayElementWithCCat (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithCCat (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, CollisionCategory);
       //}
       //
-      //public static function GetArrayElementAsCCat (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsCCat (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, CollisionCategory);
       //}
       //
-      //public static function SetArrayElementWithEntity (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Entity);
       //}
       //
-      //public static function GetArrayElementAsEntity (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Entity);
       //}
       //
-      //public static function SetArrayElementWithModule (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithModule (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Module);
       //}
       //
-      //public static function GetArrayElementAsModule (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsModule (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Module);
       //}
       //
-      //public static function SetArrayElementWithSound (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithSound (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, int); //Sound);
       //}
       //
-      //public static function GetArrayElementAsSound (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsSound (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, int); //Sound);
       //}
       //
-      //public static function SetArrayElementWithArray (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetArrayElementWithArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetArrayElementWithSpecfiedClass (valueSource, valueTarget, Array);
       //}
       //
-      //public static function GetArrayElementAsArray (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetArrayElementAsArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Array);
       //}
@@ -2006,14 +2006,14 @@ package player.trigger {
 
       // + - * / x=y -x
 
-      public static function AssignNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AssignNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (value);
       }
 
-      public static function ConditionAssignNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionAssignNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var contionResult:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
@@ -2026,7 +2026,7 @@ package player.trigger {
          valueTarget.AssignValueObject (contionResult ? trueValue : falseValue);
       }
 
-      public static function SwapNumberValues (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SwapNumberValues (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var number1:Number = Number (valueSource.EvaluateValueObject ());
 
@@ -2039,28 +2039,28 @@ package player.trigger {
          valueSource.AssignValueObject (number1);
       }
 
-      public static function IsNaN (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsNaN (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (isNaN (value));
       }
 
-      public static function IsInfinity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsInfinity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (! isFinite (value));
       }
 
-      public static function NegativeNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function NegativeNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (- value);
       }
 
-      public static function AddTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AddTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2070,7 +2070,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 + value2);
       }
 
-      public static function SubtractTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SubtractTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2080,7 +2080,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 - value2);
       }
 
-      public static function MultiplyTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function MultiplyTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2090,7 +2090,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 * value2);
       }
 
-      public static function DivideTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function DivideTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2100,7 +2100,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 / value2);
       }
 
-      public static function ModuloTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ModuloTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2112,7 +2112,7 @@ package player.trigger {
 
       // bitwise
 
-      public static function ShiftLeft (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ShiftLeft (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2123,7 +2123,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value);
       }
 
-      public static function ShiftRight (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ShiftRight (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2134,7 +2134,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value);
       }
 
-      public static function ShiftRightUnsigned (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ShiftRightUnsigned (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2145,7 +2145,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value);
       }
 
-      public static function BitwiseAnd (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BitwiseAnd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2155,7 +2155,7 @@ package player.trigger {
          valueTarget.AssignValueObject (Number(value1 & value2));
       }
 
-      public static function BitwiseOr (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BitwiseOr (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2165,14 +2165,14 @@ package player.trigger {
          valueTarget.AssignValueObject (Number(value1 | value2));
       }
 
-      public static function BitwiseNot (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BitwiseNot (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Number(~value));
       }
 
-      public static function BitwiseXor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BitwiseXor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2184,49 +2184,49 @@ package player.trigger {
 
       // sin, cos, tan, asin, acos, atan, atan2
 
-      public static function SinRadian (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SinRadian (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.sin (value));
       }
 
-      public static function CosRadian (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CosRadian (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.cos (value));
       }
 
-      public static function TanRadian (valueSource:Parameter, valueTarget:Parameter):void
+      public static function TanRadian (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.tan (value));
       }
 
-      public static function AsinRadian (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AsinRadian (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.asin (value));
       }
 
-      public static function AcosRadian (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AcosRadian (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.acos (value));
       }
 
-      public static function AtanRadian (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AtanRadian (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.atan (value));
       }
 
-      public static function AtanRadianTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AtanRadianTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2238,12 +2238,12 @@ package player.trigger {
 
       // random
 
-      public static function RandomNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RandomNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Math.random ());
       }
 
-      public static function RandomNumberRange (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RandomNumberRange (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2253,7 +2253,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 + (value2 - value1) * Math.random ());
       }
 
-      public static function RandomIntegerRange (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RandomIntegerRange (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:int = Math.round (valueSource.EvaluateValueObject () as Number);
 
@@ -2264,7 +2264,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 < value2 ? Math.floor (r) : Math.ceil (r));
       }
 
-      public static function RngCreate (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RngCreate (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rngSlot:int = int (valueSource.EvaluateValueObject ());
 
@@ -2274,7 +2274,7 @@ package player.trigger {
          Global.CreateRandomNumberGenerator (rngSlot, rngMethod);
       }
 
-      public static function RngSetSeed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RngSetSeed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rngSlot:int = int (valueSource.EvaluateValueObject ());
 
@@ -2287,14 +2287,14 @@ package player.trigger {
          Global.GetRandomNumberGenerator (rngSlot).SetSeed (seedId, seed);
       }
 
-      public static function RngRandom (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RngRandom (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rngSlot:int = int (valueSource.EvaluateValueObject ());
 
          valueTarget.AssignValueObject (Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
       }
 
-      public static function RngRandomNumberRange (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RngRandomNumberRange (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rngSlot:int = int (valueSource.EvaluateValueObject ());
 
@@ -2307,7 +2307,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 + (value2 - value1) * Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
       }
 
-      public static function RngRandomIntegerRange (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RngRandomIntegerRange (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rngSlot:int = int (valueSource.EvaluateValueObject ());
 
@@ -2322,21 +2322,21 @@ package player.trigger {
 
       // degree <-> radian
 
-      public static function Degrees2Radians (valueSource:Parameter, valueTarget:Parameter):void
+      public static function Degrees2Radians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (value * Define.kDegrees2Radians);
       }
 
-      public static function Radians2Degrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function Radians2Degrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (value * Define.kRadians2Degrees);
       }
 
-      public static function Number2RGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function Number2RGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var color:int = (valueSource.EvaluateValueObject () as Number) & 0xFFFFFFFF;
 
@@ -2349,7 +2349,7 @@ package player.trigger {
          valueTarget.AssignValueObject ((color >> 0) & 0xFF);
       }
 
-      public static function RGB2Number (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RGB2Number (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var red:int = (valueSource.EvaluateValueObject () as Number) & 0xFF;
 
@@ -2362,7 +2362,7 @@ package player.trigger {
          valueTarget.AssignValueObject ((red << 16) | (green << 8) | (blue));
       }
 
-      public static function MillisecondsToMinutesSeconds (valueSource:Parameter, valueTarget:Parameter):void
+      public static function MillisecondsToMinutesSeconds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var millseconds:int = valueSource.EvaluateValueObject () as Number;
 
@@ -2382,7 +2382,7 @@ package player.trigger {
 
       // invert
 
-      public static function InverseNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function InverseNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2391,7 +2391,7 @@ package player.trigger {
 
       // max, min
 
-      public static function MaxOfTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function MaxOfTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2401,7 +2401,7 @@ package player.trigger {
          valueTarget.AssignValueObject (Math.max (value1, value2));
       }
 
-      public static function MinOfTwoNumbers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function MinOfTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2413,56 +2413,56 @@ package player.trigger {
 
       // abs, sqrt, ceil, floor, round, log, exp
 
-      public static function AbsNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AbsNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.abs (value));
       }
 
-      public static function SqrtNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SqrtNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.sqrt (value));
       }
 
-      public static function CeilNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CeilNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.ceil (value));
       }
 
-      public static function FloorNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function FloorNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.floor (value));
       }
 
-      public static function RoundNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RoundNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.round (value));
       }
 
-      public static function LogNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LogNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.log (value));
       }
 
-      public static function ExpNumber (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ExpNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
          valueTarget.AssignValueObject (Math.exp (value));
       }
 
-      public static function Power (valueSource:Parameter, valueTarget:Parameter):void
+      public static function Power (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2472,7 +2472,7 @@ package player.trigger {
          valueTarget.AssignValueObject (Math.pow (value1, value2));
       }
 
-      public static function Clamp (valueSource:Parameter, valueTarget:Parameter):void
+      public static function Clamp (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2500,7 +2500,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value);
       }
 
-      public static function LinearInterpolation (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LinearInterpolation (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2513,7 +2513,7 @@ package player.trigger {
          valueTarget.AssignValueObject (value1 * factor + (1.0 - factor) * value2);
       }
 
-      public static function LinearInterpolationColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LinearInterpolationColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -2536,7 +2536,7 @@ package player.trigger {
    // game / design
    //*******************************************************************
 
-      public static function LoadLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LoadLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          if (Global.IsInvalidScene (levelIndex))
@@ -2546,10 +2546,10 @@ package player.trigger {
          var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
 
          //Global.Viewer_OnLoadScene (levelIndex); // if call this at this time, there will be many check point needed to be aded.
-         Global.GetCurrentWorld ().SetDelayToLoadSceneIndex (levelIndex, sceneSwitchingStyle);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetDelayToLoadSceneIndex (levelIndex, sceneSwitchingStyle);
       }
       
-      public static function MergeLevelIntoTheCurrentOne (valueSource:Parameter, valueTarget:Parameter):void
+      public static function MergeLevelIntoTheCurrentOne (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          if (Global.IsInvalidScene (levelIndex))
@@ -2558,7 +2558,7 @@ package player.trigger {
          Global.MergeScene (levelIndex);
       }
       
-      public static function GetLevelByIdOffset (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelByIdOffset (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var indexOffset:int = int (valueSource.EvaluateValueObject ());
          
@@ -2566,13 +2566,13 @@ package player.trigger {
          var relativeTolevelIndex:int = valueSource.EvaluateValueObject () as int;
          
          if (Global.IsInvalidScene (relativeTolevelIndex))
-            relativeTolevelIndex =  Global.GetCurrentWorld ().GetCurrentSceneId ();
+            relativeTolevelIndex =  /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentSceneId ();
          
          var levelIndex:int = relativeTolevelIndex + indexOffset;
          valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex) ? -1 : levelIndex);
       }
       
-      public static function GetLevelId (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelId (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          
@@ -2582,14 +2582,14 @@ package player.trigger {
          valueTarget.AssignValueObject (levelIndex);
       }
       
-      public static function GetLevelByKey (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelByKey (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var key:String = valueSource.EvaluateValueObject () as String;
          
          valueTarget.AssignValueObject (Global.GetSceneByKey (key));
       }
       
-      public static function GetLevelKey (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelKey (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          
@@ -2600,18 +2600,18 @@ package player.trigger {
             valueTarget.AssignValueObject (sceneDefine.mKey);
       }
       
-      public static function GetCurrentLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetCurrentLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentSceneId ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentSceneId ());
       }
       
-      public static function IsNullLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsNullLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = valueSource.EvaluateValueObject () as int;
          valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex));
       }
       
-      public static function EqualsWith_Scenes (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_Scenes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex1:int = valueSource.EvaluateValueObject () as int;
 
@@ -2624,7 +2624,7 @@ package player.trigger {
             valueTarget.AssignValueObject (levelIndex1 == levelIndex2);
       }
       
-      public static function SceneToString (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SceneToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = valueSource.EvaluateValueObject () as int;
          
@@ -2637,52 +2637,52 @@ package player.trigger {
          valueTarget.AssignValueObject (CoreClasses.kSceneClassDefinition.ToString (levelIndex));
       }
       
-      public static function WriteSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      public static function WriteSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()), Global.GetSavedData ());
+         Global.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()), Global.GetSavedData ());
       }
       
-      public static function LoadSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      public static function LoadSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.SetSavedData (Global.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ())));
+         Global.SetSavedData (Global.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ())));
       }
       
-      public static function ResetSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ResetSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          Global.ResetGameSaveVariableSpace ();
       }
       
-      public static function DeleteSaveData (valueSource:Parameter, valueTarget:Parameter):void
+      public static function DeleteSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibCookie.ClearCookie (Define.GetDefaultWorldSavedDataFilename (Global.GetCurrentWorld ().GetWorldKey ()));
+         Global.Viewer_mLibCookie.ClearCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()));
       }
 
-      public static function RestartLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RestartLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
 
          //Global.UI_RestartPlay (); // cause bug
-         Global.GetCurrentWorld ().SetDelayRestartRequested (sceneSwitchingStyle);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetDelayRestartRequested (sceneSwitchingStyle);
       }
       
-      public static function IsLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsLevelPaused (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (! Global.UI_IsPlaying ());
       }
 
-      public static function SetLevelPaused (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelPaused (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var paused:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
          Global.UI_SetPlaying (! paused);
       }
 
-      public static function GetPlaySpeedX (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetPlaySpeedX (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.UI_GetSpeedX ());
       }
 
-      public static function SetPlaySpeedX (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetPlaySpeedX (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var speedX:int = int (valueSource.EvaluateValueObject ());
          if (speedX < 0)
@@ -2693,12 +2693,12 @@ package player.trigger {
          Global.UI_SetSpeedX (speedX);
       }
 
-      public static function GetWorldScale (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetWorldScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.UI_GetZoomScale());
       }
 
-      public static function SetWorldScale (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetWorldScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var scale:Number = Number (valueSource.EvaluateValueObject ());
          if (scale < 0.0625)
@@ -2712,63 +2712,63 @@ package player.trigger {
          Global.UI_SetZoomScale (scale, smoothly);
       }
 
-      public static function GetLevelMilliseconds (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelMilliseconds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetLevelMilliseconds ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetLevelMilliseconds ());
       }
 
-      public static function GetLevelSteps (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelSteps (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetSimulatedSteps ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetSimulatedSteps ());
       }
 
-      public static function GetWorldMousePosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetWorldMousePosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseX ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseX ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentMouseY ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseY ());
       }
 
-      public static function GetNumEntitiesPlacedInEditor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetNumEntitiesPlacedInEditor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetNumEntitiesInEditor ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetNumEntitiesInEditor ());
       }
 
-      public static function SetLevelStatus (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelStatus (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          switch (int (valueSource.EvaluateValueObject ()))
          {
             case ValueDefine.LevelStatus_Failed:
-               Global.GetCurrentWorld ().SetLevelFailed ();
+               /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelFailed ();
                break;
             case ValueDefine.LevelStatus_Successed:
-               Global.GetCurrentWorld ().SetLevelSuccessed ();
+               /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelSuccessed ();
                break;
             case ValueDefine.LevelStatus_Unfinished:
-               Global.GetCurrentWorld ().SetLevelUnfinished ();
+               /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelUnfinished ();
                break;
             default:
                break;
          }
       }
 
-      public static function IsLevelSuccessed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsLevelSuccessed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelSuccessed ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsLevelSuccessed ());
       }
 
-      public static function IsLevelFailed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsLevelFailed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelFailed ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsLevelFailed ());
       }
 
-      public static function IsLevelUnfinished (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsLevelUnfinished (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsLevelUnfinished ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsLevelUnfinished ());
       }
 
-      public static function SetMouseGestureEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetMouseGestureEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var enableGesture:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
@@ -2778,57 +2778,57 @@ package player.trigger {
          Global.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
       }
       
-      public static function SetLevelProperty_Boolean (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelProperty_Boolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var property:int = valueSource.EvaluateValueObject () as int;
 
          valueSource = valueSource.mNextParameter;
          var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
       }
       
-      public static function SetLevelProperty_Number (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelProperty_Number (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var property:int = valueSource.EvaluateValueObject () as int;
 
          valueSource = valueSource.mNextParameter;
          var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
       }
       
-      public static function SetLevelProperty_String (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelProperty_String (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var property:int = valueSource.EvaluateValueObject () as int;
       
          valueSource = valueSource.mNextParameter;
          var value:String = valueSource.EvaluateValueObject () as String;
          
-         Global.GetCurrentWorld ().SetLevelProperty (property, value);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
       }
 
    //*******************************************************************
    // game / world / appearance
    //*******************************************************************
       
-      public static function GetLevelFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelFilledColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var filledColor:uint = Global.GetCurrentWorld ().GetBackgroundColor ();
+         var filledColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBackgroundColor ();
 
          valueTarget.AssignValueObject (filledColor);
       }
 
-      public static function SetLevelFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelFilledColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var color:uint = uint (valueSource.EvaluateValueObject ());
          
-         Global.GetCurrentWorld ().SetBackgroundColor (color);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBackgroundColor (color);
       }
 
-      public static function GetLevelFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelFilledColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var filledColor:uint = Global.GetCurrentWorld ().GetBackgroundColor ();
+         var filledColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBackgroundColor ();
 
          valueTarget.AssignValueObject ((filledColor >> 16) & 0xFF);
 
@@ -2839,7 +2839,7 @@ package player.trigger {
          valueTarget.AssignValueObject ((filledColor >> 0) & 0xFF);
       }
 
-      public static function SetLevelFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelFilledColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var red:int =  valueSource.EvaluateValueObject () as Number;
 
@@ -2849,26 +2849,26 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var blue:int =  valueSource.EvaluateValueObject () as Number;
          
-         Global.GetCurrentWorld ().SetBackgroundColor ((red << 16) | (green << 8) | (blue));
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBackgroundColor ((red << 16) | (green << 8) | (blue));
       }
 
-      public static function GetLevelBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelBorderColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var borderColor:uint = Global.GetCurrentWorld ().GetBorderColor ();
+         var borderColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBorderColor ();
 
          valueTarget.AssignValueObject (borderColor);
       }
 
-      public static function SetLevelBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelBorderColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var color:uint = uint (valueSource.EvaluateValueObject ());
 
-         Global.GetCurrentWorld ().SetBorderColor (color);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBorderColor (color);
       }
 
-      public static function GetLevelBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLevelBorderColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var borderColor:uint = Global.GetCurrentWorld ().GetBorderColor ();
+         var borderColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBorderColor ();
 
          valueTarget.AssignValueObject ((borderColor >> 16) & 0xFF);
 
@@ -2879,7 +2879,7 @@ package player.trigger {
          valueTarget.AssignValueObject ((borderColor >> 0) & 0xFF);
       }
 
-      public static function SetLevelBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetLevelBorderColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var red:int =  valueSource.EvaluateValueObject () as Number;
 
@@ -2889,96 +2889,96 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var blue:int =  valueSource.EvaluateValueObject () as Number;
          
-         Global.GetCurrentWorld ().SetBorderColor ((red << 16) | (green << 8) | (blue));
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBorderColor ((red << 16) | (green << 8) | (blue));
       }
 
    //*******************************************************************
    // game / world / physics
    //*******************************************************************
 
-      public static function IsPhysicsEngineEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsPhysicsEngineEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().IsPhysicsEngineEnabled ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsPhysicsEngineEnabled ());
       }
 
-      public static function SetPhysicsEngineEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetPhysicsEngineEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.GetCurrentWorld ().SetPhysicsEngineEnabled (enabled);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetPhysicsEngineEnabled (enabled);
       }
 
-      public static function GetRealtimeFPS (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetRealtimeFPS (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.Viewer_mLibAppp.GetRealtimeFps ());
       }
 
-      public static function GetPreferredFpsAndStepTimeLangth (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetPreferredFpsAndStepTimeLangth (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPreferredFPS ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPreferredFPS ());
          
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsSimulationStepTimeLength ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsSimulationStepTimeLength ());
       }
 
-      public static function SetPreferredFpsAndStepTimeLangth (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetPreferredFpsAndStepTimeLangth (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var preferredFps:Number = Number (valueSource.EvaluateValueObject ());
 
          valueSource = valueSource.mNextParameter;
          var timeLength:Number = Number (valueSource.EvaluateValueObject ());
 
-         Global.GetCurrentWorld ().SetPreferredFPS (preferredFps);
-         Global.GetCurrentWorld ().SetPhysicsSimulationStepTimeLength (timeLength);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetPreferredFPS (preferredFps);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetPhysicsSimulationStepTimeLength (timeLength);
       }
       
-      public static function SetWorldGravityAcceleration_Radians (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetWorldGravityAcceleration_Radians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var magnitude:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var radians:Number = (valueSource.EvaluateValueObject () as Number) % 360.0;
 
-         Global.GetCurrentWorld ().SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
 
-      public static function SetWorldGravityAcceleration_Degrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetWorldGravityAcceleration_Degrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var magnitude:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var radians:Number = ((valueSource.EvaluateValueObject () as Number) % 360.0) * Define.kDegrees2Radians;
 
-         Global.GetCurrentWorld ().SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
 
-      public static function SetWorldGravityAcceleration_Vector (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetWorldGravityAcceleration_Vector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var gaX:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var gaY:Number = valueSource.EvaluateValueObject () as Number;
 
-         Global.GetCurrentWorld ().SetCurrentGravityAcceleration (gaX, gaY);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (gaX, gaY);
       }
 
-      public static function GetWorldGravityAcceleration_Vector (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetWorldGravityAcceleration_Vector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentGravityAccelerationX ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentGravityAccelerationX ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCurrentGravityAccelerationY ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentGravityAccelerationY ());
       }
       
-      public static function GetViewportSize (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetViewportSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetRealViewportWidth ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportWidth ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetRealViewportHeight ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportHeight ());
       }
 
-      public static function SetCurrentCamera (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetCurrentCamera (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var camera:EntityShape_Camera = valueSource.EvaluateValueObject () as EntityShape_Camera;
          if (camera == null)
@@ -2987,20 +2987,20 @@ package player.trigger {
          camera.SetAsCurrent ();
       }
 
-      public static function GetCameraCenter (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetCameraCenter (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterPhysicsX ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCameraCenterPhysicsX ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraCenterPhysicsY ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCameraCenterPhysicsY ());
       }
 
-      public static function GetCameraRotation_Degrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetCameraRotation_Degrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetCameraPhysicsRotationIn360Degrees ());
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCameraPhysicsRotationIn360Degrees ());
       }
 
-      public static function FollowCameraWithShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function FollowCameraWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          //if (shape == null)
@@ -3013,10 +3013,10 @@ package player.trigger {
          //var folowRotation:Boolean = valueSource.EvaluateValueObject () as Boolean;
          var folowRotation:Boolean = true;
 
-         Global.GetCurrentWorld ().FollowCameraWithEntity (shape, isSmooth, folowRotation);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraWithEntity (shape, isSmooth, folowRotation);
       }
 
-      public static function FollowCameraCenterXWithShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function FollowCameraCenterXWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          //if (shape == null)
@@ -3025,10 +3025,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.GetCurrentWorld ().FollowCameraCenterXWithEntity (shape, isSmooth);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraCenterXWithEntity (shape, isSmooth);
       }
 
-      public static function FollowCameraCenterYWithShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function FollowCameraCenterYWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          //if (shape == null)
@@ -3037,10 +3037,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.GetCurrentWorld ().FollowCameraCenterYWithEntity (shape, isSmooth);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraCenterYWithEntity (shape, isSmooth);
       }
 
-      public static function FollowCameraRotationWithShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function FollowCameraRotationWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -3049,10 +3049,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.GetCurrentWorld ().FollowCameraAngleWithEntity (shape, isSmooth);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraAngleWithEntity (shape, isSmooth);
       }
 
-      public static function CameraFadeOutThenFadeIn (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CameraFadeOutThenFadeIn (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var fadeColor:uint = uint (valueSource.EvaluateValueObject ());
 
@@ -3068,10 +3068,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var scriptToRun:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
 
-         Global.GetCurrentWorld ().CameraFadeOutThenFadeIn (fadeColor, stepsFadeOut, stepsFadeIn, stepsFadeStaying, scriptToRun);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.CameraFadeOutThenFadeIn (fadeColor, stepsFadeOut, stepsFadeIn, stepsFadeStaying, scriptToRun);
       }
 
-      public static function CallScript (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CallScript (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var scriptToRun:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
 
@@ -3079,7 +3079,7 @@ package player.trigger {
             scriptToRun.RunScript ();
       }
 
-      public static function ConditionCallScript (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionCallScript (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -3101,14 +3101,14 @@ package player.trigger {
          }
       }
 
-      public static function CallBoolFunction (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CallBoolFunction (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var boolFunction:EntityBasicCondition = valueSource.EvaluateValueObject () as EntityBasicCondition;
 
          valueTarget.AssignValueObject (boolFunction == null ? false : boolFunction.RunBoolFunction ());
       }
 
-      public static function ConditionCallBoolFunction  (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionCallBoolFunction  (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -3124,7 +3124,7 @@ package player.trigger {
             valueTarget.AssignValueObject (boolFunction2 == null ? false : boolFunction2.RunBoolFunction ());
       }
 
-      public static function CallScriptMultiTimes (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CallScriptMultiTimes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var scriptToRun:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
 
@@ -3135,7 +3135,7 @@ package player.trigger {
             scriptToRun.RunScript ();
       }
 
-      public static function CallBoolFunctionMultiTimes (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CallBoolFunctionMultiTimes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var boolFunction:EntityBasicCondition = valueSource.EvaluateValueObject () as EntityBasicCondition;
 
@@ -3152,7 +3152,7 @@ package player.trigger {
    // game / world / create
    //*******************************************************************
 
-      public static function CreateExplosion (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CreateExplosion (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var worldX:Number = Number (valueSource.EvaluateValueObject ());
 
@@ -3193,8 +3193,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
-         numParticles = Global.GetCurrentWorld ().CreateExplosion (null, worldX, worldY, cat, numParticles,
-                     lifeSteps * Global.GetCurrentWorld ().GetPhysicsSimulationStepTimeLength (),
+         numParticles = /*Global.GetCurrentWorld ()*/callingContext.mWorld.CreateExplosion (null, worldX, worldY, cat, numParticles,
+                     lifeSteps * /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsSimulationStepTimeLength (),
                      density, restitution, speed, 1.0, color, visible);
 
          valueTarget.AssignValueObject (numParticles);
@@ -3204,7 +3204,7 @@ package player.trigger {
    // game / world / create
    //*******************************************************************
 
-      public static function PlaySound (valueSource:Parameter, valueTarget:Parameter):void
+      public static function PlaySound (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var soundIndex:int = valueSource.EvaluateValueObject () as int;
          if (isNaN (soundIndex))
@@ -3223,12 +3223,12 @@ package player.trigger {
          }
       }
 
-      public static function StopAllSounds_InLevel (valueSource:Parameter, valueTarget:Parameter):void
+      public static function StopAllSounds_InLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          Global.Viewer_mLibSound.StopAllInLevelSounds ();
       }
       
-      public static function StopSound_CrossLevels (valueSource:Parameter, valueTarget:Parameter):void
+      public static function StopSound_CrossLevels (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var soundIndex:int = valueSource.EvaluateValueObject () as int;
          if (isNaN (soundIndex))
@@ -3247,23 +3247,23 @@ package player.trigger {
          Global.Viewer_mLibSound.StopCrossLevelsSound (sound == null ? null : sound.GetSoundObject ());
       }
       
-      public static function IsSoundEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsSoundEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          valueTarget.AssignValueObject (Global.UI_IsSoundEnabled ());
       }
       
-      public static function SetSoundEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetSoundEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var soundOn:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
          Global.UI_SetSoundEnabled (soundOn);
       }
       
-      //public static function GetGlobalSoundVolume (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function GetGlobalSoundVolume (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //}
       //
-      //public static function SetGlobalSoundVolume (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetGlobalSoundVolume (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //}
       
@@ -3271,7 +3271,7 @@ package player.trigger {
    // game / world / module
    //*******************************************************************
 
-      public static function AssignModule (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AssignModule (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
@@ -3279,7 +3279,7 @@ package player.trigger {
          valueTarget.AssignValueObject (Global.ValiddateModuleIndex (moduleIndex));
       }
 
-      public static function EqualsWith_Module (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EqualsWith_Module (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
@@ -3295,14 +3295,14 @@ package player.trigger {
    // game collision category
    //*******************************************************************
 
-      public static function AssignCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AssignCollisionCategory (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
          valueTarget.AssignValueObject (cat);
       }
 
-      public static function ConditionAssignCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionAssignCollisionCategory (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -3315,7 +3315,7 @@ package player.trigger {
          valueTarget.AssignValueObject (condtion ? cat1 : cat2);
       }
 
-      public static function SwapCCatValues (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SwapCCatValues (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var ccat1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
@@ -3328,24 +3328,24 @@ package player.trigger {
          valueSource.AssignValueObject (ccat1);
       }
 
-      public static function IsNullCCat (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsNullCCat (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var ccat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
          valueTarget.AssignValueObject (ccat == null);
       }
 
-      public static function SetCollisionCategoryCollideInternally (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetCollisionCategoryCollideInternally (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
          valueSource = valueSource.mNextParameter;
          var collideInternally:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.GetCurrentWorld ().BreakOrCreateCollisionCategoryFriendLink (cat, cat, collideInternally);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.BreakOrCreateCollisionCategoryFriendLink (cat, cat, collideInternally);
       }
 
-      public static function SetCollisionCategoriesAsFriends (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetCollisionCategoriesAsFriends (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var cat1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
@@ -3355,21 +3355,21 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var asFriends:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.GetCurrentWorld ().BreakOrCreateCollisionCategoryFriendLink (cat1, cat2, ! asFriends);
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.BreakOrCreateCollisionCategoryFriendLink (cat1, cat2, ! asFriends);
       }
 
    //*******************************************************************
    // game entity
    //*******************************************************************
 
-      public static function AssignEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AssignEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
          valueTarget.AssignValueObject (entity);
       }
 
-      public static function ConditionAssignEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ConditionAssignEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
@@ -3382,7 +3382,7 @@ package player.trigger {
          valueTarget.AssignValueObject (condition ? entity1 : entity2);
       }
 
-      public static function SwapEntityValues(valueSource:Parameter, valueTarget:Parameter):void
+      public static function SwapEntityValues(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity1:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -3395,14 +3395,14 @@ package player.trigger {
          valueSource.AssignValueObject (entity1);
       }
 
-      public static function IsNullEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsNullEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
          valueTarget.AssignValueObject (entity == null);
       }
 
-      public static function GetEntityId (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetEntityId (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3415,7 +3415,7 @@ package player.trigger {
          }
       }
 
-      public static function GetAnotherEntityByIdOffset (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetAnotherEntityByIdOffset (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var baseEntity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (baseEntity == null || baseEntity.GetCreationId () < 0)
@@ -3430,11 +3430,11 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             var supportRuntimeEntity:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-            valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetEntityByCreateOrderId (baseEntity.GetCreationId () + idOffset, supportRuntimeEntity));
+            valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetEntityByCreateOrderId (baseEntity.GetCreationId () + idOffset, supportRuntimeEntity));
          }
       }
 
-      public static function SetEntityTaskStatus (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetEntityTaskStatus (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3457,7 +3457,7 @@ package player.trigger {
          }
       }
 
-      public static function IsEntityTaskSuccessed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsEntityTaskSuccessed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -3466,7 +3466,7 @@ package player.trigger {
          valueTarget.AssignValueObject (succeeded);
       }
 
-      public static function IsEntityTaskFailed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsEntityTaskFailed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -3475,7 +3475,7 @@ package player.trigger {
          valueTarget.AssignValueObject (failed);
       }
 
-      public static function IsEntityTaskUnfinished (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsEntityTaskUnfinished (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -3484,28 +3484,28 @@ package player.trigger {
          valueTarget.AssignValueObject (unfinished);
       }
 
-      public static function IsShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsJointEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsJointEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
 
          valueTarget.AssignValueObject (joint != null);
       }
 
-      public static function IsTriggerEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsTriggerEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var trigger:EntityLogic = valueSource.EvaluateValueObject () as EntityLogic;
 
          valueTarget.AssignValueObject (trigger != null);
       }
 
-      public static function IsEntityVisible (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsEntityVisible (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -3513,7 +3513,7 @@ package player.trigger {
          valueTarget.AssignValueObject (visible);
       }
 
-      public static function SetEntityVisible (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetEntityVisible (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3525,7 +3525,7 @@ package player.trigger {
          entity.SetVisible (visible);
       }
 
-      public static function GetEntityAlpha (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetEntityAlpha (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -3534,7 +3534,7 @@ package player.trigger {
          valueTarget.AssignValueObject (alpha);
       }
 
-      public static function SetEntityAlpha (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetEntityAlpha (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3546,7 +3546,7 @@ package player.trigger {
          entity.SetAlpha (alpha);
       }
 
-      public static function AdjustEntityAppearanceOrder (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AdjustEntityAppearanceOrder (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3558,7 +3558,7 @@ package player.trigger {
          entity.AdjustAppearanceOrder (null, toTop);
       }
 
-      public static function AdjustEntityAppearanceOrderRelativeTo (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AdjustEntityAppearanceOrderRelativeTo (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3575,7 +3575,7 @@ package player.trigger {
          entity.AdjustAppearanceOrder (relativeToEntity, frontOf);
       }
 
-      public static function IsEntityEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsEntityEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
 
@@ -3583,7 +3583,7 @@ package player.trigger {
          valueTarget.AssignValueObject (enabled);
       }
 
-      public static function SetEntityEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetEntityEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null || entity.IsDestroyedAlready ())
@@ -3599,7 +3599,7 @@ package player.trigger {
          entity.SetEnabled (enabled);
       }
 
-      public static function GetEntityPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetEntityPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3620,7 +3620,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetPositionY ());
       }
 
-      //public static function SetEntityPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetEntityPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
       //   if (shape == null)
@@ -3638,7 +3638,7 @@ package player.trigger {
       //   shape.MoveTo (pos_x, pos_y);
       //}
 
-      public static function GetEntityRotationByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetEntityRotationByRadians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3651,11 +3651,11 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetRotationInTwoPI ());
       }
 
-      //public static function SetEntityRotationByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetEntityRotationByRadians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //}
 
-      public static function GetEntityRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetEntityRotationByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3668,11 +3668,11 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetRotationInTwoPI () * Define.kRadians2Degrees);
       }
 
-      //public static function SetEntityRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetEntityRotationByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //}
 
-      public static function GetEntityAccumulatedRotationByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetEntityAccumulatedRotationByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3685,7 +3685,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetRotation ());
       }
 
-      public static function IsEntityFlipped (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsEntityFlipped (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3698,7 +3698,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.IsFlipped ());
       }
 
-      public static function GetEntityScale (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetEntityScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3711,7 +3711,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity.GetScale ());
       }
 
-      public static function WorldPoint2EntityLocalPoint (valueSource:Parameter, valueTarget:Parameter):void
+      public static function WorldPoint2EntityLocalPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var localPoint:Point = new Point ();
 
@@ -3740,7 +3740,7 @@ package player.trigger {
          valueTarget.AssignValueObject (localPoint.y);
       }
 
-      public static function EntityLocalPoint2WorldPoint (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EntityLocalPoint2WorldPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var worldPoint:Point = new Point ();
 
@@ -3769,7 +3769,7 @@ package player.trigger {
          valueTarget.AssignValueObject (worldPoint.y);
       }
 
-      public static function WorldVector2EntityLocalVector (valueSource:Parameter, valueTarget:Parameter):void
+      public static function WorldVector2EntityLocalVector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var localVector:Point = new Point ();
 
@@ -3798,7 +3798,7 @@ package player.trigger {
          valueTarget.AssignValueObject (localVector.y);
       }
 
-      public static function EntityLocalVector2WorldVector (valueSource:Parameter, valueTarget:Parameter):void
+      public static function EntityLocalVector2WorldVector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var worldVector:Point = new Point ();
 
@@ -3827,7 +3827,7 @@ package player.trigger {
          valueTarget.AssignValueObject (worldVector.y);
       }
 
-      public static function IsEntityDestroyed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsEntityDestroyed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3840,7 +3840,7 @@ package player.trigger {
          }
       }
 
-      public static function DestroyEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function DestroyEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
@@ -3852,7 +3852,7 @@ package player.trigger {
          entity.DestroyEntity ();
       }
 
-      public static function AreTwoEntitiesCoincided (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AreTwoEntitiesCoincided (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity1:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity1 == null)
@@ -3890,7 +3890,7 @@ package player.trigger {
    // entity / shape
    //*******************************************************************
 
-      public static function CloneShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function CloneShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -3917,70 +3917,70 @@ package player.trigger {
          valueTarget.AssignValueObject (EntityShape.CloneShape (shape, targetX, targetY, bCloneBrothers, bCloneConnectedMovables, bCloneConnectedStatics));
       }
 
-      public static function IsCircleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsCircleShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsRectangleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsRectangleShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsPolygonShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsPolygonShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapePolygon = valueSource.EvaluateValueObject () as EntityShapePolygon;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsPolylineShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsPolylineShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsBombShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsBombShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape
 
          valueTarget.AssignValueObject (shape is EntityShape_CircleBomb || shape is EntityShape_RectangleBomb);
       }
 
-      public static function IsWorldBorderEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsWorldBorderEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape_WorldBorder = valueSource.EvaluateValueObject () as EntityShape_WorldBorder;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsCameraEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsCameraEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape_Camera = valueSource.EvaluateValueObject () as EntityShape_Camera;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsTextShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsTextShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsModuleShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsModuleShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
 
          valueTarget.AssignValueObject (shape != null);
       }
 
-      public static function IsButtonShapeEntity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsButtonShapeEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -3989,7 +3989,7 @@ package player.trigger {
 
       // ...
 
-      public static function GetShapeOriginalCIType (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeOriginalCIType (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -3997,7 +3997,7 @@ package player.trigger {
          valueTarget.AssignValueObject (aiType);
       }
 
-      public static function SetShapeOriginalCIType (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeOriginalCIType (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4015,7 +4015,7 @@ package player.trigger {
          shape.SetOriginalShapeAiType (ciType);
       }
 
-      public static function GetShapeCIType (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeCIType (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4023,7 +4023,7 @@ package player.trigger {
          valueTarget.AssignValueObject (aiType);
       }
 
-      public static function SetShapeCIType (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeCIType (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4041,14 +4041,14 @@ package player.trigger {
          shape.SetShapeAiType (ciType);
       }
       
-      public static function GetBodyTexture (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetBodyTexture (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape_WithBodyTexture = valueSource.EvaluateValueObject () as EntityShape_WithBodyTexture;
 
          valueTarget.AssignValueObject (shape == null ? -1 : shape.GetBodyTextureModuleIndex ());       
       }
       
-      public static function SetBodyTexture (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetBodyTexture (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape_WithBodyTexture = valueSource.EvaluateValueObject () as EntityShape_WithBodyTexture;
          if (shape == null)
@@ -4063,7 +4063,7 @@ package player.trigger {
          shape.SetBodyTextureModuleIndex (Global.ValiddateModuleIndex (textureModuleIndex));
       }
 
-      public static function GetShapeFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeFilledColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4083,7 +4083,7 @@ package player.trigger {
          valueTarget.AssignValueObject (filledColor);
       }
 
-      public static function SetShapeFilledColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeFilledColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4108,7 +4108,7 @@ package player.trigger {
          }
       }
 
-      public static function GetShapeFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeFilledColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4134,7 +4134,7 @@ package player.trigger {
          valueTarget.AssignValueObject ((filledColor >> 0) & 0xFF);
       }
 
-      public static function SetShapeFilledColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeFilledColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4165,14 +4165,14 @@ package player.trigger {
          }
       }
 
-      public static function GetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetFilledOpacity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
          valueTarget.AssignValueObject (shape == null ? 100 : shape.GetTransparency ());
       }
 
-      public static function SetFilledOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetFilledOpacity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4184,14 +4184,14 @@ package player.trigger {
          shape.SetTransparency (opacity);
       }
       
-      public static function IsShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsShapeShowBorder (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
          valueTarget.AssignValueObject (shape == null ? true : shape.IsDrawBorder ());
       }
       
-      public static function SetShapeShowBorder (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeShowBorder (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4203,7 +4203,7 @@ package player.trigger {
          shape.SetDrawBorder (drawBorder);
       }
 
-      public static function GetShapeBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeBorderColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4223,7 +4223,7 @@ package player.trigger {
          valueTarget.AssignValueObject (borderColor);
       }
 
-      public static function SetShapeBorderColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeBorderColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4248,7 +4248,7 @@ package player.trigger {
          }
       }
 
-      public static function GetShapeBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeBorderColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4274,7 +4274,7 @@ package player.trigger {
          valueTarget.AssignValueObject ((borderColor >> 0) & 0xFF);
       }
 
-      public static function SetShapeBorderColorRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeBorderColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4305,14 +4305,14 @@ package player.trigger {
          }
       }
 
-      public static function GetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetBorderOpacity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
          valueTarget.AssignValueObject (shape == null ? 100 : shape.GetBorderTransparency ());
       }
 
-      public static function SetBorderOpacity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetBorderOpacity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4324,7 +4324,7 @@ package player.trigger {
          shape.SetBorderTransparency (opacity);
       }
       
-      public static function SetCacheAsBitmap (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetCacheAsBitmap (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4336,7 +4336,7 @@ package player.trigger {
          shape.SetCacheAsBitmap (asBitmap);
       }
 
-      public static function IsShapePhysicsEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsShapePhysicsEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4344,14 +4344,14 @@ package player.trigger {
          valueTarget.AssignValueObject (enabled);
       }
 
-      //public static function SetShapePhysicsEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetShapePhysicsEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
          //if (shape.IsDestroyedAlready ())
          //   return;
          //
       //}
 
-      public static function GetShapeCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeCollisionCategory (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4359,7 +4359,7 @@ package player.trigger {
          valueTarget.AssignValueObject (ccat);
       }
 
-      public static function SetShapeCollisionCategory (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeCollisionCategory (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4376,7 +4376,7 @@ package player.trigger {
          shape.SetCollisionCategory (ccat);
       }
 
-      public static function IsSensorShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsSensorShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4384,7 +4384,7 @@ package player.trigger {
          valueTarget.AssignValueObject (sensor);
       }
 
-      public static function SetShapeAsSensor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeAsSensor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4399,7 +4399,7 @@ package player.trigger {
          shape.SetAsSensor (sensor);
       }
 
-      public static function IsStatic (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsStatic (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4407,7 +4407,7 @@ package player.trigger {
          valueTarget.AssignValueObject (static);
       }
 
-      public static function SetStatic (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetStatic (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4422,7 +4422,7 @@ package player.trigger {
          shape.GetBody ().ModifyShapeStatic (shape, static);
       }
 
-      public static function IsShapeRotationFixed(valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsShapeRotationFixed(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4430,7 +4430,7 @@ package player.trigger {
          valueTarget.AssignValueObject (sensor);
       }
 
-      public static function SetShapeRotationFixed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeRotationFixed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4445,7 +4445,7 @@ package player.trigger {
          shape.GetBody ().ModifyShapeRotationFixed (shape, fixRotation);
       }
 
-      public static function IsShapeSleeping (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsShapeSleeping (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4459,7 +4459,7 @@ package player.trigger {
          }
       }
 
-      public static function SetShapeSleeping (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeSleeping (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4474,7 +4474,7 @@ package player.trigger {
          shape.GetBody ().SetSleeping (sleeping);
       }
 
-      public static function GetLocalCentroid (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetLocalCentroid (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4489,7 +4489,7 @@ package player.trigger {
          }
       }
 
-      public static function GetWorldCentroid (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetWorldCentroid (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4519,7 +4519,7 @@ package player.trigger {
          }
       }
 
-      public static function GetShapeMass (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeMass (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4541,7 +4541,7 @@ package player.trigger {
          }
       }
 
-      //public static function SetShapeMass (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetShapeMass (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
       //
@@ -4554,7 +4554,7 @@ package player.trigger {
       //   shape.ChangeMass (newMass);
       //}
 
-      public static function GetShapeInertia (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeInertia (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4576,7 +4576,7 @@ package player.trigger {
          }
       }
 
-      //public static function SetShapeInertia (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetShapeInertia (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
       //
@@ -4589,7 +4589,7 @@ package player.trigger {
       //   shape.ChangeInteria (newIntertia);
       //}
 
-      public static function GetShapeDensity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeDensity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4601,7 +4601,7 @@ package player.trigger {
          }
       }
 
-      public static function SetShapeDensity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeDensity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
 
@@ -4614,7 +4614,7 @@ package player.trigger {
          shape.ChangeDensity (newDensity); // don't call SetDensity
       }
 
-      public static function SetShapeLinearVelocity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeLinearVelocity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4632,7 +4632,7 @@ package player.trigger {
          shape.AddLinearMomentum (velocityX - shape.GetLinearVelocityX (), velocityY - shape.GetLinearVelocityY (), true, false);
       }
 
-      public static function GetShapeLinearVelocity (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeLinearVelocity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
@@ -4651,12 +4651,12 @@ package player.trigger {
          }
       }
 
-      public static function SetAngularVelocityByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetAngularVelocityByRadians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          SetAngularVelocity (valueSource, valueTarget, false);
       }
 
-      public static function SetAngularVelocityByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetAngularVelocityByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          SetAngularVelocity (valueSource, valueTarget, true);
       }
@@ -4680,7 +4680,7 @@ package player.trigger {
          shape.AddAngularMomentum (angularVelocity - shape.GetAngularVelocity (), true);
       }
 
-      public static function GetAngularVelocityByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetAngularVelocityByRadians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
@@ -4693,7 +4693,7 @@ package player.trigger {
          }
       }
 
-      public static function GetAngularVelocityByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetAngularVelocityByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
@@ -4706,7 +4706,7 @@ package player.trigger {
          }
       }
 
-      public static function AddLinearImpulseByVelocityVector (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AddLinearImpulseByVelocityVector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4724,17 +4724,17 @@ package player.trigger {
          shape.AddLinearMomentum (deltaVelocityX, deltaVelocityY, true, false);
       }
 
-      public static function ApplyLinearImpulseOnShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyLinearImpulseOnShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyLinearImpulseOnShape (valueSource, valueTarget);
       }
 
-      public static function ApplyLinearImpulseAtLocalPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyLinearImpulseAtLocalPointOnShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyLinearImpulseOnShape (valueSource, valueTarget, true);
       }
 
-      public static function ApplyLinearImpulseAtWorldPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyLinearImpulseAtWorldPointOnShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyLinearImpulseOnShape (valueSource, valueTarget, false);
       }
@@ -4797,7 +4797,7 @@ package player.trigger {
          }
       }
 
-      public static function ApplyAngularImpulse (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyAngularImpulse (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4812,12 +4812,12 @@ package player.trigger {
          shape.GetBody ().ApplyAngularImpulse (angularImpulse);
       }
 
-      public static function ChangeAngularVelocityByRadians (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ChangeAngularVelocityByRadians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          ChangeAngularVelocity (valueSource, valueTarget, false);
       }
 
-      public static function ChangeAngularVelocityByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ChangeAngularVelocityByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          ChangeAngularVelocity (valueSource, valueTarget, true);
       }
@@ -4841,17 +4841,17 @@ package player.trigger {
          shape.AddAngularMomentum (deltaAngularVelocity, true);
       }
 
-      public static function ApplyStepForceOnShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyStepForceOnShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget);
       }
 
-      public static function ApplyStepForceAtLocalPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyStepForceAtLocalPointOnShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget, true);
       }
 
-      public static function ApplyStepForceAtWorldPointOnShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyStepForceAtWorldPointOnShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          _ApplyStepForceOnShape (valueSource, valueTarget, false);
       }
@@ -4918,7 +4918,7 @@ package player.trigger {
          }
       }
 
-      public static function ApplyStepTorque (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ApplyStepTorque (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -4933,25 +4933,25 @@ package player.trigger {
          shape.GetBody ().ApplyTorque (torque);
       }
 
-      public static function UpdateShapeContactStatusInfos(valueSource:Parameter, valueTarget:Parameter):void
+      public static function UpdateShapeContactStatusInfos(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.GetCurrentWorld ().UpdateShapeContactStatusInfos ();
+         /*Global.GetCurrentWorld ()*/callingContext.mWorld.UpdateShapeContactStatusInfos ();
       }
 
-      public static function GetPhysicsShapesAtPoint(valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetPhysicsShapesAtPoint(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var pointX:Number = valueSource.EvaluateValueObject () as Number;
 
          valueSource = valueSource.mNextParameter;
          var pointY:Number = valueSource.EvaluateValueObject () as Number;
          
-         var shapes:Array = Global.GetCurrentWorld ().GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY);
+         var shapes:Array = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY);
          CoreClasses.CovertArrayElementsToClassInstances (shapes, CoreClasses.kEntityClassDefinition);
          
          valueTarget.AssignValueObject (shapes);
       }
 
-      public static function GetFirstIncomingIntersectionWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetFirstIncomingIntersectionWithLineSegment(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var startPointX:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -4964,10 +4964,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var endPointY:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetFirstIncomingIntersection (startPointX, startPointY, endPointX, endPointY));
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetFirstIncomingIntersection (startPointX, startPointY, endPointX, endPointY));
       }
 
-      public static function GetFirstOutcomingIntersectionWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetFirstOutcomingIntersectionWithLineSegment(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var startPointX:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -4980,10 +4980,10 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var endPointY:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetFirstOutcomingIntersection (startPointX, startPointY, endPointX, endPointY));
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetFirstOutcomingIntersection (startPointX, startPointY, endPointX, endPointY));
       }
 
-      public static function GetIntersectedShapesWithLineSegment(valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetIntersectedShapesWithLineSegment(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var startPointX:Number = valueSource.EvaluateValueObject () as Number;
 
@@ -4999,11 +4999,11 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var includingHalfIntersecteds:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         valueTarget.AssignValueObject (Global.GetCurrentWorld ().GetPhysicsEngine ().GetIntersectedShapes (startPointX, startPointY, endPointX, endPointY, includingHalfIntersecteds));
+         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetIntersectedShapes (startPointX, startPointY, endPointX, endPointY, includingHalfIntersecteds));
       }
 
 
-      public static function TeleportShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function TeleportShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5033,7 +5033,7 @@ package player.trigger {
          EntityShape.Teleport (shape, targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
-      public static function TeleportShape_Offsets (valueSource:Parameter, valueTarget:Parameter):void
+      public static function TeleportShape_Offsets (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5063,7 +5063,7 @@ package player.trigger {
          EntityShape.Teleport (shape, deltaX, deltaY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
-      public static function TranslateShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function TranslateShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5090,7 +5090,7 @@ package player.trigger {
          EntityShape.Translate (shape, deltaX, deltaY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
-      public static function TranslateShapeTo (valueSource:Parameter, valueTarget:Parameter):void
+      public static function TranslateShapeTo (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5117,7 +5117,7 @@ package player.trigger {
          EntityShape.Translate (shape, targetX - shape.GetPositionX (), targetY - shape.GetPositionY (), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints);
       }
 
-      public static function RotateShapeAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RotateShapeAroundWorldPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5150,7 +5150,7 @@ package player.trigger {
          EntityShape.Rotate (shape, fixedPointX, fixedPointY, deltaRotation, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
       }
 
-      public static function RotateShapeToAroundWorldPoint (valueSource:Parameter, valueTarget:Parameter):void
+      public static function RotateShapeToAroundWorldPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5183,7 +5183,7 @@ package player.trigger {
          EntityShape.Rotate (shape, fixedPointX, fixedPointY, shape.GetRotationOffset (targetRotation), bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, rotateVelocity);
       }
 
-      public static function FlipShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function FlipShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5212,7 +5212,7 @@ package player.trigger {
          EntityShape.Flip (shape, worldPoint.x, worldPoint.y, worldVector.x, worldVector.y, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, flipVelocity);
       }
 
-      public static function FlipShapeByWorldLinePoint (valueSource:Parameter, valueTarget:Parameter):void
+      public static function FlipShapeByWorldLinePoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5248,7 +5248,7 @@ package player.trigger {
          EntityShape.Flip (shape, pointX, pointY, normalX, normalY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, flipVelocity);
       }
 
-      public static function ScaleShapeWithFixedPoint (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ScaleShapeWithFixedPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5281,7 +5281,7 @@ package player.trigger {
          EntityShape.Scale (shape, scaleRatio, fixedPointX, fixedPointY, bTeleportConnectedMovables, bTeleprotConnectedStatics, bBreakEmbarrassedJoints, conserveMomentum);
       }
 
-      public static function GetBrothers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetBrothers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shapes:Array = new Array ();
 
@@ -5298,7 +5298,7 @@ package player.trigger {
          valueTarget.AssignValueObject (shapes);
       }
 
-      public static function IsAttchedWith (valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsAttchedWith (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
@@ -5318,7 +5318,7 @@ package player.trigger {
          valueTarget.AssignValueObject (shape1.GetBody () == shape2.GetBody ());
       }
 
-      public static function DetachShape (valueSource:Parameter, valueTarget:Parameter):void
+      public static function DetachShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5328,7 +5328,7 @@ package player.trigger {
          EntityShape.DetachShape (shape);
       }
 
-	  public static function AttachTwoShapes (valueSource:Parameter, valueTarget:Parameter):void
+	  public static function AttachTwoShapes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
@@ -5346,7 +5346,7 @@ package player.trigger {
          }
       }
 
-	  public static function DetachShapeThenAttachWithAnother (valueSource:Parameter, valueTarget:Parameter):void
+	  public static function DetachShapeThenAttachWithAnother (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
@@ -5363,7 +5363,7 @@ package player.trigger {
          }
       }
 
-      public static function BreakupShapeBrothers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function BreakupShapeBrothers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
@@ -5372,7 +5372,7 @@ package player.trigger {
          shape.BreakupBrothers ();
       }
 
-      public static function DestroyBrothers (valueSource:Parameter, valueTarget:Parameter):void
+      public static function DestroyBrothers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
@@ -5385,7 +5385,7 @@ package player.trigger {
          }
      }
 
-     public static function BreakShapeJoints (valueSource:Parameter, valueTarget:Parameter):void
+     public static function BreakShapeJoints (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
      {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
@@ -5397,7 +5397,7 @@ package player.trigger {
          shape.BreakAllJoints ();
      }
 
-     public static function GetAllSisters (valueSource:Parameter, valueTarget:Parameter):void
+     public static function GetAllSisters (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
      {
          var shapes:Array = new Array ();
 
@@ -5410,7 +5410,7 @@ package player.trigger {
          valueTarget.AssignValueObject (shapes);
      }
 
-     public static function IsConnectedWith (valueSource:Parameter, valueTarget:Parameter):void
+     public static function IsConnectedWith (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
      {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
@@ -5430,7 +5430,7 @@ package player.trigger {
          valueTarget.AssignValueObject (shape1.IsConnectedWith (shape2));
      }
 
-     public static function IsConnectedWithGround (valueSource:Parameter, valueTarget:Parameter):void
+     public static function IsConnectedWithGround (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
      {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
@@ -5442,7 +5442,7 @@ package player.trigger {
          valueTarget.AssignValueObject (shape1.IsConnectedWith (null));
      }
 
-     public static function GetAllContactedShapes (valueSource:Parameter, valueTarget:Parameter):void
+     public static function GetAllContactedShapes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
      {
          var shapes:Array = new Array ();
 
@@ -5455,7 +5455,7 @@ package player.trigger {
          valueTarget.AssignValueObject (shapes);
      }
 
-     public static function IsContactedWith (valueSource:Parameter, valueTarget:Parameter):void
+     public static function IsContactedWith (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
      {
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
@@ -5479,7 +5479,7 @@ package player.trigger {
    // entity / shape / text
    //*******************************************************************
 
-      public static function GetTextFromTextComponent (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetTextFromTextComponent (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
 
@@ -5487,7 +5487,7 @@ package player.trigger {
          valueTarget.AssignValueObject (text);
       }
 
-      public static function SetTextForTextComponent (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextForTextComponent (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5500,7 +5500,7 @@ package player.trigger {
          entity_text.SetText (text);
       }
 
-      public static function AppendTextToTextComponent (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AppendTextToTextComponent (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5513,7 +5513,7 @@ package player.trigger {
          entity_text.SetText (entity_text.GetText () + text);
       }
 
-      public static function AppendNewLineToTextComponent (valueSource:Parameter, valueTarget:Parameter):void
+      public static function AppendNewLineToTextComponent (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5522,7 +5522,7 @@ package player.trigger {
          entity_text.SetText (entity_text.GetText () + "\n");
       }
       
-      public static function GetHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetHorizontalScrollPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5531,7 +5531,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity_text.ScrollInfo (true, 1));
       }
 
-      public static function SetHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetHorizontalScrollPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5543,7 +5543,7 @@ package player.trigger {
          entity_text.ScrollInfo (true, 2, scrollValue);
       }
 
-      public static function GetVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetVerticalScrollPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5552,7 +5552,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity_text.ScrollInfo (false, 1));
       }
 
-      public static function SetVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetVerticalScrollPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5564,7 +5564,7 @@ package player.trigger {
          entity_text.ScrollInfo (false, 2, scrollValue);
       }
 
-      public static function GetMaxHorizontalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetMaxHorizontalScrollPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5573,7 +5573,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity_text.ScrollInfo (true, 0));
       }
 
-      public static function GetMaxVerticalScrollPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetMaxVerticalScrollPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5582,7 +5582,7 @@ package player.trigger {
          valueTarget.AssignValueObject (entity_text.ScrollInfo (false, 0));
       }
 
-      public static function SetTextDefaultSize (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5594,7 +5594,7 @@ package player.trigger {
          entity_text.SetFontSize (size);
       }
 
-      public static function SetTextDefaultColor (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5606,7 +5606,7 @@ package player.trigger {
          entity_text.SetTextColor (color);
       }
 
-      public static function SetTextDefaultColorByRGB (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultColorByRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_Text = valueSource.EvaluateValueObject () as EntityShape_Text;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5624,7 +5624,7 @@ package player.trigger {
          entity_text.SetTextColor ((red << 16) | (green << 8) | (blue));
       }
 
-      public static function SetTextDefaultSize_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultSize_MouseOver (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5636,7 +5636,7 @@ package player.trigger {
          entity_text.SetFontSize_MouseOver (size);
       }
 
-      public static function SetTextDefaultColor_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultColor_MouseOver (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5648,7 +5648,7 @@ package player.trigger {
          entity_text.SetTextColor_MouseOver (color);
       }
 
-      public static function SetTextDefaultColorByRGB_MouseOver (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultColorByRGB_MouseOver (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5666,7 +5666,7 @@ package player.trigger {
          entity_text.SetTextColor_MouseOver ((red << 16) | (green << 8) | (blue));
       }
 
-      public static function SetTextDefaultSize_MouseDown (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultSize_MouseDown (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5678,7 +5678,7 @@ package player.trigger {
          entity_text.SetFontSize_MouseDown (size);
       }
 
-      public static function SetTextDefaultColor_MouseDown (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextDefaultColor_MouseDown (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5690,7 +5690,7 @@ package player.trigger {
          entity_text.SetTextColor_MouseDown (color);
       }
       
-      public static function SetTextBackgroundColor_MouseDown (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTextBackgroundColor_MouseDown (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
          if (entity_text == null || entity_text.IsDestroyedAlready ())
@@ -5706,7 +5706,7 @@ package player.trigger {
    // entity / shape
    //*******************************************************************
 
-      public static function GetShapeBorderThickness (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeBorderThickness (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)// || shape.IsDestroyedAlready ())
@@ -5719,7 +5719,7 @@ package player.trigger {
          }
       }
       
-      public static function SetShapeBorderThickness (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeBorderThickness (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
@@ -5731,7 +5731,7 @@ package player.trigger {
          EntityShape.ChangeBorderThickness (shape, thickness);
       }
 
-      public static function GetCurveThickness (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetCurveThickness (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
          if (shape == null)// || shape.IsDestroyedAlready ())
@@ -5744,7 +5744,7 @@ package player.trigger {
          }
       }
 
-      public static function SetCurveThickness (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetCurveThickness (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
          if (shape == null || shape.IsDestroyedAlready ())
@@ -5760,7 +5760,7 @@ package player.trigger {
    // entity / shape / circle
    //*******************************************************************
 
-      public static function GetShapeCircleRadius (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeCircleRadius (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var circle:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
          if (circle == null)// || circle.IsDestroyedAlready ())
@@ -5773,7 +5773,7 @@ package player.trigger {
          }
       }
 
-      public static function SetShapeCircleRadius (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeCircleRadius (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var circle:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
          if (circle == null || circle.IsDestroyedAlready ())
@@ -5789,7 +5789,7 @@ package player.trigger {
    // entity / shape / rectangle
    //*******************************************************************
 
-      public static function GetShapeRectangleSize (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeRectangleSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          if (rect == null)// || rect.IsDestroyedAlready ())
@@ -5808,7 +5808,7 @@ package player.trigger {
          }
       }
 
-      public static function SetShapeRectangleSize (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetShapeRectangleSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          if (rect == null || rect.IsDestroyedAlready ())
@@ -5827,7 +5827,7 @@ package player.trigger {
    // entity / shape / poly shape
    //*******************************************************************
 
-      public static function GetVertexCount (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetVertexCount (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
@@ -5841,12 +5841,12 @@ package player.trigger {
          }
       }
 
-      public static function GetVertexLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetVertexLocalPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          GetVertexPosition (valueSource, valueTarget, false);
       }
 
-      public static function GetVertexWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetVertexWorldPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          GetVertexPosition (valueSource, valueTarget, true);
       }
@@ -5887,22 +5887,22 @@ package player.trigger {
          }
       }
 
-      //public static function SetVertexLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetVertexLocalPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetVertexPosition (valueSource, valueTarget, false, false);
       //}
       //
-      //public static function SetVertexWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function SetVertexWorldPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetVertexPosition (valueSource, valueTarget, true, false);
       //}
       //
-      //public static function InsertVertexByLocalPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function InsertVertexByLocalPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetVertexPosition (valueSource, valueTarget, false, true);
       //}
       //
-      //public static function InsertVertexByWorldPosition (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function InsertVertexByWorldPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   SetVertexPosition (valueSource, valueTarget, true, true);
       //}
@@ -5934,7 +5934,7 @@ package player.trigger {
       //   EntityShape.ModifyPolyShapeVertex (polyShape, vertexIndex, posX, posY, isInsert);
       //}
       //
-      //public static function DeleteVertexAt (valueSource:Parameter, valueTarget:Parameter):void
+      //public static function DeleteVertexAt (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //   var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
       //
@@ -5947,7 +5947,7 @@ package player.trigger {
       //   EntityShape.DeletePolyShapeVertex (polyShape, vertexIndex);
       //}
 
-      public static function GetVertexLocalPositions (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetVertexLocalPositions (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
@@ -5964,7 +5964,7 @@ package player.trigger {
          valueTarget.AssignValueObject (positions);
       }
 
-      public static function SetVertexLocalPositions (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetVertexLocalPositions (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
@@ -5980,7 +5980,7 @@ package player.trigger {
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, false);
       }
 
-      public static function GetVertexWorldPositions (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetVertexWorldPositions (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
@@ -5997,7 +5997,7 @@ package player.trigger {
          valueTarget.AssignValueObject (positions);
       }
 
-      public static function SetVertexWorldPositions (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetVertexWorldPositions (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
@@ -6017,7 +6017,7 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
 
-      public static function GetShapeModule (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeModule (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
 
@@ -6031,7 +6031,7 @@ package player.trigger {
          }
       }
 
-      public static function ChangeShapeModule (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ChangeShapeModule (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
 
@@ -6050,7 +6050,7 @@ package player.trigger {
          moduleShape.SetModuleIndexByAPI (Global.ValiddateModuleIndex (moduleIndex), loopToEndHandler);
       }
 
-      public static function GetShapeModuleButton_OverState (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeModuleButton_OverState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
 
@@ -6064,7 +6064,7 @@ package player.trigger {
          }
       }
 
-      public static function ChangeShapeModuleButton_OverState (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ChangeShapeModuleButton_OverState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
 
@@ -6078,7 +6078,7 @@ package player.trigger {
          buttonModuleShape.SetModuleIndexOver (Global.ValiddateModuleIndex (moduleIndex));
       }
 
-      public static function GetShapeModuleButton_DownState (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetShapeModuleButton_DownState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
 
@@ -6092,7 +6092,7 @@ package player.trigger {
          }
       }
 
-      public static function ChangeShapeModuleButton_DownState (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ChangeShapeModuleButton_DownState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
 
@@ -6110,7 +6110,7 @@ package player.trigger {
    // entity / joint
    //*******************************************************************
 
-      public static function GetJointConnectedShapes (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetJointConnectedShapes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
 
@@ -6129,7 +6129,7 @@ package player.trigger {
          valueTarget.AssignValueObject (shape2);
       }
 
-      public static function SetJointMotorEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetJointMotorEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
 
@@ -6142,7 +6142,7 @@ package player.trigger {
          joint.SetEnableMotor (enabled);
       }
 
-      public static function SetJointLimitsEnabled (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetJointLimitsEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var joint:EntityJoint = valueSource.EvaluateValueObject () as EntityJoint;
 
@@ -6155,7 +6155,7 @@ package player.trigger {
          joint.SetEnableLimits (enabled);
       }
 
-      public static function GetHingeAngleByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetHingeAngleByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
 
@@ -6169,7 +6169,7 @@ package player.trigger {
          }
       }
 
-      public static function GetHingeLimitsByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetHingeLimitsByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
 
@@ -6189,7 +6189,7 @@ package player.trigger {
          }
       }
 
-      public static function SetHingeLimitsByDegrees (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetHingeLimitsByDegrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
          if (hinge == null)
@@ -6204,7 +6204,7 @@ package player.trigger {
          hinge.SetAngleLimits (lowerLimit, upperLimit);
       }
 
-     public static function GetHingeMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
+     public static function GetHingeMotorSpeed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
 
@@ -6218,7 +6218,7 @@ package player.trigger {
          }
       }
 
-      public static function SetHingeMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetHingeMotorSpeed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var hinge:EntityJointHinge = valueSource.EvaluateValueObject () as EntityJointHinge;
          if (hinge == null)
@@ -6230,7 +6230,7 @@ package player.trigger {
          hinge.SetMotorSpeed (motorSpeed);
       }
 
-      public static function GetSliderTranslation (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetSliderTranslation (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
 
@@ -6244,7 +6244,7 @@ package player.trigger {
          }
       }
 
-      public static function GetSliderLimits (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetSliderLimits (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
 
@@ -6264,7 +6264,7 @@ package player.trigger {
          }
       }
 
-      public static function SetSliderLimits (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetSliderLimits (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
          if (slider == null)
@@ -6279,7 +6279,7 @@ package player.trigger {
          slider.SetTranslationLimits (lowerLimit, upperLimit);
       }
 
-      public static function GetSliderMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetSliderMotorSpeed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
 
@@ -6293,7 +6293,7 @@ package player.trigger {
          }
       }
 
-      public static function SetSliderMotorSpeed (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetSliderMotorSpeed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var slider:EntityJointSlider = valueSource.EvaluateValueObject () as EntityJointSlider;
          if (slider == null)
@@ -6307,7 +6307,7 @@ package player.trigger {
 
       // game / entity / event handler
 
-      public static function ResetTimer (valueSource:Parameter, valueTarget:Parameter):void
+      public static function ResetTimer (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
          if (timer == null)
@@ -6316,7 +6316,7 @@ package player.trigger {
          timer.Reset ();
       }
 
-      public static function IsTimerPaused(valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsTimerPaused(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
 
@@ -6330,7 +6330,7 @@ package player.trigger {
          }
       }
 
-      public static function SetTimerPaused (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTimerPaused (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
          if (timer == null)
@@ -6342,7 +6342,7 @@ package player.trigger {
          timer.SetPaused (paused);
       }
 
-      public static function GetTimerInterval (valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetTimerInterval (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
          if (timer == null)
@@ -6355,7 +6355,7 @@ package player.trigger {
          }
       }
 
-      public static function SetTimerInterval (valueSource:Parameter, valueTarget:Parameter):void
+      public static function SetTimerInterval (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var timer:EntityEventHandler_Timer = valueSource.EvaluateValueObject () as EntityEventHandler_Timer;
          if (timer == null)

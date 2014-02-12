@@ -9,7 +9,7 @@ package player.trigger
          super (lineNumber, functionDefinition, valueSourceList, valueTargetList);
       }
       
-      override public function Call ():void
+      override public function Call (callingContext:FunctionCallingContext):void
       {
          //if (mBooleanReturnValueTarget == null)
          //   return;

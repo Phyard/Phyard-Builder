@@ -49,7 +49,7 @@ package player.trigger.entity
       
       public function Perform ():void
       {
-         mVoidFunctionDefinition.DoCall (null, null);
+         mVoidFunctionDefinition.DoCall (mWorld.GetFunctionCallingContext (), null, null);
       }
       
 //=============================================================

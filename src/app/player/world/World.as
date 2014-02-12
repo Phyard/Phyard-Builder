@@ -58,6 +58,8 @@ package player.world {
    import player.trigger.Parameter;
    import player.trigger.Parameter_DirectConstant;
    import player.trigger.Parameter_DirectMutable;
+   
+   import player.trigger.FunctionCallingContext;
 
    import player.mode.Mode;
    import player.mode.ModeMoveWorldScene;
@@ -251,6 +253,8 @@ package player.world {
       // ...
 
          CreateGraphicsLayers ();
+      
+      // ...
 
       // ...
 
@@ -726,6 +730,12 @@ package player.world {
          mInitialized = true;
          
       //------------------------------------
+      // reset calling context
+      //------------------------------------
+      
+         ResetFunctionCallingContext ();
+         
+      //------------------------------------
       // init some structures
       //------------------------------------
 
@@ -889,6 +899,12 @@ package player.world {
       {
          if (mDestroyed)
             return;
+         
+      //------------------------------------
+      // reset calling context
+      //------------------------------------
+      
+         ResetFunctionCallingContext ();
 
       //-----------------------------
       // remove the delay removeds
@@ -1805,5 +1821,25 @@ package player.world {
 
          return ccat1.mEnemyTable [ccat2.mArrayIndex];
       }
+      
+//====================================================================================================
+//   code
+//====================================================================================================
+      
+      protected var mFunctionCallingContext:FunctionCallingContext;
+      
+      private function ResetFunctionCallingContext ():void
+      {
+         if (mFunctionCallingContext == null)
+            mFunctionCallingContext = new FunctionCallingContext (this);
+         
+         mFunctionCallingContext.Reset ();
+      }
+      
+      public function GetFunctionCallingContext ():FunctionCallingContext
+      {
+         return mFunctionCallingContext;
+      }
+      
    }
 }

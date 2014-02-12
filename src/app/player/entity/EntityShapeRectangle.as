@@ -271,11 +271,15 @@ package player.entity {
          if (mPhysicsShapeProxy != null)
          {
             //mPhysicsShapeProxy.AddRectangle (mIsStatic, 0, 0, 0, mHalfWidth, mHalfHeight, mBuildInterior, mBuildBorder, mBorderThickness, mIsRoundCornors);
-            mPhysicsShapeProxy.AddRectangle (mLocalTransform, 
-                                       mHalfWidth, mHalfHeight, 
-                                       mBuildInterior, mBuildBorder, mBorderThickness, 
-                                       mIsRoundJoint // mIsRoundCornors
-                                       );
+            var accTrans:Transform2D = mWorld.GetCoordinateSystem ().As_D2P_Vector_Transform_CombineByTransform (mLocalTransform);
+            mPhysicsShapeProxy.AddRectangle (accTrans, 
+                                             mWorld.GetCoordinateSystem ().P2D_Length (mHalfWidth), 
+                                             mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight), 
+                                             mBuildInterior, 
+                                             mBuildBorder, 
+                                             mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness), 
+                                             mIsRoundJoint // mIsRoundCornors
+                                             );
          }
       }
       

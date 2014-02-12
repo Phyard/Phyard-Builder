@@ -1099,15 +1099,15 @@ package player.world
          
          // ... 
          
-         for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
-         {
-            (mAssembledModules [assembledModuleId] as AssembledModule).AdjustModulePartsTransformInPhysics (GetCurrentWorld ().GetCoordinateSystem ());
-         }
+         //for (assembledModuleId = 0; assembledModuleId < assembledModuleDefines.length; ++ assembledModuleId)
+         //{
+         //   (mAssembledModules [assembledModuleId] as AssembledModule).AdjustModulePartsTransformInPhysics (GetCurrentWorld ().GetCoordinateSystem ());
+         //}
          
-         for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
-         {
-            (mSequencedModules [sequencedModuleId] as SequencedModule).AdjustModuleSequencesTransformInPhysics (GetCurrentWorld ().GetCoordinateSystem ());
-         }
+         //for (sequencedModuleId = 0; sequencedModuleId < sequencedModuleDefines.length; ++ sequencedModuleId)
+         //{
+         //   (mSequencedModules [sequencedModuleId] as SequencedModule).AdjustModuleSequencesTransformInPhysics (GetCurrentWorld ().GetCoordinateSystem ());
+         //}
       }
       
       protected static function CreateModulePartsOrSequences (moduleInstanceDefines:Array, forSequencedModule:Boolean):Array
@@ -1156,7 +1156,7 @@ package player.world
                {
                   var polylineShape:VectorShapePolylineForPlaying = new VectorShapePolylineForPlaying ();
                   polylineShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
-                  polylineShape.SetLocalVertexPointsInPhysics (DisplayPoints2PhysicsPoints (moduleInstanceDefine.mPolyLocalPoints));
+                  //polylineShape.SetLocalVertexPointsInPhysics (DisplayPoints2PhysicsPoints (moduleInstanceDefine.mPolyLocalPoints));
                   
                   vectorShape = pathShape = polylineShape;
                }
@@ -1164,7 +1164,7 @@ package player.world
                if (pathShape != null)
                {
                   pathShape.SetPathThickness (moduleInstanceDefine.mShapePathThickness);
-                  pathShape.SetPathThicknessInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mShapePathThickness));
+                  //pathShape.SetPathThicknessInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mShapePathThickness));
                }
             }
             else if (Define.IsBasicAreaVectorShapeEntity (moduleInstanceDefine.mModuleType))
@@ -1175,7 +1175,7 @@ package player.world
                {
                   var circleShape:VectorShapeCircleForPlaying = new VectorShapeCircleForPlaying ();
                   circleShape.SetRadius (moduleInstanceDefine.mCircleRadius);
-                  circleShape.SetRadiusInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mCircleRadius));
+                  //circleShape.SetRadiusInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mCircleRadius));
                   
                   vectorShape = areaShape = circleShape;
                }
@@ -1183,9 +1183,9 @@ package player.world
                {
                   var rectShape:VectorShapeRectangleForPlaying = new VectorShapeRectangleForPlaying ();
                   rectShape.SetHalfWidth  (moduleInstanceDefine.mRectHalfWidth);
-                  rectShape.SetHalfWidthInPhysics  (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mRectHalfWidth));
+                  //rectShape.SetHalfWidthInPhysics  (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mRectHalfWidth));
                   rectShape.SetHalfHeight (moduleInstanceDefine.mRectHalfHeight);
-                  rectShape.SetHalfHeightInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mRectHalfHeight));
+                  //rectShape.SetHalfHeightInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mRectHalfHeight));
                   
                   vectorShape = areaShape = rectShape;
                }
@@ -1193,7 +1193,7 @@ package player.world
                {
                   var polygonShape:VectorShapePolygonForPlaying = new VectorShapePolygonForPlaying ();
                   polygonShape.SetLocalVertexPoints (moduleInstanceDefine.mPolyLocalPoints);
-                  polygonShape.SetLocalVertexPointsInPhysics (DisplayPoints2PhysicsPoints (moduleInstanceDefine.mPolyLocalPoints));
+                  //polygonShape.SetLocalVertexPointsInPhysics (DisplayPoints2PhysicsPoints (moduleInstanceDefine.mPolyLocalPoints));
                   
                   vectorShape = areaShape = polygonShape;
                }
@@ -1202,7 +1202,7 @@ package player.world
                {
                   areaShape.SetBorderOpacityAndColor (moduleInstanceDefine.mShapeBorderOpacityAndColor);
                   areaShape.SetBorderThickness (moduleInstanceDefine.mShapeBorderThickness);
-                  areaShape.SetBorderThicknessInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mShapeBorderThickness));
+                  //areaShape.SetBorderThicknessInPhysics (GetCurrentWorld ().GetCoordinateSystem ().D2P_Length (moduleInstanceDefine.mShapeBorderThickness));
                   
                   //>> from v1.60
                   var bodyTextureDefine:Object = moduleInstanceDefine.mBodyTextureDefine;
@@ -1272,29 +1272,29 @@ package player.world
          }
       }
       
-      protected static function DisplayPoints2PhysicsPoints (displayPoints:Array):Array
-      {
-         var coorinateSyatem:CoordinateSystem = GetCurrentWorld ().GetCoordinateSystem ();
-         
-         var displayPoint:Point;
-         var physicsPoint:Point;
-
-         var vertexCount:int = displayPoints.length;
-         var physicsPoints:Array = new Array (vertexCount);
-
-         for (var vertexId:int = 0; vertexId < vertexCount; ++ vertexId)
-         {
-            displayPoint = displayPoints [vertexId] as Point;
-
-            var physicsPoint = new Point ();
-            physicsPoint.x = coorinateSyatem.D2P_LinearDeltaX (displayPoint.x);
-            physicsPoint.y = coorinateSyatem.D2P_LinearDeltaY (displayPoint.y);
-            
-            physicsPoints [vertexId] = physicsPoint;
-         }
-         
-         return physicsPoints;
-      }
+      //protected static function DisplayPoints2PhysicsPoints (displayPoints:Array):Array
+      //{
+      //   var coorinateSyatem:CoordinateSystem = GetCurrentWorld ().GetCoordinateSystem ();
+      //   
+      //   var displayPoint:Point;
+      //   var physicsPoint:Point;
+      //
+      //   var vertexCount:int = displayPoints.length;
+      //   var physicsPoints:Array = new Array (vertexCount);
+      //
+      //   for (var vertexId:int = 0; vertexId < vertexCount; ++ vertexId)
+      //   {
+      //      displayPoint = displayPoints [vertexId] as Point;
+      //
+      //      var physicsPoint = new Point ();
+      //      physicsPoint.x = coorinateSyatem.D2P_LinearDeltaX (displayPoint.x);
+      //      physicsPoint.y = coorinateSyatem.D2P_LinearDeltaY (displayPoint.y);
+      //      
+      //      physicsPoints [vertexId] = physicsPoint;
+      //   }
+      //   
+      //   return physicsPoints;
+      //}
       
       protected static function OnLoadImageDone (image:ImageBitmap):void
       {

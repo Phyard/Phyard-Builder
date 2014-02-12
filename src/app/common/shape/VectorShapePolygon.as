@@ -29,19 +29,19 @@ package common.shape
 // for playing
 //==============================================
 
-      protected var mLocalVertexPointsInPhysics:Array = new Array (); // should not be null, at lesst 3 points
+      //protected var mLocalVertexPointsInPhysics:Array = new Array (); // should not be null, at lesst 3 points
 
-      public function GetLocalVertexPointsInPhysics ():Array
-      {
-         //return mLocalVertexPoints;
-         return GraphicsUtil.DeepClonePointArray (mLocalVertexPointsInPhysics);
-      }
+      //public function GetLocalVertexPointsInPhysics ():Array
+      //{
+      //   //return mLocalVertexPoints;
+      //   return GraphicsUtil.DeepClonePointArray (mLocalVertexPointsInPhysics);
+      //}
 
-      public function SetLocalVertexPointsInPhysics (points:Array):void
-      {
-         //mLocalVertexPoints = points;
-         mLocalVertexPointsInPhysics = GraphicsUtil.DeepClonePointArray (points);
-      }
+      //public function SetLocalVertexPointsInPhysics (points:Array):void
+      //{
+      //   //mLocalVertexPoints = points;
+      //   mLocalVertexPointsInPhysics = GraphicsUtil.DeepClonePointArray (points);
+      //}
 
    }
 }

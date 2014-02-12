@@ -81,7 +81,12 @@ package player.image
 
       public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
-         physicsShapeProxy.AddCircle (transform, GetRadiusInPhysics (), IsBuildBackground (), IsBuildBorder (), GetBorderThicknessInPhysics ());
+         physicsShapeProxy.AddCircle (transform, 
+                                      GetRadius (), // GetRadiusInPhysics (), 
+                                      IsBuildBackground (), 
+                                      IsBuildBorder (), 
+                                      GetBorderThickness () // GetBorderThicknessInPhysics ()
+                                      );
       }
    }
 }

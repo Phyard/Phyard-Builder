@@ -34,7 +34,14 @@ package player.image
 
       public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
-         physicsShapeProxy.AddPolyline (transform, GetLocalVertexPointsInPhysics (), IsBuildBackground (), GetPathThicknessInPhysics (), IsRoundEnds (), IsClosed ());
+         //physicsShapeProxy.AddPolyline (transform, GetLocalVertexPointsInPhysics (), IsBuildBackground (), GetPathThicknessInPhysics (), IsRoundEnds (), IsClosed ());
+         physicsShapeProxy.AddPolyline (transform, 
+                                        GetLocalVertexPoints (), 
+                                        IsBuildBackground (), 
+                                        GetPathThickness (), // GetPathThicknessInPhysics (), 
+                                        IsRoundEnds (), 
+                                        IsClosed ()
+                                        );
       }
    }
 }

@@ -65,7 +65,13 @@ package player.image
 
       public function BuildPhysicsProxy (physicsShapeProxy:PhysicsProxyShape, transform:Transform2D):void
       {
-         physicsShapeProxy.AddPolygon (transform, GetLocalVertexPointsInPhysics (), IsBuildBackground (), IsBuildBorder (), GetBorderThicknessInPhysics ());
+         //physicsShapeProxy.AddPolygon (transform, GetLocalVertexPointsInPhysics (), IsBuildBackground (), IsBuildBorder (), GetBorderThicknessInPhysics ());
+         physicsShapeProxy.AddPolygon (transform, 
+                                       GetLocalVertexPoints (), 
+                                       IsBuildBackground (), 
+                                       IsBuildBorder (), 
+                                       GetBorderThickness () // GetBorderThicknessInPhysics ()
+                                       );
       }
    }
 }

@@ -144,8 +144,14 @@ package player.entity {
          if (mPhysicsShapeProxy != null)
          {
             //mPhysicsShapeProxy.AddPolyline (mIsStatic, mLocalPoints, mCurveThickness, IsRoundEnds (), IsClosed ());
-            mPhysicsShapeProxy.AddPolyline (mLocalTransform,  
-                                       mLocalPoints, mBuildInterior, mCurveThickness, IsRoundEnds (), IsClosed ());
+            var accTrans:Transform2D = mWorld.GetCoordinateSystem ().As_D2P_Vector_Transform_CombineByTransform (mLocalTransform);
+            mPhysicsShapeProxy.AddPolyline (accTrans,  
+                                            mLocalDisplayPoints, // mLocalPoints, 
+                                            mBuildInterior, 
+                                            mWorld.GetCoordinateSystem ().P2D_Length (mCurveThickness), 
+                                            IsRoundEnds (), 
+                                            IsClosed ()
+                                            );
          }
       }
       

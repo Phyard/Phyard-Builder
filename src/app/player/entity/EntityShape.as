@@ -1294,6 +1294,18 @@ package player.entity {
             //mLocalPositionY = - tempX * mBody.mSinRotation + tempY * mBody.mCosRotation;
             //mRelativeRotation  = mPhysicsRotation  - mBody.GetRotation  ();
             Transform2D.CombineInverseTransformAndTransform (mBody.GetTransform (), mTransform, mLocalTransform);
+                     // so mLocalTransform is used to transorm point from shape space to body space.
+                     // before applying the transform, the point from shape space is transofrm by world.mCoordinateSystem.As_D2P_Vector_Transform.
+                     // the values in shape.mTransform and body.mTransform are all physics unit. 
+                     // This is not the best/reasonable solution.
+                     // The reasonable solution is:
+                     // 1. keep body.mTransform using physics unit.
+                     // 2. make shape.mTransform using pixel unit.
+                     // 3. apply shape.mTransform on point from shape space first, then apply world.mCoordinateSystem.As_D2P_Vector_Transform, fina is body.invTransform.
+                     // The current not very reasonable solution works is for world.mCoordinateSystem.As_D2P_Vector_Transform is a diagonal transform.
+                     // 
+                     // [update 1]
+                     // now the values passed into PhysicsProxyShape.AddXXX are all pixels values, the passed transform will transform the values into physics unit.
          }
       }
       

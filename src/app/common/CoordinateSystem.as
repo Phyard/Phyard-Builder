@@ -82,6 +82,24 @@ package common
 // 
 //=======================================================
       
+      private var m_D2P_Vector_Transform:Transform2D = null;
+      private function As_D2P_Vector_Transform ():Transform2D
+      {
+         if (m_D2P_Vector_Transform == null)
+            m_D2P_Vector_Transform = new Transform2D (0, 0, mLengthScale_Display2Physics, mIsRightHand, mIsRightHand ? Math.PI : 0.0);
+         
+         return m_D2P_Vector_Transform;
+      }
+      
+      public function As_D2P_Vector_Transform_CombineByTransform (transform:Transform2D):Transform2D
+      {
+         return Transform2D.CombineTransforms (transform, As_D2P_Vector_Transform ());
+      }
+      
+//=======================================================
+// 
+//=======================================================
+      
       public function DisplayPoint2PhysicsPosition (dx:Number, dy:Number):Point
       {
          if (mIsRightHand)

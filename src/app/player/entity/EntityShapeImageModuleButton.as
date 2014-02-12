@@ -361,7 +361,8 @@ package player.entity {
          // only mModuleInstanceUp is reponsiible for physics building
          if (mPhysicsShapeProxy != null && mModuleInstanceUp != null)
          {
-            mModuleInstanceUp.RebuildPhysicsProxy (mPhysicsShapeProxy, mLocalTransform);
+            var accTrans:Transform2D = mWorld.GetCoordinateSystem ().As_D2P_Vector_Transform_CombineByTransform (mLocalTransform);
+            mModuleInstanceUp.RebuildPhysicsProxy (mPhysicsShapeProxy, accTrans);
          }
       }
 

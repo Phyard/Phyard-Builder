@@ -16,7 +16,7 @@ package player.module {
       protected var mIsVisible:Boolean = true;
       protected var mAlpha:Number  = 1.0;
       
-      protected var mTransformInPhysics:Transform2D;
+      //protected var mTransformInPhysics:Transform2D;
          // for physics (should update on switching scenes, other values don't need to update)
       
       public function ModulePart (module:Module, transform:Transform2D, visible:Boolean, alpha:Number)
@@ -39,21 +39,20 @@ package player.module {
          return mTransform;
       }
       
-      public function AdjustTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
-      {
-         mTransformInPhysics = new Transform2D (
-                                       worldCoordinateSystem.D2P_Length (mTransform.mOffsetX), 
-                                       worldCoordinateSystem.D2P_Length (mTransform.mOffsetY), 
-                                       mTransform.mScale, mTransform.mFlipped, 
-                                       worldCoordinateSystem.D2P_RotationRadians (mTransform.mRotation)
-                                    );
-         
-      }
+      //public function AdjustTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
+      //{
+      //   mTransformInPhysics = new Transform2D (
+      //                                 worldCoordinateSystem.D2P_Length (mTransform.mOffsetX), 
+      //                                 worldCoordinateSystem.D2P_Length (mTransform.mOffsetY), 
+      //                                 mTransform.mScale, mTransform.mFlipped, 
+      //                                 worldCoordinateSystem.D2P_RotationRadians (mTransform.mRotation)
+      //                              );
+      //}
       
-      public function GetTransformInPhysics ():Transform2D
-      {
-         return mTransformInPhysics;
-      }
+      //public function GetTransformInPhysics ():Transform2D
+      //{
+      //   return mTransformInPhysics;
+      //}
       
       public function IsVisible ():Boolean
       {

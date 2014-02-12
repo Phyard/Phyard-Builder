@@ -113,16 +113,16 @@ package common.shape
 // for playing
 //==============================================
 
-      protected var mBorderThicknessInPhysics:Number;
+      //protected var mBorderThicknessInPhysics:Number;
 
-      public function GetBorderThicknessInPhysics ():Number
-      {
-         return mBorderThicknessInPhysics;
-      }
+      //public function GetBorderThicknessInPhysics ():Number
+      //{
+      //   return mBorderThicknessInPhysics;
+      //}
 
-      public function SetBorderThicknessInPhysics (thickness:Number):void
-      {
-         mBorderThicknessInPhysics = thickness;
-      }
+      //public function SetBorderThicknessInPhysics (thickness:Number):void
+      //{
+      //   mBorderThicknessInPhysics = thickness;
+      //}
    }
 }

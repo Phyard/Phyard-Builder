@@ -26,16 +26,16 @@ package common.shape
 // for playing
 //==============================================
 
-      protected var mRadiusInPhysics:Number;
+      //protected var mRadiusInPhysics:Number;
 
-      public function GetRadiusInPhysics ():Number
-      {
-         return mRadiusInPhysics;
-      }
+      //public function GetRadiusInPhysics ():Number
+      //{
+      //   return mRadiusInPhysics;
+      //}
 
-      public function SetRadiusInPhysics (radius:Number):void
-      {
-         mRadiusInPhysics = radius;
-      }
+      //public function SetRadiusInPhysics (radius:Number):void
+      //{
+      //   mRadiusInPhysics = radius;
+      //}
    }
 }

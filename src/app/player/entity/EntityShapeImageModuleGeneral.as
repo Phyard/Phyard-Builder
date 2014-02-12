@@ -166,7 +166,9 @@ package player.entity {
       {
          if (mPhysicsShapeProxy != null && mModuleInstance != null)
          {
-            mModuleInstance.RebuildPhysicsProxy (mPhysicsShapeProxy, mLocalTransform);
+            //mModuleInstance.RebuildPhysicsProxy (mPhysicsShapeProxy, mLocalTransform);
+            var accTrans:Transform2D = mWorld.GetCoordinateSystem ().As_D2P_Vector_Transform_CombineByTransform (mLocalTransform);
+            mModuleInstance.RebuildPhysicsProxy (mPhysicsShapeProxy, accTrans);
          }
       }
 

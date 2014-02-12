@@ -3612,18 +3612,18 @@ package editor.world {
 
       // game / entity / shape / thickness
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderThickness, shape_geometry_package, "Get Shape Border Thickness", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderThickness, shape_geometry_package, "Get Shape Border Thickness (Physics Unit)", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionNumber ("The Thickness"),
+                             new VariableDefinitionNumber ("The Thickness (Physics Unit)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness, shape_geometry_package, "Set Shape Border Thickness", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness, shape_geometry_package, "Set Shape Border Thickness (Physics Unit)", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
-                             new VariableDefinitionNumber ("New Thickness"),
+                             new VariableDefinitionNumber ("New Thickness (Physics Unit)"),
                      ],
                      null
                   );

@@ -685,13 +685,25 @@ package player.trigger {
                if (valueObject != null)
                {  
                   var theClassId:int = valueObject.mValueType;
+                  
                   if (valueObject.mClassType == ClassTypeDefine.ClassType_Custom)
                   {
-                     if (theClassId >= 0 && extraInfos != null)
-                        theClassId = theClassId + extraInfos.mBeginningCustomClassIndex;
+                     if (playerWorld != null)
+                     {
+                        if (theClassId >= 0 && extraInfos != null)
+                           theClassId = theClassId + extraInfos.mBeginningCustomClassIndex;
+                        
+                         var bClass:ClassDefinition = playerWorld.GetCustomClassDefinition (theClassId);
+                         if (bClass != null)
+                         {
+                           aClass = bClass;
+                         }
+                     }
                   }
-                  
-                  aClass = Global.GetClassDefinition (valueObject.mClassType, theClassId);
+                  else
+                  {
+                      aClass = GetCoreClassDefinition (theClassId);
+                  }
                }
                   
                return aClass;

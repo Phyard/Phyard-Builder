@@ -3,7 +3,7 @@ package player.world {
    import flash.system.IME;
 
    import flash.utils.ByteArray;
-
+   import flash.system.Capabilities;
    import flash.utils.Dictionary;
 
    import flash.display.Sprite;
@@ -20,8 +20,6 @@ package player.world {
    import flash.ui.Keyboard;
    import flash.ui.KeyLocation;
    import flash.events.FocusEvent;
-
-   import flash.utils.Dictionary;
 
    import flash.ui.Mouse;
 
@@ -54,22 +52,31 @@ package player.world {
    import player.trigger.data.ListElement_EntitySelector;
    
    import player.trigger.CoreClasses;
-
+   import player.trigger.ClassDefinition;
+   import player.trigger.ClassDefinition_Custom;
+   import player.trigger.ClassInstance;
+   import player.trigger.VariableSpace;
+   import player.trigger.VariableInstance;
+   import player.trigger.VariableDeclaration;
+   import player.trigger.FunctionDefinition_Custom;
+   import player.trigger.FunctionCallingContext;
    import player.trigger.Parameter;
    import player.trigger.Parameter_DirectConstant;
    import player.trigger.Parameter_DirectMutable;
-   
-   import player.trigger.FunctionCallingContext;
 
    import player.mode.Mode;
    import player.mode.ModeMoveWorldScene;
 
    import common.CoordinateSystem;
-
+   
+   import common.trigger.define.ClassDefine;
+   import common.trigger.define.FunctionDefine;
+   import common.trigger.ValueDefine;
    import common.trigger.CoreClassIds;
    import common.trigger.CoreEventIds;
    import common.trigger.IdPool;
-   import common.trigger.ValueDefine;
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.ValueSpaceTypeDefine;
 
    import common.Define;
    import common.ValueAdjuster;
@@ -78,6 +85,7 @@ package player.world {
    import common.GestureIDs;
 
    import common.DataFormat2;
+   import common.TriggerFormatHelper2;
 
    public class World extends Sprite
    {
@@ -93,9 +101,11 @@ package player.world {
       include "World_GestureEventHandling.as";
       include "World_ServicesEventHandling.as";
       include "World_GeneralEventHandling.as";
+      include "World_CodeLib.as";
+      include "World_APIs.as";
       include "World_Misc.as";
 
-   //
+   // ...
 
       public static const DefaultWorldWidth :int = Define.DefaultWorldWidth;
       public static const DefaultWorldHeight:int = Define.DefaultWorldHeight;

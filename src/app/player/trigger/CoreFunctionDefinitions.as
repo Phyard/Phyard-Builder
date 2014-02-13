@@ -2555,7 +2555,8 @@ package player.trigger {
          if (Global.IsInvalidScene (levelIndex))
             return;
          
-         Global.MergeScene (levelIndex);
+         //Global.MergeScene (levelIndex);
+         callingContext.mWorld.MergeScene (levelIndex);
       }
       
       public static function GetLevelByIdOffset (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2639,17 +2640,17 @@ package player.trigger {
       
       public static function WriteSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()), Global.GetSavedData ());
+         Global.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()), /*Global*/callingContext.mWorld.GetSavedData ());
       }
       
       public static function LoadSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.SetSavedData (Global.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ())));
+         /*Global*/callingContext.mWorld.SetSavedData (Global.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ())));
       }
       
       public static function ResetSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.ResetGameSaveVariableSpace ();
+         /*Global*/callingContext.mWorld.ResetGameSaveVariableSpace ();
       }
       
       public static function DeleteSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

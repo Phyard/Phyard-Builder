@@ -1043,6 +1043,7 @@ package viewer {
          if (mWorldDesignProperties.HasRestartLevelRequest == undefined)          mWorldDesignProperties.HasRestartLevelRequest = DummyCallback_ReturnFalse;      
          if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;
          if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;
+         if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
          if (mWorldDesignProperties.OnGlobalSocketMessage == undefined)           mWorldDesignProperties.OnGlobalSocketMessage = DummyCallback;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
@@ -1061,6 +1062,11 @@ package viewer {
 
       private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null, param4:Object = null, param5:Object = null, param6:Object = null, param7:Object = null):void
       {
+      }
+
+      private function DummyCallback_ReturnNull ():Object
+      {
+         return null;
       }
 
       private function DummyCallback_ReturnFalse ():Boolean
@@ -1246,6 +1252,17 @@ package viewer {
             if (worldDefine.hasOwnProperty ("mDontReloadGlobalAssets"))
             {
                worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
+            }
+            if (worldDefine.hasOwnProperty ("mWorldCrossStagesData"))
+            {
+               if ((forRestartLevel || dontReloadGlobalAssets) && mOldWorldDesignProperties != null)
+               {
+                  worldDefine.mWorldCrossStagesData = mOldWorldDesignProperties.GetWorldCrossStagesData ();
+               }
+               else
+               {
+                  worldDefine.mWorldCrossStagesData = null;
+               }
             }
             if (worldDefine.hasOwnProperty ("mViewerParams"))
             {

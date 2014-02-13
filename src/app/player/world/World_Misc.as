@@ -1,6 +1,7 @@
-
+      
       public function ResetEntitySpecialIds ():void
       {
+         Entity.ResetLastSpecialId ();
          mEntityList.ResetEntitySpecialIds ();
          mEntityListBody.ResetEntitySpecialIds ();
       }

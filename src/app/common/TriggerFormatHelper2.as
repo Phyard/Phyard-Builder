@@ -552,7 +552,7 @@ package common {
          }
          else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Custom)
          {
-            func_definition = Global.GetCustomFunctionDefinition (function_id + extraInfos.mBeginningCustomFunctionIndex);
+            func_definition = /*Global*/playerWorld.GetCustomFunctionDefinition (function_id + extraInfos.mBeginningCustomFunctionIndex);
          }
          else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -661,7 +661,7 @@ package common {
             //assert (valueType == direct_source_define.mValueType);
 
             value_source = new Parameter_DirectConstant (
-                                    Global.GetClassDefinition (classType, valueType),
+                                    Global.GetClassDefinition (playerWorld, classType, valueType),
                                     CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos)
                                  ); 
          }
@@ -678,12 +678,12 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
-                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
-                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
@@ -692,24 +692,24 @@ package common {
                      //variable_index += extraInfos.mBeinningSessionVariableIndex;
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
-                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
-                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
                   // will not merge with new ones
-                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
                   if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                     var variable_space:VariableSpace = /*Global*/playerWorld.GetRegisterVariableSpace (valueType);
                      if (variable_space != null)
                         variable_instance = variable_space.GetVariableByIndex (variable_index);
                   }
@@ -780,7 +780,7 @@ package common {
             //                  );
             
             // since v2.05, 0 <- null + null
-            var theClass:ClassDefinition = Global.GetClassDefinition (classType, valueType);
+            var theClass:ClassDefinition = Global.GetClassDefinition (playerWorld, classType, valueType);
             value_source = new Parameter_DirectConstant (
                                  theClass,
                                  theClass.mGetNullFunc () // this function must be not null
@@ -814,12 +814,12 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
-                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
-                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
@@ -828,23 +828,23 @@ package common {
                      //variable_index += extraInfos.mBeinningSessionVariableIndex;
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
-                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
-                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
-                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
                   if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                     var variable_space:VariableSpace = /*Global*/playerWorld.GetRegisterVariableSpace (valueType);
                      if (variable_space != null)
                         variable_instance = variable_space.GetVariableByIndex (variable_index);
                   }

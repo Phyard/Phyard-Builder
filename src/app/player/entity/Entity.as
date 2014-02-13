@@ -355,18 +355,18 @@ package player.entity {
 
       public function InitCustomPropertyValues ():void
       {
-         mCustomProeprtySpace = Global.GetCustomEntityVariableSpace ().CloneSpace ();
-         mCommonCustomProeprtySpace = Global.GetCommonCustomEntityVariableSpace ().CloneSpace ();
+         mCustomProeprtySpace = /*Global*/mWorld.GetCustomEntityVariableSpace ().CloneSpace ();
+         mCommonCustomProeprtySpace = /*Global*/mWorld.GetCommonCustomEntityVariableSpace ().CloneSpace ();
       }
       
       public function OnNumCustomEntityVariablesChanged ():void
       {
-         mCustomProeprtySpace = Global.GetCustomEntityVariableSpace ().AppendMissedVariablesFor (mCustomProeprtySpace);
+         mCustomProeprtySpace = /*Global*/mWorld.GetCustomEntityVariableSpace ().AppendMissedVariablesFor (mCustomProeprtySpace);
          
          // mCommonCustomProeprtySpace'e length will not change
          if (mCommonCustomProeprtySpace == null)
          {
-            mCommonCustomProeprtySpace = Global.GetCommonCustomEntityVariableSpace ().CloneSpace ();
+            mCommonCustomProeprtySpace = /*Global*/mWorld.GetCommonCustomEntityVariableSpace ().CloneSpace ();
          }
       }
 
@@ -798,22 +798,22 @@ package player.entity {
       public static const MinId:int = -0x7FFFFFFF - 1; // maybe 0x10000000 is better
       
       public static var sLastSpecialId:int = MinId;
+
+      public static function ResetLastSpecialId ():void
+      {
+         sLastSpecialId = MinId;         
+      }
       
       internal var mSpecialId:int = MinId;
 
       public function IncreaseLastSpecialId ():void
       {
-         if (sLastSpecialId == 0x7FFFFFFF)
-            ResetEntitySpecialIds (); // generally, this will not happen
+         if (sLastSpecialId == 0x7FFFFFFF) // generally, this will not happen
+         {
+            mWorld.ResetEntitySpecialIds ();
+         }
 
          ++ sLastSpecialId;
-      }
-
-      protected function ResetEntitySpecialIds ():void
-      {
-         sLastSpecialId = MinId;
-
-         mWorld.ResetEntitySpecialIds ();
       }
 
       public function SetSpecialId (id:int):void

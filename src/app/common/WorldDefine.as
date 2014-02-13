@@ -8,7 +8,7 @@ package common {
       public var mViewerParams:Object;
       
       public var mCurrentSceneId:int = 0; // for editing undo scene, added from v2.00
-                                          // also for viewer
+                                          // also for playing to load/merge a specified scene
       
       public var mForRestartLevel:Boolean = false; // for playing, add from v1.5?. For fast loading
       
@@ -18,6 +18,8 @@ package common {
       public var mDontAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
       
       public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
+      
+      public var mWorldCrossStagesData:Object; // from v2.06. For restore some data of last player world instance.
             
    // ...
       

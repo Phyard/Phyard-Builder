@@ -110,6 +110,7 @@ package player
                   
                   GetSceneSwitchingStyle : world.GetSceneSwitchingStyle, // from v2.04
                   
+                  GetWorldCrossStagesData : world.GetWorldCrossStagesData, // from v2.06
                   OnGlobalSocketMessage : world.OnGlobalSocketMessage, // from v2.06
                   
                   "" : null

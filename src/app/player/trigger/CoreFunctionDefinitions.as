@@ -2271,7 +2271,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var rngMethod:int = int (valueSource.EvaluateValueObject ());
 
-         Global.CreateRandomNumberGenerator (rngSlot, rngMethod);
+         /*Global*/callingContext.mWorld.CreateRandomNumberGenerator (rngSlot, rngMethod);
       }
 
       public static function RngSetSeed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2284,14 +2284,14 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var seed:uint = uint (valueSource.EvaluateValueObject ());
 
-         Global.GetRandomNumberGenerator (rngSlot).SetSeed (seedId, seed);
+         /*Global*/callingContext.mWorld.GetRandomNumberGenerator (rngSlot).SetSeed (seedId, seed);
       }
 
       public static function RngRandom (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var rngSlot:int = int (valueSource.EvaluateValueObject ());
 
-         valueTarget.AssignValueObject (Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
+         valueTarget.AssignValueObject (/*Global*/callingContext.mWorld.GetRandomNumberGenerator (rngSlot).NextFloat ());
       }
 
       public static function RngRandomNumberRange (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2304,7 +2304,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var value2:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (value1 + (value2 - value1) * Global.GetRandomNumberGenerator (rngSlot).NextFloat ());
+         valueTarget.AssignValueObject (value1 + (value2 - value1) * /*Global*/callingContext.mWorld.GetRandomNumberGenerator (rngSlot).NextFloat ());
       }
 
       public static function RngRandomIntegerRange (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2317,7 +2317,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var value2:int = int (valueSource.EvaluateValueObject ());
 
-         valueTarget.AssignValueObject (Global.GetRandomNumberGenerator (rngSlot).NextIntegerBetween (value1, value2));
+         valueTarget.AssignValueObject (/*Global*/callingContext.mWorld.GetRandomNumberGenerator (rngSlot).NextIntegerBetween (value1, value2));
       }
 
       // degree <-> radian
@@ -2668,19 +2668,19 @@ package player.trigger {
       
       public static function IsLevelPaused (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (! Global.UI_IsPlaying ());
+         valueTarget.AssignValueObject (! /*Global*/callingContext.mWorld.UI_IsPlaying ());
       }
 
       public static function SetLevelPaused (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var paused:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
-         Global.UI_SetPlaying (! paused);
+         /*Global*/callingContext.mWorld.UI_SetPlaying (! paused);
       }
 
       public static function GetPlaySpeedX (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.UI_GetSpeedX ());
+         valueTarget.AssignValueObject (/*Global*/callingContext.mWorld.UI_GetSpeedX ());
       }
 
       public static function SetPlaySpeedX (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2691,12 +2691,12 @@ package player.trigger {
          else if (speedX > 9)
             speedX = 9;
 
-         Global.UI_SetSpeedX (speedX);
+         /*Global*/callingContext.mWorld.UI_SetSpeedX (speedX);
       }
 
       public static function GetWorldScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.UI_GetZoomScale());
+         valueTarget.AssignValueObject (/*Global*/callingContext.mWorld.UI_GetZoomScale());
       }
 
       public static function SetWorldScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2710,7 +2710,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var smoothly:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.UI_SetZoomScale (scale, smoothly);
+         /*Global*/callingContext.mWorld.UI_SetZoomScale (scale, smoothly);
       }
 
       public static function GetLevelMilliseconds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3250,14 +3250,14 @@ package player.trigger {
       
       public static function IsSoundEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.UI_IsSoundEnabled ());
+         valueTarget.AssignValueObject (/*Global*/callingContext.mWorld.UI_IsSoundEnabled ());
       }
       
       public static function SetSoundEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var soundOn:Boolean = Boolean (valueSource.EvaluateValueObject ());
          
-         Global.UI_SetSoundEnabled (soundOn);
+         /*Global*/callingContext.mWorld.UI_SetSoundEnabled (soundOn);
       }
       
       //public static function GetGlobalSoundVolume (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

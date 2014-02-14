@@ -22,6 +22,9 @@ package player.world {
    import flash.events.FocusEvent;
 
    import flash.ui.Mouse;
+   
+   import com.tapirgames.util.RandomNumberGenerator;
+   import com.tapirgames.util.MersenneTwisterRNG;
 
    import player.physics.PhysicsEngine;
    import player.physics.PhysicsProxyBody;
@@ -103,6 +106,8 @@ package player.world {
       include "World_GeneralEventHandling.as";
       include "World_CodeLib.as";
       include "World_APIs.as";
+      include "World_ViewerUI.as";
+      include "World_MersenneTwisterRNG.as";
       include "World_Misc.as";
 
    // ...

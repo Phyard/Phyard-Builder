@@ -118,17 +118,17 @@ package player
             case "SetUiParams":
                world = params.mWorld as World;
                
-               Global.UI_RestartPlay = params.OnClickRestart as Function; // useless since v2.03
-               Global.UI_IsPlaying = params.IsPlaying as Function;
-               Global.UI_SetPlaying = params.SetPlaying as Function;
-               Global.UI_GetSpeedX = params.GetPlayingSpeedX as Function;
-               Global.UI_SetSpeedX = params.SetPlayingSpeedX as Function;
-               Global.UI_GetZoomScale = params.GetZoomScale as Function;
-               Global.UI_SetZoomScale = params.SetZoomScale as Function; // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
-               Global.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59 (really used from v2.02)
-               Global.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59 (really used from v2.02)
-               Global.UI_GetSoundVolume = params.GetSoundVolume as Function; // from v2.03 (not really used now)
-               Global.UI_SetSoundVolume = params.SetSoundVolume as Function; // from v2.03 (not really used now)
+               /*Global*/world.UI_RestartPlay = params.OnClickRestart as Function; // useless since v2.03
+               /*Global*/world.UI_IsPlaying = params.IsPlaying as Function;
+               /*Global*/world.UI_SetPlaying = params.SetPlaying as Function;
+               /*Global*/world.UI_GetSpeedX = params.GetPlayingSpeedX as Function;
+               /*Global*/world.UI_SetSpeedX = params.SetPlayingSpeedX as Function;
+               /*Global*/world.UI_GetZoomScale = params.GetZoomScale as Function;
+               /*Global*/world.UI_SetZoomScale = params.SetZoomScale as Function; // from v1.53, SetScale has a 2nd param: changeScaleSmoothly, default value is true
+               /*Global*/world.UI_IsSoundEnabled = params.IsSoundEnabled as Function; // from v1.59 (really used from v2.02)
+               /*Global*/world.UI_SetSoundEnabled = params.SetSoundEnabled as Function; // from v1.59 (really used from v2.02)
+               /*Global*/world.UI_GetSoundVolume = params.GetSoundVolume as Function; // from v2.03 (not really used now)
+               /*Global*/world.UI_SetSoundVolume = params.SetSoundVolume as Function; // from v2.03 (not really used now)
                
                break;
             default:

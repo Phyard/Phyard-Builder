@@ -28,8 +28,8 @@ package player.world
    
    import player.sound.Sound;
    
-   import com.tapirgames.util.RandomNumberGenerator;
-   import com.tapirgames.util.MersenneTwisterRNG;
+   //import com.tapirgames.util.RandomNumberGenerator;
+   //import com.tapirgames.util.MersenneTwisterRNG;
    
    import common.trigger.ValueSpaceTypeDefine;
 
@@ -65,7 +65,7 @@ package player.world
       public static var mWorldDefine:Object = null;
                   // currently for MergeScene purpose
       
-      public static var mRandomNumberGenerators:Array;
+      //public static var mRandomNumberGenerators:Array;
       
       private static var mNumTotalModules:int = 0;
       public static var mImageBitmaps:Array; //
@@ -77,17 +77,20 @@ package player.world
       
    // callbacks from viewer
       
-      public static var UI_RestartPlay:Function;
-      public static var UI_IsPlaying:Function;
-      public static var UI_SetPlaying:Function;
-      public static var UI_GetSpeedX:Function;
-      public static var UI_SetSpeedX:Function;
-      public static var UI_GetZoomScale:Function;
-      public static var UI_SetZoomScale:Function;
-      public static var UI_IsSoundEnabled:Function;
-      public static var UI_SetSoundEnabled:Function;
-      public static var UI_GetSoundVolume:Function; // v2.03 (not really used now)
-      public static var UI_SetSoundVolume:Function; // v2.03 (not really used now)
+      //>>>>>>> now put in player.World
+      //public static var UI_RestartPlay:Function;
+      //public static var UI_IsPlaying:Function;
+      //public static var UI_SetPlaying:Function;
+      //public static var UI_GetSpeedX:Function;
+      //public static var UI_SetSpeedX:Function;
+      //public static var UI_GetZoomScale:Function;
+      //public static var UI_SetZoomScale:Function;
+      //public static var UI_IsSoundEnabled:Function;
+      //public static var UI_SetSoundEnabled:Function;
+      //public static var UI_GetSoundVolume:Function; // v2.03 (not really used now)
+      //public static var UI_SetSoundVolume:Function; // v2.03 (not really used now)
+      //<<<<<<<<<<
+      
       public static var Viewer_mLibCapabilities:Object;
                //IsAccelerometerSupported:Function; // v1.60
                //GetAcceleration:Function; // v1.60
@@ -186,7 +189,7 @@ package player.world
       //mRegisterVariableSpace_String = null;
       //mRegisterVariableSpace_Number = null;
       //mRegisterVariableSpace_Entity = null;
-      //mRegisterVariableSpace_CollisionCategory = null;+
+      //mRegisterVariableSpace_CollisionCategory = null;
       
       //mRegisterVariableSpace_Array = null;
       //
@@ -200,7 +203,7 @@ package player.world
       //
       //mCustomFunctionDefinitions = null;
       
-      mRandomNumberGenerators = null; // should be moved into viewer
+      //mRandomNumberGenerators = null; // should be moved into viewer
       
       mImageBitmaps = null;
       mImageBitmapDivisions = null;
@@ -211,15 +214,16 @@ package player.world
       
    // callbacks from viewer
       
-      UI_RestartPlay = null;
-      UI_IsPlaying = null;
-      UI_SetPlaying = null;
-      UI_GetSpeedX = null;
-      UI_SetSpeedX = null;
-      UI_GetZoomScale = null;
-      UI_SetZoomScale = null;
-      UI_IsSoundEnabled = null;
-      UI_SetSoundEnabled = null;
+      //UI_RestartPlay = null;
+      //UI_IsPlaying = null;
+      //UI_SetPlaying = null;
+      //UI_GetSpeedX = null;
+      //UI_SetSpeedX = null;
+      //UI_GetZoomScale = null;
+      //UI_SetZoomScale = null;
+      //UI_IsSoundEnabled = null;
+      //UI_SetSoundEnabled = null;
+      
       Viewer_mLibCapabilities = null;
       _GetDebugString = null;
       Viewer_SetMouseGestureSupported = null;
@@ -257,8 +261,6 @@ package player.world
             
             mSounds = null;
          }
-         mAssembledModules     = null;
-         mSequencedModules     = null;
          
          // ...
          
@@ -268,18 +270,18 @@ package player.world
          }
 
          //
-         mRandomNumberGenerators = new Array (Define.NumRngSlots);
+         //mRandomNumberGenerators = new Array (Define.NumRngSlots);
          
          //
-         UI_RestartPlay = null;
-         UI_IsPlaying = null;
-         UI_SetPlaying = null;
-         UI_GetSpeedX = null;
-         UI_SetSpeedX = null;
-         UI_GetZoomScale = null;
-         UI_SetZoomScale = null;
-         UI_IsSoundEnabled = null;
-         UI_SetSoundEnabled = null;
+         //UI_RestartPlay = null;
+         //UI_IsPlaying = null;
+         //UI_SetPlaying = null;
+         //UI_GetSpeedX = null;
+         //UI_SetSpeedX = null;
+         //UI_GetZoomScale = null;
+         //UI_SetZoomScale = null;
+         //UI_IsSoundEnabled = null;
+         //UI_SetSoundEnabled = null;
          
          //
          Viewer_mLibCapabilities = null;
@@ -293,39 +295,36 @@ package player.world
          Viewer_mLibServices = null;
          
          //>>>>>>>>>>>>> moved into world
-         /*
          // no needs to call this now 
          //Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x80000000 is ok 
-         
          //
-         mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Boolean));
-         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_String));
-         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Number));
-         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Entity));
-         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory));
-         mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Array));
-         
-         if (! dontReloadGlobalAssets)
-         {
-            mWorldVariableSpace = null;
-            mGameSaveVariableSpace = null;
-            mGameSaveVariableSpace_WithInitialValues = null;
-         }
-         
-         if (! isRestartLevel)
-         {
-            mSessionVariableSpace = null;
-         }
-         
-         mGlobalVariableSpace = null;
-         mCommonGlobalVariableSpace = null;
-         mEntityVariableSpace = null;
-         mCommonEntityVariableSpace = null;
-         
-         mCustomClassDefinitions = null;
-         
-         mCustomFunctionDefinitions = null;
-         */
+         //mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Boolean));
+         //mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_String));
+         //mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Number));
+         //mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Entity));
+         //mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory));
+         //mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Array));
+         //
+         //if (! dontReloadGlobalAssets)
+         //{
+         //   mWorldVariableSpace = null;
+         //   mGameSaveVariableSpace = null;
+         //   mGameSaveVariableSpace_WithInitialValues = null;
+         //}
+         //
+         //if (! isRestartLevel)
+         //{
+         //   mSessionVariableSpace = null;
+         //}
+         //
+         //mGlobalVariableSpace = null;
+         //mCommonGlobalVariableSpace = null;
+         //mEntityVariableSpace = null;
+         //mCommonEntityVariableSpace = null;
+         //
+         //mCustomClassDefinitions = null;
+         //
+         //mCustomFunctionDefinitions = null;
          //<<<<<<<<<<<<<<<<<<<<<<<<<<
       }
       
@@ -841,25 +840,6 @@ package player.world
          }
          
          return null;
-      }
-      
-      public static function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void
-      {
-         if (rngSlot < 0 || rngSlot >= Define.NumRngSlots)
-            throw new Error ("Invalid RNG slot " + rngSlot);
-         
-         if (rngMethod < 0 || rngMethod >= Define.NumRngMethods)
-            throw new Error ("Invalid RNG method " + rngMethod);
-         
-         if (rngMethod == 0)
-         {
-            mRandomNumberGenerators [rngSlot] = new MersenneTwisterRNG ();
-         }
-      }
-      
-      public static function GetRandomNumberGenerator (rngSlot:int):RandomNumberGenerator
-      {
-         return mRandomNumberGenerators [rngSlot];
       }
    }
 }

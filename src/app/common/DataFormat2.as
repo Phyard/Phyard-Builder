@@ -322,13 +322,14 @@ package common {
          if (isLoaingFromStretch)
          {
             //
-            Global.InitGlobalData (worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
-            Global.mWorldDefine = worldDefine;
+            Global.sTheGlobal = new Global ();
+            Global.sTheGlobal.Initialize/*InitGlobalData*/ (worldDefine, worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
+            //Global.mWorldDefine = worldDefine; // moved into above line
             
             //
             playerWorld = new World (sceneDefine) ; //worldDefine);
             
-            // sicne v2.06, move part from Global.InitGlobalData to World.InitVariableSpaces
+            // sicne v2.06, move part from Global.InitGlobalDatam new Initialize, to World.InitVariableSpaces
             playerWorld.SetWorldCrossStagesData (worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets,
                                                  worldDefine.mWorldCrossStagesData);
             worldDefine.mWorldCrossStagesData = null;
@@ -341,8 +342,8 @@ package common {
             //Global.SetCurrentWorld (playerWorld);
             
             // ...
-            Global.UpdateCoreClassDefaultInitialValues ();
-            Global.CreateOrResetCoreFunctionDefinitions ();
+            Global.sTheGlobal.UpdateCoreClassDefaultInitialValues ();
+            Global.sTheGlobal.CreateOrResetCoreFunctionDefinitions ();
             
             // ...
             WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
@@ -611,8 +612,8 @@ package common {
          
          if (isLoaingFromStretch)
          {
-            Global.CreateImageModules (worldDefine.mImageDefines, worldDefine.mPureImageModuleDefines, worldDefine.mAssembledModuleDefines, worldDefine.mSequencedModuleDefines);
-            Global.CreateSounds (worldDefine.mSoundDefines);
+            Global.sTheGlobal.CreateImageModules (worldDefine.mImageDefines, worldDefine.mPureImageModuleDefines, worldDefine.mAssembledModuleDefines, worldDefine.mSequencedModuleDefines);
+            Global.sTheGlobal.CreateSounds (worldDefine.mSoundDefines);
             //Global.CheckWorldBuildingStatus (); // bug, EntityModule.mModuleIndex is not set yet. Moved to the end now.
          }
 

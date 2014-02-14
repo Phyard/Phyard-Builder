@@ -8,8 +8,8 @@
       worldEntityList.MarkLastTail ();
       worldEntityBodyList.MarkLastTail ();
       
-      Global.mWorldDefine.mCurrentSceneId = levelIndex;
-      DataFormat2.WorldDefine2PlayerWorld (Global.mWorldDefine, world, true);
+      Global.sTheGlobal.mWorldDefine.mCurrentSceneId = levelIndex;
+      DataFormat2.WorldDefine2PlayerWorld (Global.sTheGlobal.mWorldDefine, world, true);
       
       world.BuildEntityPhysics (true);
       var mergedEntities:Array = worldEntityList.GetEntitiesFromLastMarkedTail ();

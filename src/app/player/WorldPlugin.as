@@ -25,7 +25,7 @@ package player
                   "" : null
                };
             case "SetViewerParams":
-               Global.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
+               Global.sTheGlobal.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
                            //IsAccelerometerSupported:Function; // from v1.60
                            //GetAcceleration:Function; // from v1.60
                            //GetScreenResolution:Function; // from v2.03
@@ -33,22 +33,22 @@ package player
                            //OpenURL:Function; // from v2.03
                
                //Global._GetDebugString = params.GetDebugString as Function; // from v1.60
-               Global._GetDebugString = Global.GetDebugString;
+               Global.sTheGlobal._GetDebugString = Global.sTheGlobal.GetDebugString;
                
-               Global.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
+               Global.sTheGlobal.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
                
-               Global.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
+               Global.sTheGlobal.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
                                                                   // useless since v2.03
                
-               Global.Viewer_mLibSound = params.mLibSound; // from v2.02
+               Global.sTheGlobal.Viewer_mLibSound = params.mLibSound; // from v2.02
                
-               Global.Viewer_mLibGraphics = params.mLibGraphics; // from v2.03
+               Global.sTheGlobal.Viewer_mLibGraphics = params.mLibGraphics; // from v2.03
                
-               Global.Viewer_mLibAppp = params.mLibApp; // v2.03
+               Global.sTheGlobal.Viewer_mLibAppp = params.mLibApp; // v2.03
                
-               Global.Viewer_mLibCookie = params.mLibCookie; // from v2.03
+               Global.sTheGlobal.Viewer_mLibCookie = params.mLibCookie; // from v2.03
                
-               Global.Viewer_mLibServices = params.mLibService; // from v2.03
+               Global.sTheGlobal.Viewer_mLibServices = params.mLibService; // from v2.03
                
                break;
             case "GetWorldProperties":
@@ -91,7 +91,7 @@ package player
                   
                   mInitialSpeedX : world.GetInitialSpeedX (), // from v1.59
                   mInitialZoomScale : world.GetZoomScale (), // from v1.59
-                  mHasSounds : Global.HasSounds (), // from v1.59
+                  mHasSounds : Global.sTheGlobal.HasSounds (), // from v1.59
                   //mInitialSoundEnabled : Global.IsSoundEnabled (), // from v1.59 to v2.02 (seems never used in Viewer)
                   //SetSoundEnabled : Global.SetSoundEnabled, // from v1.59 to v2.02 (become useless in Viewer from v2.02)
                   

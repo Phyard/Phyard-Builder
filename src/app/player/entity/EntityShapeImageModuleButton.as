@@ -142,7 +142,7 @@ package player.entity {
          }
          
          mModuleIndexUp = moduleIndex;
-         mModuleInstanceUp = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexUp));
+         mModuleInstanceUp = new ModuleInstance (Global.sTheGlobal.GetImageModuleByGlobalIndex (mModuleIndexUp));
          
          // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
@@ -168,7 +168,7 @@ package player.entity {
          // mModuleIndexUp should be set earlier than this
          mModuleIndexOver = moduleIndex;
          if (mModuleIndexOver >= 0)
-            mModuleInstanceOver = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexOver));
+            mModuleInstanceOver = new ModuleInstance (Global.sTheGlobal.GetImageModuleByGlobalIndex (mModuleIndexOver));
          else
          {
             mModuleInstanceOver = null;
@@ -199,7 +199,7 @@ package player.entity {
          // mModuleIndexUp should be set earlier than this
          mModuleIndexDown = moduleIndex;
          if (mModuleIndexDown >= 0)
-            mModuleInstanceDown = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexDown));
+            mModuleInstanceDown = new ModuleInstance (Global.sTheGlobal.GetImageModuleByGlobalIndex (mModuleIndexDown));
          else
          {
             mModuleInstanceDown = null;

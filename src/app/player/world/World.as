@@ -290,7 +290,7 @@ package player.world {
       {
          if (mBuildingStatus == 0)
          {
-            mBuildingStatus = Global.CheckWorldBuildingStatus ();
+            mBuildingStatus = Global.sTheGlobal.CheckWorldBuildingStatus ();
          }
          
          //if ((! mInitialized) && mBuildingStatus == 1)
@@ -1076,7 +1076,7 @@ package player.world {
       
       public function SetDelayToLoadSceneIndex (sceneIndex:int, sceneSwitchingStyle:int):void
       {
-         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         if (mDelayRestartRequested == false && Global.sTheGlobal.IsInvalidScene (mDelayToLoadSceneIndex))
          {
             mDelayToLoadSceneIndex = sceneIndex;
             mSceneSwitchingStyle = sceneSwitchingStyle;
@@ -1086,7 +1086,7 @@ package player.world {
       private var mDelayRestartRequested:Boolean = false;
       public function SetDelayRestartRequested (sceneSwitchingStyle:int):void
       {
-         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         if (mDelayRestartRequested == false && Global.sTheGlobal.IsInvalidScene (mDelayToLoadSceneIndex))
          {
             mDelayRestartRequested = true;
             mSceneSwitchingStyle = sceneSwitchingStyle;

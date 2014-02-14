@@ -78,7 +78,7 @@ package player.entity {
          }
          
          mBodyTextureModuleIndex = bodyTextureModuleIndex;
-         mBodyTextureModule = Global.GetImageModuleByGlobalIndex (mBodyTextureModuleIndex) as ImageBitmap;
+         mBodyTextureModule = Global.sTheGlobal.GetImageModuleByGlobalIndex (mBodyTextureModuleIndex) as ImageBitmap;
          if (mBodyTextureModule == null)
             mBodyTextureModuleIndex = -1;
          

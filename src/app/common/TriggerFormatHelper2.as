@@ -661,7 +661,7 @@ package common {
             //assert (valueType == direct_source_define.mValueType);
 
             value_source = new Parameter_DirectConstant (
-                                    Global.GetClassDefinition (playerWorld, classType, valueType),
+                                    Global.sTheGlobal.GetClassDefinition (playerWorld, classType, valueType),
                                     CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos)
                                  ); 
          }
@@ -780,7 +780,7 @@ package common {
             //                  );
             
             // since v2.05, 0 <- null + null
-            var theClass:ClassDefinition = Global.GetClassDefinition (playerWorld, classType, valueType);
+            var theClass:ClassDefinition = Global.sTheGlobal.GetClassDefinition (playerWorld, classType, valueType);
             value_source = new Parameter_DirectConstant (
                                  theClass,
                                  theClass.mGetNullFunc () // this function must be not null

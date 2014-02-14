@@ -52,7 +52,7 @@
                UpdateEntityAppearances (IsCiShape);
                break;
             case Define.LevelProperty_RenderQuality:
-               Global.Viewer_mLibGraphics.SetRenderQuality (value as String);
+               Global.sTheGlobal.Viewer_mLibGraphics.SetRenderQuality (value as String);
                break;
          }
       }

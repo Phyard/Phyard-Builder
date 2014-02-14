@@ -86,7 +86,7 @@ package player.entity {
          }
          
          mModuleIndex = moduleIndex;
-         mModuleInstance = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndex));
+         mModuleInstance = new ModuleInstance (Global.sTheGlobal.GetImageModuleByGlobalIndex (mModuleIndex));
          
          // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance (); 

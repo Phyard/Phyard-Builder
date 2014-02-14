@@ -78,14 +78,15 @@ package player.sound
             mCallbackOnLoadError = onLoadError;
             
             // ...
-            Global.Viewer_mLibSound.LoadSoundFromBytes (fileData, OnLoadSoundComplete, OnLoadSoundError, 
-                                                                                                {
-                                                                                                   mFileFormat: GetFileFormat (),
-                                                                                                   mSamplingRate: GetSamplingRate (),
-                                                                                                   mSampleSize: GetSampleSize (),
-                                                                                                   mIsStereo: IsStereo (),
-                                                                                                   mNumSamples: GetNumSamples ()
-                                                                                                }
+            Global.sTheGlobal.Viewer_mLibSound.LoadSoundFromBytes (fileData, 
+                                                                   OnLoadSoundComplete, OnLoadSoundError, 
+                                                                   {
+                                                                      mFileFormat: GetFileFormat (),
+                                                                      mSamplingRate: GetSamplingRate (),
+                                                                      mSampleSize: GetSampleSize (),
+                                                                      mIsStereo: IsStereo (),
+                                                                      mNumSamples: GetNumSamples ()
+                                                                   }
             );
          }
       }

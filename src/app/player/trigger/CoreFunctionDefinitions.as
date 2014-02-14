@@ -656,9 +656,9 @@ package player.trigger {
 
       public static function GetDebugString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         if (Global._GetDebugString != null)
+         if (Global.sTheGlobal._GetDebugString != null)
          {
-            valueTarget.AssignValueObject (Global._GetDebugString ());
+            valueTarget.AssignValueObject (Global.sTheGlobal._GetDebugString ());
          }
       }
       
@@ -778,29 +778,29 @@ package player.trigger {
       {
          var keyCode:int = int (valueSource.EvaluateValueObject ());
 
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsKeyHold (keyCode));
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.IsKeyHold (keyCode));
       }
 
       public static function IsMouseButtonHold (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsMouseButtonDown ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.IsMouseButtonDown ());
       }
 
       public static function SetMouseVisible (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetMouseVisible (visible);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetMouseVisible (visible);
       }
 
       public static function IsAccelerometerSupported (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.IsAccelerometerSupported ());
+         valueTarget.AssignValueObject (Global.sTheGlobal.Viewer_mLibCapabilities.IsAccelerometerSupported ());
       }
 
       public static function GetAccelerationVector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var vector3d:Array = Global.Viewer_mLibCapabilities.GetAcceleration ();
+         var vector3d:Array = Global.sTheGlobal.Viewer_mLibCapabilities.GetAcceleration ();
 
          valueTarget.AssignValueObject (vector3d [0] as Number);
 
@@ -813,17 +813,17 @@ package player.trigger {
 
       public static function IsNativeApp (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.Viewer_mLibAppp.IsNativeApp ());
+         valueTarget.AssignValueObject (Global.sTheGlobal.Viewer_mLibAppp.IsNativeApp ());
       }
 
       public static function ExitApp (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibAppp.OnExitApp ();
+         Global.sTheGlobal.Viewer_mLibAppp.OnExitApp ();
       }
 
       public static function GetScreenResolution (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var size:Point = Global.Viewer_mLibCapabilities.GetScreenResolution ();
+         var size:Point = Global.sTheGlobal.Viewer_mLibCapabilities.GetScreenResolution ();
 
          valueTarget.AssignValueObject (size.x);
 
@@ -833,7 +833,7 @@ package player.trigger {
 
       public static function GetScreenDPI (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.Viewer_mLibCapabilities.GetScreenDPI ());
+         valueTarget.AssignValueObject (Global.sTheGlobal.Viewer_mLibCapabilities.GetScreenDPI ());
       }
       
       public static function GetOsNameString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -847,7 +847,7 @@ package player.trigger {
          
          if (url != null && url.length > 0)
          {
-            Global.Viewer_mLibAppp.OpenURL (url);
+            Global.sTheGlobal.Viewer_mLibAppp.OpenURL (url);
          }
       }
       
@@ -881,9 +881,9 @@ package player.trigger {
       {
          var value:Number = Number (valueSource.EvaluateValueObject ());
 
-         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitKeyValue)
+         if (Global.sTheGlobal.Viewer_mLibServices != null && Global.sTheGlobal.Viewer_mLibServices.SubmitKeyValue)
          {
-            Global.Viewer_mLibServices.SubmitKeyValue ("HighScore", value);
+            Global.sTheGlobal.Viewer_mLibServices.SubmitKeyValue ("HighScore", value);
          }
       }
       
@@ -894,9 +894,9 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var value:Number = Number (valueSource.EvaluateValueObject ());
 
-         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SubmitKeyValue)
+         if (Global.sTheGlobal.Viewer_mLibServices != null && Global.sTheGlobal.Viewer_mLibServices.SubmitKeyValue)
          {
-            Global.Viewer_mLibServices.SubmitKeyValue (key, value);
+            Global.sTheGlobal.Viewer_mLibServices.SubmitKeyValue (key, value);
          }
       }
       
@@ -904,9 +904,9 @@ package player.trigger {
       {
          var message:String = valueSource.EvaluateValueObject () as String;
 
-         if (Global.Viewer_mLibServices != null && Global.Viewer_mLibServices.SendGlobalSocketMessage)
+         if (Global.sTheGlobal.Viewer_mLibServices != null && Global.sTheGlobal.Viewer_mLibServices.SendGlobalSocketMessage)
          {
-            Global.Viewer_mLibServices.SendGlobalSocketMessage (message);
+            Global.sTheGlobal.Viewer_mLibServices.SendGlobalSocketMessage (message);
          }
       }
 
@@ -2539,23 +2539,23 @@ package player.trigger {
       public static function LoadLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
-         if (Global.IsInvalidScene (levelIndex))
+         if (Global.sTheGlobal.IsInvalidScene (levelIndex))
             return;
          
          valueSource = valueSource.mNextParameter;
          var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
 
-         //Global.Viewer_OnLoadScene (levelIndex); // if call this at this time, there will be many check point needed to be aded.
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetDelayToLoadSceneIndex (levelIndex, sceneSwitchingStyle);
+         //Global.sTheGlobal.Viewer_OnLoadScene (levelIndex); // if call this at this time, there will be many check point needed to be aded.
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetDelayToLoadSceneIndex (levelIndex, sceneSwitchingStyle);
       }
       
       public static function MergeLevelIntoTheCurrentOne (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
-         if (Global.IsInvalidScene (levelIndex))
+         if (Global.sTheGlobal.IsInvalidScene (levelIndex))
             return;
          
-         //Global.MergeScene (levelIndex);
+         //Global.sTheGlobal.MergeScene (levelIndex);
          callingContext.mWorld.MergeScene (levelIndex);
       }
       
@@ -2566,18 +2566,18 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var relativeTolevelIndex:int = valueSource.EvaluateValueObject () as int;
          
-         if (Global.IsInvalidScene (relativeTolevelIndex))
-            relativeTolevelIndex =  /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentSceneId ();
+         if (Global.sTheGlobal.IsInvalidScene (relativeTolevelIndex))
+            relativeTolevelIndex =  /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentSceneId ();
          
          var levelIndex:int = relativeTolevelIndex + indexOffset;
-         valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex) ? -1 : levelIndex);
+         valueTarget.AssignValueObject (Global.sTheGlobal.IsInvalidScene (levelIndex) ? -1 : levelIndex);
       }
       
       public static function GetLevelId (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          
-         if (Global.IsInvalidScene (levelIndex))
+         if (Global.sTheGlobal.IsInvalidScene (levelIndex))
             levelIndex = -1;
          
          valueTarget.AssignValueObject (levelIndex);
@@ -2587,14 +2587,14 @@ package player.trigger {
       {
          var key:String = valueSource.EvaluateValueObject () as String;
          
-         valueTarget.AssignValueObject (Global.GetSceneByKey (key));
+         valueTarget.AssignValueObject (Global.sTheGlobal.GetSceneByKey (key));
       }
       
       public static function GetLevelKey (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          
-         var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
+         var sceneDefine:SceneDefine = Global.sTheGlobal.GetSceneDefine (levelIndex);
          if (sceneDefine == null)
             valueTarget.AssignValueObject (null);
          else
@@ -2603,13 +2603,13 @@ package player.trigger {
       
       public static function GetCurrentLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentSceneId ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentSceneId ());
       }
       
       public static function IsNullLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var levelIndex:int = valueSource.EvaluateValueObject () as int;
-         valueTarget.AssignValueObject (Global.IsInvalidScene (levelIndex));
+         valueTarget.AssignValueObject (Global.sTheGlobal.IsInvalidScene (levelIndex));
       }
       
       public static function EqualsWith_Scenes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2619,7 +2619,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var levelIndex2:int = valueSource.EvaluateValueObject () as int;
 
-         if (Global.IsInvalidScene (levelIndex1) && Global.IsInvalidScene (levelIndex2))
+         if (Global.sTheGlobal.IsInvalidScene (levelIndex1) && Global.sTheGlobal.IsInvalidScene (levelIndex2))
             valueTarget.AssignValueObject (true);
          else
             valueTarget.AssignValueObject (levelIndex1 == levelIndex2);
@@ -2629,7 +2629,7 @@ package player.trigger {
       {
          var levelIndex:int = valueSource.EvaluateValueObject () as int;
          
-         //var sceneDefine:SceneDefine = Global.GetSceneDefine (levelIndex);
+         //var sceneDefine:SceneDefine = Global.sTheGlobal.GetSceneDefine (levelIndex);
          //if (sceneDefine == null)
          //   valueTarget.AssignValueObject ("null");
          //else
@@ -2640,12 +2640,12 @@ package player.trigger {
       
       public static function WriteSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()), /*Global*/callingContext.mWorld.GetSavedData ());
+         Global.sTheGlobal.Viewer_mLibCookie.WriteCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()), /*Global*/callingContext.mWorld.GetSavedData ());
       }
       
       public static function LoadSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         /*Global*/callingContext.mWorld.SetSavedData (Global.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ())));
+         /*Global*/callingContext.mWorld.SetSavedData (Global.sTheGlobal.Viewer_mLibCookie.LoadCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ())));
       }
       
       public static function ResetSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2655,15 +2655,15 @@ package player.trigger {
       
       public static function DeleteSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibCookie.ClearCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()));
+         Global.sTheGlobal.Viewer_mLibCookie.ClearCookie (Define.GetDefaultWorldSavedDataFilename (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetWorldKey ()));
       }
 
       public static function RestartLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var sceneSwitchingStyle:int = valueSource.EvaluateValueObject () as int;
 
-         //Global.UI_RestartPlay (); // cause bug
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetDelayRestartRequested (sceneSwitchingStyle);
+         //Global.sTheGlobal.UI_RestartPlay (); // cause bug
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetDelayRestartRequested (sceneSwitchingStyle);
       }
       
       public static function IsLevelPaused (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2715,25 +2715,25 @@ package player.trigger {
 
       public static function GetLevelMilliseconds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetLevelMilliseconds ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetLevelMilliseconds ());
       }
 
       public static function GetLevelSteps (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetSimulatedSteps ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetSimulatedSteps ());
       }
 
       public static function GetWorldMousePosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseX ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseX ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseY ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseY ());
       }
 
       public static function GetNumEntitiesPlacedInEditor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetNumEntitiesInEditor ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetNumEntitiesInEditor ());
       }
 
       public static function SetLevelStatus (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2741,13 +2741,13 @@ package player.trigger {
          switch (int (valueSource.EvaluateValueObject ()))
          {
             case ValueDefine.LevelStatus_Failed:
-               /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelFailed ();
+               /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetLevelFailed ();
                break;
             case ValueDefine.LevelStatus_Successed:
-               /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelSuccessed ();
+               /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetLevelSuccessed ();
                break;
             case ValueDefine.LevelStatus_Unfinished:
-               /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelUnfinished ();
+               /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetLevelUnfinished ();
                break;
             default:
                break;
@@ -2756,17 +2756,17 @@ package player.trigger {
 
       public static function IsLevelSuccessed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsLevelSuccessed ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.IsLevelSuccessed ());
       }
 
       public static function IsLevelFailed (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsLevelFailed ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.IsLevelFailed ());
       }
 
       public static function IsLevelUnfinished (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsLevelUnfinished ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.IsLevelUnfinished ());
       }
 
       public static function SetMouseGestureEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2776,7 +2776,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var drawGesture:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         Global.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
+         Global.sTheGlobal.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
       }
       
       public static function SetLevelProperty_Boolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2786,7 +2786,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
          
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
       }
       
       public static function SetLevelProperty_Number (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2796,7 +2796,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var value:Number = valueSource.EvaluateValueObject () as Number;
          
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
       }
       
       public static function SetLevelProperty_String (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2806,7 +2806,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var value:String = valueSource.EvaluateValueObject () as String;
          
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetLevelProperty (property, value);
       }
 
    //*******************************************************************
@@ -2815,7 +2815,7 @@ package player.trigger {
       
       public static function GetLevelFilledColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var filledColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBackgroundColor ();
+         var filledColor:uint = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetBackgroundColor ();
 
          valueTarget.AssignValueObject (filledColor);
       }
@@ -2824,12 +2824,12 @@ package player.trigger {
       {
          var color:uint = uint (valueSource.EvaluateValueObject ());
          
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBackgroundColor (color);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetBackgroundColor (color);
       }
 
       public static function GetLevelFilledColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var filledColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBackgroundColor ();
+         var filledColor:uint = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetBackgroundColor ();
 
          valueTarget.AssignValueObject ((filledColor >> 16) & 0xFF);
 
@@ -2850,12 +2850,12 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var blue:int =  valueSource.EvaluateValueObject () as Number;
          
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBackgroundColor ((red << 16) | (green << 8) | (blue));
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetBackgroundColor ((red << 16) | (green << 8) | (blue));
       }
 
       public static function GetLevelBorderColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var borderColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBorderColor ();
+         var borderColor:uint = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetBorderColor ();
 
          valueTarget.AssignValueObject (borderColor);
       }
@@ -2864,12 +2864,12 @@ package player.trigger {
       {
          var color:uint = uint (valueSource.EvaluateValueObject ());
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBorderColor (color);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetBorderColor (color);
       }
 
       public static function GetLevelBorderColorRGB (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var borderColor:uint = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetBorderColor ();
+         var borderColor:uint = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetBorderColor ();
 
          valueTarget.AssignValueObject ((borderColor >> 16) & 0xFF);
 
@@ -2890,7 +2890,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var blue:int =  valueSource.EvaluateValueObject () as Number;
          
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetBorderColor ((red << 16) | (green << 8) | (blue));
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetBorderColor ((red << 16) | (green << 8) | (blue));
       }
 
    //*******************************************************************
@@ -2899,27 +2899,27 @@ package player.trigger {
 
       public static function IsPhysicsEngineEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.IsPhysicsEngineEnabled ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.IsPhysicsEngineEnabled ());
       }
 
       public static function SetPhysicsEngineEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetPhysicsEngineEnabled (enabled);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetPhysicsEngineEnabled (enabled);
       }
 
       public static function GetRealtimeFPS (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (Global.Viewer_mLibAppp.GetRealtimeFps ());
+         valueTarget.AssignValueObject (Global.sTheGlobal.Viewer_mLibAppp.GetRealtimeFps ());
       }
 
       public static function GetPreferredFpsAndStepTimeLangth (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPreferredFPS ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPreferredFPS ());
          
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsSimulationStepTimeLength ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsSimulationStepTimeLength ());
       }
 
       public static function SetPreferredFpsAndStepTimeLangth (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2929,8 +2929,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var timeLength:Number = Number (valueSource.EvaluateValueObject ());
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetPreferredFPS (preferredFps);
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetPhysicsSimulationStepTimeLength (timeLength);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetPreferredFPS (preferredFps);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetPhysicsSimulationStepTimeLength (timeLength);
       }
       
       public static function SetWorldGravityAcceleration_Radians (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2940,7 +2940,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var radians:Number = (valueSource.EvaluateValueObject () as Number) % 360.0;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
 
       public static function SetWorldGravityAcceleration_Degrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2950,7 +2950,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var radians:Number = ((valueSource.EvaluateValueObject () as Number) % 360.0) * Define.kDegrees2Radians;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (magnitude * Math.cos (radians), magnitude * Math.sin (radians));
       }
 
       public static function SetWorldGravityAcceleration_Vector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2960,23 +2960,23 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var gaY:Number = valueSource.EvaluateValueObject () as Number;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (gaX, gaY);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetCurrentGravityAcceleration (gaX, gaY);
       }
 
       public static function GetWorldGravityAcceleration_Vector (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentGravityAccelerationX ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentGravityAccelerationX ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentGravityAccelerationY ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentGravityAccelerationY ());
       }
       
       public static function GetViewportSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportWidth ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportWidth ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportHeight ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportHeight ());
       }
 
       public static function SetCurrentCamera (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2990,15 +2990,15 @@ package player.trigger {
 
       public static function GetCameraCenter (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCameraCenterPhysicsX ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCameraCenterPhysicsX ());
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCameraCenterPhysicsY ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCameraCenterPhysicsY ());
       }
 
       public static function GetCameraRotation_Degrees (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetCameraPhysicsRotationIn360Degrees ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCameraPhysicsRotationIn360Degrees ());
       }
 
       public static function FollowCameraWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3014,7 +3014,7 @@ package player.trigger {
          //var folowRotation:Boolean = valueSource.EvaluateValueObject () as Boolean;
          var folowRotation:Boolean = true;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraWithEntity (shape, isSmooth, folowRotation);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraWithEntity (shape, isSmooth, folowRotation);
       }
 
       public static function FollowCameraCenterXWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3026,7 +3026,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraCenterXWithEntity (shape, isSmooth);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraCenterXWithEntity (shape, isSmooth);
       }
 
       public static function FollowCameraCenterYWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3038,7 +3038,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraCenterYWithEntity (shape, isSmooth);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraCenterYWithEntity (shape, isSmooth);
       }
 
       public static function FollowCameraRotationWithShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3050,7 +3050,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var isSmooth:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraAngleWithEntity (shape, isSmooth);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.FollowCameraAngleWithEntity (shape, isSmooth);
       }
 
       public static function CameraFadeOutThenFadeIn (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3069,7 +3069,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var scriptToRun:ScriptHolder = valueSource.EvaluateValueObject () as ScriptHolder;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.CameraFadeOutThenFadeIn (fadeColor, stepsFadeOut, stepsFadeIn, stepsFadeStaying, scriptToRun);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.CameraFadeOutThenFadeIn (fadeColor, stepsFadeOut, stepsFadeIn, stepsFadeStaying, scriptToRun);
       }
 
       public static function CallScript (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3194,8 +3194,8 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var cat:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
 
-         numParticles = /*Global.GetCurrentWorld ()*/callingContext.mWorld.CreateExplosion (null, worldX, worldY, cat, numParticles,
-                     lifeSteps * /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsSimulationStepTimeLength (),
+         numParticles = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.CreateExplosion (null, worldX, worldY, cat, numParticles,
+                     lifeSteps * /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsSimulationStepTimeLength (),
                      density, restitution, speed, 1.0, color, visible);
 
          valueTarget.AssignValueObject (numParticles);
@@ -3211,7 +3211,7 @@ package player.trigger {
          if (isNaN (soundIndex))
             soundIndex = -1;
 
-         var sound:Sound = Global.GetSoundByIndex (soundIndex);
+         var sound:Sound = Global.sTheGlobal.GetSoundByIndex (soundIndex);
          if (sound != null && sound.GetSoundObject () != null)
          {
             valueSource = valueSource.mNextParameter;
@@ -3220,13 +3220,13 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             var crossingLevels:Boolean = Boolean (valueSource.EvaluateValueObject ());
             
-            Global.Viewer_mLibSound.PlaySound (sound.GetSoundObject (), times, crossingLevels);
+            Global.sTheGlobal.Viewer_mLibSound.PlaySound (sound.GetSoundObject (), times, crossingLevels);
          }
       }
 
       public static function StopAllSounds_InLevel (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         Global.Viewer_mLibSound.StopAllInLevelSounds ();
+         Global.sTheGlobal.Viewer_mLibSound.StopAllInLevelSounds ();
       }
       
       public static function StopSound_CrossLevels (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3238,14 +3238,14 @@ package player.trigger {
          var sound:Sound = null;
          if (soundIndex >= 0)
          {
-            sound = Global.GetSoundByIndex (soundIndex);
+            sound = Global.sTheGlobal.GetSoundByIndex (soundIndex);
             if (sound == null || sound.GetSoundObject () == null)
                return;
          }
          
          // null means all (when soundIndex < 0)
             
-         Global.Viewer_mLibSound.StopCrossLevelsSound (sound == null ? null : sound.GetSoundObject ());
+         Global.sTheGlobal.Viewer_mLibSound.StopCrossLevelsSound (sound == null ? null : sound.GetSoundObject ());
       }
       
       public static function IsSoundEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3277,7 +3277,7 @@ package player.trigger {
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
 
-         valueTarget.AssignValueObject (Global.ValiddateModuleIndex (moduleIndex));
+         valueTarget.AssignValueObject (Global.sTheGlobal.ValiddateModuleIndex (moduleIndex));
       }
 
       public static function EqualsWith_Module (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3289,7 +3289,7 @@ package player.trigger {
          //var module2:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex2:int = valueSource.EvaluateValueObject () as int;
 
-         valueTarget.AssignValueObject (Global.ValiddateModuleIndex (moduleIndex) == Global.ValiddateModuleIndex (moduleIndex2));
+         valueTarget.AssignValueObject (Global.sTheGlobal.ValiddateModuleIndex (moduleIndex) == Global.sTheGlobal.ValiddateModuleIndex (moduleIndex2));
       }
 
    //*******************************************************************
@@ -3343,7 +3343,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var collideInternally:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.BreakOrCreateCollisionCategoryFriendLink (cat, cat, collideInternally);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.BreakOrCreateCollisionCategoryFriendLink (cat, cat, collideInternally);
       }
 
       public static function SetCollisionCategoriesAsFriends (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3356,7 +3356,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var asFriends:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.BreakOrCreateCollisionCategoryFriendLink (cat1, cat2, ! asFriends);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.BreakOrCreateCollisionCategoryFriendLink (cat1, cat2, ! asFriends);
       }
 
    //*******************************************************************
@@ -3431,7 +3431,7 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             var supportRuntimeEntity:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-            valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetEntityByCreateOrderId (baseEntity.GetCreationId () + idOffset, supportRuntimeEntity));
+            valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetEntityByCreateOrderId (baseEntity.GetCreationId () + idOffset, supportRuntimeEntity));
          }
       }
 
@@ -4061,7 +4061,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var textureModuleIndex:int = valueSource.EvaluateValueObject () as int;
          
-         shape.SetBodyTextureModuleIndex (Global.ValiddateModuleIndex (textureModuleIndex));
+         shape.SetBodyTextureModuleIndex (Global.sTheGlobal.ValiddateModuleIndex (textureModuleIndex));
       }
 
       public static function GetShapeFilledColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -4936,7 +4936,7 @@ package player.trigger {
 
       public static function UpdateShapeContactStatusInfos(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         /*Global.GetCurrentWorld ()*/callingContext.mWorld.UpdateShapeContactStatusInfos ();
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.UpdateShapeContactStatusInfos ();
       }
 
       public static function GetPhysicsShapesAtPoint(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -4946,7 +4946,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var pointY:Number = valueSource.EvaluateValueObject () as Number;
          
-         var shapes:Array = /*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY);
+         var shapes:Array = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY);
          CoreClasses.CovertArrayElementsToClassInstances (shapes, CoreClasses.kEntityClassDefinition);
          
          valueTarget.AssignValueObject (shapes);
@@ -4965,7 +4965,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var endPointY:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetFirstIncomingIntersection (startPointX, startPointY, endPointX, endPointY));
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetFirstIncomingIntersection (startPointX, startPointY, endPointX, endPointY));
       }
 
       public static function GetFirstOutcomingIntersectionWithLineSegment(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -4981,7 +4981,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var endPointY:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetFirstOutcomingIntersection (startPointX, startPointY, endPointX, endPointY));
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetFirstOutcomingIntersection (startPointX, startPointY, endPointX, endPointY));
       }
 
       public static function GetIntersectedShapesWithLineSegment(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -5000,7 +5000,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var includingHalfIntersecteds:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         valueTarget.AssignValueObject (/*Global.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetIntersectedShapes (startPointX, startPointY, endPointX, endPointY, includingHalfIntersecteds));
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetIntersectedShapes (startPointX, startPointY, endPointX, endPointY, includingHalfIntersecteds));
       }
 
 
@@ -6048,7 +6048,7 @@ package player.trigger {
          if (loopToEndHandler != null && loopToEndHandler.GetEventId () != CoreEventIds.ID_OnSequencedModuleLoopToEnd) // generally, impossible
             loopToEndHandler = null;
 
-         moduleShape.SetModuleIndexByAPI (Global.ValiddateModuleIndex (moduleIndex), loopToEndHandler);
+         moduleShape.SetModuleIndexByAPI (Global.sTheGlobal.ValiddateModuleIndex (moduleIndex), loopToEndHandler);
       }
 
       public static function GetShapeModuleButton_OverState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -6076,7 +6076,7 @@ package player.trigger {
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
 
-         buttonModuleShape.SetModuleIndexOver (Global.ValiddateModuleIndex (moduleIndex));
+         buttonModuleShape.SetModuleIndexOver (Global.sTheGlobal.ValiddateModuleIndex (moduleIndex));
       }
 
       public static function GetShapeModuleButton_DownState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -6104,7 +6104,7 @@ package player.trigger {
          //var module:Module = valueSource.EvaluateValueObject () as Module;
          var moduleIndex:int = valueSource.EvaluateValueObject () as int;
 
-         buttonModuleShape.SetModuleIndexDown (Global.ValiddateModuleIndex (moduleIndex));
+         buttonModuleShape.SetModuleIndexDown (Global.sTheGlobal.ValiddateModuleIndex (moduleIndex));
       }
 
    //*******************************************************************

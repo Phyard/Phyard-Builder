@@ -38,7 +38,9 @@ package player
                Global.sTheGlobal.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
                
                Global.sTheGlobal.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
-                                                                  // useless since v2.03
+                                                                  // useless since v2.03.
+                                                                  // for v2.05 is the main version for v2.00-v2.05,
+                                                                  // this can't be removed safely.
                
                Global.sTheGlobal.Viewer_mLibSound = params.mLibSound; // from v2.02
                

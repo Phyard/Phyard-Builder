@@ -51,8 +51,12 @@ package editor.entity.dialog {
                                          mStartRightNow: true, 
                                          mMaskViewerField: maskFieldInPlaying, 
                                          mBackgroundColor: surroudingBackgroundColor, 
-                                         OnExitLevel: callbackStopPlaying
-                                         }
+                                         OnExitLevel: callbackStopPlaying, 
+                                         
+                                         //>> websocket
+                                         EmbedCallContainer: EmbedCallContainer
+                                         //<<
+                                      }
                              });
          
          addChild (mDesignViewer);
@@ -341,6 +345,59 @@ package editor.entity.dialog {
       public function ClearGameSaveData (soFilename:String):void
       {
          Viewer.ClearCookie (soFilename);
+      }
+      
+//============================================================================
+//   as the Multiple Players Server
+//============================================================================
+      
+      public static const MaxNumMultiplePlayers:int = 4;
+      
+      protected var mNumMultiplePlayers:int = 1;
+      protected var mMultiplePlayerViewers:Array = new Array (MaxNumMultiplePlayers);
+      protected var mCurrentMutiplePlayerIndex:int = 0;
+      
+      protected function SetNumMultiplePlayers (num:int):void
+      {
+         if (num < 1)
+            num = 1;
+         if (num > MaxNumMultiplePlayers)
+            num = MaxNumMultiplePlayers;
+         
+         if (mNumMultiplePlayers > num)
+         {
+            
+            if (mCurrentMutiplePlayerIndex >= num)
+               SetCurrentMultiplePlayerIndex (0);
+         }
+         else if (mNumMultiplePlayers < num)
+         {
+         }
+         
+         mNumMultiplePlayers = num;
+      }
+      
+      public function SetCurrentMultiplePlayerIndex (index:int):void
+      {
+         mCurrentMutiplePlayerIndex = index;
+      } 
+      
+      // don't change this name, 
+      public function ContainerCallEmbed (funcName:String, params:Object):void
+      {
+         //if (mViewer != null)
+         //{
+         //   mViewer.ContainerCallEmbed (funcName, params);
+         //}
+      }
+      
+      // don't change this name, 
+      public function EmbedCallContainer (funcName:String, params:Object):void 
+      {
+         if (funcName == "SendGlobalSocketMessage")
+         {
+            var message:String = params.message;
+         }
       }
    }
 }

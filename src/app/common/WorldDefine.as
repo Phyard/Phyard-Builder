@@ -14,12 +14,13 @@ package common {
       
       public var mPlayerWorldHints:Object; // not used now. When and why it is added? 
       
+      // the two are used for global data now. SceneDefine also has two such properties.
       public var mDontFillMissedFields:Boolean = false; // from v2.00. For fast loading
       public var mDontAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
       
       public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
       
-      public var mWorldCrossStagesData:Object; // from v2.06. For restore some data of last player world instance.
+      public var mWorldCrossStagesData:Object; // from v2.06. For reused some data of last player world instance.
             
    // ...
       

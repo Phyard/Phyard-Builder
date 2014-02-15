@@ -322,9 +322,11 @@ package common {
          if (isLoaingFromStretch)
          {
             //
-            Global.sTheGlobal = new Global ();
+            
+            if (Global.sTheGlobal == null)
+               Global.sTheGlobal = new Global ();
             Global.sTheGlobal.Initialize/*InitGlobalData*/ (worldDefine, worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
-            //Global.mWorldDefine = worldDefine; // moved into above line
+            //Global.mWorldDefine = worldDefine; // moved into above line.
             
             //
             playerWorld = new World (sceneDefine) ; //worldDefine);

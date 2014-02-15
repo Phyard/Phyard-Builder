@@ -10,18 +10,30 @@
             };
       }
       
-      public function SetWorldCrossStagesData (isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean, worldCrossSessionsData:Object):void
+      public function SetWorldCrossStagesData (worldCrossSessionsData:Object, /*dontReloadGlobalAssets:Boolean,*/ isRestartLevel:Boolean):void
       {
-         if (dontReloadGlobalAssets)
+         //if (dontReloadGlobalAssets)
+         //{
+         //   mWorldVariableSpace = worldCrossSessionsData.mWorldVariableSpace;
+         //   mGameSaveVariableSpace = worldCrossSessionsData.mGameSaveVariableSpace;
+         //   mGameSaveVariableSpace_WithInitialValues = worldCrossSessionsData.mGameSaveVariableSpace_WithInitialValues;
+         //}
+         //
+         //if (isRestartLevel)
+         //{
+         //   mSessionVariableSpace = worldCrossSessionsData.mSessionVariableSpace;
+         //}
+         
+         if (worldCrossSessionsData != null)
          {
             mWorldVariableSpace = worldCrossSessionsData.mWorldVariableSpace;
             mGameSaveVariableSpace = worldCrossSessionsData.mGameSaveVariableSpace;
             mGameSaveVariableSpace_WithInitialValues = worldCrossSessionsData.mGameSaveVariableSpace_WithInitialValues;
-         }
-         
-         if (isRestartLevel)
-         {
-            mSessionVariableSpace = worldCrossSessionsData.mSessionVariableSpace;
+            
+            if (isRestartLevel)
+            {
+               mSessionVariableSpace = worldCrossSessionsData.mSessionVariableSpace;
+            }
          }
       }
       

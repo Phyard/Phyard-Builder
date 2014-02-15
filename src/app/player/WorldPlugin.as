@@ -25,32 +25,34 @@ package player
                   "" : null
                };
             case "SetViewerParams":
-               Global.sTheGlobal.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
+               world = params.mWorld as World;
+               
+               //Global._GetDebugString = params.GetDebugString as Function; // from v1.60
+               /*Global.sTheGlobal*/world._GetDebugString = /*Global.sTheGlobal*/world.GetDebugString;
+               
+               /*Global.sTheGlobal*/world.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
+               
+               /*Global.sTheGlobal*/world.Viewer_mLibCapabilities = params.mLibCapabilities; // from v1.60
                            //IsAccelerometerSupported:Function; // from v1.60
                            //GetAcceleration:Function; // from v1.60
                            //GetScreenResolution:Function; // from v2.03
                            //GetScreenDPI:Function; // from v2.03
                            //OpenURL:Function; // from v2.03
                
-               //Global._GetDebugString = params.GetDebugString as Function; // from v1.60
-               Global.sTheGlobal._GetDebugString = Global.sTheGlobal.GetDebugString;
-               
-               Global.sTheGlobal.Viewer_SetMouseGestureSupported = params.SetMouseGestureSupported as Function; // from v1.60
-               
-               Global.sTheGlobal.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
+               /*Global.sTheGlobal*/world.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
                                                                   // useless since v2.03.
                                                                   // for v2.05 is the main version for v2.00-v2.05,
                                                                   // this can't be removed safely.
                
-               Global.sTheGlobal.Viewer_mLibSound = params.mLibSound; // from v2.02
+               /*Global.sTheGlobal*/world.Viewer_mLibSound = params.mLibSound; // from v2.02
                
-               Global.sTheGlobal.Viewer_mLibGraphics = params.mLibGraphics; // from v2.03
+               /*Global.sTheGlobal*/world.Viewer_mLibGraphics = params.mLibGraphics; // from v2.03
                
-               Global.sTheGlobal.Viewer_mLibAppp = params.mLibApp; // v2.03
+               /*Global.sTheGlobal*/world.Viewer_mLibAppp = params.mLibApp; // v2.03
                
-               Global.sTheGlobal.Viewer_mLibCookie = params.mLibCookie; // from v2.03
+               /*Global.sTheGlobal*/world.Viewer_mLibCookie = params.mLibCookie; // from v2.03
                
-               Global.sTheGlobal.Viewer_mLibServices = params.mLibService; // from v2.03
+               /*Global.sTheGlobal*/world.Viewer_mLibServices = params.mLibService; // from v2.03
                
                break;
             case "GetWorldProperties":

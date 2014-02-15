@@ -263,7 +263,7 @@ package common {
       //    isMergingScene is true for merging scene, otherwise for cloning shape
       // playerWorld == null for loading scene or restart scene
       //    worldDefine.mForRestartLevel
-      //    worldDefine.mDontReloadGlobalAssets
+      //    worldDefine.mDontReloadGlobalAssets is deprecated since v2.06.
       // worldDefine.mCurrentSceneId
       // worldDefine.mViewerParams
       // 
@@ -323,17 +323,23 @@ package common {
          {
             //
             
-            if (Global.sTheGlobal == null)
-               Global.sTheGlobal = new Global ();
-            Global.sTheGlobal.Initialize/*InitGlobalData*/ (worldDefine, worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
+            //Global.sTheGlobal.Initialize/*InitGlobalData*/ (worldDefine, worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
             //Global.mWorldDefine = worldDefine; // moved into above line.
+            if (Global.sTheGlobal == null)
+            {
+               Global.OnCreate (worldDefine);
+            }
+            else
+            {
+               Global.sTheGlobal.Reset (); // worldDefine must be still the last worldDefine.
+            }
             
             //
-            playerWorld = new World (sceneDefine) ; //worldDefine);
+            playerWorld = new World (sceneDefine); //worldDefine);
             
             // sicne v2.06, move part from Global.InitGlobalDatam new Initialize, to World.InitVariableSpaces
-            playerWorld.SetWorldCrossStagesData (worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets,
-                                                 worldDefine.mWorldCrossStagesData);
+            playerWorld.SetWorldCrossStagesData (worldDefine.mWorldCrossStagesData, /*worldDefine.mDontReloadGlobalAssets,*/
+                                                 worldDefine.mForRestartLevel);
             worldDefine.mWorldCrossStagesData = null;
             
             // ...
@@ -343,11 +349,12 @@ package common {
             playerWorld.SetBasicInfos (worldDefine);
             //Global.SetCurrentWorld (playerWorld);
             
-            // ...
-            Global.sTheGlobal.UpdateCoreClassDefaultInitialValues ();
-            Global.sTheGlobal.CreateOrResetCoreFunctionDefinitions ();
+            // the two lines are put into Global.Initialize now, for they don't need a world instance any more.
+            //Global.sTheGlobal.UpdateCoreClassDefaultInitialValues ();
+            //Global.sTheGlobal.CreateOrResetCoreFunctionDefinitions ();
             
-            // ...
+            // not needs to use plugin interface, but don't want to change it.
+            worldDefine.mViewerParams.mWorld = playerWorld;
             WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
             worldDefine.mViewerParams = null;
          }

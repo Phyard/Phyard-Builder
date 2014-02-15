@@ -18,7 +18,8 @@ package common {
       public var mDontFillMissedFields:Boolean = false; // from v2.00. For fast loading
       public var mDontAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
       
-      public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
+      //public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
+                                                            // removed from v2.05, now useless for any versions
       
       public var mWorldCrossStagesData:Object; // from v2.06. For reused some data of last player world instance.
             

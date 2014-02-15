@@ -37,6 +37,8 @@ package player.world
    import common.trigger.CoreClassIds;
    import common.trigger.ClassDeclaration;
    import common.trigger.CoreClassDeclarations;
+   import common.trigger.CoreFunctionDeclarations;
+   import common.trigger.CoreEventDeclarations;
    import common.trigger.define.ClassDefine;
    import common.trigger.define.FunctionDefine;
    
@@ -75,48 +77,13 @@ package player.world
 
       public /*static*/ var mSounds:Array; //
       
-   // callbacks from viewer
+//==============================================================================
+// 
+//==============================================================================
       
-      //>>>>>>> now put in player.World
-      //public static var UI_RestartPlay:Function;
-      //public static var UI_IsPlaying:Function;
-      //public static var UI_SetPlaying:Function;
-      //public static var UI_GetSpeedX:Function;
-      //public static var UI_SetSpeedX:Function;
-      //public static var UI_GetZoomScale:Function;
-      //public static var UI_SetZoomScale:Function;
-      //public static var UI_IsSoundEnabled:Function;
-      //public static var UI_SetSoundEnabled:Function;
-      //public static var UI_GetSoundVolume:Function; // v2.03 (not really used now)
-      //public static var UI_SetSoundVolume:Function; // v2.03 (not really used now)
-      //<<<<<<<<<<
+      public var Viewer_mLibGraphics_LoadImageFromBytes:Function;
+      public var Viewer_mLibSound_LoadSoundFromBytes:Function;
       
-      public /*static*/ var Viewer_mLibCapabilities:Object;
-               //IsAccelerometerSupported:Function; // v1.60
-               //GetAcceleration:Function; // v1.60
-               //GetScreenResolution:Function; // from v2.03
-               //GetScreenDPI:Function; // from v2.03
-               //OpenURL:Function; // from v2.03
-      public /*static*/ var _GetDebugString:Function;
-      public /*static*/ var Viewer_SetMouseGestureSupported:Function;
-      public /*static*/ var Viewer_OnLoadScene:Function; // v2.00-v2.03
-      public /*static*/ var Viewer_mLibSound:Object;
-               //PlaySound:Function; // v2.02. (before v2.02, sound lib is included in world instead of viewer)
-               //StopAllInLevelSounds:Function; // v2.02
-               //StopCrossLevelsSound:Function; // v2.02
-      public /*static*/ var Viewer_mLibGraphics:Object; // v2.03
-               //LoadImageFromBytes:Function; // v2.03
-      public /*static*/ var Viewer_mLibAppp:Object; // v2.03
-               //IsNativeApp:Function; // v2.03
-               //OnExitApp:Function; // v2.03
-      public /*static*/ var Viewer_mLibCookie:Object; // v2.03
-               //WriteGameSaveData:Function; // v2.03
-               //LoadGameSaveData:Function; // v2.03
-               //ClearGameSaveData:Function; // v2.03
-      public /*static*/ var Viewer_mLibServices:Object; // v2.03
-               //SubmitKeyValue:Function; // v2.0?
-               //SendGlobalSocketMessage  // v2.06
-            
 //==============================================================================
 // for playing in editor. 
 //==============================================================================
@@ -136,7 +103,7 @@ package player.world
       
       public /*static*/ function Destroy (params:Object = null):void
       {
-         CoreFunctionDefinitions.Initialize (/*null*/true);
+         CoreFunctionDefinitions.Initialize (/*null*//*true*/);
          
          /*
          mSceneLookupTableByKey = null;
@@ -186,52 +153,75 @@ package player.world
          //UI_IsSoundEnabled = null;
          //UI_SetSoundEnabled = null;
      
-         /*    
-         Viewer_mLibCapabilities = null;
-         _GetDebugString = null;
-         Viewer_SetMouseGestureSupported = null;
-         Viewer_OnLoadScene = null;
-         Viewer_mLibSound = null;
-         Viewer_mLibGraphics = null;
-         Viewer_mLibAppp = null;
-         Viewer_mLibCookie = null;
-         Viewer_mLibServices = null;
-         */
+         //Viewer_mLibCapabilities = null;
+         //_GetDebugString = null;
+         //Viewer_SetMouseGestureSupported = null;
+         //Viewer_OnLoadScene = null;
+         //Viewer_mLibSound = null;
+         //Viewer_mLibGraphics = null;
+         //Viewer_mLibAppp = null;
+         //Viewer_mLibCookie = null;
+         //Viewer_mLibServices = null;
       }
 
 //==============================================================================
 // 
 //==============================================================================
       
-      public /*static*/ function Initialize/*InitGlobalData*/ (worldDefine:Object, isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean):void
+      public static function OnCreate (worldDefine:Object):void
+      {
+         if (sTheGlobal == null)
+         {
+            sTheGlobal = new Global ();
+            
+            sTheGlobal.Initialize/*InitGlobalData*/ (worldDefine); //, worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
+         }
+      }
+      
+      public function Reset ():void
+      {
+         CreateOrResetCoreFunctionDefinitions (); // maybe this calling is not essential at all.
+      }
+      
+      public /*static*/ function Initialize/*InitGlobalData*/ (worldDefine:Object):void //, isRestartLevel:Boolean, dontReloadGlobalAssets:Boolean):void
       {
          //
          mWorldDefine = worldDefine;
          
          //
+         Viewer_mLibGraphics_LoadImageFromBytes = worldDefine.mViewerParams.mLibGraphics.LoadImageFromBytes;
+         Viewer_mLibSound_LoadSoundFromBytes = worldDefine.mViewerParams.mLibSound.LoadSoundFromBytes;
+         
+         //
+         //TriggerEngine.InitializeConstData ();
+         CoreFunctionDeclarations.Initialize ();
+         CoreEventDeclarations.Initialize ();
+         
+         //
          CoreClasses.InitCoreClassDefinitions ();
+         UpdateCoreClassDefaultInitialValues (); // this one can be put into above InitCoreClassDefinitions now.
+                                                 // before, it may depend on a world instance (for hidden ccat).
+         
+         CreateOrResetCoreFunctionDefinitions ();
          
          //
-         TriggerEngine.InitializeConstData ();
-         
-         //
-         //if (! isRestartLevel) // before v2.00
-         if (! dontReloadGlobalAssets) // from v2.00
-         {
-            mImageBitmaps         = null;
-            mImageBitmapDivisions = null;
-            mAssembledModules     = null;
-            mSequencedModules     = null;
-            
-            mSounds = null;
-         }
+         ////if (! isRestartLevel) // before v2.00
+         //if (! dontReloadGlobalAssets) // from v2.00
+         //{
+         //   mImageBitmaps         = null;
+         //   mImageBitmapDivisions = null;
+         //   mAssembledModules     = null;
+         //   mSequencedModules     = null;
+         //   
+         //   mSounds = null;
+         //}
          
          // ...
          
-         if (! dontReloadGlobalAssets)
-         {
-            mSceneLookupTableByKey = null;
-         }
+         //if (! dontReloadGlobalAssets)
+         //{
+         //   mSceneLookupTableByKey = null;
+         //}
 
          //
          //mRandomNumberGenerators = new Array (Define.NumRngSlots);
@@ -248,15 +238,15 @@ package player.world
          //UI_SetSoundEnabled = null;
          
          //
-         Viewer_mLibCapabilities = null;
-         _GetDebugString = null;
-         Viewer_SetMouseGestureSupported = null;
-         Viewer_OnLoadScene = null;
-         Viewer_mLibSound = null;
-         Viewer_mLibGraphics = null;
-         Viewer_mLibAppp = null;
-         Viewer_mLibCookie = null;
-         Viewer_mLibServices = null;
+         //Viewer_mLibCapabilities = null;
+         //_GetDebugString = null;
+         //Viewer_SetMouseGestureSupported = null;
+         //Viewer_OnLoadScene = null;
+         //Viewer_mLibSound = null;
+         //Viewer_mLibGraphics = null;
+         //Viewer_mLibAppp = null;
+         //Viewer_mLibCookie = null;
+         //Viewer_mLibServices = null;
          
          //>>>>>>>>>>>>> moved into world
          // no needs to call this now 
@@ -301,16 +291,6 @@ package player.world
       //{
       //   return mCurrentWorld;
       //}
-   
-//==============================================================================
-// 
-//==============================================================================
-   
-   private /*static*/ var mDebugString:String = null;
-   public /*static*/ function GetDebugString ():String
-   {
-      return mDebugString;
-   }
    
 //==============================================================================
 // scenes
@@ -391,7 +371,7 @@ package player.world
          //if (mCurrentWorld == null)
          //   throw new Error ();
          
-         CoreFunctionDefinitions.Initialize (/*mCurrentWorld*/false);
+         CoreFunctionDefinitions.Initialize (/*mCurrentWorld*//*false*/);
       }
             
       public /*static*/ function CreateImageModules (imageDefines:Array, pureImageModuleDefines:Array, assembledModuleDefines:Array, sequencedModuleDefines:Array):void

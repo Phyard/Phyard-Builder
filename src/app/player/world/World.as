@@ -106,7 +106,7 @@ package player.world {
       include "World_GeneralEventHandling.as";
       include "World_CodeLib.as";
       include "World_APIs.as";
-      include "World_ViewerUI.as";
+      include "World_Viewer.as";
       include "World_MersenneTwisterRNG.as";
       include "World_Misc.as";
 

@@ -33,20 +33,21 @@ package player.trigger
 // const data structures
 //=============================================================================
       
-      private static var sConstDataInited:Boolean = false;
-      
-      public static function InitializeConstData ():void
-      {
-         if (sConstDataInited)
-            return;
-         
-         CoreFunctionDeclarations.Initialize ();
-         CoreEventDeclarations.Initialize ();
-         
-         // CoreFunctionDefinitions.Initialize (); // moved
-         
-         sConstDataInited = true;
-      }
+      // move put into Global.Initialize
+      //private static var sConstDataInited:Boolean = false;
+      //
+      //public static function InitializeConstData ():void
+      //{
+      //   if (sConstDataInited)
+      //      return;
+      //   
+      //   CoreFunctionDeclarations.Initialize ();
+      //   CoreEventDeclarations.Initialize ();
+      //   
+      //   // CoreFunctionDefinitions.Initialize (); // moved
+      //   
+      //   sConstDataInited = true;
+      //}
       
       public static function GetCoreFunctionDefinition (functionId:int):FunctionDefinition_Core
       {

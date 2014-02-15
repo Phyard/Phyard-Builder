@@ -74,9 +74,9 @@ package common {
    
    public class TriggerFormatHelper2
    {
-      // playerWorld == null is for core APIs.
-      // toClearRefs is only meaningful when playerWorld == null.
-      public static function BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld:World, toClearRefs:Boolean, variableSpace:VariableSpace, functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
+      // playerWorld == null is for core APIs and later potiential custom global and library functions.
+      // [this param is removed] toClearRefs is only meaningful when playerWorld == null.
+      public static function BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld:World, /*toClearRefs:Boolean,*/ variableSpace:VariableSpace, functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
       {
          var variableInstance:VariableInstance;
          var i:int;
@@ -118,12 +118,12 @@ package common {
                variableInstance.SetRealClassDefinition (classDefinition);
                
                //variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
-               if (playerWorld == null) // avoid memory consuming after testing in editor.
-                  variableInstance.SetValueObject (null);
-               else
-               {
+               //if (toClearRefs) //playerWorld == null) // avoid memory consuming after testing in editor.
+               //   variableInstance.SetValueObject (null);
+               //else
+               //{
                   variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetInputParamDefaultValue (i)));
-               }
+               //}
             }
          }
          else
@@ -158,12 +158,12 @@ package common {
                variableInstance.SetRealClassDefinition (classDefinition);
                
                //variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
-               if (playerWorld == null) // avoid memory consuming after testing in editor.
-                  variableInstance.SetValueObject (null);
-               else
-               {
+               //if (toClearRefs) //playerWorld == null) // avoid memory consuming after testing in editor.
+               //   variableInstance.SetValueObject (null);
+               //else
+               //{
                   variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetOutputParamDefaultValue (i)));
-               }
+               //}
             }
          }
          
@@ -252,19 +252,19 @@ package common {
       
       // coreFunction == null means this is the first time to create the function.
       // otherwise, means to reset initial ClassInstance for all sources and target to avoid memory leak and logic errors.
-      public static function CreateCoreFunctionDefinition (/*playerWorld:World*/toClearRefs:Boolean, coreFunction:FunctionDefinition_Core, functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
+      public static function CreateCoreFunctionDefinition (/*playerWorld:World*//*toClearRefs:Boolean,*/ coreFunction:FunctionDefinition_Core, functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
       {
          if (coreFunction == null)
          {
             return new FunctionDefinition_Core (
-                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, null, functionDeclaration, true), 
-                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, null, functionDeclaration, false), 
+                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ null, functionDeclaration, true), 
+                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ null, functionDeclaration, false), 
                         callback);
          }
          else // to reset param values
          {
-            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, coreFunction.GetInputVariableSpace (), functionDeclaration, true);
-            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, toClearRefs, coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
+            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ coreFunction.GetInputVariableSpace (), functionDeclaration, true);
+            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
             
             return coreFunction;
          }
@@ -292,8 +292,8 @@ package common {
             // Currently, still create one for each instance.
             
             //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
-            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, false, null, functionDeclaration, true);
-            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, false, null, functionDeclaration, false);
+            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, /*false,*/ null, functionDeclaration, true);
+            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, /*false,*/ null, functionDeclaration, false);
          }
          else
          {

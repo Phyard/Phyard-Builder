@@ -76,7 +76,7 @@ package player.image
             mCallbackOnLoadError = onLoadError;
             
             // ...
-            Global.sTheGlobal.Viewer_mLibGraphics.LoadImageFromBytes (fileData, OnLoadImageComplete, OnLoadImageError);
+            Global.sTheGlobal.Viewer_mLibGraphics_LoadImageFromBytes (fileData, OnLoadImageComplete, OnLoadImageError);
          }
       }
       

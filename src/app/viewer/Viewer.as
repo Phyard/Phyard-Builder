@@ -1249,10 +1249,10 @@ package viewer {
             {
                worldDefine.mCurrentSceneId = sceneId;
             }
-            if (worldDefine.hasOwnProperty ("mDontReloadGlobalAssets"))
-            {
-               worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
-            }
+            //if (worldDefine.hasOwnProperty ("mDontReloadGlobalAssets")) // useless for any versions now.
+            //{
+            //   worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
+            //}
             if (worldDefine.hasOwnProperty ("mWorldCrossStagesData"))
             {
                if ((forRestartLevel || dontReloadGlobalAssets) && mOldWorldDesignProperties != null)
@@ -1269,17 +1269,17 @@ package viewer {
                worldDefine.mViewerParams = {
                   //Viewer
                   OnLoadScene : OnLoadScene,
+                  GetDebugString: GetDebugString,
+                  SetMouseGestureSupported: SetMouseGestureSupported,
                   mLibCapabilities : {
                               IsAccelerometerSupported: IsAccelerometerSupported,
                               GetAcceleration: GetAcceleration,
                               GetScreenResolution : GetScreenResolution,
                               GetScreenDPI : GetScreenDPI
                   },
-                  GetDebugString: GetDebugString,
-                  SetMouseGestureSupported: SetMouseGestureSupported,
                   mLibSound : {
-                              LoadSoundFromBytes : LoadSoundFromBytes, 
-                              PlaySound: PlaySound,
+                              LoadSoundFromBytes  : LoadSoundFromBytes, 
+                              PlaySound           : PlaySound,
                               StopAllInLevelSounds: StopAllInLevelSounds,
                               StopCrossLevelsSound: StopCrossLevelsSound
                              

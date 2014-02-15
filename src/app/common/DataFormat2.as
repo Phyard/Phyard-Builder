@@ -319,7 +319,7 @@ package common {
          if (isLoaingFromStretch)
          {
             //
-            Global.InitGlobalData (worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
+            Global.InitGlobalData (worldDefine.mForRestartLevel, Global.sTheGlobal != null/*worldDefine.mDontReloadGlobalAssets*/);
             Global.mWorldDefine = worldDefine;
             
             //

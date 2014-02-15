@@ -1241,10 +1241,10 @@ package viewer {
             {
                worldDefine.mCurrentSceneId = sceneId;
             }
-            if (worldDefine.hasOwnProperty ("mDontReloadGlobalAssets"))
-            {
-               worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
-            }
+            //if (worldDefine.hasOwnProperty ("mDontReloadGlobalAssets")) // useless for any versions now.
+            //{
+            //   worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
+            //}
             if (worldDefine.hasOwnProperty ("mViewerParams"))
             {
                worldDefine.mViewerParams = {

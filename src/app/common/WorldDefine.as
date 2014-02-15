@@ -17,7 +17,8 @@ package common {
       public var mDontFillMissedFields:Boolean = false; // from v2.00. For fast loading
       public var mDontAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
       
-      public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
+      //public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
+                                                            // useless from v2.05
             
    // ...
       

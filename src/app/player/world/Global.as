@@ -90,14 +90,20 @@ package player.world
    
       // todo: in non-editing situations, for one-level game package, maybe only turning off sounds is ok enough. 
       // the params:Object parameter is reserved for this intention. 
+      //
+      // [edit: v2.06]
+      // params.mIsTheLastViewer, only do cleanup when this param is true.
       
       public static function OnViewerDestroyed (params:Object = null):void
       {
-         if (sTheGlobal != null)
+         if (params == null || params.mIsTheLastViewer == true)
          {
-            sTheGlobal.Destroy (params);
-            
-            sTheGlobal = null;
+            if (sTheGlobal != null)
+            {
+               sTheGlobal.Destroy (params);
+               
+               sTheGlobal = null;
+            }
          }
       }
       

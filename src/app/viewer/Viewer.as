@@ -174,9 +174,7 @@ package viewer {
 
       private function OnAddedToStage (e:Event):void
       {
-         CheckPlatformCapabilities ();
-
-         ParseParams ();
+         mDefaultRenderQuality = stage.quality;
          
          addEventListener (Event.ENTER_FRAME, Update);
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
@@ -194,10 +192,14 @@ package viewer {
          stage.addEventListener (Event.ACTIVATE, OnActivated);
          stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
          
+         // ...
+         
+         CheckPlatformCapabilities ();
+
+         ParseParams ();
+         
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();
          RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
-         
-         mDefaultRenderQuality = stage.quality;
       }
 
       private function OnRemovedFromStage (e:Event):void
@@ -229,19 +231,31 @@ package viewer {
       }
       
       // from v2.02, called manually
-      public function Destroy ():void
-      {  
+      // the isTheLastViewer param is added since v2.06, for multiple players feature.
+      public function Destroy (isTheLastViewer:Boolean):void
+      {
          if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerDestroyed != null)
          {
             try
             {            
-               mWorldDesignProperties.OnViewerDestroyed ();
+               mWorldDesignProperties.OnViewerDestroyed ({
+                                                           mIsTheLastViewer: isTheLastViewer
+                                                        });
             }
             catch (error:Error)
             {
                TraceError (error);
             }
          }
+      }
+      
+      private var mActive:Boolean = true;
+      
+      public function SetActive (active:Boolean):void
+      {
+         mActive = active;
+         
+         visible = mActive;
       }
 
 //======================================================================
@@ -697,7 +711,7 @@ package viewer {
       
       private function SetErrorMessage (errorMessage:String):void
       {           
-         this.visible = true;
+         this.visible = mActive; // true; // since v2.06, multiple players feature is added.
          
          if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
          {

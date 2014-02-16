@@ -25,8 +25,6 @@ package editor.entity.dialog {
    {
       private var mBackgroundLayer:Sprite = new Sprite ();
       
-      private var mDesignViewer:Viewer = null;
-      
       public function ScenePlayPanel ()
       {
          addEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
@@ -39,12 +37,24 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
+      private var mDialogCallbacks:Object = null; // must not be null
+      
+      public function SetDialogCallbacks (callbacks:Object):void
+      {
+         mDialogCallbacks = callbacks;
+      }
+      
+      //private var mDesignViewer:Viewer = null;
+      
+      private var mViewerParamsFromEditor:Object = null;
+      
+      private var mRestoreValues:Object = null;
+      
       public function SetWorldViewerParams (worldBinaryData:ByteArray, currentSceneId:int, maskFieldInPlaying:Boolean, surroudingBackgroundColor:uint, callbackStopPlaying:Function):void
       {
-         CloseViewer ();
-         
+         /*
          mDesignViewer = new Viewer ({mParamsFromEditor: {
-                                         mWorldDomain: ApplicationDomain.currentDomain, 
+                                         mWorldDomain: ApplicationDomain.currentDomain,  
                                          mWorldBinaryData: worldBinaryData, 
                                          mCurrentSceneId: currentSceneId, 
                                          GetViewportSize: GetViewportSize, 
@@ -62,16 +72,55 @@ package editor.entity.dialog {
          addChild (mDesignViewer);
          
          mDesignViewer.OnContainerResized ();
+         */
+         
+         if (mRestoreValues == null)
+            mRestoreValues = new Object ();
+         mRestoreValues.mRenderQuality = stage.quality;
+         
+         mViewerParamsFromEditor = {mParamsFromEditor: {
+                                         mWorldDomain: ApplicationDomain.currentDomain,  
+                                         mWorldBinaryData: worldBinaryData, 
+                                         mCurrentSceneId: currentSceneId, 
+                                         GetViewportSize: GetViewportSize, 
+                                         mStartRightNow: true, 
+                                         mMaskViewerField: maskFieldInPlaying, 
+                                         mBackgroundColor: surroudingBackgroundColor, 
+                                         OnExitLevel: callbackStopPlaying, 
+                                         
+                                         //>> websocket
+                                         EmbedCallContainer: EmbedCallContainer
+                                         //<<
+                                       }
+                                    };
+         
+         SetNumMultiplePlayers (3);
       }
       
-      public function CloseViewer ():void
+      public function CloseAllViewers ():void
       {
-         if (mDesignViewer != null)
+         //if (mDesignViewer != null)
+         //{
+         //   mDesignViewer.Destroy ();
+         //   removeChild (mDesignViewer);
+         //   mDesignViewer = null;
+         //}
+         
+         SetNumMultiplePlayers (0);
+         
+         mDialogCallbacks = null;
+         
+         mViewerParamsFromEditor = null;
+         
+         if (mRestoreValues != null)
          {
-            mDesignViewer.Destroy ();
-            removeChild (mDesignViewer);
-            mDesignViewer = null;
+            stage.quality = mRestoreValues.mRenderQuality;
          }
+      }
+      
+      public function OnSelectMultiplePlayerIndex (index:int):void
+      {
+         SetCurrentMultiplePlayerIndex (index);
       }
       
       private function GetViewportSize ():Point
@@ -122,7 +171,9 @@ package editor.entity.dialog {
          //   stage.focus = this;
          
          // since v2.04
-         if (mDesignViewer != null)
+         //if (mDesignViewer != null)
+         // sicne v2.06
+         if (GetCurrentViewer () != null)
          {
             var io:InteractiveObject = stage.focus; // may be an editable text field
             while (io != this && io != null)
@@ -164,9 +215,15 @@ package editor.entity.dialog {
             GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true, 0xFFFFFF);
             GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true);
             
-            if (mDesignViewer != null)
+            //if (mDesignViewer != null)
+            //{
+            //   mDesignViewer.OnContainerResized ();
+            //}
+            
+            var designViewer:Viewer = GetCurrentViewer ();
+            if (designViewer != null)
             {
-               mDesignViewer.OnContainerResized ();
+               designViewer.OnContainerResized ();
             }
          }
       }
@@ -226,19 +283,14 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      private var mDialogCallbacks:Object = null; // must not be null
-      
-      public function SetDialogCallbacks (callbacks:Object):void
-      {
-         mDialogCallbacks = callbacks;
-      }
-      
       public function UpdateInterface ():void
       {
          if (mDialogCallbacks == null || mDialogCallbacks.UpdateInterface == null)
             return;
          
-         if (mDesignViewer == null)
+         var designViewer:Viewer = GetCurrentViewer ();
+         
+         if (/*mDesignViewer*/designViewer == null)
          {
             mDialogCallbacks.UpdateInterface (null);
             return;
@@ -246,13 +298,13 @@ package editor.entity.dialog {
          
          var viewerStatusInfo:Object = new Object ();
          
-         var playerWorld:World = mDesignViewer.GetPlayerWorld () as World;
+         var playerWorld:World = /*mDesignViewer*/designViewer.GetPlayerWorld () as World;
          
-         viewerStatusInfo.mSpeedX = mDesignViewer.GetPlayingSpeedX ();
-         viewerStatusInfo.mIsPlaying = mDesignViewer.IsPlaying ();
+         viewerStatusInfo.mSpeedX = /*mDesignViewer*/designViewer.GetPlayingSpeedX ();
+         viewerStatusInfo.mIsPlaying = /*mDesignViewer*/designViewer.IsPlaying ();
          viewerStatusInfo.mCurrentSimulationStep = playerWorld == null ? 0 : playerWorld.GetSimulatedSteps ();
-         viewerStatusInfo.mFPS = mDesignViewer.GetFPS ();
-         viewerStatusInfo.mShowPlayBar = mDesignViewer.IsShowPlayBar ();
+         viewerStatusInfo.mFPS = /*mDesignViewer*/designViewer.GetFPS ();
+         viewerStatusInfo.mShowPlayBar = /*mDesignViewer*/designViewer.IsShowPlayBar ();
          
          mDialogCallbacks.UpdateInterface (viewerStatusInfo);
       }
@@ -262,13 +314,15 @@ package editor.entity.dialog {
          if (mDialogCallbacks == null || mDialogCallbacks.SetMousePosition == null)
             return;
          
-         if (mDesignViewer == null)
+         var designViewer:Viewer = GetCurrentViewer ();
+         
+         if (/*mDesignViewer*/designViewer == null)
          {
             mDialogCallbacks.SetMousePosition (null);
             return;
          }
          
-         var playerWorld:World = mDesignViewer.GetPlayerWorld () as World;
+         var playerWorld:World = /*mDesignViewer*/designViewer.GetPlayerWorld () as World;
          
          if (playerWorld == null)
          {
@@ -296,49 +350,49 @@ package editor.entity.dialog {
       {
          mMaskViewport = mask;
          
-         if (mDesignViewer != null)
+         if (/*mDesignViewer*/GetCurrentViewer () != null)
          {
-            mDesignViewer.SetMaskViewerField (mMaskViewport);
+            /*mDesignViewer*/GetCurrentViewer ().SetMaskViewerField (mMaskViewport);
          }
       }
       
       public function SimulateSystemBack ():void
       {
-         if (mDesignViewer != null && mDesignViewer.OnBackKeyDown != null)
+         if (/*mDesignViewer*/GetCurrentViewer () != null && /*mDesignViewer*/GetCurrentViewer ().OnBackKeyDown != null)
          {
-            mDesignViewer.OnBackKeyDown ();
+            /*mDesignViewer*/GetCurrentViewer ().OnBackKeyDown ();
          }
       }
       
       public function Restart ():void
       {
-         if (mDesignViewer != null)
+         if (/*mDesignViewer*/GetCurrentViewer () != null)
          {
-            mDesignViewer.PlayRestart ();
+            /*mDesignViewer*/GetCurrentViewer ().PlayRestart ();
          }
       }
       
       public function ChangePlayingStatus (playing:Boolean):void
       {
-         if (mDesignViewer != null)
+         if (/*mDesignViewer*/GetCurrentViewer () != null)
          {
-            mDesignViewer.ResumeOrPause (playing);
+            /*mDesignViewer*/GetCurrentViewer ().ResumeOrPause (playing);
          }
       }
       
       public function ChangeSpeedX (deltaSpeedX:int):void
       {
-         if (mDesignViewer != null)
+         if (/*mDesignViewer*/GetCurrentViewer () != null)
          {
-            mDesignViewer.ChangeSpeedX (deltaSpeedX);
+            /*mDesignViewer*/GetCurrentViewer ().ChangeSpeedX (deltaSpeedX);
          }
       }
       
       public function AdvanceOneFrame ():void
       {
-         if (mDesignViewer != null)
+         if (/*mDesignViewer*/GetCurrentViewer () != null)
          {
-            mDesignViewer.UpdateSingleFrame ();
+            /*mDesignViewer*/GetCurrentViewer ().UpdateSingleFrame ();
          }
       }
       
@@ -353,34 +407,90 @@ package editor.entity.dialog {
       
       public static const MaxNumMultiplePlayers:int = 4;
       
-      protected var mNumMultiplePlayers:int = 1;
       protected var mMultiplePlayerViewers:Array = new Array (MaxNumMultiplePlayers);
-      protected var mCurrentMutiplePlayerIndex:int = 0;
+      protected var mNumMultiplePlayers:int = 0;
+      protected var mCurrentMutiplePlayerIndex:int = -1;
       
       protected function SetNumMultiplePlayers (num:int):void
       {
-         if (num < 1)
-            num = 1;
+         if (num < 0)
+            num = 0;
          if (num > MaxNumMultiplePlayers)
             num = MaxNumMultiplePlayers;
+            
+         if (mCurrentMutiplePlayerIndex >= num)
+            SetCurrentMultiplePlayerIndex (-1);
+         
+         var i:int;
+         var designViewer:Viewer;
          
          if (mNumMultiplePlayers > num)
          {
-            
-            if (mCurrentMutiplePlayerIndex >= num)
-               SetCurrentMultiplePlayerIndex (0);
+            for (i = mNumMultiplePlayers - 1; i >= num; -- i)
+            {
+               designViewer = mMultiplePlayerViewers [i] as Viewer;
+               designViewer.Destroy (i == 0);
+               removeChild (designViewer);
+            }
          }
          else if (mNumMultiplePlayers < num)
          {
+            for (i = mNumMultiplePlayers; i < num; ++ i)
+            {
+               designViewer = new Viewer (mViewerParamsFromEditor);
+               designViewer.SetActive (false);
+               mMultiplePlayerViewers [i] = designViewer;
+               addChild (designViewer);
+            }
          }
          
          mNumMultiplePlayers = num;
+            
+         if (mCurrentMutiplePlayerIndex < 0 && num > 0)
+            SetCurrentMultiplePlayerIndex (0);
+         
+         if (mDialogCallbacks != null && mDialogCallbacks.SetNumMultiplePlayers != null)
+         {
+            mDialogCallbacks.SetNumMultiplePlayers (mNumMultiplePlayers, mCurrentMutiplePlayerIndex);
+         }
       }
       
-      public function SetCurrentMultiplePlayerIndex (index:int):void
+      protected function SetCurrentMultiplePlayerIndex (index:int):void
       {
-         mCurrentMutiplePlayerIndex = index;
+         if (index < 0 || index >= mNumMultiplePlayers)
+            index = -1;
+         
+         if (mCurrentMutiplePlayerIndex != index)
+         {
+            var designViewer:Viewer;
+            
+            if (mCurrentMutiplePlayerIndex >= 0)
+            {
+               designViewer = mMultiplePlayerViewers [mCurrentMutiplePlayerIndex] as Viewer;
+               designViewer.SetActive (false);
+               //removeChild (designViewer);
+            }
+            
+            mCurrentMutiplePlayerIndex = index;
+            
+            if (mCurrentMutiplePlayerIndex >= 0)
+            {
+               designViewer = mMultiplePlayerViewers [mCurrentMutiplePlayerIndex] as Viewer;
+               designViewer.SetActive (true);
+               //addChild (designViewer);
+               designViewer.OnContainerResized ();
+            }
+         }
+      }
+      
+      protected function GetCurrentViewer ():Viewer
+      {
+         return mMultiplePlayerViewers [mCurrentMutiplePlayerIndex] as Viewer;
       } 
+      
+//============================================================================
+//   
+//============================================================================
       
       // don't change this name, 
       public function ContainerCallEmbed (funcName:String, params:Object):void

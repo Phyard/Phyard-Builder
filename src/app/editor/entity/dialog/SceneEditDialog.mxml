@@ -43,45 +43,58 @@
          <mx:Button id="Button_ShowGlobalCodeLibEditDialog" toolTip="Edit Global Functions" click="EditorContext.GetEditorApp ().ShowGlobalCodeLibEditDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/big-world-global-functions.png')" />
          -->
          <mx:Spacer width="10" />
-         <mx:HBox id="Box_BasicToolbar" backgroundColor="0xD0D0D0" width="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
-            <mx:Spacer width="2"/>
-            <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-settings.png')" />
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
-            <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
-            <mx:Spacer width="10"/>
-            <mx:Spacer width="100%"/>
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-clone.png')" disabledIcon="@Embed('../../../res/command/command-clone-disabled.png')" />
-            <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" click="OnClickDeleteEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
-            <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" click="OnClickMoveEntityToTopButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-top.png')" disabledIcon="@Embed('../../../res/command/command-to-top-disabled.png')" />
-            <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" click="OnClickMoveEntityToBottomButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-bottom.png')" disabledIcon="@Embed('../../../res/command/command-to-bottom-disabled.png')" />
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" click="OnClickMakeEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-make.png')" disabledIcon="@Embed('../../../res/command/command-brothers-make-disabled.png')" />
-            <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" click="OnClickBreakApartEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-break.png')" disabledIcon="@Embed('../../../res/command/command-brothers-break-disabled.png')" />
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_EntitySettings" toolTip="Set Properties of The Selected" click="OnClickEntitySettingsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/command/command-setting.png')" disabledIcon="@Embed('../../../res/command/command-setting-disabled.png')" />
-            <mx:Spacer width="10"/>
-            <mx:Spacer width="100%"/>
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
-            <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_ShowEntityIDs" selected="false" toolTip="Show Entity IDs" click="OnClickShowEntityIDsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-ids.png')" selectedDownIcon="@Embed('../../../res/command/command-show-ids-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-ids-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-ids-sel.png')" />
-            <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
-            <mx:Button id="Button_ShowTransformRing" selected="true" toolTip="Show Transform Ring" click="OnClickShowTransformRingButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-ring.png')" selectedDownIcon="@Embed('../../../res/command/command-show-ring-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-ring-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-ring-sel.png')" />
-            <mx:Spacer width="10"/>
-            <mx:Spacer width="100%"/>
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
-            <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
-            <!--
-            <mx:Spacer width="100%"/>
-            <mx:Spacer width="10"/>
-            <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
-            -->
-            <mx:Spacer width="2"/>
-         </mx:HBox>
+         <mx:ViewStack id="ViewStack_BasicToolbar" borderStyle="solid" creationPolicy="all"
+                  width="100%" 
+                  paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                  horizontalScrollPolicy="off" verticalScrollPolicy="off"
+                  horizontalGap="0" verticalGap="0" borderThickness="0">
+            <mx:HBox id="Box_BasicToolbarForEditing" backgroundColor="0xD0D0D0" width="100%" height="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+               <mx:Spacer width="2"/>
+               <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-settings.png')" />
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
+               <mx:Button id="Button_EditFunctions" toolTip="Edit Functions" click="OnClickEditFunctionsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-functions.png')" />
+               <mx:Spacer width="10"/>
+               <mx:Spacer width="100%"/>
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_Clone" toolTip="(C) Clone Selected(s)" click="OnClickCloneEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-clone.png')" disabledIcon="@Embed('../../../res/command/command-clone-disabled.png')" />
+               <mx:Button id="Button_Delete" toolTip="(D) Delete Selected(s)" click="OnClickDeleteEntityButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-delete.png')" disabledIcon="@Embed('../../../res/command/command-delete-disabled.png')" />
+               <mx:Button id="Button_MoveToTop" toolTip="Move Selected(s) to Top" click="OnClickMoveEntityToTopButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-top.png')" disabledIcon="@Embed('../../../res/command/command-to-top-disabled.png')" />
+               <mx:Button id="Button_MoveToBottom" toolTip="Move Selected(s) to Bottom" click="OnClickMoveEntityToBottomButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-to-bottom.png')" disabledIcon="@Embed('../../../res/command/command-to-bottom-disabled.png')" />
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_Glue" toolTip="Attach Entities As Brothers" click="OnClickMakeEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-make.png')" disabledIcon="@Embed('../../../res/command/command-brothers-make-disabled.png')" />
+               <mx:Button id="Button_BreakApart" toolTip="Break Up Attached Entities (Brothers)" click="OnClickBreakApartEntityBrothersButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-brothers-break.png')" disabledIcon="@Embed('../../../res/command/command-brothers-break-disabled.png')" />
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_EntitySettings" toolTip="Set Properties of The Selected" click="OnClickEntitySettingsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" cornerRadius="0" icon="@Embed('../../../res/command/command-setting.png')" disabledIcon="@Embed('../../../res/command/command-setting-disabled.png')" />
+               <mx:Spacer width="10"/>
+               <mx:Spacer width="100%"/>
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_MoveSceneMode" selected="false" toolTip="Move Scene Mode" click="OnClickMoveSceneModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-move-scene.png')" selectedDownIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-move-scene-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-move-scene-sel.png')" />
+               <mx:Button id="Button_MouseCookieMode" selected="false" toolTip="Cookie Mode" click="OnClickCookieSelectModeButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-cookie-mode.png')" selectedDownIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-cookie-mode-sel.png')" />
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_ShowEntityIDs" selected="false" toolTip="Show Entity IDs" click="OnClickShowEntityIDsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-ids.png')" selectedDownIcon="@Embed('../../../res/command/command-show-ids-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-ids-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-ids-sel.png')" />
+               <mx:Button id="Button_ShowAllEntityLinks" selected="false" toolTip="Show All Links" click="OnClickShowAllEntityLinksButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-all-links.png')" selectedDownIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-all-links-sel.png')" />
+               <mx:Button id="Button_ShowTransformRing" selected="true" toolTip="Show Transform Ring" click="OnClickShowTransformRingButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/command/command-show-ring.png')" selectedDownIcon="@Embed('../../../res/command/command-show-ring-sel.png')" selectedOverIcon="@Embed('../../../res/command/command-show-ring-sel.png')" selectedUpIcon="@Embed('../../../res/command/command-show-ring-sel.png')" />
+               <mx:Spacer width="10"/>
+               <mx:Spacer width="100%"/>
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
+               <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
+               <!--
+               <mx:Spacer width="100%"/>
+               <mx:Spacer width="10"/>
+               <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
+               -->
+               <mx:Spacer width="2"/>
+            </mx:HBox>
+            <mx:HBox id="Box_BasicToolbarForPlaying" backgroundColor="0xD0D0D0" width="100%" height="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
+               <mx:Spacer width="100%"/>
+               <mx:TabBar id="TabBar_SelectPlayer" itemClick="OnSelectPlayer (event);" verticalAlign="bottom">
+                  <mx:dataProvider>{mMultiplePlayersSelectMenu}</mx:dataProvider>
+               </mx:TabBar>
+               <mx:Spacer width="100%"/>
+            </mx:HBox>
+         </mx:ViewStack>
          <mx:Spacer width="10" />
          <mx:Button id="Button_EditScenes" toolTip="Scene List" click="OnClickEditScenesButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-scenes.png')" selectedDownIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-edit-scenes-sel.png')" />
          <mx:Spacer width="10" />
@@ -256,13 +269,9 @@
                </mx:VBox>
             </mx:TabNavigator>
             <mx:VBox id="Box_SelectPlayers" width="100%" height="100%"
-               horizontalAlign="center"
-               paddingTop="15" paddingLeft="0" paddingRight="0" paddingBottom="15"
-               horizontalGap="0" verticalGap="10" borderThickness="0">
-               <mx:Button id="Button_Player1" label="Player 1" click="OnSelectPlayer (Button_Player1);" />
-               <mx:Button id="Button_Player2" label="Player 2" click="OnSelectPlayer (Button_Player2);" />
-               <mx:Button id="Button_Player3" label="Player 3" click="OnSelectPlayer (Button_Player3);" />
-               <mx:Button id="Button_Player4" label="Player 4" click="OnSelectPlayer (Button_Player4);" />
+                     horizontalAlign="center"
+                     paddingTop="15" paddingLeft="0" paddingRight="0" paddingBottom="15"
+                     horizontalGap="0" verticalGap="10" borderThickness="0">
             </mx:VBox>
          </mx:ViewStack>
          
@@ -443,6 +452,7 @@
       import mx.controls.Button;
       import mx.controls.Menu;
       import mx.events.MenuEvent;
+      import mx.events.ItemClickEvent;
       
       import com.tapirgames.util.DisplayObjectUtil;
       
@@ -703,12 +713,12 @@
          {
             SetCurrentSceneScale (1.0);
             SetMousePosition (null);
-            Box_BasicToolbar.enabled = false;
+            Box_BasicToolbarForEditing.enabled = false;
             
             return;
          }
 
-         Box_BasicToolbar.enabled = true;
+         Box_BasicToolbarForEditing.enabled = true;
          
          Button_Clone.enabled = Button_Delete.enabled = Button_MoveToTop.enabled = Button_MoveToBottom.enabled = selectionsInfo.mNumSelectedEntities > 0;
          Button_Glue.enabled = Button_BreakApart.enabled = selectionsInfo.mNumSelectedEntities > 1;
@@ -1245,33 +1255,39 @@
          
          ViewStack_LeftPanel.selectedChild = Box_SelectPlayers;
          //Box_CreateCommands.enabled = 
-         Box_BasicToolbar.enabled = Box_Scenes.enabled = false;
+         //Box_BasicToolbarForEditing.enabled = Box_Scenes.enabled = false;
+         ViewStack_BasicToolbar.selectedChild = Box_BasicToolbarForPlaying;
+         //TabBar_SelectPlayer.selectedIndex = 0;
+         
          ViewStack_StatusBar.selectedChild = Box_StatusBarForPlaying;
          Button_SimulateSystemBack.visible = false;
 
          //var scenePlayPanel:ScenePlayPanel = new ScenePlayPanel ();
          //scenePlayPanel.percentWidth = 100;
          //scenePlayPanel.percentHeight = 100;
-         //Box_ScenePlay.addChild (scenePlayPanel);
+         //Box_ScenePlay.addChild (scenePlayPanel);         
+         
+         mCurrentScenePlayPanel.CloseAllViewers ();
+         
+         mCurrentScenePlayPanel.SetDialogCallbacks ({
+                                       UpdateInterface: UpdateInterfaceForPlaying, 
+                                       SetMousePosition: SetMousePositionForPlaying,
+                                       SetNumMultiplePlayers: SetNumMultiplePlayers
+                                    });
 
          mCurrentScenePlayPanel.SetWorldViewerParams (
                                     EditorContext.GetEditorApp ().GetWorldBinaryData (), 
                                     GetCurrentSceneInEditing ().GetSceneIndex (),
                                     mCurrentSceneEditPanel.IsMaskFieldInPlaying (), 
                                     mCurrentSceneEditPanel.GetSurroundingBackgroundColor (), //0xFFFFFF, 
-                                    OnClickStopCurrentSceneButton);            
-            
-         mCurrentScenePlayPanel.SetDialogCallbacks ({
-                                       UpdateInterface: UpdateInterfaceForPlaying, 
-                                       SetMousePosition: SetMousePositionForPlaying
-                                    });
+                                    OnClickStopCurrentSceneButton);   
          mCurrentScenePlayPanel.UpdateInterface (); 
       }
       
       // skin will call this with one param. (a bad design)
       private function OnClickStopCurrentSceneButton (dummyParam:Object = null):void
       {
-         mCurrentScenePlayPanel.CloseViewer ();
+         mCurrentScenePlayPanel.CloseAllViewers ();
          
          ViewStack_Scenes.selectedChild = Box_SceneEdit;
          stage.focus = mCurrentSceneEditPanel;
@@ -1280,19 +1296,53 @@
          
          ViewStack_LeftPanel.selectedChild = Box_CreateCommands;
          //Box_CreateCommands.enabled = 
-         Box_BasicToolbar.enabled = Box_Scenes.enabled = true;
+         //Box_BasicToolbarForEditing.enabled = Box_Scenes.enabled = true;
+         ViewStack_BasicToolbar.selectedChild = Box_BasicToolbarForEditing;
       }
       
-      private function OnSelectPlayer (playerButton:Button):void
+      private function OnSelectPlayer (event:ItemClickEvent):void
       {
-         var index:int = playerButton.label.lastIndexOf (" ");
-         var playerId:int = parseInt (playerButton.label.substring (index + 1));
+         var tabBar:TabBar = TabBar(event.currentTarget);
          
+         var playerId:int = tabBar.dataProvider[event.index].data;
+         
+         mCurrentScenePlayPanel.OnSelectMultiplePlayerIndex (playerId);
       }
 
    //========================================================================================
    // callbacks for panel (playing)
    //========================================================================================
+      
+      [Bindable]
+      private var mMultiplePlayersSelectMenu:Array = [
+         {label:"Player 0", data: 0},
+         //{label:"Player 1", data: 1},
+         //{label:"Player 2", data: 2},
+         //{label:"Player 3", data: 3},
+      ];
+      
+      private function SetNumMultiplePlayers (numPlayers:int, selectIndex:int):void
+      {
+         //TabBar_SelectPlayer.dataProvider.removeAll ();
+         
+         if (TabBar_SelectPlayer.dataProvider.length == numPlayers)
+            return;
+         
+         var i:int;
+         
+         if (TabBar_SelectPlayer.dataProvider.length < numPlayers)
+         {
+            for (i = TabBar_SelectPlayer.dataProvider.length; i < numPlayers; ++ i)
+               TabBar_SelectPlayer.dataProvider.addItem ({label:"Player " + i, data: i});
+         }
+         else
+         {
+            for (i = TabBar_SelectPlayer.dataProvider.length - 1; i >= numPlayers; -- i)
+               TabBar_SelectPlayer.dataProvider.removeItemAt (i);
+         }
+         
+         TabBar_SelectPlayer.selectedIndex = selectIndex;
+      }
       
       private function SetMousePositionForPlaying (mousePositionInfo:Object):void
       {

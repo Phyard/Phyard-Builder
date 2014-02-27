@@ -71,6 +71,16 @@ package common.trigger {
                                    null,
                                    true);
                                    
+         RegisterClassDeclatation (CoreClassIds.ValueType_ByteArray, 
+                                   "ByteArray", // Class Name
+                                   null,
+                                   true);
+                                   
+         RegisterClassDeclatation (CoreClassIds.ValueType_ByteArrayStream, 
+                                   "ByteArrayStream", // Class Name
+                                   null,
+                                   false);
+                                   
          RegisterClassDeclatation (CoreClassIds.ValueType_Class, 
                                    "Class", // Class Name
                                    {mClassType : ClassTypeDefine.ClassType_Core, mValueType : CoreClassIds.ValueType_Void},

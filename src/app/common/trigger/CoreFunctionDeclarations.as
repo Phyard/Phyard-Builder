@@ -315,7 +315,61 @@ package common.trigger {
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_SendGlobalSocketMessage,
+                  
+         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_String,       ""],
+                     ],
+                     null
+                  );
+         /*
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetAvailableGameInstances,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Array,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CreateGameInstance,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceByName,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceByID,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
+         */
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SendPlayerActionData,
                      [
                         [CoreClassIds.ValueType_String,       ""],
                      ],
@@ -870,7 +924,7 @@ package common.trigger {
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_Array_IndexOf,
          //            [
-         //               [CoreClassIds.ValueType_Array,       ""],
+         //               [CoreClassIds.ValueType_Array,       null],
          //               [CoreClassIds.ValueType_Object,       null],
          //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
          //            ],
@@ -880,7 +934,7 @@ package common.trigger {
          //         );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_Array_LastIndexOf,
          //            [
-         //               [CoreClassIds.ValueType_Array,       ""],
+         //               [CoreClassIds.ValueType_Array,       null],
          //               [CoreClassIds.ValueType_Object,       null],
          //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
          //            ],
@@ -889,6 +943,153 @@ package common.trigger {
          //            ]
          //         );
 
+      // byte array
+      
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArray_Create,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArray_CreateFromBase64String,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArray_ToBase64String,
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArray_Compress,
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArray_Uncompress,
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ]
+                  );
+                  
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_Create,
+                     null,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetByteArray,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetByteArray,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetCursorPostion,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetCursorPostion,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadByteArray,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteByteArray,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadBoolean,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteBoolean,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadNumber,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_String,       "B"],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteNumber,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_String,       "B"],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadUTF,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteUTF,
+                     [
+                        [CoreClassIds.ValueType_ByteArrayStream,       null],
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
+      
        // math basic op
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Assign,

@@ -282,7 +282,7 @@ package editor.entity.dialog {
                break;
             case 87: // W
                if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnGlobalSocketMessage), OnPutCreating, OnCreatingCancelled));
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnPlayerActionData), OnPutCreating, OnCreatingCancelled));
                break;
             default:
             {

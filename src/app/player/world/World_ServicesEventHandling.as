@@ -5,5 +5,5 @@ public function OnGlobalSocketMessage (message:String):void
    var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kStringClassDefinition, message); //, valueSource1);
    var valueSourceList:Parameter = valueSource0;
    
-   HandleEventById (CoreEventIds.ID_OnGlobalSocketMessage, valueSourceList);
+   HandleEventById (CoreEventIds.ID_OnPlayerActionData, valueSourceList);
 }

@@ -309,9 +309,10 @@ package editor.world {
 
       // ...
 
-         RegisterEventDeclaration (CoreEventIds.ID_OnGlobalSocketMessage, "OnGlobalSocketMessage", "When global socket message comes",
+         RegisterEventDeclaration (CoreEventIds.ID_OnPlayerActionData, "OnPlayerActionData", "When player perform an action",
                     [
-                        new VariableDefinitionString ("Message"),
+                        new VariableDefinitionNumber ("Player Postion Index"),
+                        new VariableDefinitionString ("Data"),
                     ]);
 
       // event settings

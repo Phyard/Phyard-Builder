@@ -106,7 +106,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
          
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendGlobalSocketMessage,               SendGlobalSocketMessage);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendPlayerActionData,               SendPlayerActionData);
 
       // string
 
@@ -185,6 +185,10 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Array_GetElement,       GetArrayElement);
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Array_IndexOf,                     IndexOfArrayElement);
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Array_LastIndexOf,                 LastIndexOfArrayElement);
+
+      // byte array
+
+         
 
       // math ops
 
@@ -900,7 +904,7 @@ package player.trigger {
          }
       }
       
-      public static function SendGlobalSocketMessage (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      public static function SendPlayerActionData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var message:String = valueSource.EvaluateValueObject () as String;
 

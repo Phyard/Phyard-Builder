@@ -431,6 +431,17 @@
                binData.writeUTFBytes (text);
             }
             break;
+         case CoreClassIds.ValueType_ByteArray:
+            var byteArray:ByteArray = value as ByteArray;
+            
+            binData.writeShort (CoreClassIds.ValueType_ByteArray);
+            binData.writeInt (byteArray == null ? -1 : byteArray.length);
+            if (byteArray != null)
+            {
+               binData.writeBytes (byteArray, 0, byteArray.length);
+            }
+            
+            break;
          case CoreClassIds.ValueType_Array:
             var valuesArray:Array = value as Array;
             if (alreadySavedArrayLookupTable [valuesArray] == true)
@@ -580,6 +591,19 @@
             {
                value = savedData.readUTFBytes (strLen);
             }
+            break;
+         case CoreClassIds.ValueType_ByteArray:
+            var numBytes:int = savedData.readInt ();
+            
+            if (numBytes < 0)
+               value = null;
+            else
+            {
+               var byteArray:ByteArray = new ByteArray ();
+               savedData.readBytes (byteArray, 0, numBytes);
+               value = byteArray;
+            }
+            
             break;
          case CoreClassIds.ValueType_Array:
             var arrLen:int = savedData.readInt ();

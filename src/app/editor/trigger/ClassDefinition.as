@@ -13,6 +13,7 @@ package editor.trigger {
       private var mInstanceValueValidateFunc:Function;
       
       private var mSceneDataDependent:Boolean;
+      private var mGameSavable:Boolean;
       
       public function ClassDefinition (defalutInstanceName:String, initialInitialValue:Object, validateValueFunc:Function)
       {
@@ -20,6 +21,9 @@ package editor.trigger {
          
          mInitialInstacneValue = initialInitialValue;
          mInstanceValueValidateFunc = validateValueFunc;
+         
+         SetSceneDataDependent (false);
+         SetGameSavable (false);
       }
       
       public function toString ():String
@@ -44,9 +48,23 @@ package editor.trigger {
          return mSceneDataDependent;
       }
       
-      public function SetSceneDataDependent (dependent:Boolean):void
+      public function SetSceneDataDependent (dependent:Boolean):ClassDefinition
       {
          mSceneDataDependent = dependent;
+         
+         return this;
+      }
+      
+      public function IsGameSavable ():Boolean
+      {
+         return mGameSavable;
+      }
+      
+      public function SetGameSavable (savable:Boolean):ClassDefinition
+      {
+         mGameSavable = savable;
+         
+         return this;
       }
       
       public function GetName ():String

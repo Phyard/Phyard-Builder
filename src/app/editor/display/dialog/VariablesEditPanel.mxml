@@ -280,6 +280,9 @@
                
                if (mCreateNewVariableMenu == null)
                {
+                  var isForGameSave:Boolean = (
+                                           mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_GameSave
+                                        );
                   var isAnySceneDataIndependent:Boolean = (
                                            mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_Session
                                         || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_World
@@ -294,7 +297,7 @@
                                         || mVariableSpace.GetSpaceType () == ValueSpaceTypeDefine.ValueSpace_CustomType
                                         );
 
-                  var xml:XML = CodeLibManager.GetTypesDataProviderForMenu (mCodeLibManager, isCurrentSceneDataDependent, isAnySceneDataIndependent);
+                  var xml:XML = CodeLibManager.GetTypesDataProviderForMenu (mCodeLibManager, isCurrentSceneDataDependent, isAnySceneDataIndependent, isForGameSave);
 
                   //// custom Types
                   //if (isCurrentSceneDataDependent)

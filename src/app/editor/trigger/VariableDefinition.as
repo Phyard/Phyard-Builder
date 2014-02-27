@@ -156,6 +156,10 @@ package editor.trigger {
                return new VariableDefinitionScene (variableName);
             case CoreClassIds.ValueType_Array:
                return new VariableDefinitionArray (variableName);
+            case CoreClassIds.ValueType_ByteArray:
+               return new VariableDefinitionByteArray (variableName);
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return new VariableDefinitionByteArrayStream (variableName);
             case CoreClassIds.ValueType_Class:
                return new VariableDefinitionClass (variableName);
             case CoreClassIds.ValueType_Object:

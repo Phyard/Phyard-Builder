@@ -103,10 +103,31 @@ package common.trigger {
       
       public static const ID_OnSystemBack:int = IdPool.EventId_189;
       
-   // design instance
+   // multiple players
       
-      public static const ID_OnGlobalSocketMessage:int = IdPool.EventId_169;
+      //public static const ID_OnPlayerJoinedInstance:int = IdPool.EventId_169;
+      //public static const ID_OnPlayerLeavedInstance:int = IdPool.EventId_169;
+      
+      //OnSpectatorEntered
+      //OnSpectatorExited
+      //OnSpectatorHaveInterestsInCurrentRound
+      
+      //public static const ID_OnInstanceStartedNewRound:int = IdPool.EventId_169;
+      //public static const ID_OnPlayerReadyForNewRound:int = IdPool.EventId_169;
+      
+      //public static const ID_OnPlayerLeavedInstance:int = IdPool.EventId_169;
+      
+      //public static const ID_OnPlayerPerformedAction:int = IdPool.EventId_169; // actionData use ByteArray read out
+      
+      //public static const ID_OnInstanceCreated:int = IdPool.EventId_169;
+      
+      //public static const ID_OnInstanceStatusChanged:int = IdPool.EventId_169;
+      
+      //public static const ID_OnServerError:int = IdPool.EventId_169; // need an API: GetErrorDebugInfo (errorId)
+      
+      public static const ID_OnPlayerActionData:int = IdPool.EventId_169; //       
 
    // ================================
+      
    }
 }

@@ -232,7 +232,7 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnSystemBack   ] = IconOnSystemBack;
             
-            sEventId2IconClass [CoreEventIds.ID_OnGlobalSocketMessage] = IconOnGlobalSocketMessage;
+            sEventId2IconClass [CoreEventIds.ID_OnPlayerActionData] = IconOnGlobalSocketMessage;
          }
          
          var iconClass:Class = sEventId2IconClass [eventId];

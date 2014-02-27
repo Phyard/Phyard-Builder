@@ -109,6 +109,7 @@ package player.trigger {
          GetCoreClassDefinition (CoreClassIds.ValueType_Entity).mToStringFunc = Entity2String;
          GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory).mToStringFunc = CCat2String;
          GetCoreClassDefinition (CoreClassIds.ValueType_Array).mToStringFunc = Array2String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_ByteArray).mToStringFunc = ByteArray2String;
          
          for each (var primitiveClassId:int in [CoreClassIds.ValueType_Boolean, 
                                                 CoreClassIds.ValueType_Number, 
@@ -197,6 +198,8 @@ package player.trigger {
       //   
       //   return sArrayClassDefinition;
       //}
+      
+      public static const kByteArrayClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_ByteArray);
       
       public static const kModuleClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Module);
       //public static function GetModuleClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
@@ -366,6 +369,13 @@ package player.trigger {
          var anArray:Array = valueObject as Array; // not null for sure
             
          return className + "#" + ConvertArrayToString (anArray, extraInfos as Dictionary);
+      }
+      
+      public static function ByteArray2String (valueObject:Object, className:String, extraInfos:Object):String
+      {
+         var byteArray:ByteArray = valueObject as ByteArray; // not null for sure
+            
+         return className + "#<" + byteArray.length + ">";
       }
 
       private static function ConvertArrayToString (values:Array, convertedArrays:Dictionary = null):String
@@ -679,6 +689,8 @@ package player.trigger {
                //   
                //}
             }
+            case CoreClassIds.ValueType_ByteArray:
+               return null;
             case CoreClassIds.ValueType_Class:
                var aClass:ClassDefinition = kVoidClassDefinition;
                
@@ -753,6 +765,8 @@ package player.trigger {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_ByteArray:
+               return null;
             case CoreClassIds.ValueType_Class:
                if (valueObject == null)
                   return ClassTypeDefine.ClassType_Core + "," + CoreClassIds.ValueType_Void;
@@ -816,6 +830,9 @@ package player.trigger {
                //}
                
                break;
+            case CoreClassIds.ValueType_ByteArray:
+               var nullByteArray:Boolean = binFile.readByte () == 0;
+               return null;
             case CoreClassIds.ValueType_Class:
                return {mClassType : binFile.readByte (), mValueType : binFile.readShort ()};
             case CoreClassIds.ValueType_Object:

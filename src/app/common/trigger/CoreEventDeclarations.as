@@ -312,8 +312,9 @@ package common.trigger {
 
      // ...
 
-         RegisterEventDeclatation (CoreEventIds.ID_OnGlobalSocketMessage,
+         RegisterEventDeclatation (CoreEventIds.ID_OnPlayerActionData,
                     [
+                        [CoreClassIds.ValueType_Number,       -1],
                         [CoreClassIds.ValueType_String,       null],
                     ]);
                     

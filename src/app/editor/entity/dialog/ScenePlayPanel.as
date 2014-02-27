@@ -2,6 +2,7 @@ package editor.entity.dialog {
 
    import flash.system.ApplicationDomain;
    import flash.utils.ByteArray;
+   import flash.utils.Dictionary;
    import flash.display.Shape;
    import flash.display.Sprite;
    import flash.display.InteractiveObject;
@@ -94,7 +95,7 @@ package editor.entity.dialog {
                                        }
                                     };
          
-         SetNumMultiplePlayers (3);
+         SetNumMultiplePlayers (1);
       }
       
       public function CloseAllViewers ():void
@@ -486,7 +487,25 @@ package editor.entity.dialog {
       protected function GetCurrentViewer ():Viewer
       {
          return mMultiplePlayerViewers [mCurrentMutiplePlayerIndex] as Viewer;
-      } 
+      }
+      
+//============================================================================
+//   
+//============================================================================
+      
+      private function CreateInstance (minNumPlayers:int, maxNumPlayers:int):Object
+      {
+         return {
+            
+         };
+      }
+      
+      protected var mInstances:Dictionary = null;
+      
+      protected function AsServer_OnClientMesssage (message:String):void
+      {
+         
+      }
       
 //============================================================================
 //   
@@ -495,18 +514,21 @@ package editor.entity.dialog {
       // don't change this name, 
       public function ContainerCallEmbed (funcName:String, params:Object):void
       {
-         //if (mViewer != null)
-         //{
-         //   mViewer.ContainerCallEmbed (funcName, params);
-         //}
+         var designViewer:Viewer = GetCurrentViewer ();
+         if (designViewer != null)
+         {
+            designViewer.ContainerCallEmbed (funcName, params);
+         }
       }
       
       // don't change this name, 
-      public function EmbedCallContainer (funcName:String, params:Object):void 
+      public function EmbedCallContainer (funcName:String, params:Object):void
       {
          if (funcName == "SendGlobalSocketMessage")
          {
             var message:String = params.message;
+            
+            AsServer_OnClientMesssage (message);
          }
       }
    }

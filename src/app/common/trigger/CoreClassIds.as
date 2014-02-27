@@ -92,12 +92,19 @@ package common.trigger {
       public static const ValueType_Array:int = 30;
       //public static const ValueType_Function:int = 31;
       
+      public static const ValueType_ByteArray:int = 50; // sicne v2.06
+      public static const ValueType_ByteArrayStream:int = 55; // sicne v2.06
+      
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;
       
       public static const ValueType_Module:int            = 70;
 
-      public static const ValueType_Sound:int            = 90;
+      public static const ValueType_Sound:int            = 90; 
+      
+      //public static const ValueType_Bitmap:int            = 96;
+      
+      //public static const ValueType_MultiplePlayerInstance:int     = 99;
       
       public static const ValueType_Scene:int            = 100;
       
@@ -126,9 +133,9 @@ package common.trigger {
       
       // for direct numbers, default number is a double float (64 bits float), default is general number
       
-      // most 16 details
+      // most 16 details (DON'T change this values)      
       
-      public static const NumberTypeDetail_Double :int = 0 << 16; // 64 bits float, default
+      public static const NumberTypeDetail_Double :int = 0 << 16; // 64 bits float, default, don't change its value.
       public static const NumberTypeDetail_Single :int = 1 << 16; // 32 bits float
       public static const NumberTypeDetail_Integer:int = 2 << 16; // 32 bits int
       

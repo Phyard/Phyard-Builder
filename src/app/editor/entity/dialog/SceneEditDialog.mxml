@@ -1325,23 +1325,25 @@
       {
          //TabBar_SelectPlayer.dataProvider.removeAll ();
          
-         if (TabBar_SelectPlayer.dataProvider.length == numPlayers)
-            return;
-         
-         var i:int;
-         
-         if (TabBar_SelectPlayer.dataProvider.length < numPlayers)
+         if (TabBar_SelectPlayer.dataProvider.length != numPlayers)
          {
-            for (i = TabBar_SelectPlayer.dataProvider.length; i < numPlayers; ++ i)
-               TabBar_SelectPlayer.dataProvider.addItem ({label:"Player " + i, data: i});
-         }
-         else
-         {
-            for (i = TabBar_SelectPlayer.dataProvider.length - 1; i >= numPlayers; -- i)
-               TabBar_SelectPlayer.dataProvider.removeItemAt (i);
+            var i:int;
+            
+            if (TabBar_SelectPlayer.dataProvider.length < numPlayers)
+            {
+               for (i = TabBar_SelectPlayer.dataProvider.length; i < numPlayers; ++ i)
+                  TabBar_SelectPlayer.dataProvider.addItem ({label:"Player " + i, data: i});
+            }
+            else
+            {
+               for (i = TabBar_SelectPlayer.dataProvider.length - 1; i >= numPlayers; -- i)
+                  TabBar_SelectPlayer.dataProvider.removeItemAt (i);
+            }
+            
+            TabBar_SelectPlayer.selectedIndex = selectIndex;
          }
          
-         TabBar_SelectPlayer.selectedIndex = selectIndex;
+         TabBar_SelectPlayer.visible = numPlayers > 1;
       }
       
       private function SetMousePositionForPlaying (mousePositionInfo:Object):void

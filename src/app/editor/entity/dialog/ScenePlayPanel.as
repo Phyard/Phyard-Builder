@@ -22,6 +22,10 @@ package editor.entity.dialog {
    
    import player.world.World;
    
+   import common.DataFormat3;
+   
+   import common.Define;
+   
    public class ScenePlayPanel extends UIComponent
    {
       private var mBackgroundLayer:Sprite = new Sprite ();
@@ -493,26 +497,46 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      private function CreateInstance (minNumPlayers:int, maxNumPlayers:int):Object
+      // instance id should be (time + random)
+      private function CreateInstance (numSeats:int):Object
       {
          return {
-            
+            id : "123_abc-ABC", // a Base64 string represents an int8 value.
+            password : "", 
+            roundIndex : 0, 
+            numSeats : numSeats, 
+            seatsReady : new Array (numSeats), 
+            seatsPlayerId : new Array (numSeats),
+            seatsPlayerName : new Array (numSeats),
+            channels : new Array (Define.MaxNumberOfMutiplePlayerInstanceChannels),
+            votings : new Array (Define.MaxNumberOfMutiplePlayerInstanceVotings),
+            "" : null
          };
       }
       
       protected var mInstances:Dictionary = null;
       
-      protected function AsServer_OnClientMesssage (message:String):void
+      protected function AsWebSocketsServer_OnClientRequest (params:Object):void
       {
+         var requestData:ByteArray = params.mRequestData;
+         requestData.position = 0;
          
+         var mpDataFormatVersion:int = requestData.readShort ();
+         //var 
       }
       
 //============================================================================
 //   
 //============================================================================
       
-      // don't change this name, 
-      public function ContainerCallEmbed (funcName:String, params:Object):void
+      // 
+      
+      private function SendMultiplePlayerServerResponse (params:Object):void
+      {
+         ContainerCallEmbed ("OnMultiplePlayerServerResponse", params);
+      }
+      
+      private function ContainerCallEmbed (funcName:String, params:Object):void
       {
          var designViewer:Viewer = GetCurrentViewer ();
          if (designViewer != null)
@@ -524,11 +548,16 @@ package editor.entity.dialog {
       // don't change this name, 
       public function EmbedCallContainer (funcName:String, params:Object):void
       {
-         if (funcName == "SendGlobalSocketMessage")
+         if (funcName == "OnMultiplePlayerServerRequest")
          {
-            var message:String = params.message;
+            var requestString:String = params.mRequestString;
+            var requestData:ByteArray = DataFormat3.DecodeString2ByteArray (requestString);
+         
+            AsWebSocketsServer_OnClientRequest ({mRequestData: requestData});
+         }
+         else if (funcName == "OnAccountServerRequest")
+         {
             
-            AsServer_OnClientMesssage (message);
          }
       }
    }

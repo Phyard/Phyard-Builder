@@ -25,6 +25,7 @@ package player.world {
    
    import com.tapirgames.util.RandomNumberGenerator;
    import com.tapirgames.util.MersenneTwisterRNG;
+   import com.tapirgames.util.TextUtil;
 
    import player.physics.PhysicsEngine;
    import player.physics.PhysicsProxyBody;
@@ -81,9 +82,10 @@ package player.world {
    import common.trigger.ClassTypeDefine;
    import common.trigger.ValueSpaceTypeDefine;
 
+   import common.UUID;
+   import common.ViewerDefine;
    import common.Define;
    import common.ValueAdjuster;
-   
    import common.KeyCodes;
    import common.GestureIDs;
 
@@ -993,6 +995,12 @@ package player.world {
 
             HandleEventById (CoreEventIds.ID_OnWorldBeforeUpdating);
 
+         //-----------------------------
+         // notify multiple player instance changed
+         //-----------------------------
+            
+            HandleMultiplePlayerInstanceEvents ();
+            
          //-----------------------------
          // update physics
          //-----------------------------

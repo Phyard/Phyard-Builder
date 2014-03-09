@@ -154,5 +154,39 @@ package editor.world {
             {label:"Fade Out + Fade In", data:Define.SceneSwitchingStyle_FadingOutThenFadingIn},
             {label:"Blend", data:Define.SceneSwitchingStyle_Blend},
          ];
+         
+      private static var _mMultiplePlayerInstanceNumberOfPlayersList:Array = null;
+      public static function get mMultiplePlayerInstanceNumberOfPlayersList ():Array
+      {
+         if (_mMultiplePlayerInstanceNumberOfPlayersList == null)
+         {
+            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (Define.MinNumberOfMutiplePlayerInstanceSeats - Define.MinNumberOfMutiplePlayerInstanceSeats);
+            var index:int = 0;
+            for (var numPlayers:int = Define.MinNumberOfMutiplePlayerInstanceSeats; numPlayers <= Define.MaxNumberOfMutiplePlayerInstanceSeats; ++ numPlayers)
+            {
+               _mMultiplePlayerInstanceNumberOfPlayersList [index ++] = {label: "", data: numPlayers};
+            }
+         }
+         
+         return _mMultiplePlayerInstanceNumberOfPlayersList;
+      }
+         
+      public static const mPolicyOfInitialChannelSeatsEnabledStatusList:Array = [
+            {label:"Disable All", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_DisableAll},
+            {label:"Enable All", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll},
+            {label:"Random One", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_RandomOne},
+            {label:"Alternative One", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_Alternative},
+         ];
+         
+      public static const mPolicyOfNextChannelSeatsEnabledStatusList:Array = [
+            {label:"Keep Current", data:Define.PolicyOfNextChannelSeatsEnabledStatus_DoNothing},
+            {label:"Enable Next And Disable Others", data:Define.PolicyOfNextChannelSeatsEnabledStatus_NextOne},
+         ];
+         
+      public static const mPolicyOfChannelMessageForwardingList:Array = [
+            {label:"Forwarding Instantly", data:Define.PolicyOfChannelMessageForwarding_Instant},
+            {label:"Forwarding WeGo", data:Define.PolicyOfChannelMessageForwarding_WeGo},
+         ];
+         
    }
 }

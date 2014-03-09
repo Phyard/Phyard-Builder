@@ -69,7 +69,7 @@ package editor.trigger {
          if (viDef == null)
             return null;
          
-         var customClass:ClassDefinition_Custom = viDef.GeCustomClass ();
+         var customClass:ClassDefinition_Custom = viDef.GetCustomClass ();
          //assert customClass != null
          if (customClass.GetID () < 0)
             return null;

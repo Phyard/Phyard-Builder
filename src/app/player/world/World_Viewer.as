@@ -43,7 +43,7 @@
                //ClearGameSaveData:Function; // v2.03
       public /*static*/ var Viewer_mLibServices:Object; // v2.03
                //SubmitKeyValue:Function; // v2.0?
-               //SendGlobalSocketMessage  // v2.06
+               //SendPlayerActionData  // v2.06
    
 //==============================================================================
 // 

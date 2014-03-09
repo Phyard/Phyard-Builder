@@ -125,7 +125,9 @@ package common.trigger {
       
       //public static const ID_OnServerError:int = IdPool.EventId_169; // need an API: GetErrorDebugInfo (errorId)
       
-      public static const ID_OnPlayerActionData:int = IdPool.EventId_169; //       
+      public static const ID_OnMultiplePlayerInstanceSeatsInfoChanged:int = IdPool.EventId_168; //       
+      
+      //public static const ID_OnPlayerActionData   :int = IdPool.EventId_169; //       
 
    // ================================
       

@@ -168,7 +168,7 @@ package editor {
       // network
       
       [Embed("../res/create/event_on_global_socket_message.png")]
-      public static const IconOnGlobalSocketMessage:Class;
+      public static const IconOnMultiplePlayerInstanceSeatsInfoChanged:Class;
       
    // event id -> icon
       
@@ -232,7 +232,7 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnSystemBack   ] = IconOnSystemBack;
             
-            sEventId2IconClass [CoreEventIds.ID_OnPlayerActionData] = IconOnGlobalSocketMessage;
+            sEventId2IconClass [CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged] = IconOnMultiplePlayerInstanceSeatsInfoChanged;
          }
          
          var iconClass:Class = sEventId2IconClass [eventId];

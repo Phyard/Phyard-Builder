@@ -115,7 +115,9 @@ package player
                   GetSceneSwitchingStyle : world.GetSceneSwitchingStyle, // from v2.04
                   
                   GetWorldCrossStagesData : world.GetWorldCrossStagesData, // from v2.06
-                  OnGlobalSocketMessage : world.OnGlobalSocketMessage, // from v2.06
+                  
+                  OnMultiplePlayerServerResponse : world.OnMultiplePlayerServerResponse, // from v2.06
+                  //GetCurrentMultiplePlayerInstance : world.GetCurrentMultiplePlayerInstance, // from v2.06, for viewer to show status
                   
                   "" : null
                };

@@ -17,14 +17,14 @@ package editor.trigger {
          super (customClass, name, description, options);
       }
       
-      public function GeCustomClass ():ClassDefinition_Custom
+      public function GetCustomClass ():ClassDefinition_Custom
       {
          return mClass as ClassDefinition_Custom;
       }
       
       public function GetCustomProperties ():VariableSpaceClassInstance
       {
-         return GeCustomClass ().GetPropertyDefinitionSpace ();
+         return GetCustomClass ().GetPropertyDefinitionSpace ();
       }
       
 //==============================================================================
@@ -33,7 +33,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         var customVariableDefinition:VariableDefinition_Custom = new VariableDefinition_Custom (GeCustomClass (), mName, mDescription);
+         var customVariableDefinition:VariableDefinition_Custom = new VariableDefinition_Custom (GetCustomClass (), mName, mDescription);
          
          return customVariableDefinition;
       }

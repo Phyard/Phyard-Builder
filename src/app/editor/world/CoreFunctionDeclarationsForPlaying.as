@@ -3,7 +3,7 @@ package editor.world {
    import editor.trigger.*;
 
    import common.trigger.CoreFunctionIds;
-
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.IdPool;
    import common.Define;
@@ -408,61 +408,62 @@ package editor.world {
                      null
                   );
                   
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine, services_package, "Create Game Instance Define", null, null,
+                     [
+                             new VariableDefinitionString ("Game ID (blank generally)"),
+                             new VariableDefinitionNumber ("Number Of Players", null, {mValueLists: Lists.mMultiplePlayerInstanceNumberOfPlayersList}),
+                     ],
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Created Instance Define"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package, "Create Game Instance Channel Define", null, null,
+                     [
+                             new VariableDefinitionBoolean ("Enabled Initially?"),
+                             new VariableDefinitionNumber ("Min Turn Time Interval (seconds)"),
+                             new VariableDefinitionNumber ("Max Turn Time Interval (0 for unlimited)", null, {mMinValue: 0, mMaxValue: 3600}),
+                             new VariableDefinitionNumber ("Rule Of Initial Seats Enabled Status", null, {mValueLists: Lists.mPolicyOfInitialChannelSeatsEnabledStatusList}),
+                             new VariableDefinitionNumber ("Rule Of Next Seats Enabled Status", null, {mValueLists: Lists.mPolicyOfNextChannelSeatsEnabledStatusList}),
+                             new VariableDefinitionNumber ("Rule Of Forwarding Messages", null, {mValueLists: Lists.mPolicyOfChannelMessageForwardingList}),
+                     ],
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Game Instance Define", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+                             new VariableDefinitionNumber ("Channel Index", null, {mMinValue: 0, mMaxValue: Define.MaxNumberOfMutiplePlayerInstanceChannels}),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Channel Define"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
+                             new VariableDefinitionString ("Password (blank for public)"),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package, "Join Game Instance Randomly", null, null,
                      [
-                             new VariableDefinitionString ("Game ID (Blank Generally)"),
-                             new VariableDefinitionNumber ("Minimum Number Of Players (2/3/4)", null, {mMinValue: 2, mMaxValue: 4}),
-                             new VariableDefinitionNumber ("Maximum Number Of Players (2/3/4)", null, {mMinValue: 2, mMaxValue: 4}),
-                             new VariableDefinitionString ("Password (blank for public)"),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
+                             new VariableDefinitionBoolean ("Create New If No Availables"),
                      ],
                      null
                   );
-         /*
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetAvailableGameInstances, services_package, "Get Available Game Instances", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Game Instance By Instance ID", null, null,
                      [
-                             new VariableDefinitionString ("Game ID (Blank Generally)"),
-                             new VariableDefinitionNumber ("Number Of Players (2/3/4)", null, {mMinValue: 2, mMaxValue: 4}),
-                     ],
-                     [
-                             new VariableDefinitionArray ("Available Game Instances"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create And Join Game Instance", null, null,
-                     [
-                             new VariableDefinitionString ("Game ID (Blank Generally)"),
-                             new VariableDefinitionNumber ("Number Of Players (2/3/4)", null, {mMinValue: 2, mMaxValue: 4}),
-                             new VariableDefinitionString ("Instance Name"),
-                             new VariableDefinitionBoolean ("Allow Listing?"),
-                             new VariableDefinitionBoolean ("Allow Spectators?"),
-                             new VariableDefinitionNumber ("Initial Mode"),
-                     ],
-                     [
-                             new VariableDefinitionBoolean ("Successful?"),
+                             new VariableDefinitionString ("Game ID (blank generally)"),
                              new VariableDefinitionString ("Instance ID"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByName, services_package, "Join Game Instance By Name", null, null,
-                     [
-                             new VariableDefinitionString ("Game ID (Blank Generally)"),
-                             new VariableDefinitionNumber ("Minimum Number Of Players (2/3/4)", null, {mMinValue: 2, mMaxValue: 4}),
-                             new VariableDefinitionNumber ("Maximum Number Of Players (2/3/4)", null, {mMinValue: 2, mMaxValue: 4}),
-                             new VariableDefinitionString ("Password (blank for public)"),
+                             new VariableDefinitionString ("Password (if required)"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByID, services_package, "Join Game Instance By ID", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Player Action Data", null, null,
                      [
-                             new VariableDefinitionString ("Instance ID"),
-                     ],
-                     [
-                             new VariableDefinitionBoolean ("Successful?"),
-                             new VariableDefinitionString ("Instance Name"),
-                     ]
-                  );
-         */
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendPlayerActionData, services_package, "Send Player Action Data", null, null,
-                     [
-                             new VariableDefinitionString ("Data To Send"),
+                             new VariableDefinitionNumber ("Channel Index", null, {mMinValue: 0, mMaxValue: Define.MaxNumberOfMutiplePlayerInstanceChannels}),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
                      ],
                      null
                   );
@@ -1058,7 +1059,7 @@ package editor.world {
                               new VariableDefinitionNumber ("Initial Length"),
                      ],
                      [
-                              new VariableDefinitionByteArray ("Created Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Created Byte Array"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_CreateFromBase64String, bytearray_package, "Create Byte Array From Base64 String", null, null,
@@ -1066,12 +1067,12 @@ package editor.world {
                               new VariableDefinitionString ("Input Base64 String"),
                      ],
                      [
-                              new VariableDefinitionByteArray ("Created Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Created Byte Array"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_ToBase64String, bytearray_package, "Byte Array To Base64 String", "ByteArray2Base64String", "ByteArray2Base64String",
                      [
-                              new VariableDefinitionByteArray ("The Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "The Byte Array"),
                      ],
                      [
                               new VariableDefinitionString ("Output Base64 String"),
@@ -1079,45 +1080,45 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_Compress, bytearray_package, "Compress Byte Array", null, null,
                      [
-                              new VariableDefinitionByteArray ("Input Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Input Byte Array"),
                      ],
                      [
-                              new VariableDefinitionByteArray ("Compressed Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Compressed Byte Array"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_Uncompress, bytearray_package, "Uncompress Byte Array", null, null,
                      [
-                              new VariableDefinitionByteArray ("Input Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Input Byte Array"),
                      ],
                      [
-                              new VariableDefinitionByteArray ("Uncompressed Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Uncompressed Byte Array"),
                      ]
                   );
          
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_Create, bytearray_package, "Create Byte Array Stream", null, null,
                      null,
                      [
-                              new VariableDefinitionByteArrayStream ("Created Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "Created Byte Array Stream"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetByteArray, bytearray_package, "Get Byte Array Of Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                      ],
                      [
-                              new VariableDefinitionByteArray ("The Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "The Byte Array"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetByteArray, bytearray_package, "Set Byte Array Of Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
-                              new VariableDefinitionByteArray ("New Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "New Byte Array"),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetCursorPostion, bytearray_package, "Get Cursor Position Of Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                      ],
                      [
                               new VariableDefinitionNumber ("Cursor Position"),
@@ -1125,15 +1126,15 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetCursorPostion, bytearray_package, "Set Cursor Position Of Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionNumber ("Cursor Position"),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadByteArray, bytearray_package, "Read Byte Array From Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
-                              new VariableDefinitionByteArray ("Byte Array To Fill"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Byte Array To Fill"),
                               new VariableDefinitionNumber ("Offset To Fill"),
                               new VariableDefinitionNumber ("Number Of Bytes To Read (0 for all)"),
                      ],
@@ -1141,8 +1142,8 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteByteArray, bytearray_package, "Write Byte Array Into Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
-                              new VariableDefinitionByteArray ("Source Byte Array"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Source Byte Array"),
                               new VariableDefinitionNumber ("Source Offset"),
                               new VariableDefinitionNumber ("Number Of Bytes To Write (0 for all)"),
                      ],
@@ -1150,7 +1151,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadBoolean, bytearray_package, "Read Boolean From Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                      ],
                      [
                               new VariableDefinitionBoolean ("The Boolean Value"),
@@ -1158,14 +1159,14 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteBoolean, bytearray_package, "Write Boolean Into Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionBoolean ("The Boolean Value"),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadNumber, bytearray_package, "Read Number From Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionString ("(B)yte, (S)hort, (I)nt, (F)loat, (D)ouble"),
                      ],
                      [
@@ -1174,7 +1175,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteNumber, bytearray_package, "Write Number Into Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionNumber ("The Number Value"),
                               new VariableDefinitionString ("(B)yte, (S)hort, (I)nt, (F)loat, (D)ouble"),
                      ],
@@ -1182,7 +1183,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadUTF, bytearray_package, "Read UTF String From Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionBoolean ("4(true)/2(false) Bytes Of Length Header"),
                      ],
                      [
@@ -1191,7 +1192,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteUTF, bytearray_package, "Write UTF String Into Stream", null, null,
                      [
-                              new VariableDefinitionByteArrayStream ("The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionString ("The UTF String"),
                               new VariableDefinitionBoolean ("4(true)/2(false) Bytes Of Length Header"),
                      ],

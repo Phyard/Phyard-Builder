@@ -772,9 +772,12 @@ package editor.codelib {
             var childCodePackage:CodePackage = codePackage.GetChildCodePackageAtIndex (i);
             if (topCodePackages == null || topCodePackages.indexOf (childCodePackage) < 0)
             {
-               ConvertCodePackageToXML (childCodePackage, package_element, topCodePackages, forFunctions, onlyAllowSceneIndependentClasses, forGameSave);
+               var child_pkg_element:XML = ConvertCodePackageToXML (childCodePackage, package_element, topCodePackages, forFunctions, onlyAllowSceneIndependentClasses, forGameSave);
 
-               ++ num_items;
+               if (child_pkg_element.@name == childCodePackage.GetName ()) // false for removed.
+               {
+                  ++ num_items;
+               } 
             }
          }
          
@@ -829,13 +832,17 @@ package editor.codelib {
             }
          }
 
-         if (num_items == 0)
+         if (num_items == 0 && parentXml != null)
          {
-            var element:XML = <menuitem />;
-            element.@name = "[nothing]";
-            element.@id = -1;
-
-            package_element.appendChild (element);
+            //var element:XML = <menuitem />;
+            //element.@name = "[nothing]";
+            //element.@id = -1;
+            //
+            //package_element.appendChild (element);
+            
+            delete parentXml.menuitem [parentXml.menuitem.length () - 1];
+            
+            package_element.@name = "";
          }
          
          return package_element;

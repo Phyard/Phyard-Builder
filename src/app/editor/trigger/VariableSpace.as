@@ -11,6 +11,8 @@ package editor.trigger {
    import common.trigger.CoreClassIds;
    import common.trigger.ValueSpaceTypeDefine;
    
+   import common.UUID;
+   
    public class VariableSpace
    {
       
@@ -640,7 +642,7 @@ package editor.trigger {
          
          while (key == null || mLookupTableByKey [key] != null)
          {
-            key = EditorObject.BuildKey (GetAccVariableInstanceId ());
+            key = UUID.BuildKey (GetAccVariableInstanceId ());
          }
          
          return key;

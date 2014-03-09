@@ -221,7 +221,8 @@ package com.tapirgames.util {
          return arguments[1] + "<font color='#0000FF'><a href='" + url + "' target='_blank'><u>" + url + "</u></a></font>" + endPart;
       }
       
-      // the following is copied from adobe website, url is forgetten
+      // the followings are copied from adobe website, url is forgetten.
+      // they are very inefficient. need to be rewritten.
       
       public static function ReplaceString (str:String, oldSubStr:String, newSubStr:String):String {
         return str.split(oldSubStr).join(newSubStr);

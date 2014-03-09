@@ -51,7 +51,8 @@ package common.trigger {
 
       public static const EventId_150:int = 150;
 
-      public static const EventId_169:int = 169;
+      public static const EventId_168:int = 168;
+      //public static const EventId_169:int = 169;
 
       public static const EventId_189:int = 189;
       
@@ -306,7 +307,15 @@ package common.trigger {
 
       public static const CoreApiId_530:int = 530; //
       public static const CoreApiId_531:int = 531; //
-
+      
+      public static const CoreApiId_568:int = 568; // services
+      public static const CoreApiId_569:int = 569; // services
+      public static const CoreApiId_570:int = 570; // services
+      public static const CoreApiId_571:int = 571; // services
+      public static const CoreApiId_572:int = 572; // services
+      public static const CoreApiId_573:int = 573; // services
+      public static const CoreApiId_574:int = 574; // services
+      public static const CoreApiId_575:int = 575; // services
       public static const CoreApiId_576:int = 576; // design
       public static const CoreApiId_577:int = 577; // design
       public static const CoreApiId_578:int = 578; // design

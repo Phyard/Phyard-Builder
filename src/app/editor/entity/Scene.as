@@ -89,6 +89,7 @@ package editor.entity {
    
    import common.CoordinateSystem;
    
+   import common.ViewerDefine;
    import common.Define;
    import common.ValueAdjuster;
    
@@ -266,11 +267,11 @@ package editor.entity {
       //<<
 
       //>>1.51
-      private var mViewerUiFlags:int = Define.DefaultPlayerUiFlags;
+      private var mViewerUiFlags:int = ViewerDefine.DefaultPlayerUiFlags;
       private var mPlayBarColor:uint = 0x606060;
 
-      private var mViewportWidth:int = Define.DefaultPlayerWidth;
-      private var mViewportHeight:int = Define.DefaultPlayerHeight;
+      private var mViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
+      private var mViewportHeight:int = ViewerDefine.DefaultPlayerHeight;
       //<<
 
       //>>v1.60

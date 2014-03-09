@@ -22,7 +22,7 @@ package viewer {
    import com.tapirgames.display.TextButton;
    import com.tapirgames.display.ImageButton;
 
-   import common.Define;
+   import common.ViewerDefine;
 
    public class SkinDefault extends Skin
    {
@@ -276,28 +276,28 @@ package viewer {
          {
             if (mScaleOutButton_Overlay != null)
             {
-               mScaleOutButton_Overlay.alpha = zoomScale <= Define.MinWorldZoomScale ? 0.5 : 1.0;
-               mScaleOutButton_Overlay.buttonMode = zoomScale > Define.MinWorldZoomScale;
+               mScaleOutButton_Overlay.alpha = zoomScale <= ViewerDefine.MinWorldZoomScale ? 0.5 : 1.0;
+               mScaleOutButton_Overlay.buttonMode = zoomScale > ViewerDefine.MinWorldZoomScale;
             }
             
             if (mScaleInButton_Overlay != null)
             {
-               mScaleInButton_Overlay.alpha = zoomScale >= Define.MaxWorldZoomScale ? 0.5 : 1.0;
-               mScaleInButton_Overlay.buttonMode = zoomScale < Define.MaxWorldZoomScale;
+               mScaleInButton_Overlay.alpha = zoomScale >= ViewerDefine.MaxWorldZoomScale ? 0.5 : 1.0;
+               mScaleInButton_Overlay.buttonMode = zoomScale < ViewerDefine.MaxWorldZoomScale;
             }
          }
          else
          {
             if (mScaleOutButton != null)
             {
-               mScaleOutButton.alpha = zoomScale <= Define.MinWorldZoomScale ? 0.5 : 1.0;
-               mScaleOutButton.buttonMode = zoomScale > Define.MinWorldZoomScale;
+               mScaleOutButton.alpha = zoomScale <= ViewerDefine.MinWorldZoomScale ? 0.5 : 1.0;
+               mScaleOutButton.buttonMode = zoomScale > ViewerDefine.MinWorldZoomScale;
             }
             
             if (mScaleInButton != null)
             {
-               mScaleInButton.alpha = zoomScale >= Define.MaxWorldZoomScale ? 0.5 : 1.0;
-               mScaleInButton.buttonMode = zoomScale < Define.MaxWorldZoomScale;
+               mScaleInButton.alpha = zoomScale >= ViewerDefine.MaxWorldZoomScale ? 0.5 : 1.0;
+               mScaleInButton.buttonMode = zoomScale < ViewerDefine.MaxWorldZoomScale;
             }
          }
       }

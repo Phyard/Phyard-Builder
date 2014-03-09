@@ -46,6 +46,7 @@ package editor {
    
    import editor.trigger.entity.InputEntitySelector;
    
+   import common.ViewerDefine;
    import common.Define;
    import common.Version;
    
@@ -117,7 +118,7 @@ package editor {
       
       public static function OnAbout (event:ContextMenuEvent = null):void
       {
-         UrlUtil.PopupPage (Define.AboutUrl);
+         UrlUtil.PopupPage (ViewerDefine.AboutUrl);
       }
       
    //=====================================================================

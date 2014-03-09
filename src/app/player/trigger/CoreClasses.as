@@ -691,6 +691,12 @@ package player.trigger {
             }
             case CoreClassIds.ValueType_ByteArray:
                return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return null;
             case CoreClassIds.ValueType_Class:
                var aClass:ClassDefinition = kVoidClassDefinition;
                
@@ -767,6 +773,12 @@ package player.trigger {
                //}
             case CoreClassIds.ValueType_ByteArray:
                return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return null;
             case CoreClassIds.ValueType_Class:
                if (valueObject == null)
                   return ClassTypeDefine.ClassType_Core + "," + CoreClassIds.ValueType_Void;
@@ -832,6 +844,14 @@ package player.trigger {
                break;
             case CoreClassIds.ValueType_ByteArray:
                var nullByteArray:Boolean = binFile.readByte () == 0;
+               return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               var nullByteArrayStream:Boolean = binFile.readByte () == 0;
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               var nullMpInstance:Boolean = binFile.readByte () == 0;
                return null;
             case CoreClassIds.ValueType_Class:
                return {mClassType : binFile.readByte (), mValueType : binFile.readShort ()};

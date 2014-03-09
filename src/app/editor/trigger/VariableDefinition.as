@@ -157,9 +157,15 @@ package editor.trigger {
             case CoreClassIds.ValueType_Array:
                return new VariableDefinitionArray (variableName);
             case CoreClassIds.ValueType_ByteArray:
-               return new VariableDefinitionByteArray (variableName);
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, variableName);
             case CoreClassIds.ValueType_ByteArrayStream:
-               return new VariableDefinitionByteArrayStream (variableName);
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, variableName);
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, variableName);
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, variableName);
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, variableName);
             case CoreClassIds.ValueType_Class:
                return new VariableDefinitionClass (variableName);
             case CoreClassIds.ValueType_Object:

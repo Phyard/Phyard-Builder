@@ -1,11 +1,12 @@
 
 package player.trigger {
-   import flash.utils.getTimer;
    import flash.geom.Point;
    import flash.ui.Mouse;
    import flash.system.Capabilities;
    import flash.system.System;
    import flash.utils.Dictionary;
+   import flash.utils.ByteArray;
+   import flash.utils.getTimer;
 
    import player.world.Global;
 
@@ -38,7 +39,7 @@ package player.trigger {
    import common.SceneDefine;
    import common.Define;
    import common.ValueAdjuster;
-
+   
    import common.TriggerFormatHelper2;
 
    public class CoreFunctionDefinitions
@@ -106,7 +107,9 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
          
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendPlayerActionData,               SendPlayerActionData);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_CreateGameInstance,             CreateNewGameInstance);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_JoinGameInstanceRandomly,       JoinGameInstanceRandomly);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendGameInstanceChannelMessage,           SendGameInstanceChannelMessage);
 
       // string
 
@@ -904,14 +907,41 @@ package player.trigger {
          }
       }
       
-      public static function SendPlayerActionData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      public static function CreateNewGameInstance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var message:String = valueSource.EvaluateValueObject () as String;
-
-         if (/*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_mLibServices != null && /*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_mLibServices.SendGlobalSocketMessage)
-         {
-            /*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_mLibServices.SendGlobalSocketMessage (message);
-         }
+         var localGameId:String = valueSource.EvaluateValueObject () as String;
+         
+         valueSource = valueSource.mNextParameter;
+         var password:String = valueSource.EvaluateValueObject () as String;
+         
+         valueSource = valueSource.mNextParameter;
+         var numPlayers:int = int (valueSource.EvaluateValueObject ());
+         
+         var mpInstance:Object = callingContext.mWorld.CreateNewGameInstance (localGameId, password, numPlayers);
+         
+         valueTarget.AssignValueObject (mpInstance);
+      }
+      
+      public static function JoinGameInstanceRandomly (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var localGameId:String = valueSource.EvaluateValueObject () as String;
+         
+         valueSource = valueSource.mNextParameter;
+         var createNewIfNoAvailables:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         valueSource = valueSource.mNextParameter;
+         var numPlayers:int = int (valueSource.EvaluateValueObject ());
+         
+         var mpInstance:Object = callingContext.mWorld.JoinRandomGameInstance (localGameId, createNewIfNoAvailables, numPlayers);
+         
+         valueTarget.AssignValueObject (mpInstance);
+      }
+      
+      public static function SendGameInstanceChannelMessage (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var data:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         callingContext.mWorld.SendPlayerActionData (data);
       }
 
    //*******************************************************************

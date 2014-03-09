@@ -62,7 +62,7 @@ package viewer {
    import com.tapirgames.util.ResourceLoader;
 
    import common.DataFormat3;
-   import common.Define;
+   import common.ViewerDefine;
    import common.Version;
 
    public class Viewer extends Sprite
@@ -82,7 +82,7 @@ package viewer {
 
       private var mParamsFromContainer:Object; // can't be null, equals any of the following ones
    
-         //todo: remove the followng 3 ones
+         //todo: remove the followng 3 ones (seems they are usefull now)
          private var mParamsFromUniViewer:Object = null;
          private var mParamsFromEditor:Object = null;
          private var mParamsFromGamePackage:Object = null;
@@ -234,7 +234,7 @@ package viewer {
       // the isTheLastViewer param is added since v2.06, for multiple players feature.
       public function Destroy (isTheLastViewer:Boolean):void
       {
-         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerDestroyed != null)
+         if (mWorldDesignProperties != null) // && mWorldDesignProperties.OnViewerDestroyed != null)
          {
             try
             {            
@@ -616,7 +616,7 @@ package viewer {
          //   mPlayerWorld.dispatchEvent(clonedEvent);
          //}
          
-         if (mWorldDesignProperties != null && mWorldDesignProperties.OnViewerEvent != null)
+         if (mWorldDesignProperties != null) // && mWorldDesignProperties.OnViewerEvent != null)
          {
             var clonedEvent:MouseEvent = event.clone () as MouseEvent;
             mWorldDesignProperties.OnViewerEvent (clonedEvent);
@@ -1058,20 +1058,20 @@ package viewer {
          if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;
          if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
-         if (mWorldDesignProperties.OnGlobalSocketMessage == undefined)           mWorldDesignProperties.OnGlobalSocketMessage = DummyCallback;
+         if (mWorldDesignProperties.OnMultiplePlayerServerResponse == undefined)  mWorldDesignProperties.OnMultiplePlayerServerResponse = DummyCallback;
 
-         mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseDefaultSkin) != 0);
-         mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseOverlaySkin) != 0);
+         mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
+         mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);
          mPlayBarColor = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
-         mShowSpeedAdjustor = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0);
-         mShowScaleAdjustor = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowScaleAdjustor) != 0);
+         mShowSpeedAdjustor = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowSpeedAdjustor) != 0);
+         mShowScaleAdjustor = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowScaleAdjustor) != 0);
          mShowSoundController = (mWorldDesignProperties.mHasSounds) && 
-                              (mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowSoundController) != 0));
-         mShowHelpButton = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowHelpButton) != 0);
-         mShowLevelFinishedDialog = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_UseCustomLevelFinishedDialog) == 0);
-         mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_AdaptiveViewportSize) != 0);
-         mPreferredViewportWidth = mPlayerWorld == null ? Define.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
-         mPreferredViewportHeight = mPlayerWorld == null ? Define.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
+                              (mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowSoundController) != 0));
+         mShowHelpButton = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowHelpButton) != 0);
+         mShowLevelFinishedDialog = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseCustomLevelFinishedDialog) == 0);
+         mAdaptiveViewportSize = mPlayerWorld == null ? true : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_AdaptiveViewportSize) != 0);
+         mPreferredViewportWidth = mPlayerWorld == null ? ViewerDefine.DefaultPlayerWidth : mWorldDesignProperties.GetViewportWidth ();
+         mPreferredViewportHeight = mPlayerWorld == null ? ViewerDefine.DefaultPlayerHeight : mWorldDesignProperties.GetViewportHeight ();
       }
 
       private function DummyCallback (param1:Object = null, param2:Object = null, param3:Object = null, param4:Object = null, param5:Object = null, param6:Object = null, param7:Object = null):void
@@ -1112,15 +1112,15 @@ package viewer {
       {
          if (mWorldPluginProperties.mWorldVersion >= 0x0159)
          {
-            return Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_ShowSoundController | Define.PlayerUiFlag_UseOverlaySkin;
+            return ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_ShowSoundController | ViewerDefine.PlayerUiFlag_UseOverlaySkin;
          }
          else if (mWorldPluginProperties.mWorldVersion >= 0x0104)
          {
-            return Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowScaleAdjustor | Define.PlayerUiFlag_ShowHelpButton;
+            return ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_ShowSpeedAdjustor | ViewerDefine.PlayerUiFlag_ShowScaleAdjustor | ViewerDefine.PlayerUiFlag_ShowHelpButton;
          }
          else
          {
-            return Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_ShowSpeedAdjustor | Define.PlayerUiFlag_ShowHelpButton;
+            return ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_ShowSpeedAdjustor | ViewerDefine.PlayerUiFlag_ShowHelpButton;
          }
       }
       
@@ -1316,7 +1316,9 @@ package viewer {
                   },
                   mLibService : {
                               SubmitKeyValue: SubmitKeyValue,
-                              SendGlobalSocketMessage: SendGlobalSocketMessage // v2.06
+                              
+                              SendMultiplePlayerServerRequest: SendMultiplePlayerServerRequest // v2.06
+                              //SetMultiplePlayerInstanceInfoShown: SetMultiplePlayerInstanceInfoShown // v2.06
                   }
                };
             }
@@ -2106,9 +2108,9 @@ package viewer {
          {
             var width:int = mWorldDesignProperties.GetViewportWidth ();
             var height:int = mWorldDesignProperties.GetViewportHeight ();
-            //if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-            if ((mWorldDesignProperties.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin)
-               height += Define.DefaultPlayerSkinPlayBarHeight;
+            //if ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowPlayBar) != 0)
+            if ((mWorldDesignProperties.GetViewerUiFlags () & (ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_UseOverlaySkin)) == ViewerDefine.PlayerUiFlag_UseDefaultSkin)
+               height += ViewerDefine.DefaultPlayerSkinPlayBarHeight;
 
             var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf ("uniplayer.swf?");
             var uniplayerUrl:String = "http://www.phyard.com/" + mParamsFromUniViewer.mUniViewerUrl.substr (index);
@@ -2172,8 +2174,8 @@ package viewer {
             //{
             //   var width:int = mWorldDesignProperties.GetViewportWidth ();
             //   var height:int = mWorldDesignProperties.GetViewportHeight ();
-            //   //if ((mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0)
-            //   if ((mWorldDesignProperties.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin)
+            //   //if ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowPlayBar) != 0)
+            //   if ((mWorldDesignProperties.GetViewerUiFlags () & (ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_UseOverlaySkin)) == ViewerDefine.PlayerUiFlag_UseDefaultSkin)
             //      height += 20;
             //
             //   var substr:String = "uniplayer.swf?";
@@ -2228,8 +2230,8 @@ package viewer {
                   // v1.00 has no GetVersion () in player.World (fixed now)
                   //var fileVersionHexString:String = DataFormat3.GetVersionHexString (mWorldPluginProperties.mWorldVersion);
 
-                  //var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
-                  var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
+                  //var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowPlayBar) != 0;
+                  var showPlayBar:Boolean = (mWorldDesignProperties.GetViewerUiFlags () & (ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_UseOverlaySkin)) == ViewerDefine.PlayerUiFlag_UseDefaultSkin;
                   var viewportWidth:int = mWorldDesignProperties.GetViewportWidth ();
                   var viewportHeight:int = mWorldDesignProperties.GetViewportHeight ();
 
@@ -2253,7 +2255,7 @@ package viewer {
 
       private function OnAbout (event:ContextMenuEvent):void
       {
-         UrlUtil.PopupPage (Define.AboutUrl);
+         UrlUtil.PopupPage (ViewerDefine.AboutUrl);
       }
 
 //======================================================================
@@ -2605,12 +2607,9 @@ package viewer {
       // don't change the api name. 
       public function ContainerCallEmbed (funcName:String, params:Object):void
       {
-         if (funcName == "OnGlobalSocketMessage")
+         if (funcName == "OnMultiplePlayerServerResponse")
          {
-            if (mWorldDesignProperties != null) // && mWorldDesignProperties.OnGlobalSocketMessage != null)
-            {
-               mWorldDesignProperties.OnGlobalSocketMessage (params.message);
-            }
+            OnMultiplePlayerServerResponse (params);
          }
       }
       

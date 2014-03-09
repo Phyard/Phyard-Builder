@@ -81,6 +81,21 @@ package common.trigger {
                                    null,
                                    false);
                                    
+         RegisterClassDeclatation (CoreClassIds.ValueType_MultiplePlayerInstance, 
+                                   "MultiplePlayerInstance", // Class Name
+                                   null,
+                                   true);
+                                   
+         RegisterClassDeclatation (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, 
+                                   "MultiplePlayerInstanceDefine", // Class Name
+                                   null,
+                                   true);
+                                   
+         RegisterClassDeclatation (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, 
+                                   "MultiplePlayerInstanceChannelDefine", // Class Name
+                                   null,
+                                   true);
+                                   
          RegisterClassDeclatation (CoreClassIds.ValueType_Class, 
                                    "Class", // Class Name
                                    {mClassType : ClassTypeDefine.ClassType_Core, mValueType : CoreClassIds.ValueType_Void},
@@ -98,7 +113,9 @@ package common.trigger {
 // util functions
 //===========================================================
 
-      private static function RegisterClassDeclatation (classId:int, name:String,  defaultDirectDefineValue:Object, isFinal:Boolean):void
+      private static function RegisterClassDeclatation (classId:int, name:String,  defaultDirectDefineValue:Object, isFinal:Boolean
+                                                        //, propertyDefines:Array = null
+                                                        ):void
       {
          if (classId < 0 || classId >= CoreClassIds.NumCoreClasses)
             return;

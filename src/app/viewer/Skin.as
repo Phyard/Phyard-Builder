@@ -9,7 +9,7 @@ package viewer {
    
    import com.tapirgames.util.GraphicsUtil;
 
-   import common.Define;
+   import common.ViewerDefine;
 
    public class Skin extends Sprite
    {
@@ -237,14 +237,14 @@ package viewer {
 
       final public function SetZoomScale (zoomScale:Number, smoothly:Boolean = true):void
       {
-         if ( zoomScale <= Define.MinWorldZoomScale)
+         if ( zoomScale <= ViewerDefine.MinWorldZoomScale)
          {
-            zoomScale = Define.MinWorldZoomScale;
+            zoomScale = ViewerDefine.MinWorldZoomScale;
          }
 
-         if ( zoomScale >= Define.MaxWorldZoomScale)
+         if ( zoomScale >= ViewerDefine.MaxWorldZoomScale)
          {
-            zoomScale = Define.MaxWorldZoomScale;
+            zoomScale = ViewerDefine.MaxWorldZoomScale;
          }
          
          if (mZoomScale == zoomScale)

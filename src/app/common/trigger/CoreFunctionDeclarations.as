@@ -316,62 +316,62 @@ package common.trigger {
                      null
                   );
                   
-         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine,
                      [
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine,
+                     [
+                        [CoreClassIds.ValueType_Boolean,      true],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       30.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,      Define.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,      Define.PolicyOfNextChannelSeatsEnabledStatus_DoNothing],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,      Define.PolicyOfChannelMessageForwarding_Instant],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine,
+                     [
+                        [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       3],
+                        [CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine,       null],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_CreateGameInstance,
+                     [
+                        [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
                         [CoreClassIds.ValueType_String,       ""],
                      ],
                      null
                   );
-         /*
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GetAvailableGameInstances,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly,
                      [
-                        [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
+                        [CoreClassIds.ValueType_Boolean,      true],
                      ],
-                     [
-                        [CoreClassIds.ValueType_Array,       null],
-                     ]
+                     null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CreateGameInstance,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID,
                      [
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_String,       ""],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage,
+                     [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                     ],
-                     [
-                        [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_String,       ""],
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceByName,
-                     [
-                        [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
-                     ],
-                     [
-                        [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_String,       ""],
-                     ]
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceByID,
-                     [
-                        [CoreClassIds.ValueType_String,       ""],
-                     ],
-                     [
-                        [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_String,       ""],
-                     ]
-                  );
-         */
-         RegisterCoreDeclaration (CoreFunctionIds.ID_SendPlayerActionData,
-                     [
-                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_ByteArray,       null],
                      ],
                      null
                   );
@@ -434,13 +434,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_String,       ""],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharAt,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -449,15 +449,15 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_CharCode2Char,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],

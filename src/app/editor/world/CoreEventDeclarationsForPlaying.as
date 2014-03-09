@@ -2,7 +2,8 @@
 package editor.world {
 
    import editor.trigger.*;
-
+   
+   import common.trigger.CoreClassIds;
    import common.trigger.CoreEventIds;
 
    public class CoreEventDeclarationsForPlaying
@@ -309,11 +310,15 @@ package editor.world {
 
       // ...
 
-         RegisterEventDeclaration (CoreEventIds.ID_OnPlayerActionData, "OnPlayerActionData", "When player perform an action",
-                    [
-                        new VariableDefinitionNumber ("Player Postion Index"),
-                        new VariableDefinitionString ("Data"),
-                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged, "OnMultiplePlayerInstanceSeatsInfoChanged", "When multiple player instance seats info changed",
+                    null
+                    );
+
+         //RegisterEventDeclaration (CoreEventIds.ID_OnPlayerActionData, "OnPlayerActionData", "When player perform an action",
+         //           [
+         //               new VariableDefinitionNumber ("Player Postion Index"),
+         //               new VariableDefinitionString ("Data"),
+         //           ]);
 
       // event settings
 

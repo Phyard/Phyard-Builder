@@ -130,7 +130,8 @@
          import mx.events.MenuEvent;
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
-
+         
+         import common.ViewerDefine;
          import common.Define;
 
          private var OnConfirm:Function = null;
@@ -147,16 +148,16 @@
          {
             ColorPicker_PlayBarColor.selectedColor = mParams.mPlayBarColor;
 
-            CheckBox_ShowPlayBar.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseDefaultSkin) != 0;
-            CheckBox_ShowSpeedAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowSpeedAdjustor) != 0;
-            CheckBox_ShowScaleAdjustor.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowScaleAdjustor) != 0;
-            CheckBox_ShowHelpButton.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowHelpButton) != 0;
-            CheckBox_ShowLevelFinishedDialog.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseCustomLevelFinishedDialog) == 0; // yes, "==" here
-            CheckBox_ShowSoundController.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_ShowSoundController) != 0;
-            SkinType_Overlay.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseOverlaySkin) != 0;
-            SkinType_TopBar.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_UseOverlaySkin) == 0;
+            CheckBox_ShowPlayBar.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0;
+            CheckBox_ShowSpeedAdjustor.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_ShowSpeedAdjustor) != 0;
+            CheckBox_ShowScaleAdjustor.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_ShowScaleAdjustor) != 0;
+            CheckBox_ShowHelpButton.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_ShowHelpButton) != 0;
+            CheckBox_ShowLevelFinishedDialog.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_UseCustomLevelFinishedDialog) == 0; // yes, "==" here
+            CheckBox_ShowSoundController.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_ShowSoundController) != 0;
+            SkinType_Overlay.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0;
+            SkinType_TopBar.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_UseOverlaySkin) == 0;
             
-            CheckBox_AnyViewportSize.selected = (mParams.mViewerUiFlags & Define.PlayerUiFlag_AdaptiveViewportSize) != 0;
+            CheckBox_AnyViewportSize.selected = (mParams.mViewerUiFlags & ViewerDefine.PlayerUiFlag_AdaptiveViewportSize) != 0;
 
             var width:int = mParams.mViewportWidth;
             var height:int = mParams.mViewportHeight;
@@ -218,14 +219,14 @@
          {
             mParams.mPlayBarColor = ColorPicker_PlayBarColor.selectedColor;
 
-            mParams.mViewerUiFlags = (CheckBox_ShowPlayBar.selected ? Define.PlayerUiFlag_UseDefaultSkin : 0)
-                                    | (CheckBox_ShowSpeedAdjustor.selected ? Define.PlayerUiFlag_ShowSpeedAdjustor : 0)
-                                    | (CheckBox_ShowScaleAdjustor.selected ? Define.PlayerUiFlag_ShowScaleAdjustor : 0)
-                                    | (CheckBox_ShowSoundController.selected ? Define.PlayerUiFlag_ShowSoundController : 0)
-                                    | (CheckBox_ShowHelpButton.selected ? Define.PlayerUiFlag_UseCustomLevelFinishedDialog : 0)
-                                    | (CheckBox_ShowLevelFinishedDialog.selected ? 0 : Define.PlayerUiFlag_UseCustomLevelFinishedDialog) // different with other flags, this is an inverse-flag
-                                    | (CheckBox_AnyViewportSize.selected ? Define.PlayerUiFlag_AdaptiveViewportSize : 0)
-                                    | (SkinType_Overlay.selected ? Define.PlayerUiFlag_UseOverlaySkin : 0)
+            mParams.mViewerUiFlags = (CheckBox_ShowPlayBar.selected ? ViewerDefine.PlayerUiFlag_UseDefaultSkin : 0)
+                                    | (CheckBox_ShowSpeedAdjustor.selected ? ViewerDefine.PlayerUiFlag_ShowSpeedAdjustor : 0)
+                                    | (CheckBox_ShowScaleAdjustor.selected ? ViewerDefine.PlayerUiFlag_ShowScaleAdjustor : 0)
+                                    | (CheckBox_ShowSoundController.selected ? ViewerDefine.PlayerUiFlag_ShowSoundController : 0)
+                                    | (CheckBox_ShowHelpButton.selected ? ViewerDefine.PlayerUiFlag_UseCustomLevelFinishedDialog : 0)
+                                    | (CheckBox_ShowLevelFinishedDialog.selected ? 0 : ViewerDefine.PlayerUiFlag_UseCustomLevelFinishedDialog) // different with other flags, this is an inverse-flag
+                                    | (CheckBox_AnyViewportSize.selected ? ViewerDefine.PlayerUiFlag_AdaptiveViewportSize : 0)
+                                    | (SkinType_Overlay.selected ? ViewerDefine.PlayerUiFlag_UseOverlaySkin : 0)
                                     ;
 
             // ...

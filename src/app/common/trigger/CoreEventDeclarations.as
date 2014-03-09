@@ -312,11 +312,15 @@ package common.trigger {
 
      // ...
 
-         RegisterEventDeclatation (CoreEventIds.ID_OnPlayerActionData,
-                    [
-                        [CoreClassIds.ValueType_Number,       -1],
-                        [CoreClassIds.ValueType_String,       null],
-                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged,
+                    null
+                    );
+
+         //RegisterEventDeclatation (CoreEventIds.ID_OnPlayerActionData,
+         //           [
+         //               [CoreClassIds.ValueType_Number,       -1],
+         //               [CoreClassIds.ValueType_String,       null],
+         //           ]);
                     
       }
 

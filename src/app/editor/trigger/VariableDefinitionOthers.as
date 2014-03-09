@@ -11,17 +11,20 @@ package editor.trigger {
    
    import common.Define;
    
-   public class VariableDefinitionByteArray extends VariableDefinition_Core
+   public class VariableDefinitionOthers extends VariableDefinition_Core
    {
+   
+   //do: mege all VariableDefinitionXXXes into one. Also for VariableSpaceXXXes.
+   
    //========================================================================================================
    //
    //========================================================================================================
       
       protected var mNullValueEnabled:Boolean = true;
       
-      public function VariableDefinitionByteArray (name:String, description:String = null, options:Object = null)
+      public function VariableDefinitionOthers (coreClassId:int, name:String, description:String = null, options:Object = null)
       {
-         super (World.GetCoreClassById (CoreClassIds.ValueType_ByteArray), name, description, options);
+         super (World.GetCoreClassById (coreClassId), name, description, options);
          
          if (options != null)
          {
@@ -36,7 +39,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         return new VariableDefinitionByteArray (mName, mDescription);
+         return new VariableDefinitionOthers (GetCoreClass ().GetID (), mName, mDescription, mOptions);
       }
 
 //==============================================================================

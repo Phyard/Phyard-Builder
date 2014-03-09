@@ -60,6 +60,7 @@ package editor.entity.dialog {
    import common.trigger.CoreEventIds;
    
    import common.ValueAdjuster;
+   import common.ViewerDefine;
    import common.Define;
    import common.Version;
    
@@ -152,12 +153,12 @@ package editor.entity.dialog {
       
       override protected function GetMaxAllowedScale ():Number
       {
-         return Define.MaxWorldZoomScale;
+         return ViewerDefine.MaxWorldZoomScale;
       }
       
       override protected function GetMinAllowedScale ():Number
       {
-         return Define.MinWorldZoomScale;
+         return ViewerDefine.MinWorldZoomScale;
       }
       
       override protected function OnResize (event:Event):void 
@@ -282,7 +283,7 @@ package editor.entity.dialog {
                break;
             case 87: // W
                if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnPlayerActionData), OnPutCreating, OnCreatingCancelled));
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged), OnPutCreating, OnCreatingCancelled));
                break;
             default:
             {

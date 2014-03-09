@@ -114,6 +114,7 @@
    import common.SceneDefine;
    import common.trigger.CoreEventIds;
    import common.ValueAdjuster;
+   import common.ViewerDefine;
    import common.Define;
    import common.Version;
    
@@ -714,8 +715,8 @@
          var shareSourceCode:Boolean = mWorld.IsShareSourceCode ();
          designDataAll.writeShort (mWorld.GetEntryScene ().GetViewportWidth ()); // view width
          designDataAll.writeShort (mWorld.GetEntryScene ().GetViewportHeight ()); // view height
-         //designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
-         designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
+         //designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowPlayBar) != 0 ? 1 : 0); // show play bar?
+         designDataAll.writeByte  ((mWorld.GetEntryScene ().GetViewerUiFlags () & (ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_UseOverlaySkin)) == ViewerDefine.PlayerUiFlag_UseDefaultSkin ? 1 : 0);
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          
@@ -1143,9 +1144,9 @@
             // ...
             var width:int = mWorld.GetEntryScene ().GetViewportWidth ();
             var height:int = mWorld.GetEntryScene ().GetViewportHeight ();
-            //var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & Define.PlayerUiFlag_ShowPlayBar) != 0;
-            var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & (Define.PlayerUiFlag_UseDefaultSkin | Define.PlayerUiFlag_UseOverlaySkin)) == Define.PlayerUiFlag_UseDefaultSkin;
-            var heightWithPlayBar:int = (showPlayBar ? height + Define.DefaultPlayerSkinPlayBarHeight : height);
+            //var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_ShowPlayBar) != 0;
+            var showPlayBar:Boolean = (mWorld.GetEntryScene ().GetViewerUiFlags () & (ViewerDefine.PlayerUiFlag_UseDefaultSkin | ViewerDefine.PlayerUiFlag_UseOverlaySkin)) == ViewerDefine.PlayerUiFlag_UseDefaultSkin;
+            var heightWithPlayBar:int = (showPlayBar ? height + ViewerDefine.DefaultPlayerSkinPlayBarHeight : height);
             
             var fileFormatVersionString:String = DataFormat3.GetVersionHexString (Version.VersionNumber);
             

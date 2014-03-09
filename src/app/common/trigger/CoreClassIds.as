@@ -102,9 +102,11 @@ package common.trigger {
 
       public static const ValueType_Sound:int            = 90; 
       
-      //public static const ValueType_Bitmap:int            = 96;
+      //public static const ValueType_Bitmap:int            = 92;
       
-      //public static const ValueType_MultiplePlayerInstance:int     = 99;
+      public static const ValueType_MultiplePlayerInstance:int     = 95;
+      public static const ValueType_MultiplePlayerInstanceDefine:int     = 96;
+      public static const ValueType_MultiplePlayerInstanceChannelDefine:int     = 97;
       
       public static const ValueType_Scene:int            = 100;
       

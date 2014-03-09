@@ -40,6 +40,7 @@ package editor.world {
    import common.trigger.CoreFunctionIds;
    import common.trigger.CoreClassIds;
 
+   import common.UUID;
    import common.Define;
    import common.ValueAdjuster;
 
@@ -148,7 +149,7 @@ package editor.world {
       public function SetKey (key:String):void
       {
          if (key == null || key.length == 0)
-            key = EditorObject.BuildWorldKey ();
+            key = UUID.BuildRandomKey ();
          
          mKey = key;
       }
@@ -289,7 +290,7 @@ package editor.world {
             key = null;
          while (key == null || mSceneLookupTableByKey [key] != null)
          {
-            key = EditorObject.BuildKey (GetAccSceneId ());
+            key = UUID.BuildKey (GetAccSceneId ());
          }
          
          var newScene:Scene = new Scene (this, key);

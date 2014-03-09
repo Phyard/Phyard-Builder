@@ -72,6 +72,7 @@ package common {
 
    import common.trigger.CoreEventIds;
    
+   import common.ViewerDefine;
    import common.Define;
 
    public class DataFormat2
@@ -3838,7 +3839,7 @@ package common {
             
             if (worldDefine.mVersion < 0x0151)
             {
-               sceneDefine.mSettings.mViewerUiFlags = Define.PlayerUiFlags_BeforeV0151;
+               sceneDefine.mSettings.mViewerUiFlags = ViewerDefine.PlayerUiFlags_BeforeV0151;
                sceneDefine.mSettings.mPlayBarColor = 0x606060;
                sceneDefine.mSettings.mViewportWidth = 600;
                sceneDefine.mSettings.mViewportHeight = 600;

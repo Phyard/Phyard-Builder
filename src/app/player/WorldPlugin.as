@@ -116,8 +116,8 @@ package player
                   
                   GetWorldCrossStagesData : world.GetWorldCrossStagesData, // from v2.06
                   
-                  OnMultiplePlayerServerResponse : world.OnMultiplePlayerServerResponse, // from v2.06
-                  //GetCurrentMultiplePlayerInstance : world.GetCurrentMultiplePlayerInstance, // from v2.06, for viewer to show status
+                  OnMultiplePlayerServerMessage : world.OnMultiplePlayerServerMessage, // from v2.06
+                  GetCurrentMultiplePlayerInstance : world.GetCurrentMultiplePlayerInstance, // from v2.06, for viewer to show status
                   
                   "" : null
                };

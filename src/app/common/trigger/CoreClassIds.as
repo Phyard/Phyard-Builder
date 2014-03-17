@@ -135,11 +135,17 @@ package common.trigger {
       
       // for direct numbers, default number is a double float (64 bits float), default is general number
       
-      // most 16 details (DON'T change this values)      
+      // most 16 details (DON'T change this values)
       
-      public static const NumberTypeDetail_Double :int = 0 << 16; // 64 bits float, default, don't change its value.
-      public static const NumberTypeDetail_Single :int = 1 << 16; // 32 bits float
-      public static const NumberTypeDetail_Integer:int = 2 << 16; // 32 bits int
+      public static const NumberTypeDetail_DoubleNumber  :int = 0;
+      public static const NumberTypeDetail_Int8Number    :int = 1;
+      public static const NumberTypeDetail_Int16Number   :int = 2;
+      public static const NumberTypeDetail_FloatNumber   :int = 3;
+      public static const NumberTypeDetail_Int32Number   :int = 4;
+      
+      public static const NumberTypeDetailBit_Double :int = NumberTypeDetail_DoubleNumber << 16; // 64 bits float, default, don't change its value.
+      public static const NumberTypeDetailBit_Single :int = NumberTypeDetail_FloatNumber  << 16; // 32 bits float
+      public static const NumberTypeDetailBit_Integer:int = NumberTypeDetail_Int32Number  << 16; // 32 bits int
       
       // most 256 usages, assume offset_rotation must be zero
       

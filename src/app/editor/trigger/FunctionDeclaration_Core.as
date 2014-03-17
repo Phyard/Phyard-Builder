@@ -62,9 +62,9 @@ package editor.trigger {
 //
 //=================================================================
       
-      override public function GetInputNumberTypeDetail (inputId:int):int
+      override public function GetInputNumberTypeDetailBit (inputId:int):int
       {
-         return mFunctionDeclaration_Common.GetInputNumberTypeDetail (inputId);
+         return mFunctionDeclaration_Common.GetInputNumberTypeDetailBit (inputId);
       }
       
       override public function GetInputNumberTypeUsage (inputId:int):int

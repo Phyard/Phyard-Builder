@@ -806,11 +806,11 @@ package player.trigger {
             case CoreClassIds.ValueType_Number:
                switch (numberDetail)
                {
-                  case CoreClassIds.NumberTypeDetail_Single:
+                  case CoreClassIds.NumberTypeDetailBit_Single:
                      return binFile.readFloat ();
-                  case CoreClassIds.NumberTypeDetail_Integer:
+                  case CoreClassIds.NumberTypeDetailBit_Integer:
                      return binFile.readInt ();
-                  case CoreClassIds.NumberTypeDetail_Double:
+                  case CoreClassIds.NumberTypeDetailBit_Double:
                   default:
                      return binFile.readDouble ();
                }

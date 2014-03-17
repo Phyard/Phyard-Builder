@@ -27,6 +27,7 @@ package player.trigger {
    //import player.trigger.ClassInstance;
 
    import com.tapirgames.util.RandomNumberGenerator;
+   import com.tapirgames.util.TextUtil;
 
    import common.trigger.CoreFunctionIds;
    import common.trigger.FunctionCoreBasicDefine;
@@ -107,8 +108,16 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
          
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_CreateGameInstance,             CreateNewGameInstance);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ConnectToMultiplePlayerServer,        ConnectToMultiplePlayerServer);
+         
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_CreateNewGameInstanceDefine,          CreateNewGameInstanceDefine);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine,   CreateNewGameInstanceChannelDefine);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine,   GameInstanceDefineSetChannelDefine);
+         
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_CreateGameInstance,             CreateNewGameInstance);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_JoinGameInstanceRandomly,       JoinGameInstanceRandomly);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_JoinGameInstanceByInstanceID,   JoinGameInstanceByInstanceID);
+         
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendGameInstanceChannelMessage,           SendGameInstanceChannelMessage);
 
       // string
@@ -907,41 +916,110 @@ package player.trigger {
          }
       }
       
-      public static function CreateNewGameInstance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //public static function ConnectToMultiplePlayerServer (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   callingContext.mWorld.RequestConnectionId ();
+      //}
+      
+      public static function CreateNewGameInstanceDefine (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var localGameId:String = valueSource.EvaluateValueObject () as String;
+         var gameID:String = callingContext.mWorld.GetWorldKey ();
+         
+         var localGameID:String = valueSource.EvaluateValueObject () as String;
+         if (localGameID != null)
+         {
+            localGameID = TextUtil.TrimString (localGameId);
+            if (localGameID.length > 0)
+            {
+               if (localGameID.length > 30)
+                  localGameID.length = localGameID.length.substring (0, 30); // if 30 is changed, 60 in Viewer.MultiplePlayer_CreateInstanceDefine should also be changed.                  
+               gameID = gameID + "/" + localGameID;
+            }
+         }
          
          valueSource = valueSource.mNextParameter;
-         var password:String = valueSource.EvaluateValueObject () as String;
+         var numSeats = int (valueSource.EvaluateValueObject ());
          
-         valueSource = valueSource.mNextParameter;
-         var numPlayers:int = int (valueSource.EvaluateValueObject ());
-         
-         var mpInstance:Object = callingContext.mWorld.CreateNewGameInstance (localGameId, password, numPlayers);
-         
-         valueTarget.AssignValueObject (mpInstance);
+         var values:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_CreateInstanceDefine ({
+                                                                              mGameID: gameID, 
+                                                                              mNumberOfSeats: numSeats
+                                                                           });
+         valueTarget.AssignValueObject (values.mInstanceDefine);
       }
+      
+      public static function CreateNewGameInstanceChannelDefine (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var turnTimeoutSeconds:int = valueSource.EvaluateValueObject () as Number;
+         
+         valueSource = valueSource.mNextParameter;
+         var seatsInitialEnabledPolicy:int = int (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var seatsNextEnabledPolicy:int = int (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var seatsMessageForwardingPolicy:int = int (valueSource.EvaluateValueObject ());
+         
+         var values:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_CreateInstanceChannelDefine ({
+                                                                              mTurnTimeoutSeconds: turnTimeoutSeconds,
+                                                                              mSeatsInitialEnabledPolicy: seatsInitialEnabledPolicy,
+                                                                              mSeatsNextEnabledPolicy: seatsNextEnabledPolicy,
+                                                                              mSeatsMessageForwardingPolicy: seatsMessageForwardingPolicy
+                                                                           });
+         valueTarget.AssignValueObject (values.mChannelDefine);
+      }
+      
+      public static function GameInstanceDefineSetChannelDefine (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var instanceDefine:Object = valueSource.EvaluateValueObject () as Object;
+         
+         valueSource = valueSource.mNextParameter;
+         var channelIndex = int (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var channelDefine:Object = valueSource.EvaluateValueObject () as Object;
+         
+         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_ReplaceInstanceChannelDefine ({mInstanceDefine: instanceDefine, mChannelIndex: channelIndex, mChannelDefine: channelDefine});
+      }
+      
+      //public static function CreateNewGameInstance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var instanceDefine:Object = valueSource.EvaluateValueObject () as Object;
+      //   
+      //   valueSource = valueSource.mNextParameter;
+      //   var password:String = valueSource.EvaluateValueObject () as String;
+      //   if (password != null)
+      //   {
+      //      password = TextUtil.TrimString (password);
+      //      if (password.length > 0)
+      //      {
+      //         if (password.length > 30)
+      //            password = password.substring (0, 30);
+      //      }
+      //   }
+      //   
+      //   callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_JoinRandomInstance ({mInstanceDefine: instanceDefine, mPassword: password});
+      //}
       
       public static function JoinGameInstanceRandomly (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var localGameId:String = valueSource.EvaluateValueObject () as String;
+         var instanceDefine:Object = valueSource.EvaluateValueObject () as Object;
          
-         valueSource = valueSource.mNextParameter;
-         var createNewIfNoAvailables:Boolean = valueSource.EvaluateValueObject () as Boolean;
-         
-         valueSource = valueSource.mNextParameter;
-         var numPlayers:int = int (valueSource.EvaluateValueObject ());
-         
-         var mpInstance:Object = callingContext.mWorld.JoinRandomGameInstance (localGameId, createNewIfNoAvailables, numPlayers);
-         
-         valueTarget.AssignValueObject (mpInstance);
+         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_JoinRandomInstance ({mInstanceDefine: instanceDefine});
       }
+      
+      //public static function JoinGameInstanceByInstanceID (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //}
       
       public static function SendGameInstanceChannelMessage (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var data:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         var channelIndex:int = int (valueSource.EvaluateValueObject ());
          
-         callingContext.mWorld.SendPlayerActionData (data);
+         valueSource = valueSource.mNextParameter;
+         var messageData:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendChannelMessage ({mChannelIndex: channelIndex, mMessageData: messageData});
       }
 
    //*******************************************************************

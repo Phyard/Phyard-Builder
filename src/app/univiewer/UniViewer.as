@@ -60,16 +60,16 @@ package univiewer
          SetInfoText ("Loading ... (" + StartLoadingPercent + "%)");
          
          //>> websockets
-         if (ExternalInterface.available)
-         {
-             try
-             {
-                ExternalInterface.addCallback("call", ContainerCallEmbed);
-             }
-             catch (error:Error)
-             {
-             }
-         }
+         //if (ExternalInterface.available)
+         //{
+         //    try
+         //    {
+         //       ExternalInterface.addCallback("call", ContainerCallEmbed);
+         //    }
+         //    catch (error:Error)
+         //    {
+         //    }
+         //}
          //<<
 
          // init
@@ -220,7 +220,7 @@ package univiewer
          paramsFromUniViewer.mBackgroundColor = 0xDDDDA0;
          
          //>> websockets
-         paramsFromUniViewer.EmbedCallContainer = EmbedCallContainer;
+         //paramsFromUniViewer.EmbedCallContainer = EmbedCallContainer;
          //<<
 
          var viewer:Sprite = (MainClass.Call as Function) ("NewViewer", {mParamsFromUniViewer: paramsFromUniViewer}) as Sprite;
@@ -306,27 +306,31 @@ package univiewer
 //============================================================================
       
       // don't change this name, 
-      public function ContainerCallEmbed (funcName:String, params:Object):void
-      {
-         if (mViewer != null)
-         {
-            mViewer.ContainerCallEmbed (funcName, params);
-         }
-      }
+      //public function ContainerCallEmbed (funcName:String, params:Object):void
+      //{
+      //   if (mViewer != null)
+      //   {
+      //      return mViewer.ContainerCallEmbed (funcName, params);
+      //   }
+      //   
+      //   return null;
+      //}
       
       // don't change this name, 
-      public function EmbedCallContainer (funcName:String, params:Object):void
-      {
-         if (ExternalInterface.available)
-         {
-             try
-             {
-                ExternalInterface.call(funcName, params);
-             }
-             catch (error:Error)
-             {
-             }
-         }
-      }
+      //public function EmbedCallContainer (funcName:String, params:Object):Object
+      //{
+      //   if (ExternalInterface.available)
+      //   {
+      //       try
+      //       {
+      //          return ExternalInterface.call(funcName, params);
+      //       }
+      //       catch (error:Error)
+      //       {
+      //       }
+      //   }
+      //   
+      //   return null;
+      //}
    }
 }

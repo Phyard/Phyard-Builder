@@ -22,7 +22,7 @@ package common.trigger {
             RegisterCoreDeclaration (CoreFunctionIds.ID_ForDebug,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
@@ -30,7 +30,7 @@ package common.trigger {
                      ],
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
@@ -178,7 +178,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetProgramMilliseconds,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetCurrentDateTime,
@@ -186,13 +186,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetDay,
@@ -200,18 +200,18 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetTimeZone,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_IsKeyHold,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -245,9 +245,9 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetAcceleration,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_IsNativeApp,
@@ -263,14 +263,14 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetScreenResolution,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetScreenDPI,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_GetOsNameString,
@@ -304,22 +304,26 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_SubmitHighScore,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_SubmitKeyValue_Number,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
                   
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_ConnectToMultiplePlayerServer,
+         //            null,
+         //            null
+         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       2],
                      ],
                      [
                         [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
@@ -327,50 +331,50 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine,
                      [
-                        [CoreClassIds.ValueType_Boolean,      true],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       30.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,      Define.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,      Define.PolicyOfNextChannelSeatsEnabledStatus_DoNothing],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,      Define.PolicyOfChannelMessageForwarding_Instant],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.PolicyOfNextChannelSeatsEnabledStatus_DoNothing],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.PolicyOfChannelMessageForwarding_Instant],
                      ],
                      [
                         [CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GameInstanceDefineModifyChannelDefine,
                      [
                         [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       3],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine,       null],
                      ],
-                     null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_CreateGameInstance,
                      [
-                        [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
-                        [CoreClassIds.ValueType_String,       ""],
-                     ],
-                     null
+                        [CoreClassIds.ValueType_Boolean,       null],
+                     ]
                   );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_CreateGameInstance,
+         //            [
+         //               [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
+         //               [CoreClassIds.ValueType_String,       ""],
+         //            ],
+         //            null
+         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly,
                      [
                         [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
-                        [CoreClassIds.ValueType_Boolean,      true],
+                        //[CoreClassIds.ValueType_Boolean,      true],
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID,
-                     [
-                        [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_String,       ""],
-                     ],
-                     null
-                  );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID,
+         //            [
+         //               [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
+         //               [CoreClassIds.ValueType_String,       ""],
+         //               [CoreClassIds.ValueType_String,       ""],
+         //            ],
+         //            null
+         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_ByteArray,       null],
                      ],
                      null
@@ -434,13 +438,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_String,       ""],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharAt,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -449,15 +453,15 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_GetCharCodeAt,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_CharCode2Char,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -483,27 +487,27 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_LastIndexOf,
                      [
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_String_Substring,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -690,7 +694,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Create,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_Array,       null],
@@ -709,21 +713,21 @@ package common.trigger {
                         [CoreClassIds.ValueType_Array,       null],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetLength,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SubArray,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       16777215],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       16777215],
                      ],
                      [
                         [CoreClassIds.ValueType_Array,       null],
@@ -732,16 +736,16 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_RemoveElements,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       1],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       1],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_InsertElements,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       1],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       1],
                      ],
                      null
                   );
@@ -757,8 +761,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SwapElements,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      null
                   );
@@ -771,7 +775,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithBoolean,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      null
@@ -779,7 +783,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsBoolean,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -788,24 +792,24 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithNumber,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsNumber,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithString,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_String,       ""],
                      ],
                      null
@@ -813,7 +817,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsString,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -822,7 +826,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithCCat,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      null
@@ -830,7 +834,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsCCat,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
@@ -839,7 +843,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithEntity,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      null
@@ -847,7 +851,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsEntity,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
@@ -856,7 +860,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithModule,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Module,       Define.ModuleId_None],
                      ],
                      null
@@ -864,7 +868,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsModule,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_Module,       Define.ModuleId_None],
@@ -873,7 +877,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithSound,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Sound,       Define.SoundId_None],
                      ],
                      null
@@ -881,7 +885,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsSound,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_Sound,       Define.SoundId_None],
@@ -890,7 +894,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElementWithArray,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Array,       null],
                      ],
                      null
@@ -898,7 +902,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElementAsArray,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_Array,       null],
@@ -908,7 +912,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_SetElement,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Object,       null],
                      ],
                      null
@@ -916,7 +920,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_GetElement,
                      [
                         [CoreClassIds.ValueType_Array,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_Object,       null],
@@ -926,20 +930,20 @@ package common.trigger {
          //            [
          //               [CoreClassIds.ValueType_Array,       null],
          //               [CoreClassIds.ValueType_Object,       null],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
          //            ],
          //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
          //            ]
          //         );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_Array_LastIndexOf,
          //            [
          //               [CoreClassIds.ValueType_Array,       null],
          //               [CoreClassIds.ValueType_Object,       null],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0x7fffffff],
          //            ],
          //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       -1],
          //            ]
          //         );
 
@@ -947,7 +951,7 @@ package common.trigger {
       
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArray_Create,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      [
                         [CoreClassIds.ValueType_ByteArray,       null],
@@ -1012,13 +1016,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetCursorPostion,
                      [
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      null
                   );
@@ -1026,8 +1030,8 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
                         [CoreClassIds.ValueType_ByteArray,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      null
                   );
@@ -1035,8 +1039,8 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
                         [CoreClassIds.ValueType_ByteArray,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
                      null
                   );
@@ -1058,17 +1062,17 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadNumber,
                      [
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
-                        [CoreClassIds.ValueType_String,       "B"],
+                        [CoreClassIds.ValueType_Number,       CoreClassIds.NumberTypeDetail_Int32Number],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteNumber,
                      [
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_String,       "B"],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number,       CoreClassIds.NumberTypeDetail_Int32Number],
                      ],
                      null
                   );
@@ -1094,33 +1098,33 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Assign,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ConditionAssign,
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SwapValues,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Equals,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -1128,8 +1132,8 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LargerThan,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -1137,8 +1141,8 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_LessThan,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -1146,7 +1150,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsNaN,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -1154,7 +1158,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_IsInfinity,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -1162,56 +1166,56 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Negative,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Add,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Subtract,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Multiply,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Divide,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Modulo,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
@@ -1219,7 +1223,7 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToString,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -1228,8 +1232,8 @@ package common.trigger {
          // disabled for flex bug
          //RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToExponential,
          //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       2.0],
          //            ],
          //            [
          //               [CoreClassIds.ValueType_String,       ""],
@@ -1237,8 +1241,8 @@ package common.trigger {
          //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToFixed,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       2],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -1246,8 +1250,8 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToPrecision,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       6],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       6],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -1255,8 +1259,8 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ToStringByRadix,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       10],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       10],
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],
@@ -1267,16 +1271,16 @@ package common.trigger {
                         [CoreClassIds.ValueType_String,       ""],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ParseInteger,
                      [
                         [CoreClassIds.ValueType_String,       ""],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       10],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       10],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
@@ -1284,59 +1288,59 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_SinRadians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_CosRadians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_TanRadians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcSinRadians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcCosRadians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTanRadians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDyDx,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDyDx,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_ArcTan2Radians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
 
@@ -1344,8 +1348,8 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftLeft,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Number,       0.0],
@@ -1353,8 +1357,8 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRight,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Number,       0.0],
@@ -1362,46 +1366,46 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_ShiftRightUnsigned,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_And,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Or,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Not,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Bitwise_Xor,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
@@ -1410,70 +1414,70 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Random,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomRange,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RandomIntRange,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x7FFFFFFF],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0x7FFFFFFF],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngCreate,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngSetSeed,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandom,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomRange,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RngRandomIntRange,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x7FFFFFFF],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0x7FFFFFFF],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
@@ -1481,48 +1485,48 @@ package common.trigger {
 
           RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Degrees2Radians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Radians2Degrees,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
           RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Number2RGB,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_RGB2Number,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_MillisecondsToMinutesSeconds,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
@@ -1530,124 +1534,124 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Inverse,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Max,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Min,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Abs,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Sqrt,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Ceil,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Floor,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Round,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Log,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Exp,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Power,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
          RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Clamp,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
@@ -1656,7 +1660,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_LoadLevel,
                      [
                         [CoreClassIds.ValueType_Scene,         null],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       Define.SceneSwitchingStyle_FadingIn],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       Define.SceneSwitchingStyle_FadingIn],
                      ],
                      null
                   );
@@ -1668,7 +1672,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelByIdOffset,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       1.0],
                         [CoreClassIds.ValueType_Scene,         null],
                      ],
                      [
@@ -1680,7 +1684,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Scene,         null],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelByKey,
@@ -1750,7 +1754,7 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_RestartLevel,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       Define.SceneSwitchingStyle_FadingIn],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       Define.SceneSwitchingStyle_FadingIn],
                      ],
                      null
                   );
@@ -1769,24 +1773,24 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetPlaySpeedX,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetPlaySpeedX,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       2],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       2],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetWorldScale,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetWorldScale,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                      ],
                      null
@@ -1795,32 +1799,32 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelMilliseconds,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetLevelSteps,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetMousePosition,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_GetNumEntitiesPlacedInEditor,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStatus,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -1845,21 +1849,21 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelBooleanProperty,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelNumberProperty,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_General,      0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,      0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Design_SetLevelStringProperty,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       Define.LevelProperty_Invalid],
                         [CoreClassIds.ValueType_String,       ""],
                      ],
                      null
@@ -1870,56 +1874,56 @@ package common.trigger {
           RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetFilledColor,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetFilledColor,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetFilledColorRGB,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetFilledColorRGB,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetBorderColor,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetBorderColor,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_GetBorderColorRGB,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Level_SetBorderColorRGB,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -1941,49 +1945,49 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetRealtimeFPS,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       50],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       50],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetPreferredFpsAndStepTimeLangth,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       50],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.02],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       50],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.02],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetPreferredFpsAndStepTimeLangth,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       50],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.02],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       50],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.02],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Radians,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationMagnitude,       9.8],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationMagnitude,       9.8],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Degrees,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationMagnitude,       9.8],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationMagnitude,       9.8],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGravityAcceleration_Vector,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationY,       9.8],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationY,       9.8],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetGravityAcceleration_Vector,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationY,       9.8],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearAccelerationY,       9.8],
                      ]
                   );
 
@@ -1994,8 +1998,8 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetPhysicsOnesAtPoint,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Array,       null],
@@ -2003,10 +2007,10 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetFirstIncomingIntersectionWithLineSegment,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Array,       null],
@@ -2014,10 +2018,10 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ],
                      [
                         [CoreClassIds.ValueType_Array,       null],
@@ -2025,10 +2029,10 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                         [CoreClassIds.ValueType_Boolean,     false],
                      ],
                      [
@@ -2037,10 +2041,10 @@ package common.trigger {
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetIntersectionSegmentsWithLineSegment,
          //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
          //            ],
          //            [
          //               [CoreClassIds.ValueType_Array,       null],
@@ -2050,8 +2054,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetViewportSize,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera,
@@ -2063,14 +2067,14 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_FollowCameraWithShape,
@@ -2104,10 +2108,10 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_CameraFadeOutThenFadeIn,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       30],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       30],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       30],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       30],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       30],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       30],
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      null
@@ -2148,7 +2152,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_CallScriptMultiTimes,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2163,19 +2167,19 @@ package common.trigger {
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_CreateExplosion,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       64],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       60],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       25.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.8],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude,       50.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0x0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       64],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       60],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       25.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.8],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude,       50.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0x0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_CollisionCategory,       Define.CCatId_None/*CCatId_Hidden*/],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
 
@@ -2184,9 +2188,9 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_PlaySound,
                      [
                         [CoreClassIds.ValueType_Sound,       -1],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,      1  ],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      1  ],
                         [CoreClassIds.ValueType_Boolean,       false], // from v2.02
-                        /*[CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       1.0],*/ // to add
+                        /*[CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],*/ // to add
                      ],
                      null
                   );
@@ -2215,12 +2219,12 @@ package common.trigger {
          //RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetGlobalSoundVolume,
          //            null,
          //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.5],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.5],
          //            ]
          //         );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetGlobalSoundVolume,
          //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.5],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.5],
          //            ],
          //            null
          //         );
@@ -2358,13 +2362,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetEntityByIdOffset,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      [
@@ -2393,7 +2397,7 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetTaskStatus,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2468,13 +2472,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetAlpha,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2514,15 +2518,15 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_SetPosition,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
          //            ],
          //            null
          //         );
@@ -2531,7 +2535,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetRotationByDegrees,
@@ -2539,7 +2543,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_GetAccumulatedRotationByRadians,
@@ -2547,7 +2551,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_IsFlipped,
@@ -2563,15 +2567,15 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ]
                   );
 
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Clone,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -2583,45 +2587,45 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_WorldPoint2LocalPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_LocalPoint2WorldPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_WorldVector2LocalVector,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Entity_LocalVector2WorldVector,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
 
@@ -2644,9 +2648,9 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.8],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.8],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       6],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.8],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.8],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       6],
                      ],
                      [
                         [CoreClassIds.ValueType_Boolean,       false],
@@ -2741,13 +2745,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetOriginalCIType,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2756,13 +2760,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCIType,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2787,13 +2791,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColor,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2802,17 +2806,17 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledColorRGB,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2821,13 +2825,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFilledOpacity,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
                      ],
                      null
                   );
@@ -2851,13 +2855,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColor,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2866,17 +2870,17 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderColorRGB,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -2885,13 +2889,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderOpacity,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       100.0],
                      ],
                      null
                   );
@@ -2976,13 +2980,13 @@ package common.trigger {
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
          //            ],
          //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
          //            ]
          //         );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
          //            ],
          //            null
          //         );
@@ -3007,8 +3011,8 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetWorldCentroid,
@@ -3017,8 +3021,8 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
 
@@ -3028,13 +3032,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Mass,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Mass,       0.0],
                      ]
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetMass,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Mass,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Mass,       0.0],
          //               //[CoreClassIds.ValueType_Boolean,       false],
          //            ],
          //            null
@@ -3045,13 +3049,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Inertia,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Inertia,       0.0],
                      ]
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetInertia,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Inertia,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Inertia,       0.0],
          //               //[CoreClassIds.ValueType_Boolean,       false],
          //            ],
          //            null
@@ -3061,13 +3065,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -3077,8 +3081,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetLinearVelocity,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearVelocityX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearVelocityY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearVelocityX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearVelocityY,       0.0],
                      ],
                      null
                   );
@@ -3087,30 +3091,30 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearVelocityX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearVelocityY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearVelocityX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearVelocityY,       0.0],
                      ]
                   );
          // todo: use single instead of double
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseByVelocityVector,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearVelocityX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearVelocityY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearVelocityX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearVelocityY,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByRadians,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetAngularVelocityByDegrees,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ],
                      null
                   );
@@ -3119,7 +3123,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetAngularVelocityByDegrees,
@@ -3127,20 +3131,20 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByRadians,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ChangeAngularVelocityByDegrees,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ],
                      null
                   );
@@ -3148,8 +3152,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForce,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ForceX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ForceY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ForceX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ForceY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
@@ -3158,29 +3162,29 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtLocalPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ForceX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ForceY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ForceX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ForceY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepForceAtWorldPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ForceX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ForceY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ForceX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ForceY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyStepTorque,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_Torque,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_Torque,       0.0],
                      ],
                      null
                   );
@@ -3188,8 +3192,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulse,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ImpulseX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ImpulseY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ImpulseX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ImpulseY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       false],
                      ],
@@ -3198,29 +3202,29 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtLocalPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ImpulseX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ImpulseY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ImpulseX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ImpulseY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyLinearImpulseAtWorldPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ImpulseX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_ImpulseY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ImpulseX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_ImpulseY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       false],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ApplyAngularImpulse,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_AngularImpulse,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_AngularImpulse,       0.0],
                      ],
                      null
                   );
@@ -3230,9 +3234,9 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Teleport,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3242,9 +3246,9 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_TeleportOffsets,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3255,8 +3259,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_Translate,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3266,8 +3270,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_TranslateTo,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3277,9 +3281,9 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_RotateAroundWorldPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3290,9 +3294,9 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_RotateToAroundWorldPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationRadians,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3314,10 +3318,10 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_FlipByWorldLinePoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3328,9 +3332,9 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
@@ -3475,13 +3479,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetHorizontalScrollPosition,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -3490,13 +3494,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetVerticalScrollPosition,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -3505,7 +3509,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_GetMaxVerticalScrollPosition,
@@ -3513,73 +3517,73 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetSize,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetColor,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseOver,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseOver,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseDown,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseDown,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -3592,13 +3596,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeCircle_SetRadius,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
                      ],
                      null
                   );
@@ -3610,15 +3614,15 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetSize,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
                      ],
                      null
                   );
@@ -3630,69 +3634,69 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexLocalPosition,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
                      ]
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexLocalPosition,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
          //            ],
          //            null
          //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_GetVertexWorldPosition,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
                      ]
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_SetVertexWorldPosition,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
          //            ],
          //            null
          //         );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByLocalPosition,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaX,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearDeltaY,       0.0],
          //            ],
          //            null
          //         );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_InsertVertexByWorldPosition,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
          //            ],
          //            null
          //         );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapePoly_DeleteVertexAt,
          //            [
          //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
          //            ],
          //            null
          //         );
@@ -3735,13 +3739,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ],
                      null
                   );
@@ -3750,13 +3754,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetCurveThickness,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ],
                      null
                   );
@@ -3842,7 +3846,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetHingeLimitsByDegrees,
@@ -3850,15 +3854,15 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeLimitsByDegrees,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_RotationDegrees,       0.0],
                      ],
                      null
                   );
@@ -3867,13 +3871,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetHingeMotorSpeed,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_AngularVelocity,       0.0],
                      ],
                      null
                   );
@@ -3883,7 +3887,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_GetSliderLimits,
@@ -3891,15 +3895,15 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderLimits,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ],
                      null
                   );
@@ -3908,13 +3912,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude,       0.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityJoint_SetSliderMotorSpeed,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_LinearVelocityMagnitude,       0.0],
                      ],
                      null
                   );
@@ -3947,13 +3951,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityTrigger_SetTimerInterval,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetail_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      null
                   );

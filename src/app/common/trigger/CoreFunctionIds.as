@@ -86,16 +86,18 @@ package common.trigger {
       public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
       public static const ID_SubmitKeyValue_Number:int          = IdPool.CoreApiId_576; // from v2.03
       
+      //public static const ID_ConnectToMultiplePlayerServer:int           = IdPool.CoreApiId_567;
+
       public static const ID_CreateNewGameInstanceChannelDefine:int           = IdPool.CoreApiId_573; // from v2.06
       public static const ID_CreateNewGameInstanceDefine:int           = IdPool.CoreApiId_572; // from v2.06
       public static const ID_GameInstanceDefineSetChannelDefine:int           = IdPool.CoreApiId_571; // from v2.06
       
-      //public static const ID_GetAvailableGameInstances:int        = IdPool.CoreApiId_608;
-      public static const ID_CreateGameInstance:int             = IdPool.CoreApiId_606; // from v2.06
+      //public static const ID_CreateGameInstance:int             = IdPool.CoreApiId_606; // from v2.06
       public static const ID_JoinGameInstanceRandomly:int       = IdPool.CoreApiId_605; // from v2.06
-      public static const ID_JoinGameInstanceByInstanceID:int   = IdPool.CoreApiId_607; // from v2.06
+      //public static const ID_GetAvailableGameInstances:int        = IdPool.CoreApiId_608;
+      //public static const ID_JoinGameInstanceByInstanceID:int   = IdPool.CoreApiId_607; // from v2.06
+      //public static const ID_ExitGameInstance:int           = IdPool.CoreApiId_613;
       public static const ID_SendGameInstanceChannelMessage:int = IdPool.CoreApiId_611; // from v2.06
-      //public static const ID_ExitGameInstanceVoting:int           = IdPool.CoreApiId_613;
       
       //public static const ID_GetGameInstanceNumberOfSeats:int           = IdPool.CoreApiId_570; // from v2.06
       //public static const ID_GetGameInstanceSeatPlayerName:int          = IdPool.CoreApiId_568; // from v2.06

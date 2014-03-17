@@ -55,13 +55,13 @@ package common.trigger
          return mInputParamDefines [inputId][Index_ValueType] & CoreClassIds.NumberTypeMask_Basic;
       }
       
-      public function GetInputNumberTypeDetail (inputId:int):int
+      public function GetInputNumberTypeDetailBit (inputId:int):int
       {
          if (mInputParamDefines == null)
-            return CoreClassIds.NumberTypeDetail_Double;
+            return CoreClassIds.NumberTypeDetailBit_Double;
          
          if (inputId < 0 || inputId >= mInputParamDefines.length)
-            return CoreClassIds.NumberTypeDetail_Double;
+            return CoreClassIds.NumberTypeDetailBit_Double;
          
          return  mInputParamDefines [inputId][Index_ValueType] & CoreClassIds.NumberTypeMask_Detail;
       }

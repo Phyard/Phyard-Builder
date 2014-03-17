@@ -408,9 +408,13 @@ package editor.world {
                      null
                   );
                   
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ConnectToMultiplePlayerServer, services_package, "Connect To Multiple Player Server", null, null,
+         //            null,
+         //            null
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine, services_package, "Create Game Instance Define", null, null,
                      [
-                             new VariableDefinitionString ("Game ID (blank generally)"),
+                             new VariableDefinitionString ("Sub Game ID (most 30 chars, blank is ok)", null, {mMaxLength: 30}),
                              new VariableDefinitionNumber ("Number Of Players", null, {mValueLists: Lists.mMultiplePlayerInstanceNumberOfPlayersList}),
                      ],
                      [
@@ -419,9 +423,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package, "Create Game Instance Channel Define", null, null,
                      [
-                             new VariableDefinitionBoolean ("Enabled Initially?"),
-                             new VariableDefinitionNumber ("Min Turn Time Interval (seconds)"),
-                             new VariableDefinitionNumber ("Max Turn Time Interval (0 for unlimited)", null, {mMinValue: 0, mMaxValue: 3600}),
+                             new VariableDefinitionNumber ("Turn Timeout (seconds, 0: unlimited)", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxTurnTimeoutInPractice}),
                              new VariableDefinitionNumber ("Rule Of Initial Seats Enabled Status", null, {mValueLists: Lists.mPolicyOfInitialChannelSeatsEnabledStatusList}),
                              new VariableDefinitionNumber ("Rule Of Next Seats Enabled Status", null, {mValueLists: Lists.mPolicyOfNextChannelSeatsEnabledStatusList}),
                              new VariableDefinitionNumber ("Rule Of Forwarding Messages", null, {mValueLists: Lists.mPolicyOfChannelMessageForwardingList}),
@@ -433,33 +435,35 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Game Instance Define", null, null,
                      [
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
-                             new VariableDefinitionNumber ("Channel Index", null, {mMinValue: 0, mMaxValue: Define.MaxNumberOfMutiplePlayerInstanceChannels}),
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelLists}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Channel Define"),
                      ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
-                             new VariableDefinitionString ("Password (blank for public)"),
-                     ],
-                     null
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Boolean, "Succeeded?"),
+                     ]
                   );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
+         //            [
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
+         //                    new VariableDefinitionString ("Password (max 30 chars, blank for public)", null, {mMaxLength: 30}),
+         //            ],
+         //            null
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package, "Join Game Instance Randomly", null, null,
                      [
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
-                             new VariableDefinitionBoolean ("Create New If No Availables"),
+                             //new VariableDefinitionBoolean ("Create New If No Availables"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Game Instance By Instance ID", null, null,
-                     [
-                             new VariableDefinitionString ("Game ID (blank generally)"),
-                             new VariableDefinitionString ("Instance ID"),
-                             new VariableDefinitionString ("Password (if required)"),
-                     ],
-                     null
-                  );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Game Instance By Instance ID", null, null,
+         //            [
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
+         //                    new VariableDefinitionString ("Instance ID"),
+         //                    new VariableDefinitionString ("Password (if required)"),
+         //            ],
+         //            null
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Player Action Data", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Index", null, {mMinValue: 0, mMaxValue: Define.MaxNumberOfMutiplePlayerInstanceChannels}),
@@ -1167,7 +1171,7 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadNumber, bytearray_package, "Read Number From Stream", null, null,
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
-                              new VariableDefinitionString ("(B)yte, (S)hort, (I)nt, (F)loat, (D)ouble"),
+                              new VariableDefinitionNumber ("Number Detail", null, {mValueLists:Lists.mNumberDetailList}),
                      ],
                      [
                               new VariableDefinitionNumber ("The Number Value"),
@@ -1177,7 +1181,7 @@ package editor.world {
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionNumber ("The Number Value"),
-                              new VariableDefinitionString ("(B)yte, (S)hort, (I)nt, (F)loat, (D)ouble"),
+                              new VariableDefinitionNumber ("Number Detail", null, {mValueLists:Lists.mNumberDetailList}),
                      ],
                      null
                   );

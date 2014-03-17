@@ -51,6 +51,7 @@ package viewer {
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.UrlUtil;
    import com.tapirgames.util.TextUtil;
+   import com.tapirgames.util.FrequencyStat;
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
    import com.tapirgames.display.ImageButton;
@@ -63,6 +64,7 @@ package viewer {
 
    import common.DataFormat3;
    import common.ViewerDefine;
+   import common.MultiplePlayerDefine;
    import common.Version;
 
    public class Viewer extends Sprite
@@ -1058,7 +1060,7 @@ package viewer {
          if (mWorldDesignProperties.GetDelayToLoadSceneIndex == undefined)        mWorldDesignProperties.GetDelayToLoadSceneIndex = DummyGetSceneIndex;
          if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
-         if (mWorldDesignProperties.OnMultiplePlayerServerResponse == undefined)  mWorldDesignProperties.OnMultiplePlayerServerResponse = DummyCallback;
+         if (mWorldDesignProperties.OnMultiplePlayerServerMessage == undefined)   mWorldDesignProperties.OnMultiplePlayerServerMessage = DummyCallback;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1315,10 +1317,15 @@ package viewer {
                               ClearCookie : ClearCookie
                   },
                   mLibService : {
-                              SubmitKeyValue: SubmitKeyValue,
+                              MultiplePlayer_CreateInstanceDefine: MultiplePlayer_CreateInstanceDefine,
+                              MultiplePlayer_CreateInstanceChannelDefine: MultiplePlayer_CreateInstanceChannelDefine,
+                              MultiplePlayer_ReplaceInstanceChannelDefine: MultiplePlayer_ReplaceInstanceChannelDefine, 
+                              MultiplePlayer_JoinNewInstance: MultiplePlayer_JoinNewInstance, // v2.06
+                              MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06
+                              MultiplePlayer_SendChannelMessage: MultiplePlayer_SendChannelMessage, // v2.06
+                              //SetMultiplePlayerInstanceInfoShown: SetMultiplePlayerInstanceInfoShown, // v2.06
                               
-                              SendMultiplePlayerServerRequest: SendMultiplePlayerServerRequest // v2.06
-                              //SetMultiplePlayerInstanceInfoShown: SetMultiplePlayerInstanceInfoShown // v2.06
+                              SubmitKeyValue: SubmitKeyValue
                   }
                };
             }
@@ -2605,22 +2612,30 @@ package viewer {
 //===========================================================================
       
       // don't change the api name. 
-      public function ContainerCallEmbed (funcName:String, params:Object):void
-      {
-         if (funcName == "OnMultiplePlayerServerResponse")
-         {
-            OnMultiplePlayerServerResponse (params);
-         }
-      }
+      //public function ContainerCallEmbed (funcName:String, params:Object):Object
+      //{
+      //   if (funcName == "OnMultiplePlayerServerMessages")
+      //   {
+      //      OnMultiplePlayerServerMessages (params);
+      //   }
+      //   else if (funcName == "OnSetConnectionID")
+      //   {
+      //      OnSetConnectionID (params);
+      //   }
+      //   
+      //   return null;
+      //}
       
       // for websocket, etc.
-      public function EmbedCallContainer (funcName:String, params:Object):void
-      {
-         if (mParamsFromContainer.EmbedCallContainer != null)
-         {
-            mParamsFromContainer.EmbedCallContainer (funcName, params);
-         }
-      }
+      //public function EmbedCallContainer (funcName:String, params:Object):Object
+      //{
+      //   if (mParamsFromContainer.EmbedCallContainer != null)
+      //   {
+      //      return mParamsFromContainer.EmbedCallContainer (funcName, params);
+      //   }
+      //   
+      //   return null;
+      //}
 
    }
 }

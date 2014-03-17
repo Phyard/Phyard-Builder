@@ -603,13 +603,13 @@ package editor.world {
             case CoreClassIds.ValueType_Number:
                switch (numberDetail)
                {
-                  case CoreClassIds.NumberTypeDetail_Single:
+                  case CoreClassIds.NumberTypeDetailBit_Single:
                      binFile.writeFloat (valueObject as Number);
                      break;
-                  case CoreClassIds.NumberTypeDetail_Integer:
+                  case CoreClassIds.NumberTypeDetailBit_Integer:
                      binFile.writeInt (valueObject as Number);
                      break;
-                  case CoreClassIds.NumberTypeDetail_Double:
+                  case CoreClassIds.NumberTypeDetailBit_Double:
                   default:
                      binFile.writeDouble (valueObject as Number);
                      break;

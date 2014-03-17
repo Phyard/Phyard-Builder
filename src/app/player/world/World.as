@@ -999,7 +999,7 @@ package player.world {
          // notify multiple player instance changed
          //-----------------------------
             
-            HandleMultiplePlayerInstanceEvents ();
+            UpdateMultiplePlayerInstance ();
             
          //-----------------------------
          // update physics

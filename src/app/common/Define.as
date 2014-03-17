@@ -344,50 +344,6 @@ package common {
       public static const PackageDefaultName:String = "Package";
       
 //===========================================================================
-// multiple player 
-//===========================================================================
-      
-      //
-      public static const MaxMutiplePlayerDataFormatVersion:int = 0;
-      
-      // 
-      public static const MinNumberOfMutiplePlayerInstanceSeats:int = 2;
-      public static const MaxNumberOfMutiplePlayerInstanceSeats:int = 4;
-      
-      public static const MaxNumberOfMutiplePlayerInstanceChannels:int = 5;
-      public static const MaxNumberOfMutiplePlayerInstanceVotings:int = 5;
-      
-      public static const MaxMutiplePlayerRequestDataLength:int = 8196; // make sure it is < 0xFFFF.
-      
-      // channel seat policy
-      
-      public static const PolicyOfInitialChannelSeatsEnabledStatus_DisableAll:int = 0;
-      public static const PolicyOfInitialChannelSeatsEnabledStatus_EnableAll:int = 1;
-      public static const PolicyOfInitialChannelSeatsEnabledStatus_RandomOne:int = 2;
-      public static const PolicyOfInitialChannelSeatsEnabledStatus_Alternative:int = 3;
-      
-      public static const PolicyOfNextChannelSeatsEnabledStatus_DoNothing:int = 0;
-      public static const PolicyOfNextChannelSeatsEnabledStatus_NextOne:int = 1;
-      
-      public static const PolicyOfChannelMessageForwarding_Instant:int = 0;
-      public static const PolicyOfChannelMessageForwarding_WeGo:int = 1;
-      
-      // request
-      public static const MutiplePlayerRequestType_Ping:int = 0;
-      //public static const MutiplePlayerRequestType_GetPlayerClientId:int = 1000;
-      public static const MutiplePlayerRequestType_CreateInstance:int = 1100;
-      public static const MutiplePlayerRequestType_JoinRandomInstance:int = 1101;
-      public static const MutiplePlayerRequestType_JoinInstanceById:int = 1102;
-      public static const MutiplePlayerRequestType_PlayAction:int = 1200;
-      
-      // response
-      public static const MutiplePlayerResponseType_Pong:int = 0;
-      public static const MutiplePlayerResponseType_Error:int = 100;
-      //public static const MutiplePlayerResponseType_NewPlayerClientId:int = 1000;
-      public static const MutiplePlayerResponseType_InstanceInfo:int = 1100;
-      public static const MutiplePlayerResponseType_PlayAction:int = 1200;
-      
-//===========================================================================
 // colors 
 //===========================================================================
       

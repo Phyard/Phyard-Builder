@@ -4,9 +4,12 @@ package editor.world {
    
    import com.tapirgames.util.TextUtil;
    
-   import common.Define;
-   import common.KeyCodes;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueDefine;
+   
+   import common.Define;
+   import common.MultiplePlayerDefine;
+   import common.KeyCodes;
    
    public class Lists
    {
@@ -155,14 +158,22 @@ package editor.world {
             {label:"Blend", data:Define.SceneSwitchingStyle_Blend},
          ];
          
+      public static const mNumberDetailList:Array = [
+            {label:"Byte (8bits integer)", data:CoreClassIds.NumberTypeDetail_Int8Number},
+            {label:"Short (16bits integer)", data:CoreClassIds.NumberTypeDetail_Int16Number},
+            {label:"Int (32bits integer)", data:CoreClassIds.NumberTypeDetail_Int32Number},
+            {label:"Double Float (64bits float)", data:CoreClassIds.NumberTypeDetail_DoubleNumber},
+            {label:"Float (32bits float)", data:CoreClassIds.NumberTypeDetail_FloatNumber},
+         ];
+         
       private static var _mMultiplePlayerInstanceNumberOfPlayersList:Array = null;
       public static function get mMultiplePlayerInstanceNumberOfPlayersList ():Array
       {
          if (_mMultiplePlayerInstanceNumberOfPlayersList == null)
          {
-            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (Define.MinNumberOfMutiplePlayerInstanceSeats - Define.MinNumberOfMutiplePlayerInstanceSeats);
+            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats - MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats);
             var index:int = 0;
-            for (var numPlayers:int = Define.MinNumberOfMutiplePlayerInstanceSeats; numPlayers <= Define.MaxNumberOfMutiplePlayerInstanceSeats; ++ numPlayers)
+            for (var numPlayers:int = MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats; numPlayers <= MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceSeats; ++ numPlayers)
             {
                _mMultiplePlayerInstanceNumberOfPlayersList [index ++] = {label: "", data: numPlayers};
             }
@@ -171,21 +182,59 @@ package editor.world {
          return _mMultiplePlayerInstanceNumberOfPlayersList;
       }
          
-      public static const mPolicyOfInitialChannelSeatsEnabledStatusList:Array = [
-            {label:"Disable All", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_DisableAll},
-            {label:"Enable All", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll},
-            {label:"Random One", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_RandomOne},
-            {label:"Alternative One", data:Define.PolicyOfInitialChannelSeatsEnabledStatus_Alternative},
-         ];
+      private static var _mMultiplePlayerInstanceNumberOfPlayersList:Array = null;
+      public static function get mMultiplePlayerInstanceNumberOfPlayersList ():Array
+      {
+         if (_mMultiplePlayerInstanceNumberOfPlayersList == null)
+         {
+            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats - MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats);
+            var index:int = 0;
+            for (var numPlayers:int = MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats; numPlayers <= MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceSeats; ++ numPlayers)
+            {
+               _mMultiplePlayerInstanceNumberOfPlayersList [index ++] = {label: "", data: numPlayers};
+            }
+         }
          
-      public static const mPolicyOfNextChannelSeatsEnabledStatusList:Array = [
-            {label:"Keep Current", data:Define.PolicyOfNextChannelSeatsEnabledStatus_DoNothing},
-            {label:"Enable Next And Disable Others", data:Define.PolicyOfNextChannelSeatsEnabledStatus_NextOne},
-         ];
+         return _mMultiplePlayerInstanceNumberOfPlayersList;
+      }
          
-      public static const mPolicyOfChannelMessageForwardingList:Array = [
-            {label:"Forwarding Instantly", data:Define.PolicyOfChannelMessageForwarding_Instant},
-            {label:"Forwarding WeGo", data:Define.PolicyOfChannelMessageForwarding_WeGo},
+      private static var _mMultiplePlayerInstanceChannelList:Array = null;
+      public static function get mMultiplePlayerInstanceChannelList ():Array
+      {
+         if (_mMultiplePlayerInstanceChannelList == null)
+         {
+            _mMultiplePlayerInstanceChannelList = new Array (MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceChannels);
+            for (var channelIndex:int = 0; channelIndex <= MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceChannels; ++ channelIndex)
+            {
+               _mMultiplePlayerInstanceChannelList [index ++] = {label: "Channel", data: channelIndex};
+            }
+         }
+         
+         return _mMultiplePlayerInstanceChannelList;
+      }
+      
+      //public static const mPolicyOfInitialChannelSeatsEnabledStatusList:Array = [
+      //      {label:"Disable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_DisableAll},
+      //      {label:"Enable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll},
+      //      {label:"Random One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_RandomOne},
+      //      {label:"Alternative One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_Alternative},
+      //   ];
+      //   
+      //public static const mPolicyOfNextChannelSeatsEnabledStatusList:Array = [
+      //      {label:"Keep Current", data:MultiplePlayerDefine.PolicyOfNextChannelSeatsEnabledStatus_DoNothing},
+      //      {label:"Enable Next And Disable Others", data:MultiplePlayerDefine.PolicyOfNextChannelSeatsEnabledStatus_NextOne},
+      //   ];
+      //   
+      //public static const mPolicyOfChannelMessageForwardingList:Array = [
+      //      {label:"Forwards Instantly", data:MultiplePlayerDefine.PolicyOfChannelMessageForwarding_Instant},
+      //      {label:"Forwards At Round End", data:MultiplePlayerDefine.PolicyOfChannelMessageForwarding_WeGo},
+      //   ];
+      
+      public static const mMultiplePlayerChannelModeList:Array = [
+            {label:"Disable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_DisableAll},
+            {label:"Enable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll},
+            {label:"Random One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_RandomOne},
+            {label:"Alternative One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_Alternative},
          ];
          
    }

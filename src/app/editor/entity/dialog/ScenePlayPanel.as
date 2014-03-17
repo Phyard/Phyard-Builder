@@ -3,6 +3,7 @@ package editor.entity.dialog {
    import flash.system.ApplicationDomain;
    import flash.utils.ByteArray;
    import flash.utils.Dictionary;
+   import flash.utils.getTimer;
    import flash.display.Shape;
    import flash.display.Sprite;
    import flash.display.InteractiveObject;
@@ -69,7 +70,8 @@ package editor.entity.dialog {
                                          OnExitLevel: callbackStopPlaying, 
                                          
                                          //>> websocket
-                                         EmbedCallContainer: EmbedCallContainer
+                                         OnClientMessagesToMultiplePlayerSchedulerServer: OnClientMessagesToMultiplePlayerSchedulerServer,
+                                         OnSendClientMessagesToMultiplePlayerInstanceServer : OnSendClientMessagesToMultiplePlayerInstanceServer
                                          //<<
                                       }
                              });
@@ -190,6 +192,8 @@ package editor.entity.dialog {
                stage.focus = this;
             }
          }
+         
+         UpdateSimulatedServers ();
          
          UpdateInterface ();
       }
@@ -407,7 +411,7 @@ package editor.entity.dialog {
       }
       
 //============================================================================
-//   as the Multiple Players Server
+//   fake players
 //============================================================================
       
       public static const MaxNumMultiplePlayers:int = 4;
@@ -494,8 +498,32 @@ package editor.entity.dialog {
       }
       
 //============================================================================
-//   
+//   simulated servers
 //============================================================================
+      
+      private var mCachedContainerCallEmbeds:Array = new Array ();
+      private var mNumCachedContainerCallEmbeds:int = 0;
+      
+      private function UpdateSimulatedServers ():void
+      {
+         
+      }
+      
+      private function CreateConnectionID (viewer:Viewer):String
+      {
+         var uuid:String = UUID.BuildRandomKey ();
+         
+         //var serverMessageData:ByteArray = new ByteArray ();
+         //serverMessageData.writeUTF (uuid);         
+         //var serverMessageString:String = DataFormat3.EncodeByteArray2String (serverMessageData, 0, serverMessageData.length, true, false);
+         
+         var sendTimer:int = getTimer () + Math.random () * 1000;
+         mCachedContainerCallEmbeds [mNumCachedContainerCallEmbeds ++] = {  
+                                                                           timer: sendTimer,
+                                                                           viewer: viewer,
+                                                                            {"OnSetConnectionID", player_id: uuid}
+                                                                         };
+      }
       
       // instance id should be (time + random)
       private function CreateInstance (numSeats:int):Object
@@ -530,35 +558,62 @@ package editor.entity.dialog {
 //============================================================================
       
       // 
-      
-      private function SendMultiplePlayerServerResponse (params:Object):void
+      private function SendMultiplePlayerServerMessages (messagesData:ByteArray, designViewer:Viewer = null):void
       {
-         ContainerCallEmbed ("OnMultiplePlayerServerResponse", params);
+         ContainerCallEmbed ("OnMultiplePlayerServerMessages", params);
       }
       
-      private function ContainerCallEmbed (funcName:String, params:Object):void
+//============================================================================
+//   
+//============================================================================
+      
+      public function OnMultiplePlayerClientMessagesToSchedulerServer (messagesData:ByteArray, designViewer:Viewer):void
       {
-         var designViewer:Viewer = GetCurrentViewer ();
-         if (designViewer != null)
-         {
-            designViewer.ContainerCallEmbed (funcName, params);
-         }
+         
+      }
+      
+      public function OnMultiplePlayerClientMessagesToInstanceServer (messagesData:ByteArray, designViewer:Viewer):void
+      {
+         
       }
       
       // don't change this name, 
-      public function EmbedCallContainer (funcName:String, params:Object):void
+      public function OnClientMessages ((messagesData:ByteArray, designViewer:Viewer):void
       {
-         if (funcName == "OnMultiplePlayerServerRequest")
+         try
          {
-            var requestString:String = params.mRequestString;
-            var requestData:ByteArray = DataFormat3.DecodeString2ByteArray (requestString);
-         
-            AsWebSocketsServer_OnClientRequest ({mRequestData: requestData});
+            var dataFormatVersion:int = messagesData.readShort ();
+            var playerConnectionId:String = messagesData.readUTF ();
+            var numMessages:int = readShort
+            if (numMessages > )
+             ...
+            
+            var msgIndex:int;
+            var messages:Array = new Array (numMessages); // ByteArrays
+            for (msgIndex = 0; msgIndex < numMessages; ++ msgIndex)
+            {
+               parseMessage
+               clientMessageType = 
+               
+               switch (clientMessageType)
+               {
+                  
+               }
+            }
          }
-         else if (funcName == "OnAccountServerRequest")
+         catch (error:Error)
          {
             
          }
       }
+      
+      //private function ContainerCallEmbed (funcName:String, params:Object):void
+      //{
+      //   var designViewer:Viewer = GetCurrentViewer ();
+      //   if (designViewer != null)
+      //   {
+      //      designViewer.ContainerCallEmbed (funcName, params);
+      //   }
+      //}
    }
 }

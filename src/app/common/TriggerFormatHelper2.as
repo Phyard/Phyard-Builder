@@ -1162,7 +1162,7 @@ package common {
             var func_declaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id);
             
             for (i = 0; i < num_inputs; ++ i)
-               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetailBit (i));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
@@ -1170,9 +1170,9 @@ package common {
             
             for (i = 0; i < num_inputs; ++ i)
             {
-               //inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               //inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double);
                vd = calledInputVariableDefines [i] as VariableDefine;
-               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetailBit_Double);
             }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -1227,7 +1227,7 @@ package common {
          {
             //>> before v2.05
             //valueSourceDefine = new ValueSourceDefine_EntityProperty (
-            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
             //      //binFile.readShort (), // before v2.03
             //      (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
             //      binFile.readShort ()
@@ -1236,8 +1236,8 @@ package common {
             
             //sine v2.05
             valueSourceDefine = new ValueSourceDefine_EntityProperty (
-                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
-                  LoadValueSourceDefineFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetail_Double, true) as ValueSourceDefine_Variable
+                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
+                  LoadValueSourceDefineFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetailBit_Double, true) as ValueSourceDefine_Variable
                );
             //<<
          }
@@ -1287,7 +1287,7 @@ package common {
          {
             //>> before v2.05
             //valueTargetDefine = new ValueTargetDefine_EntityProperty (
-            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
             //      //binFile.readShort (), // before v2.03
             //      (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
             //      binFile.readShort ()
@@ -1296,7 +1296,7 @@ package common {
             
             //sine v2.05
             valueTargetDefine = new ValueTargetDefine_EntityProperty (
-                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
                   LoadValueTargetDefineFromBinFile (binFile, true) as ValueTargetDefine_Variable
                );
             //<<
@@ -1346,11 +1346,11 @@ package common {
             valueType = binFile.readShort ();
             //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
             //                                                valueType,
-            //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
+            //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
             //                                                );
             variableDefine.mClassType = classType;
             variableDefine.mValueType = valueType;
-            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
+            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
             
             //variableSpaceDefine.mVariableDefines [i] = variableDefine; // v1.52 only
             variableDefines.push (variableDefine);
@@ -1713,17 +1713,17 @@ package common {
                      if (valueType == CoreClassIds.ValueType_Number)
                      {
                         directNumber = Number (direcSourceDefine.mValueObject);
-                        numberDetail = funcDclaration.GetInputNumberTypeDetail (j);
+                        numberDetail = funcDclaration.GetInputNumberTypeDetailBit (j);
                         
                         switch (numberDetail)
                         {
-                           case CoreClassIds.NumberTypeDetail_Single:
+                           case CoreClassIds.NumberTypeDetailBit_Single:
                               directNumber = ValueAdjuster.Number2Precision (directNumber, 6);
                               break;
-                           case CoreClassIds.NumberTypeDetail_Integer:
+                           case CoreClassIds.NumberTypeDetailBit_Integer:
                               directNumber = Math.round (directNumber);
                               break;
-                           case CoreClassIds.NumberTypeDetail_Double:
+                           case CoreClassIds.NumberTypeDetailBit_Double:
                            default:
                               directNumber = ValueAdjuster.Number2Precision (directNumber, 12);
                               break;

@@ -171,25 +171,10 @@ package editor.world {
       {
          if (_mMultiplePlayerInstanceNumberOfPlayersList == null)
          {
-            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats - MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats);
+            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (MultiplePlayerDefine.MinNumberOfInstanceSeats - MultiplePlayerDefine.MinNumberOfInstanceSeats);
+            
             var index:int = 0;
-            for (var numPlayers:int = MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats; numPlayers <= MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceSeats; ++ numPlayers)
-            {
-               _mMultiplePlayerInstanceNumberOfPlayersList [index ++] = {label: "", data: numPlayers};
-            }
-         }
-         
-         return _mMultiplePlayerInstanceNumberOfPlayersList;
-      }
-         
-      private static var _mMultiplePlayerInstanceNumberOfPlayersList:Array = null;
-      public static function get mMultiplePlayerInstanceNumberOfPlayersList ():Array
-      {
-         if (_mMultiplePlayerInstanceNumberOfPlayersList == null)
-         {
-            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats - MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats);
-            var index:int = 0;
-            for (var numPlayers:int = MultiplePlayerDefine.MinNumberOfMutiplePlayerInstanceSeats; numPlayers <= MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceSeats; ++ numPlayers)
+            for (var numPlayers:int = MultiplePlayerDefine.MinNumberOfInstanceSeats; numPlayers <= MultiplePlayerDefine.MaxNumberOfInstanceSeats; ++ numPlayers)
             {
                _mMultiplePlayerInstanceNumberOfPlayersList [index ++] = {label: "", data: numPlayers};
             }
@@ -203,8 +188,8 @@ package editor.world {
       {
          if (_mMultiplePlayerInstanceChannelList == null)
          {
-            _mMultiplePlayerInstanceChannelList = new Array (MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceChannels);
-            for (var channelIndex:int = 0; channelIndex <= MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceChannels; ++ channelIndex)
+            _mMultiplePlayerInstanceChannelList = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
+            for (var channelIndex:int = 0; channelIndex <= MultiplePlayerDefine.MaxNumberOfInstanceChannels; ++ channelIndex)
             {
                _mMultiplePlayerInstanceChannelList [index ++] = {label: "Channel", data: channelIndex};
             }
@@ -231,10 +216,9 @@ package editor.world {
       //   ];
       
       public static const mMultiplePlayerChannelModeList:Array = [
-            {label:"Disable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_DisableAll},
-            {label:"Enable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll},
-            {label:"Random One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_RandomOne},
-            {label:"Alternative One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_Alternative},
+            {label:"Free Mode", data:MultiplePlayerDefine.InstaneChannelMode_Free},
+            {label:"Chess Mode", data:MultiplePlayerDefine.InstaneChannelMode_Chess},
+            {label:"WeGo Mode", data:MultiplePlayerDefine.InstaneChannelMode_WeGo},
          ];
          
    }

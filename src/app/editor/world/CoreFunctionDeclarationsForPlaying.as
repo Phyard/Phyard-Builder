@@ -6,6 +6,8 @@ package editor.world {
    import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.IdPool;
+   
+   import common.MultiplePlayerDefine;
    import common.Define;
 
    public class CoreFunctionDeclarationsForPlaying
@@ -423,20 +425,18 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package, "Create Game Instance Channel Define", null, null,
                      [
+                             new VariableDefinitionNumber ("Channel Mode", null, {mValueLists: Lists.mMultiplePlayerChannelModeList}),
                              new VariableDefinitionNumber ("Turn Timeout (seconds, 0: unlimited)", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxTurnTimeoutInPractice}),
-                             new VariableDefinitionNumber ("Rule Of Initial Seats Enabled Status", null, {mValueLists: Lists.mPolicyOfInitialChannelSeatsEnabledStatusList}),
-                             new VariableDefinitionNumber ("Rule Of Next Seats Enabled Status", null, {mValueLists: Lists.mPolicyOfNextChannelSeatsEnabledStatusList}),
-                             new VariableDefinitionNumber ("Rule Of Forwarding Messages", null, {mValueLists: Lists.mPolicyOfChannelMessageForwardingList}),
                      ],
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
+                             
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Game Instance Define", null, null,
                      [
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelLists}),
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Channel Define"),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
                      ],
                      [
                              new VariableDefinitionOthers (CoreClassIds.ValueType_Boolean, "Succeeded?"),
@@ -476,7 +476,7 @@ package editor.world {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "@#0 = $0", "@#0 = $0",
                      [
-                             new VariableDefinitionString ("Source String"),
+                             new VariableDefinitionString ("Source String", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionString ("Target String"),
@@ -485,8 +485,8 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
-                             new VariableDefinitionString ("Source String 1"),
-                             new VariableDefinitionString ("Source String 2"),
+                             new VariableDefinitionString ("Source String 1", null, {mAllowVariablesOfOtherClasses: true}),
+                             new VariableDefinitionString ("Source String 2", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionString ("Target String"),
@@ -629,7 +629,7 @@ package editor.world {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", "@#0 = $0", "@#0 = $0",
                      [
-                             new VariableDefinitionBoolean ("Source Boolean"),
+                             new VariableDefinitionBoolean ("Source Boolean", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionBoolean ("Target Boolean"),
@@ -638,8 +638,8 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
-                             new VariableDefinitionBoolean ("Source Boolean 1"),
-                             new VariableDefinitionBoolean ("Source Boolean 2"),
+                             new VariableDefinitionBoolean ("Source Boolean 1", null, {mAllowVariablesOfOtherClasses: true}),
+                             new VariableDefinitionBoolean ("Source Boolean 2", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionBoolean ("Target Boolean"),

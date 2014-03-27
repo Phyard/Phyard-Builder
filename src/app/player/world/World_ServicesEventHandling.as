@@ -16,20 +16,20 @@
    
    // to cache GlobalSocketMessage and GameInstanceChanged events in Viewer
    
-   private function GetFullGameId (localGameId:String):String
-   {
-      var fullGameId:String = GetWorldKey ();
-      if (localGameId != null)
-      {
-         localGameId = TextUtil.TrimString (localGameId);
-         if (localGameId.length > 0)
-         {
-            fullGameId = fullGameId + "/" + localGameId;
-         }
-      }
-      
-      return fullGameId;
-   }
+   //private function GetFullGameId (localGameId:String):String
+   //{
+   //   var fullGameId:String = GetWorldKey ();
+   //   if (localGameId != null)
+   //   {
+   //      localGameId = TextUtil.TrimString (localGameId);
+   //      if (localGameId.length > 0)
+   //      {
+   //         fullGameId = fullGameId + "/" + localGameId;
+   //      }
+   //   }
+   //   
+   //   return fullGameId;
+   //}
 
 //==========================================
 // Events ...
@@ -64,11 +64,7 @@
       
       switch (eventType)
       {
-         case Define.MutiplePlayerServerMessageType_Error:
-            break;
-         case Define.MutiplePlayerServerMessageType_InstanceInfo:
-            break;
-         case Define.MutiplePlayerServerMessageType_PlayAction:
+         case "OnGameInstanceSeatsInfoChanged":
             break;
          default:
          {

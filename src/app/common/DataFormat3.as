@@ -5,6 +5,8 @@ package common {
    
    public class DataFormat3
    {
+      
+//===============================================================================
    
       public static function CreateForumEmbedCode (fileVersionHexString:String, viewWidth:int, viewHeight:int, showPlayBar:Boolean, playcodeBase64:String):String
       {
@@ -138,13 +140,15 @@ package common {
       
       private static function GetBase64Char2IndexTable (isStandardUrlChars:Boolean):Array
       {
+         var i_char:int;
+         
          if (isStandardUrlChars)
          {
             if (Base64Char2Index_URL == null)
             {
                Base64Char2Index_URL = new Array (128); // all char codes in Base64Chars are smaller than 128
                
-               for (var i_char:int = Base64Chars_URL.length - 2; i_char >= 0; -- i_char) // "Base64Chars.length - 2" is to ignore the "=" cahr 
+               for (i_char = Base64Chars_URL.length - 2; i_char >= 0; -- i_char) // "Base64Chars.length - 2" is to ignore the "=" cahr 
                {
                   Base64Char2Index_URL [Base64Chars_URL.charCodeAt (i_char)] = i_char;
                }
@@ -158,7 +162,7 @@ package common {
             {
                Base64Char2Index_Phyard = new Array (128); // all char codes in Base64Chars are smaller than 128
                
-               for (var i_char:int = Base64Chars_Phyard.length - 2; i_char >= 0; -- i_char) // "Base64Chars.length - 2" is to ignore the "=" cahr 
+               for (i_char = Base64Chars_Phyard.length - 2; i_char >= 0; -- i_char) // "Base64Chars.length - 2" is to ignore the "=" cahr 
                {
                   Base64Char2Index_Phyard [Base64Chars_Phyard.charCodeAt (i_char)] = i_char;
                }
@@ -251,8 +255,6 @@ package common {
          
          var num_triples:int = data.length / 3;
          var num_extras:int = data.length - num_triples * 3;
-         
-         var num_chars:int = (num_extras > 0 ? num_triples + 1 : num_triples) * 4;
          
          var num_chars:int = num_triples * 4;
          if (num_extras > 0)

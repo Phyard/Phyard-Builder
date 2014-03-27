@@ -59,6 +59,8 @@
          if (mJoinInstanceFrequencyStat.Hit (getTimer ())
          {
             SendMultiplePlayerClientMessagesToSchedulerServer (mCurrentJointInstanceRequestData);
+            
+            mCurrentJointInstanceRequestData = null;
          }
          
          return;
@@ -66,26 +68,22 @@
       
       if (mIsMultiplePlayerInstanceServerConnected && mCachedClientMessagesData != null)
       {
-         if (mCachedClientMessagesData != null)
-         
-         SendMultiplePlayerClientMessagesToInstanceServer
+         if (mClientMessagesFrequencyStat.Hit (getTimer ())
+         {
+            SendMultiplePlayerClientMessagesToInstanceServer (mCachedClientMessagesData);
+            
+            ClearCachedClientMessages ();
+         }
       }
    }
    
 //======================================================
 // server -> client. Will call world callbacks (be careful of compatibility problems)
 //======================================================
-      
-   // server
-   public static const MutiplePlayerServerMessageType_Pong:int = 0;
-   public static const MutiplePlayerServerMessageType_Error:int = 100;
-   public static const MutiplePlayerServerMessageType_ConnectionInfo:int = 1000;
-   public static const MutiplePlayerServerMessageType_InstanceInfo:int = 1200;
-   public static const MutiplePlayerServerMessageType_ChannelMessage:int = 2000;
    
    //...
    
-   private function OnMultiplePlayerServerMessages (messagesData:ByteArray):void
+   public function OnMultiplePlayerServerMessages (messagesData:ByteArray):void
    {
       if (mWorldDesignProperties != null)
       {
@@ -93,67 +91,98 @@
          {
             messagesData.position = 0;
             var messagesNumBytes:int = messagesData.readInt ();
-            if (messagesNumBytes != messagesData.length)
-               throw new Error ();
+            //if (messagesNumBytes != messagesData.length)
+            //   throw new Error ();
                
             var serverDataFormatVersion:int = messagesData.readShort ();
             var numMessages:int = messagesData.readShort ();
             
             for (var msgIndex:int = 0; msgIndex < numMessages; ++ msgIndex)
             {
-               var numBytes:int = messagesData.readInt ();
-               if (numBytes < 0 || messagesData.position + numBytes >= messagesNumBytes)
-                  throw new Error ();
+               var serverMessageType:int = messagesData.readShort ();
                
-               var serverMessageData:ByteArray = new ByteArray (numBytes);
-               messagesData.readBytes (serverMessageData, 0, numBytes);
-               
-               HandleMultiplePlayerServerMessage (serverMessageData, serverDataFormatVersion);
+               switch (serverMessageType)
+               {
+                  case MultiplePlayerDefine.ServerMessageType_InstanceClosed:
+                     OnInstanceClosed (messagesData, serverDataFormatVersion);
+                     break;
+                  case MultiplePlayerDefine.ServerMessageType_InstanceServerInfo:
+                     OnInstanceServerInfo (messagesData, serverDataFormatVersion);
+                     break;
+                  case MultiplePlayerDefine.ServerMessageType_InstanceInfo:
+                     OnInstanceInfo (messagesData, serverDataFormatVersion);
+                     break;
+                  case MultiplePlayerDefine.ServerMessageType_InstanceChannelMessage:
+                     OnInstanceChannelMessage (messagesData, serverDataFormatVersion);
+                     break;
+                  default:
+                  {
+                     break;
+                  }
+               }
             }
          }
          catch (error:Error)
          {
-            // on error
+            TraceError (error);
          }
             
          //UpdateMultiplePlayerInstanceInfoText ();
       }
    }
    
-   private function HandleMultiplePlayerServerMessage (messageData:ByteArray, serverDataFormatVersion:int):void
+   private function OnInstanceClosed (messagesData:ByteArray, serverDataFormatVersion:int):void
    {
-      messageData.position = 0;
+      var instanceId:String = messagesData.readUTF ();
       
-      var serverMessageType:int = messageData.readShort ();
-      
-      switch (serverMessageType)
+      if (mMultiplePlayerInstance != null && mMultiplePlayerInstance.mID == instanceId)
       {
-         case MutiplePlayerServerMessageType_ConnectionInfo:
-            // clear cached messages
-            //mWorldDesignProperties.OnMultiplePlayerServerMessage ("OnGameInstanceSeatsInfoChanged");
-            break;
-         case MutiplePlayerServerMessageType_InstanceInfo:
-            break;
-         case MutiplePlayerServerMessageType_ChannelMessage:
-            break;
-         default
-         {
-            break;
-         }
-      }
+         mMultiplePlayerInstance = null;
+      } 
+   }
+   
+   private function OnInstanceServerInfo (messagesData:ByteArray, serverDataFormatVersion:int):void
+   {
+      mMultiplePlayerInstance = null;
+      
+      mIsMultiplePlayerInstanceServerConnected = false;
+      mMultiplePlayerInstanceServerAddress = messagesData.readUTF ();
+      mMultiplePlayerInstanceServerPort = messageData.readShort () & 0xFFFF;
+      mMultiplePlayerInstanceID = messagesData.readUTF ();
+      mMultiplePlayerConnectionID = messagesData.readUTF ();
+      
+      ConnectToInstanceServer ();
+   }
+   
+   private function OnInstanceInfo (messagesData:ByteArray, serverDataFormatVersion:int):void
+   {
+      mMultiplePlayerInstance = new Object ();
+      
+      // ...
+   }
+   
+   private function OnInstanceChannelMessage (messagesData:ByteArray, serverDataFormatVersion:int):void
+   {
+      //mWorldDesignProperties.OnMultiplePlayerServerMessage ("OnGameInstanceSeatsInfoChanged");
    }
    
 //======================================================
 // client -> server
 //======================================================
    
-   private static var mNextRequestID:int = 0;
-
-   private var mMultiplePlayerSchedulerServerAddress:String = "http://mpsdl.phyard.com/bapi/"; // binary api calling entry 
+   private var mMultiplePlayerInstance:Object = null;
    
-   private var mMultiplePlayerConnectionID:String = null;
-   private var mMultiplePlayerInstanceServerAddress:String = null;
-   private var mIsMultiplePlayerInstanceServerConnected:Boolean = false;
+//======================================================
+// client -> server 
+//======================================================
+   
+   private static var mNextRequestID:int = 0;
+   
+   // start server
+   private static const kStartServer:String = "http://mp.phyard.com/";
+   
+   // lobby server
+   private var mMultiplePlayerSchedulerServerAddress:String = "http://mpsdl.phyard.com/bapi/"; // binary api calling entry
    
    private function SendMultiplePlayerClientMessagesToSchedulerServer (messagesData:ByteArray):void
    {
@@ -176,6 +205,56 @@
       else
       {
       }
+   }
+   
+   // instance server
+   private var mMultiplePlayerInstanceServerAddress:String = null;
+   private var mMultiplePlayerInstanceServerPort:int = 0;
+   private var mMultiplePlayerInstanceID:String = "";
+   private var mMultiplePlayerConnectionID:String = "";
+   private var mIsMultiplePlayerInstanceServerConnected:Boolean = false;
+   private var mMultiplePlayerInstanceServerSocket:Socket = null;
+   
+   private function ConnectToInstanceServer ():void
+   {
+      if (mParamsFromEditor != null)
+      {
+         mIsMultiplePlayerInstanceServerConnected = true;
+         
+         OnInstanceServerConnected ();
+      }
+      else
+      {
+         
+      }
+   }
+   
+   public function OnInstanceServerConnected (event:Event = null):void
+   {
+      mClientMessagesFrequencyStat.Reset ();
+      ClearCachedClientMessages ();
+      
+      SyncMultiplePlayerInstaneInfo ();
+   }
+   
+//======================================================
+// 
+//======================================================
+   
+   private function SyncMultiplePlayerInstaneInfo ():void
+   {
+      if (! mIsMultiplePlayerInstanceServerConnected)
+         return;
+      
+      // ...
+      
+      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Register);
+      mCachedClientMessagesData.writeUTF (mMultiplePlayerInstanceID);
+      mCachedClientMessagesData.writeUTF (mMultiplePlayerConnectionID);
+      
+      // ...
+      
+      UpdateCachedClientMessagesHeader ();
    }
    
 //======================================================
@@ -208,10 +287,8 @@
       MultiplePlayer_ReplaceInstanceChannelDefine ({mInstanceDefine: instanceDefine, 
                                                     mChannelIndex: 0, 
                                                     mChannelDefine: MultiplePlayer_CreateInstanceChannelDefine ({
-                                                       mTurnTimeoutSeconds: MultiplePlayerDefine.MaxTurnTimeoutInPractice,
-                                                       mSeatsInitialEnabledPolicy: MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll,
-                                                       mSeatsNextEnabledPolicy: MultiplePlayerDefine.PolicyOfNextChannelSeatsEnabledStatus_DoNothing,
-                                                       mSeatsMessageForwardingPolicy: MultiplePlayerDefine.PolicyOfChannelMessageForwarding_Instant
+                                                       mChannelMode: MultiplePlayerDefine.MultiplePlayerInstaneMode_Free,
+                                                       mTurnTimeoutSeconds: MultiplePlayerDefine.MaxTurnTimeoutInPractice
                                                     }).mChannelDefine
                                                   })
       
@@ -220,22 +297,18 @@
    }
    
    // inputs
+   //    mChannelMode
    //    mTurnTimeoutSeconds
-   //    mSeatsInitialEnabledPolicy
-   //    mSeatsNextEnabledPolicy
-   //    mSeatsMessageForwardingPolicy
    // outputs
    //    mChannelDefine
-   //       mTurnTimeoutMilliseconds
-   //       ...
+   //       mChannelMode
+   //       mTurnTimeoutSecondsX8
    protected function MultiplePlayer_CreateInstanceChannelDefine (params:Object):Object
    {
       var channelDefine:Object = new Object ();
       
-      channelDefine.mTurnTimeouSeconds = int (Math.round (params.mTurnTimeoutSeconds));
-      channelDefine.mSeatsInitialEnabledPolicy = params.mSeatsInitialEnabledPolicy;
-      channelDefine.mSeatsNextEnabledPolicy = params.mSeatsNextEnabledPolicy;
-      channelDefine.mSeatsMessageForwardingPolicy = params.mSeatsMessageForwardingPolicy;
+      channelDefine.mChannelMode = params.mChannelMode;
+      channelDefine.mTurnTimeoutSecondsX8 = int (params.mTurnTimeoutSeconds * 8);
       
       return {mChannelDefine: channelDefine};
    }
@@ -257,7 +330,7 @@
             break;
          if (instacneDefine.mChannelDefines == null)
             break;
-         if (params.mChannelIndex >= 0 && params.mChannelIndex < MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceChannels)
+         if (params.mChannelIndex < 0 && params.mChannelIndex >= MultiplePlayerDefine.MaxNumberOfMutiplePlayerInstanceChannels)
             break;
          
          instacneDefine.mChannelDefines [params.mChannelIndex] = params.mChannelDefine;
@@ -268,18 +341,8 @@
       
       return {mResult: succeeded};
    }
-   
-   // ...
-   
-   public static const MutiplePlayerClientMessageDataFormatVersion:int = 0;
-      
-   public static const MutiplePlayerClientMessageType_Ping:int = 0;
-   public static const MutiplePlayerClientMessageType_CreateInstance:int = 1100;
-   public static const MutiplePlayerClientMessageType_JoinRandomInstance:int = 1130;
-   public static const MutiplePlayerClientMessageType_JoinInstanceById:int = 1160;
-   public static const MutiplePlayerClientMessageType_ChannelMessage:int = 2000;
 
-   // ...
+   //========================
    
    private var mJoinInstanceFrequencyStat:FrequencyStat = new FrequencyStat (3, 60000); // most 3 times in one minute
    
@@ -308,9 +371,17 @@
          // ...
          
          var messageData:ByteArray = new ByteArray ();
-         messageData.writeBytes ();
-         messageData.write
          
+         WriteMultiplePlayerMessagesHeader (messageData, 0);
+         
+         messageData.writeShort (MultiplePlayerDefine.ClientMessageType_CreateInstance);
+         messageData.writeUTF (mMultiplePlayerConnectionID);
+         messageData.writeInt (instanceDefineData.length);
+         messageData.writeBytes (instanceDefineData);
+         
+         WriteMultiplePlayerMessagesHeader (messageData, 1);
+         
+         // ...
          
          mCurrentJointInstanceRequestData = messageData;
          
@@ -341,6 +412,8 @@
          
          WriteMultiplePlayerMessagesHeader (messageData, 0);
          
+         messageData.writeShort (MultiplePlayerDefine.ClientMessageType_JoinRandomInstance);
+         messageData.writeUTF (mMultiplePlayerConnectionID);
          messageData.writeInt (instanceDefineData.length);
          messageData.writeBytes (instanceDefineData);
          
@@ -363,17 +436,17 @@
    
    //=================
    
+   private var mClientMessagesFrequencyStat:FrequencyStat = new FrequencyStat (20, 60000); // most 20 times in one minute
+   
    private var mCachedClientMessagesData:ByteArray = null;
    private var mNumCachedClientMessages:int = 0;
-   private var mCursorPosOfNumMessages:int = 0;
    
    protected function MultiplePlayer_SendChannelMessage (params:Object):Object
    {
-      if (     mMultiplePlayerInstance == null 
-            || mMultiplePlayerInstance.mPlayerClientId == null
-            || mMultiplePlayerInstance.mPlayerPosition < 0
-            || mMultiplePlayerInstance.mPositionsEnabled == null
-            || mMultiplePlayerInstance.mPositionsEnabled [mMultiplePlayerInstance.mPlayerPosition] == false
+      if (  (! mIsMultiplePlayerInstanceServerConnected)
+            || mMultiplePlayerInstance == null 
+            || mMultiplePlayerInstance.mIsStarted == false
+            || mMultiplePlayerInstance.mPlayerSeatIndex < 0
             )
       {
          return;
@@ -381,26 +454,17 @@
       
       // ...
       
-      if (mCachedClientMessagesData == null)
-      {
-         mNumCachedClientMessages = 0;
-         
-         mCachedClientMessagesData = new ByteArray ();
-         
-         WriteMessagesHeader (mCachedClientMessagesData, mNumCachedClientMessages);
-      }
-      
-      // ...
-      
       var channelIndex:int = params.mChannelIndex;
       var messageData:ByteArray = params.mMessageData;
       
-      mCachedClientMessagesData.writeShort (MutiplePlayerClientMessageType_ChannelMessage);
-      mCachedClientMessagesData.writeShort (channelIndex);
+      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ChannelMessage);
+      mCachedClientMessagesData.writeByte (channelIndex);
       mCachedClientMessagesData.writeInt (messageData.length);
       mCachedClientMessagesData.writeBytes (messageData, 0, messageData.length);
       
-      ++ mNumCachedClientMessages;
+      // ...
+      
+      UpdateCachedClientMessagesHeader ();
    }
    
 //======================================================
@@ -413,9 +477,29 @@
          return;
       
       messagesData.position = 0;
-      mCachedClientMessagesData.writeInt (messagesData.length);
-      mCachedClientMessagesData.writeShort (MutiplePlayerClientMessageDataFormatVersion);
-      mCachedClientMessagesData.writeShort (numMessages);
+
+      messagesData.writeShort (MultiplePlayerDefine.MessageDataFormatVersion);
+      messagesData.writeInt (messagesData.length); // the whole length 
+      messagesData.writeShort (numMessages);
+   }
+   
+   priate function ClearCachedClientMessages ():void
+   {
+      mCachedClientMessagesData.length = 0;
+      mNumCachedClientMessages = 0;
+      
+      WriteMultiplePlayerMessagesHeader (mCachedClientMessagesData, mNumCachedClientMessages);
+   }
+   
+   priate function UpdateCachedClientMessagesHeader ():void
+   {
+      ++ mNumCachedClientMessages;
+      
+      var posBackup:int = mCachedClientMessagesData.position;
+      
+      WriteMultiplePlayerMessagesHeader (mCachedClientMessagesData, mNumCachedClientMessages);
+      
+      mCachedClientMessagesData.position = posBackup;
    }
    
    // before calling this function, make sure instanceDefine is validated.
@@ -431,7 +515,7 @@
          channelDefine = instanceDefine.mChannelDefines [channelIndex];
          if (channelDefine != null)
          {
-            enabledChannelIndexes [numEnabledChannles ++] = channelDefine;
+            enabledChannelIndexes [numEnabledChannles ++] = channelIndex;
          }
       }
       
@@ -449,28 +533,14 @@
          channelDefine = instanceDefine.mChannelDefines [channelIndex];
          
          instanceDefineData.writeByte (channelIndex);
-         instanceDefineData.writeInt (channelDefine.mTurnTimeouSeconds);
-         instanceDefineData.writeByte (channelDefine.mSeatsInitialEnabledPolicy);
-         instanceDefineData.writeByte (channelDefine.mSeatsNextEnabledPolicy);
-         instanceDefineData.writeByte (channelDefine.mSeatsMessageForwardingPolicy);
+         instanceDefineData.writeByte (channelDefine.mChannelMode);
+         instanceDefineData.writeInt (channelDefine.mTurnTimeoutSecondsX8);
       }
       
       // ...
       
       instanceDefineData.position = 0;
       return instanceDefineData;
-   }
-   
-   // 
-   private function String2ByteArray (text:String):ByteArray
-   {
-      var stringData:ByteArray = new ByteArray ();
-      
-      stringData.writeInt (0);
-      stringData.
-      
-      stringData.position = 0;
-      return stringData;
    }
    
    

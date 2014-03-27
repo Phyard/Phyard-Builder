@@ -1,5 +1,6 @@
 package common.trigger {
 
+   import common.MultiplePlayerDefine;
    import common.Define;
 
    public class CoreFunctionDeclarations
@@ -331,16 +332,14 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.PolicyOfNextChannelSeatsEnabledStatus_DoNothing],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.PolicyOfChannelMessageForwarding_Instant],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.InstaneChannelMode_Free],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,      0],
                      ],
                      [
                         [CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GameInstanceDefineModifyChannelDefine,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine,
                      [
                         [CoreClassIds.ValueType_MultiplePlayerInstanceDefine,       null],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],

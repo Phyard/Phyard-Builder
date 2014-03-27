@@ -47,6 +47,8 @@ package viewer {
    import flash.media.SoundMixer;
    import flash.media.SoundTransform;
    
+   import flash.net.Socket;
+   
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.UrlUtil;

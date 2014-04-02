@@ -191,7 +191,7 @@ package editor.world {
             _mMultiplePlayerInstanceChannelList = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
             for (var channelIndex:int = 0; channelIndex <= MultiplePlayerDefine.MaxNumberOfInstanceChannels; ++ channelIndex)
             {
-               _mMultiplePlayerInstanceChannelList [index ++] = {label: "Channel", data: channelIndex};
+               _mMultiplePlayerInstanceChannelList [channelIndex ++] = {label: "Channel", data: channelIndex};
             }
          }
          
@@ -216,9 +216,9 @@ package editor.world {
       //   ];
       
       public static const mMultiplePlayerChannelModeList:Array = [
-            {label:"Free Mode", data:MultiplePlayerDefine.InstaneChannelMode_Free},
-            {label:"Chess Mode", data:MultiplePlayerDefine.InstaneChannelMode_Chess},
-            {label:"WeGo Mode", data:MultiplePlayerDefine.InstaneChannelMode_WeGo},
+            {label:"Free Mode", data:MultiplePlayerDefine.InstanceChannelMode_Free},
+            {label:"Chess Mode", data:MultiplePlayerDefine.InstanceChannelMode_Chess},
+            {label:"WeGo Mode", data:MultiplePlayerDefine.InstanceChannelMode_WeGo},
          ];
          
    }

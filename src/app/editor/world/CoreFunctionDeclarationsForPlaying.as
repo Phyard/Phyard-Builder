@@ -435,7 +435,7 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Game Instance Define", null, null,
                      [
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
-                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelLists}),
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
                      ],
                      [
@@ -466,7 +466,7 @@ package editor.world {
          //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Player Action Data", null, null,
                      [
-                             new VariableDefinitionNumber ("Channel Index", null, {mMinValue: 0, mMaxValue: Define.MaxNumberOfMutiplePlayerInstanceChannels}),
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
                      ],
                      null

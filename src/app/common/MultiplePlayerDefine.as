@@ -27,9 +27,9 @@ package common {
       
       //
       
-      public static cosnt InstaneChannelMode_Free:int = 0;
-      public static cosnt InstaneChannelMode_Chess:int = 1;
-      public static cosnt InstaneChannelMode_WeGo:int = 2;
+      public static const InstanceChannelMode_Free:int = 0;
+      public static const InstanceChannelMode_Chess:int = 1;
+      public static const InstanceChannelMode_WeGo:int = 2;
       
       // channel seat policy
       
@@ -45,47 +45,47 @@ package common {
       //public static const PolicyOfChannelMessageForwarding_WeGo:int = 1;
       
 //===========================================================================
-// messages
-//===========================================================================
-         
-      public static const MessageDataFormatVersion:int = 0;
-            // the server response data format version must (try to) be the same as client request.
-            // so, to keep good compatibility:
-            // 1. focce multiple player game to run on phyard.
-            // 2. don't support download standlone app now.
-            // 3. reserve some flag bits and zero tail byte
-   
-//===========================================================================
 // server messages
 //===========================================================================
-         
-      public static const ServerMessageType_Ping:int = 0;
-      public static const ServerMessageType_Pong:int = 1;
       
-      public static const ServerMessageType_Error:int = 100;
+      // public static const ServerMessageDataFormatVersion:int = 0;
+         // server messages don't have a format.
+         // server may return different message formats or types on different client message data formats
       
-      public static const ServerMessageType_InstanceServerInfo:int = 1000;
-      public static const ServerMessageType_InstanceInfo:int = 1100;
-      public static const ServerMessageType_InstanceSeatsInfo:int = 1200;
-      public static const ServerMessageType_InstanceChannelsInfo:int = 1300;
-      public static const ServerMessageType_InstanceClosed:int = 1400;
-      public static const ServerMessageType_InstanceChannelMessage:int = 2000;
+      public static const ServerMessageType_Ping:int                    = 0x0000;
+      public static const ServerMessageType_Pong:int                    = 0x0100;
+      
+      public static const ServerMessageType_Error:int                   = 0x0500;
+      
+      public static const ServerMessageType_InstanceServerInfo:int      = 0x1000;
+      
+      public static const ServerMessageType_InstanceBasicInfo:int       = 0x3000;
+      public static const ServerMessageType_InstanceCurrentPhase:int    = 0x3100;
+      public static const ServerMessageType_SeatBasicInfo:int           = 0x3200;
+      public static const ServerMessageType_SeatDynamicInfo:int         = 0x3300;
+      public static const ServerMessageType_AllChannelsConstInfo:int    = 0x3400;
+      public static const ServerMessageType_ChannelSeatInfo:int         = 0x3500;
+      
+      public static const ServerMessageType_ChannelMessage:int          = 0x5000;
       
 //===========================================================================
 // client messages
 //===========================================================================
-         
-      public static const ClientMessageType_Ping:int = 0;
-      public static const ClientMessageType_Pong:int = 1;
       
-      public static const ClientMessageType_CreateInstance:int = 1100;
-      public static const ClientMessageType_JoinRandomInstance:int = 1130;
-      public static const ClientMessageType_JoinInstanceById:int = 1160;
-      public static const ClientMessageType_ExitCurrentInstance:int = 1300;
+      public static const ClientMessageDataFormatVersion:int = 0;
       
-      public static const ClientMessageType_Register:int = 3100;
+      public static const ClientMessageType_Ping:int = 0x00;
+      public static const ClientMessageType_Pong:int = 0x01;
       
-      public static const ClientMessageType_ChannelMessage:int = 3000;
+      public static const ClientMessageType_CreateInstance:int         = 0x10;
+      public static const ClientMessageType_JoinRandomInstance:int     = 0x11;
+      public static const ClientMessageType_JoinInstanceById:int       = 0x12; // todo
+      public static const ClientMessageType_GetPendingInstances:int    = 0x13; // todo
+      
+      public static const ClientMessageType_LoginInstanceServer:int    = 0x30;
+      public static const ClientMessageType_ExitCurrentInstance:int    = 0x31;
+      public static const ClientMessageType_ChannelMessage:int         = 0x32;
+      public static const ClientMessageType_SignalRestartInstance:int  = 0x33; // todo
       
 //===========================================================================
 // client messages
@@ -93,15 +93,15 @@ package common {
       
       public static const ErrorCode_NoErrors:int = 0;
       public static const ErrorCode_Unknown:int = 1;
-      public static const ErrorCode_UnsupportedDataFormat:int = 100;
+      public static const ErrorCode_UnsupportedDataFormat:int = 100; // notify users to upgrade app.
       
 //===========================================================================
 // ...
 //===========================================================================
       
-      public static const InstancePhase_Pending:int = 0;
-      public static const InstancePhase_Playing:int = 1;
-      public static const InstancePhase_Clsoed:int = 2;
+      public static const InstancePhase_Inactive:int = 0;
+      public static const InstancePhase_Pending:int = 3;
+      public static const InstancePhase_Playing:int = 6;
       
    }
 }

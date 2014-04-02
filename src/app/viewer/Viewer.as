@@ -1319,8 +1319,9 @@ package viewer {
                               ClearCookie : ClearCookie
                   },
                   mLibService : {
-                              MultiplePlayer_CreateInstanceDefine: MultiplePlayer_CreateInstanceDefine,
-                              MultiplePlayer_CreateInstanceChannelDefine: MultiplePlayer_CreateInstanceChannelDefine,
+                              MultiplePlayer_GetInstanceInfo: MultiplePlayer_GetInstanceInfo, 
+                              MultiplePlayer_CreateInstanceDefine: MultiplePlayer_CreateInstanceDefine, 
+                              MultiplePlayer_CreateInstanceChannelDefine: MultiplePlayer_CreateInstanceChannelDefine, 
                               MultiplePlayer_ReplaceInstanceChannelDefine: MultiplePlayer_ReplaceInstanceChannelDefine, 
                               MultiplePlayer_JoinNewInstance: MultiplePlayer_JoinNewInstance, // v2.06
                               MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06

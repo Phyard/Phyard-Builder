@@ -52,17 +52,14 @@
          HandleEventById (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged, null);
       }
    }
+
+//==========================================
+// callback for viewer
+//==========================================
    
-   // callback for viewer
-   public function OnMultiplePlayerServerMessage (params:Object):Boolean
+   public function OnMultiplePlayerEvent (params:Object):Boolean
    {
-      var responseData:ByteArray = params.mServerMessageData;      
-      responseData.position = 0;
-      
-      var formatVersion:int = responseData.readShort (); // should be == Define.MutiplePlayerClientMessageDataFormatVersion
-      var eventType:int = responseData.readShort ();
-      
-      switch (eventType)
+      switch (params.mEventType)
       {
          case "OnGameInstanceSeatsInfoChanged":
             break;
@@ -76,10 +73,6 @@
       
       return true;
    }
-
-//==========================================
-// APIs ...
-//==========================================
    
    
    

@@ -928,17 +928,18 @@ package player.trigger {
          var localGameID:String = valueSource.EvaluateValueObject () as String;
          if (localGameID != null)
          {
-            localGameID = TextUtil.TrimString (localGameId);
+            localGameID = TextUtil.TrimString (localGameID);
             if (localGameID.length > 0)
             {
                if (localGameID.length > 30)
-                  localGameID.length = localGameID.length.substring (0, 30); // if 30 is changed, 60 in Viewer.MultiplePlayer_CreateInstanceDefine should also be changed.                  
+                  localGameID = localGameID.substring (0, 30); // if 30 is changed, 60 in Viewer.MultiplePlayer_CreateInstanceDefine should also be changed.                  
+               
                gameID = gameID + "/" + localGameID;
             }
          }
          
          valueSource = valueSource.mNextParameter;
-         var numSeats = int (valueSource.EvaluateValueObject ());
+         var numSeats:int = int (valueSource.EvaluateValueObject ());
          
          var values:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_CreateInstanceDefine ({
                                                                               mGameID: gameID, 
@@ -953,7 +954,7 @@ package player.trigger {
          var channelMode:int = int (valueSource.EvaluateValueObject ());
          
          valueSource = valueSource.mNextParameter;
-         var turnTimeoutSeconds:int = int (Math.round (valueSource.EvaluateValueObject ()));
+         var turnTimeoutSeconds:Number = valueSource.EvaluateValueObject () as Number;
          
          var values:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_CreateInstanceChannelDefine ({
                                                                               mChannelMode: channelMode,
@@ -967,7 +968,7 @@ package player.trigger {
          var instanceDefine:Object = valueSource.EvaluateValueObject () as Object;
          
          valueSource = valueSource.mNextParameter;
-         var channelIndex = int (valueSource.EvaluateValueObject ());
+         var channelIndex:int = int (valueSource.EvaluateValueObject ());
          
          valueSource = valueSource.mNextParameter;
          var channelDefine:Object = valueSource.EvaluateValueObject () as Object;
@@ -1697,7 +1698,7 @@ package player.trigger {
       public static function ConditionAssignArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
-         var condtion:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condition:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          var array1:Array = valueSource.EvaluateValueObject () as Array;
@@ -2130,7 +2131,7 @@ package player.trigger {
       public static function ConditionAssignNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var contionResult:Boolean = valueSource.EvaluateValueObject () as Boolean;
-         var condtion:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condition:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          var trueValue:Number = valueSource.EvaluateValueObject () as Number;
@@ -2138,7 +2139,7 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var falseValue:Number = valueSource.EvaluateValueObject () as Number;
 
-         valueTarget.AssignValueObject (contionResult ? trueValue : falseValue);
+         valueTarget.AssignValueObject (condition ? trueValue : falseValue);
       }
 
       public static function SwapNumberValues (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3489,7 +3490,7 @@ package player.trigger {
       public static function ConditionAssignEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
-         var condtion:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condition:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          var entity1:Entity = valueSource.EvaluateValueObject () as Entity;

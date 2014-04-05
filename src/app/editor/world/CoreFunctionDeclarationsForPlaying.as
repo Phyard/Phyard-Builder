@@ -439,7 +439,7 @@ package editor.world {
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
                      ],
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_Boolean, "Succeeded?"),
+                             new VariableDefinitionBoolean ("Succeeded?"),
                      ]
                   );
          //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
@@ -470,6 +470,47 @@ package editor.world {
                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
                      ],
                      null
+                  );
+
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceLoggedIn, services_package, "Is Game Instance Joined?", null, null,
+                     null,
+                     [
+                             new VariableDefinitionBoolean ("Joined?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceInPlayingPhase, services_package, "Is Game Instance In Playing Phase?", null, null,
+                     null,
+                     [
+                             new VariableDefinitionBoolean ("Is In Playing Phase?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceNumberOfSeats, services_package, "Get Number Of Seats In Game Instance", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Number Of Seats"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetMySeatIndexInGameInstance, services_package, "Get My Seat Index In Game Instance", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("My Seat Index"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatPlayerName, services_package, "Get Player Name At Seat Of Game Instance", null, null,
+                     null,
+                     [
+                             new VariableDefinitionString ("Player Name"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceChannelSeatEnabled, services_package, "Is Seat Enabled In Channel Of Game Instance", null, null,
+                     [
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
+                             new VariableDefinitionNumber ("Channel Index", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxNumberOfInstanceSeats - 1}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Enabled?"),
+                     ]
                   );
 
       // string
@@ -1120,7 +1161,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetCursorPostion, bytearray_package, "Get Cursor Position Of Stream", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetCursorPosition, bytearray_package, "Get Cursor Position Of Stream", null, null,
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                      ],
@@ -1128,7 +1169,7 @@ package editor.world {
                               new VariableDefinitionNumber ("Cursor Position"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetCursorPostion, bytearray_package, "Set Cursor Position Of Stream", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetCursorPosition, bytearray_package, "Set Cursor Position Of Stream", null, null,
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionNumber ("Cursor Position"),
@@ -1188,7 +1229,6 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadUTF, bytearray_package, "Read UTF String From Stream", null, null,
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
-                              new VariableDefinitionBoolean ("4(true)/2(false) Bytes Of Length Header"),
                      ],
                      [
                               new VariableDefinitionString ("The UTF String"),
@@ -1198,7 +1238,6 @@ package editor.world {
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                               new VariableDefinitionString ("The UTF String"),
-                              new VariableDefinitionBoolean ("4(true)/2(false) Bytes Of Length Header"),
                      ],
                      null
                   );

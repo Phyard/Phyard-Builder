@@ -96,7 +96,11 @@ package editor.entity.dialog {
                                          mStartRightNow: true, 
                                          mMaskViewerField: maskFieldInPlaying, 
                                          mBackgroundColor: surroudingBackgroundColor, 
-                                         OnExitLevel: callbackStopPlaying
+                                         OnExitLevel: callbackStopPlaying,
+                                         
+                                         //...
+                                         OnMultiplePlayerClientMessagesToSchedulerServer : OnMultiplePlayerClientMessagesToSchedulerServer,
+                                         OnMultiplePlayerClientMessagesToInstanceServer  : OnMultiplePlayerClientMessagesToInstanceServer
                                        }
                                     };
          
@@ -112,7 +116,7 @@ package editor.entity.dialog {
          //   mDesignViewer = null;
          //}
          
-         SetNumMultiplePlayers (0);
+         DestroySimulatedServers ();
          
          mDialogCallbacks = null;
          
@@ -522,6 +526,13 @@ package editor.entity.dialog {
          }
       }
       
+      private function DestroySimulatedServers ():void
+      {         
+         CloseInstance ();
+         
+         SetNumMultiplePlayers (0);
+      }
+      
 //============================================================================
 //   
 //============================================================================
@@ -606,7 +617,7 @@ package editor.entity.dialog {
       
       private function FlushInstanceSeatClientStream (seatIndex:int):void
       {
-         var designViewer:Viewer = mCurrentInstance.mSeatsViewer.mSeatsViewer [seatIndex];
+         var designViewer:Viewer = mCurrentInstance.mSeatsViewer [seatIndex];
          
          if (designViewer != null)
          {
@@ -614,6 +625,7 @@ package editor.entity.dialog {
             
             var dataToSend:ByteArray = new ByteArray ();
             dataToSend.writeBytes (messagesData, 0, messagesData.length);
+            dataToSend.position = 0;
             designViewer.OnMultiplePlayerServerMessages (dataToSend);
          }
          
@@ -854,6 +866,10 @@ package editor.entity.dialog {
          }
          
          ResetInstance (true);
+         
+         // ...
+         
+         SetNumMultiplePlayers (numSeats);
       }
       
       // designViewer is used to determine seat index.
@@ -867,10 +883,15 @@ package editor.entity.dialog {
          if (viewerIndex < 0)
             return;
          
+trace ("888 playerConnectionId = " + playerConnectionId);
+
          if (playerConnectionId == null || playerConnectionId.length == 0)
             playerConnectionId = UUID.BuildRandomKey ();
          
          var seatIndex:int = mCurrentInstance.mSeatsPlayerConnectionID.indexOf (playerConnectionId);
+
+trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
+
          if (seatIndex != viewerIndex)
          {
             if (seatIndex >= 0)
@@ -886,7 +907,8 @@ package editor.entity.dialog {
             mCurrentInstance.mSeatsLastActiveTime [seatIndex] = 0;
             mCurrentInstance.mSeatsLastPongTime [seatIndex] = 0;
             mCurrentInstance.mSeatsLastPingTime [seatIndex] = 0;
-            mCurrentInstance.mSeatsViewer [seatIndex] = null; // will be confirmed in OnPlayerLoginInstanceServer.
+            //mCurrentInstance.mSeatsViewer [seatIndex] = null; // will be confirmed in OnPlayerLoginInstanceServer.
+            mCurrentInstance.mSeatsViewer [seatIndex] = designViewer; // but to avoid null pointer in FlushInstanceSeatClientStream, we still ...
          }
          
          // ...
@@ -1111,29 +1133,43 @@ package editor.entity.dialog {
       
       private function OnJoinRandomInstance (instanceDefine:Object, playerConnectionId:String, designViewer:Viewer):void
       {
+trace ("666");
+
          if (instanceDefine.mInstanceDefineData == null)
             return;
          
-         var sameDefine:Boolean = instanceDefine.mInstanceDefineData.length == mCurrentInstance.mInstanceDefineData.length;
-         if (sameDefine)
+trace ("777");
+
+         var sameDefine:Boolean = false;
+         
+         if (mCurrentInstance != null)
          {
-            for (var i:int = 0; i < instanceDefine.mInstanceDefineData.length; ++ i)
+            sameDefine = instanceDefine.mInstanceDefineData.length == mCurrentInstance.mInstanceDefineData.length;
+            
+            if (sameDefine)
             {
-               if (instanceDefine.mInstanceDefineData [i] != mCurrentInstance.mInstanceDefineData [i])
+               for (var i:int = 0; i < instanceDefine.mInstanceDefineData.length; ++ i)
                {
-                  sameDefine = false;
-                  break;
+                  if (instanceDefine.mInstanceDefineData [i] != mCurrentInstance.mInstanceDefineData [i])
+                  {
+                     sameDefine = false;
+                     break;
+                  }
                }
             }
          }
          
+trace ("888 sameDefine = " + sameDefine);
+         
          if (mCurrentInstance != null && sameDefine == false)
          {
+trace ("888 aaa");
             CloseInstance ();
          }
          
          if (mCurrentInstance == null)
          {
+trace ("888 bbb");
             CreateInstance (instanceDefine, "");
          }
          
@@ -1142,20 +1178,25 @@ package editor.entity.dialog {
       
       private function OnPlayerLoginInstanceServer (designViewer:Viewer, instanceID:String, playerConnectionId:String, clientDataFormatVersion:int):void
       {
+trace ("999 aaa instanceID = " + instanceID + ", mCurrentInstance.mID = " + (mCurrentInstance == null ? null : mCurrentInstance.mID));
          if (mCurrentInstance == null || instanceID != mCurrentInstance.mID)
             return;
          
+trace ("999 bbb");
          if (playerConnectionId == null || playerConnectionId.length == 0)
             return;
          
+trace ("999 ccc");
          var newPlayerSeatIndex:int = mCurrentInstance.mSeatsPlayerConnectionID.indexOf (playerConnectionId);
          if (newPlayerSeatIndex < 0)
             return;
          
          // ...
          
+trace ("999 ddd");
          if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Pending)
          {
+trace ("999 eee");
             if (mCurrentInstance.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing)
             {
                // maybe disconnected and re-connect.
@@ -1195,7 +1236,11 @@ package editor.entity.dialog {
          
          // ...
          
+trace ("999 fff, mCurrentInstance.mCurrentPhase = " + mCurrentInstance.mCurrentPhase);
+         
          TryToTransitPhaseFromPendingToPlaying (false);
+         
+trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mCurrentPhase = " + mCurrentInstance.mCurrentPhase);
          
          // ...
          
@@ -1457,15 +1502,18 @@ package editor.entity.dialog {
       // don't change this name, 
       private function OnClientMessages (messagesData:ByteArray, designViewer:Viewer):void
       {
+trace ("333");
          try
          {
             var dataLength:int = messagesData.readInt ();
             //if (dataLength > )
             //   ...
+trace ("333, dataLength = " + dataLength);
             
             var numMessages:int = messagesData.readShort ();
             //if (numMessages > )
             //   ...
+trace ("333, numMessages = " + numMessages);
             
             var msgIndex:int;
             var messages:Array = new Array (numMessages); // ByteArrays
@@ -1477,6 +1525,7 @@ package editor.entity.dialog {
                var connectionId:String;
                var clientDataFormatVersion:int;
                
+trace ("444 clientMessageType = " + clientMessageType);
                switch (clientMessageType)
                {
                // ...
@@ -1506,9 +1555,9 @@ package editor.entity.dialog {
                
                   case MultiplePlayerDefine.ClientMessageType_LoginInstanceServer:
                      
+                     clientDataFormatVersion = messagesData.readShort () & 0xFFFF;
                      instanceId = messagesData.readUTF ();
                      connectionId = messagesData.readUTF ();
-                     clientDataFormatVersion = messagesData.readShort () & 0xFFFF;
                      
                      OnPlayerLoginInstanceServer (designViewer, 
                                                   instanceId,

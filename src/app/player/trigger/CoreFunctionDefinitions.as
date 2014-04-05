@@ -36,11 +36,13 @@ package player.trigger {
    import common.trigger.ValueDefine;
    import common.trigger.IdPool;
    import common.trigger.CoreEventIds;
+   import common.trigger.CoreClassIds;
 
    import common.SceneDefine;
    import common.Define;
    import common.ValueAdjuster;
    
+   import common.DataFormat3;
    import common.TriggerFormatHelper2;
 
    public class CoreFunctionDefinitions
@@ -200,7 +202,25 @@ package player.trigger {
 
       // byte array
 
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArray_Create,       CreateByteArray);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArray_CreateFromBase64String,       CreateByteArrayFromBase64String);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArray_ToBase64String,       ByteArray2Base64String);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArray_Compress,       CompressByteArray);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArray_Uncompress,       UncompressByteArray);
          
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_Create,       CreateByteArrayStream);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_GetByteArray,   ByteArrayStreamGetByteArray); // use ReadXXX instead
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_SetByteArray,   ByteArrayStreamSetByteArray); // use WriteXXX instead
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_GetCursorPosition,   ByteArrayStreamGetCursorPosition);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_SetCursorPosition,   ByteArrayStreamSetCursorPosition);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_ReadByteArray,   ByteArrayStreamReadByteArray);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_WriteByteArray,   ByteArrayStreamWriteByteArray);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_ReadBoolean,   ByteArrayStreamReadBoolean);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_WriteBoolean,   ByteArrayStreamWriteBoolean);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_ReadNumber,   ByteArrayStreamReadNumber);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_WriteNumber,   ByteArrayStreamWriteNumber);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_ReadUTF,   ByteArrayStreamReadUTF);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ByteArrayStream_WriteUTF,   ByteArrayStreamWriteUTF);
 
       // math ops
 
@@ -2115,6 +2135,351 @@ package player.trigger {
       //   GetArrayElementAsSpecfiedClass (valueSource, valueTarget, Array);
       //}
 
+   //************************************************
+   // byte array
+   //************************************************
+      
+      public static function CreateByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         //var length:int = valueSource.EvaluateValueObject () as int;
+         var length:int = int (valueSource.EvaluateValueObject ());
+         if (length < 0)
+            length = 0;
+
+         var data:ByteArray = new ByteArray ();
+         data.length = length;
+         valueTarget.AssignValueObject (data);
+      }
+      
+      public static function CreateByteArrayFromBase64String (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var base64string:String = valueSource.EvaluateValueObject () as String;
+         
+         var data:ByteArray = DataFormat3.DecodeString2ByteArray (base64string, true);
+         
+         valueTarget.AssignValueObject (data);
+      }
+      
+      public static function ByteArray2Base64String (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var data:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         var base64string:String = DataFormat3.EncodeByteArray2String (data, true, false);
+         
+         valueTarget.AssignValueObject (base64string);
+      }
+      
+      public static function CompressByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var data:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         var copy:ByteArray;
+         if (data == null)
+            copy = null;
+         else
+         {
+            copy = new ByteArray ();
+            copy.writeBytes (data, 0, data.length);
+            copy.length = 0;
+            copy.compress ();
+         }
+         
+         valueTarget.AssignValueObject (copy);
+      }
+      
+      public static function UncompressByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var data:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         var copy:ByteArray;
+         if (data == null)
+            copy = null;
+         else
+         {
+            copy = new ByteArray ();
+            copy.writeBytes (data, 0, data.length);
+            copy.length = 0;
+            try
+            {
+               copy.uncompress ();
+            }
+            catch (error:Error)
+            {
+               copy = null;
+            }
+         }
+         
+         valueTarget.AssignValueObject (copy);
+      }
+      
+      // stream
+      
+      public static function CreateByteArrayStream (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (new ByteArray ());
+      }
+      
+      public static function ByteArrayStreamGetByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         var data:ByteArray;
+         if (stream == null) // should not
+            data = null;
+         else
+         {
+            data = new ByteArray ();
+            data.writeBytes (stream, 0, stream.length);
+            data.position = 0;
+         }
+         
+         valueTarget.AssignValueObject (data);
+      }
+      
+      public static function ByteArrayStreamSetByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var streamSource:Parameter = valueSource; // like swap values, this is a reference variable.
+         
+         valueSource = valueSource.mNextParameter;
+         var data:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         var stream:ByteArray = new ByteArray ();
+         if (data != null)
+         {
+            stream.writeBytes (data, 0, data.length);
+            stream.position = 0;
+         }
+         
+         streamSource.AssignValueObject (stream); // yes, here is not valueTarget
+      }
+      
+      public static function ByteArrayStreamGetCursorPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         valueTarget.AssignValueObject (stream == null ? - 1 : stream.position);
+      }
+      
+      public static function ByteArrayStreamSetCursorPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         if (stream == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var position:int = int (valueSource.EvaluateValueObject ());
+         
+         if (position < 0)
+            position = 0;
+         if (position > stream.length)
+            position = stream.length;
+         
+         stream.position = position;
+         
+         valueTarget.AssignValueObject (stream.position);
+      }
+      
+      public static function ByteArrayStreamReadByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         do
+         {
+            var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            if (stream == null)
+               break;
+            
+            valueSource = valueSource.mNextParameter;
+            var targetData:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            if (targetData == null)
+               break;
+            
+            valueSource = valueSource.mNextParameter;
+            var targetOffet:int = int (valueSource.EvaluateValueObject ());
+            if (targetOffet < 0)
+               targetOffet = 0;
+            if (targetOffet > targetData.length)
+               targetOffet = targetData.length;
+            
+            valueSource = valueSource.mNextParameter;
+            var numBytes:int = int (valueSource.EvaluateValueObject ());
+            
+            var maxBytes:int = Math.min (stream.length - stream.position, targetData.length - targetOffet);
+            if (numBytes > maxBytes)
+               numBytes = maxBytes;
+            
+            //try
+            //{
+            stream.readBytes (targetData, targetOffet, numBytes);
+            //}
+         }
+         while (false);
+      }
+      
+      public static function ByteArrayStreamWriteByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         do
+         {
+            var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            if (stream == null)
+               break;
+            
+            valueSource = valueSource.mNextParameter;
+            var sourceData:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            if (sourceData == null)
+               break;
+            
+            valueSource = valueSource.mNextParameter;
+            var sourceOffet:int = int (valueSource.EvaluateValueObject ());
+            if (sourceOffet < 0)
+               sourceOffet = 0;
+            if (sourceOffet > sourceData.length)
+               sourceOffet = sourceData.length;
+            
+            valueSource = valueSource.mNextParameter;
+            var numBytes:int = int (valueSource.EvaluateValueObject ());
+            
+            var maxBytes:int = sourceData.length - sourceOffet;
+            
+            if (numBytes <= 0)
+               numBytes = maxBytes;
+            else if (numBytes > maxBytes)
+               numBytes = maxBytes;
+            
+            //try
+            //{
+            stream.writeBytes (sourceData, sourceOffet, numBytes);
+            //}
+         }
+         while (false);
+      }
+      
+      public static function ByteArrayStreamReadBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var boolValue:Boolean = false;
+         
+         do
+         {
+            var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            if (stream == null)
+               break;
+            
+            boolValue = stream.readBoolean ();
+         }
+         while (false);
+         
+         valueTarget.AssignValueObject (boolValue);
+      }
+      
+      public static function ByteArrayStreamWriteBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         if (stream == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var boolValue:Boolean = valueSource.EvaluateValueObject () as Boolean;
+         
+         stream.writeBoolean (boolValue);
+      }
+      
+      public static function ByteArrayStreamReadNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var valueObject:Object = 0;
+         
+         do
+         {
+            var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            
+            valueSource = valueSource.mNextParameter;
+            var valueType:int = valueSource.EvaluateValueObject () as int;
+            
+            switch (valueType)
+            {
+               case CoreClassIds.NumberTypeDetail_Int8Number:
+                  valueObject = stream == null ? 0 : stream.readByte ();
+                  break;
+               case CoreClassIds.NumberTypeDetail_Int16Number:
+                  valueObject = stream == null ? 0 : stream.readShort ();
+                  break;
+               case CoreClassIds.NumberTypeDetail_Int32Number:
+                  valueObject = stream == null ? 0 : stream.readInt ();
+                  break;
+               case CoreClassIds.NumberTypeDetail_DoubleNumber:
+                  valueObject = stream == null ? NaN : stream.readDouble ();
+                  break;
+               case CoreClassIds.NumberTypeDetail_FloatNumber:
+               default:
+                  valueObject = stream == null ? NaN : stream.readFloat ();
+                  break;
+            }
+         }
+         while (false);
+         
+         valueTarget.AssignValueObject (valueObject);
+      }
+      
+      public static function ByteArrayStreamWriteNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         if (stream == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var numberValue:Object = valueSource.EvaluateValueObject ();
+         
+         valueSource = valueSource.mNextParameter;
+         var valueType:int = valueSource.EvaluateValueObject () as int;
+         
+         switch (valueType)
+         {
+            case CoreClassIds.NumberTypeDetail_Int8Number:
+               stream.writeByte (numberValue as int);
+               break;
+            case CoreClassIds.NumberTypeDetail_Int16Number:
+               stream.writeShort (numberValue as int);
+               break;
+            case CoreClassIds.NumberTypeDetail_Int32Number:
+               stream.writeInt (numberValue as int);
+               break;
+            case CoreClassIds.NumberTypeDetail_DoubleNumber:
+               stream.writeDouble (numberValue as Number);
+               break;
+            case CoreClassIds.NumberTypeDetail_FloatNumber:
+            default:
+               stream.writeFloat (numberValue as Number);
+               break;
+         }
+      }
+      
+      public static function ByteArrayStreamReadUTF (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var utfText:String = null;
+         
+         do
+         {
+            var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            if (stream == null)
+               break;
+            
+            utfText = DataFormat3.ReadVaryLengthUTF (stream);
+         }
+         while (false);
+         
+         valueTarget.AssignValueObject (utfText);
+      }
+      
+      public static function ByteArrayStreamWriteUTF (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         if (stream == null)
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var utfText:String = valueSource.EvaluateValueObject () as String;
+         
+         var oldPos:int = stream.position;
+         DataFormat3.WriteVaryLengthUTF (stream, utfText);
+      }
+         
    //************************************************
    // math
    //************************************************

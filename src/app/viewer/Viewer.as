@@ -1694,8 +1694,13 @@ package viewer {
 
       public function UpdateFrame (singleStepMode:Boolean = false):void
       {  
+         // ...
          
          UpdateGesturePaintLayer ();
+         
+         // ...
+         
+         UpdateMultiplePlayer ();
 
          // ...
          

@@ -61,8 +61,11 @@
       
       if (mCurrentJointInstanceRequestData != null)
       {
+trace ("111");
          if (mJoinInstanceFrequencyStat.Hit (getTimer ()))
          {
+            mCurrentJointInstanceRequestData.position = 0;
+            
             SendMultiplePlayerClientMessagesToSchedulerServer (mCurrentJointInstanceRequestData);
             
             mCurrentJointInstanceRequestData = null;
@@ -71,10 +74,13 @@
          return;
       }
       
-      if (mMultiplePlayerInstanceInfo.mIsServerConnected && mCachedClientMessagesData != null)
+      if (mNumCachedClientMessages > 0)
       {
+trace ("222");
          if (mClientMessagesFrequencyStat.Hit (getTimer ()))
          {
+            mCachedClientMessagesData.position = 0;
+            
             SendMultiplePlayerClientMessagesToInstanceServer (mCachedClientMessagesData);
             
             ClearCachedClientMessages ();
@@ -273,6 +279,8 @@
    
    private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceId:String, connectionId:String):void
    {
+trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instance id = " + instanceId + ", connectionId = " + connectionId);
+
       mMultiplePlayerInstanceInfo.mServerAddress = serverAddress;
       mMultiplePlayerInstanceInfo.mServerPort = serverPort;
       
@@ -415,7 +423,7 @@
    
    //---------
    
-   private var mCachedClientMessagesData:ByteArray = null;
+   private var mCachedClientMessagesData:ByteArray = new ByteArray ();
    private var mNumCachedClientMessages:int = 0;
    
    private function ClearCachedClientMessages ():void
@@ -697,6 +705,7 @@
          
          mCurrentJointInstanceRequestData = messageData;
          
+trace ("000");
          // ...
          
          cached = true;
@@ -779,8 +788,6 @@
       {
          try
          {
-            var serverDataFormatVersion:int = messagesData.readShort ();
-
             var dataLength:int = messagesData.readInt ();
             //if (dataLength > )
             //   ...
@@ -799,11 +806,11 @@
                
                   case MultiplePlayerDefine.ServerMessageType_InstanceServerInfo:
                   {
-                     SetInstanceServerInfo (messagesData.readUTF (), // server adress
+                     SetInstanceServerInfo (messagesData.readUTF (), // server address
                                             messagesData.readShort () & 0xFFFF, // server port
                                             messagesData.readUTF (), // instance id
                                             messagesData.readUTF () // my connection id
-                                           );
+                                            );
                      
                      ConnectToInstanceServer ();
                      

@@ -99,9 +99,9 @@ package common {
 // ...
 //===========================================================================
       
-      public static const InstancePhase_Inactive:int = 0;
-      public static const InstancePhase_Pending:int = 3;
-      public static const InstancePhase_Playing:int = 6;
+      public static const InstancePhase_Inactive:int = 0x00;
+      public static const InstancePhase_Pending:int  = 0x10;
+      public static const InstancePhase_Playing:int  = 0x20;
       
    }
 }

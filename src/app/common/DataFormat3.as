@@ -122,6 +122,86 @@ package common {
          return str;
       }
       
+//==================================== readUTF/writeUTF ======================================================
+      
+      public static const Bit_IsNull:int = 1 << 7;
+      public static const Shift_MoreBytes:int = 5;
+      public static const Mask_NumMoreBytes:int = (1 << (Shift_MoreBytes + 1)) | (1 << Shift_MoreBytes);
+      public static const Mask_LengthValueInFirstByte:int = (1 << Shift_MoreBytes) - 1;
+      
+      public static function WriteVaryLengthUTF (data:ByteArray, utfText:String):void
+      {
+         if (utfText == null)
+         {
+            data.writeByte (Bit_IsNull);
+            return;
+         }
+         
+         var length:int = utfText.length;
+         
+         var b0:int = length & Mask_LengthValueInFirstByte;
+         length >> Mask_LengthValueInFirstByte;
+         var b1:int = length & 0xFF;
+         length >> 8;
+         var b2:int = length & 0xFF;
+         length >> 8;
+         var b3:int = length & 0xFF;
+         
+         var numMoreBytes:int;
+         if (b3 > 0) 
+            numMoreBytes = 3;
+         else if (b2 > 0)
+            numMoreBytes = 2;
+         else if (b1 > 0)
+            numMoreBytes = 1;
+         else
+            numMoreBytes = 0;
+         
+         b0 |= (numMoreBytes << Shift_MoreBytes);
+         data.writeByte (b0);
+         if (numMoreBytes >= 1)
+         {
+            data.writeByte (b1);
+            if (numMoreBytes >= 2)
+            {
+               data.writeByte (b2);
+               if (numMoreBytes >= 3)
+               {
+                  data.writeByte (b3);
+               }
+            }
+         }
+         
+         data.writeMultiByte (utfText, "utf-8");
+      }
+      
+      public static function ReadVaryLengthUTF (data:ByteArray):String
+      {
+         try
+         {
+            var b0:int = data.readByte () & 0xFF;
+            
+            var isNull:Boolean = (b0 & Bit_IsNull) != 0;
+            
+            if (isNull)
+               return null;
+            
+            var numMoreBytes:int = (b0 & Mask_NumMoreBytes) >> Shift_MoreBytes;
+            var b1:int = 0xFF & (numMoreBytes >= 1 ? data.readByte () : 0);
+            var b2:int = 0xFF & (numMoreBytes >= 2 ? data.readByte () : 0);
+            var b3:int = 0xFF & (numMoreBytes >= 3 ? data.readByte () : 0);
+            
+            var length:int = (b0 & Mask_LengthValueInFirstByte) | (((((b3 << 8) | b2) << 8) | b1) << Shift_MoreBytes);
+            
+            return data.readMultiByte (length, "utf-8");
+         }
+         catch (error:Error)
+         {
+         }
+         
+         return null;
+      }
+      
 //==================================== base64 playcode ======================================================
       
       public static const Base64CharsRegExpStr:String = "0-9a-zA-Z=_,\\.\\+\\/";
@@ -246,7 +326,7 @@ package common {
          return data;
       }
       
-      public static function EncodeByteArray2String(data:ByteArray, useStandardUrlChars:Boolean = false, mustBeAlign4:Boolean = true):String
+      public static function EncodeByteArray2String (data:ByteArray, useStandardUrlChars:Boolean = false, mustBeAlign4:Boolean = true):String
       {
          if (data == null) 
          {

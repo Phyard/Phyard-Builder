@@ -189,9 +189,9 @@ package editor.world {
          if (_mMultiplePlayerInstanceChannelList == null)
          {
             _mMultiplePlayerInstanceChannelList = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
-            for (var channelIndex:int = 0; channelIndex <= MultiplePlayerDefine.MaxNumberOfInstanceChannels; ++ channelIndex)
+            for (var channelIndex:int = 0; channelIndex < MultiplePlayerDefine.MaxNumberOfInstanceChannels; ++ channelIndex)
             {
-               _mMultiplePlayerInstanceChannelList [channelIndex ++] = {label: "Channel", data: channelIndex};
+               _mMultiplePlayerInstanceChannelList [channelIndex] = {label: "Channel", data: channelIndex};
             }
          }
          

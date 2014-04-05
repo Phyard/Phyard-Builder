@@ -94,17 +94,19 @@ package common.trigger {
       
       //public static const ID_CreateGameInstance:int             = IdPool.CoreApiId_606; // from v2.06
       public static const ID_JoinGameInstanceRandomly:int       = IdPool.CoreApiId_605; // from v2.06
-      //public static const ID_GetAvailableGameInstances:int        = IdPool.CoreApiId_608;
+      //public static const ID_GetAvailableGameInstances:int      = IdPool.CoreApiId_608;
       //public static const ID_JoinGameInstanceByInstanceID:int   = IdPool.CoreApiId_607; // from v2.06
-      //public static const ID_ExitGameInstance:int           = IdPool.CoreApiId_613;
+      //public static const ID_ExitGameInstance:int               = IdPool.CoreApiId_613;
       public static const ID_SendGameInstanceChannelMessage:int = IdPool.CoreApiId_611; // from v2.06
       
-      //public static const ID_GetGameInstanceNumberOfSeats:int           = IdPool.CoreApiId_570; // from v2.06
-      //public static const ID_GetGameInstanceSeatPlayerName:int          = IdPool.CoreApiId_568; // from v2.06
-      //public static const ID_IsGameInstanceChannelEnabled:int           = IdPool.CoreApiId_574; // from v2.06
-      //public static const ID_IsGameInstanceChannelSeatEnabled:int           = IdPool.CoreApiId_575; // from v2.06
+      public static const ID_IsGameInstanceLoggedIn:int           = IdPool.CoreApiId_565; // from v2.06
+      public static const ID_IsGameInstanceInPlayingPhase:int           = IdPool.CoreApiId_566; // from v2.06
+      public static const ID_GetGameInstanceNumberOfSeats:int           = IdPool.CoreApiId_570; // from v2.06
+      public static const ID_GetMySeatIndexInGameInstance:int           = IdPool.CoreApiId_574; // from v2.06
+      public static const ID_GetGameInstanceSeatPlayerName:int          = IdPool.CoreApiId_568; // from v2.06
+      public static const ID_IsGameInstanceChannelSeatEnabled:int           = IdPool.CoreApiId_575; // from v2.06
       
-      //public static const ID_MakeGameInstanceVoting:int           = IdPool.CoreApiId_569;
+      //public static const ID_GameInstanceSendSignal:int           = IdPool.CoreApiId_569;
 
    // string
 
@@ -194,8 +196,8 @@ package common.trigger {
       public static const ID_ByteArrayStream_Create:int       = IdPool.CoreApiId_142; // v2.06
       public static const ID_ByteArrayStream_GetByteArray:int       = IdPool.CoreApiId_143; // v2.06
       public static const ID_ByteArrayStream_SetByteArray:int       = IdPool.CoreApiId_144; // v2.06
-      public static const ID_ByteArrayStream_GetCursorPostion:int       = IdPool.CoreApiId_145; // v2.06
-      public static const ID_ByteArrayStream_SetCursorPostion:int       = IdPool.CoreApiId_146; // v2.06
+      public static const ID_ByteArrayStream_GetCursorPosition:int       = IdPool.CoreApiId_145; // v2.06
+      public static const ID_ByteArrayStream_SetCursorPosition:int       = IdPool.CoreApiId_146; // v2.06
       public static const ID_ByteArrayStream_ReadByteArray:int       = IdPool.CoreApiId_147; // v2.06
       public static const ID_ByteArrayStream_WriteByteArray:int       = IdPool.CoreApiId_148; // v2.06
       public static const ID_ByteArrayStream_ReadBoolean:int       = IdPool.CoreApiId_149; // v2.06

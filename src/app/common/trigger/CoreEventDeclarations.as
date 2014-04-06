@@ -312,16 +312,22 @@ package common.trigger {
 
      // ...
 
-         RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged,
+         RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged,
                     null
                     );
-
-         //RegisterEventDeclatation (CoreEventIds.ID_OnPlayerActionData,
-         //           [
-         //               [CoreClassIds.ValueType_Number,       -1],
-         //               [CoreClassIds.ValueType_String,       null],
-         //           ]);
-                    
+         RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnError,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                    ]);
+         
+      // ...
+         
       }
 
 //===========================================================

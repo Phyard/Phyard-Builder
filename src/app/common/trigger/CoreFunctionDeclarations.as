@@ -1,6 +1,5 @@
 package common.trigger {
 
-   import common.MultiplePlayerDefine;
    import common.Define;
 
    public class CoreFunctionDeclarations
@@ -332,7 +331,7 @@ package common.trigger {
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      MultiplePlayerDefine.InstanceChannelMode_Free],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,     0], //MultiplePlayerDefine.InstanceChannelMode_Free],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,      0],
                      ],
                      [
@@ -371,13 +370,6 @@ package common.trigger {
          //            ],
          //            null
          //         );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage,
-                     [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                        [CoreClassIds.ValueType_ByteArray,       null],
-                     ],
-                     null
-                  );
                   
          RegisterCoreDeclaration (CoreFunctionIds.ID_IsGameInstanceLoggedIn,
                      null,
@@ -403,13 +395,13 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatPlayerName,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatInfo,
                      null,
                      [
                         [CoreClassIds.ValueType_String,       ""],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_IsGameInstanceChannelSeatEnabled,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo,
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
@@ -417,6 +409,14 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_Boolean,       null],
                      ]
+                  );
+                  
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ],
+                     null
                   );
 
       // string
@@ -1063,9 +1063,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
-                     [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                     ]
+                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadByteArray,
                      [
@@ -1074,9 +1072,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
-                     [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                     ]
+                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteByteArray,
                      [
@@ -1085,9 +1081,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                      ],
-                     [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
-                     ]
+                     null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadBoolean,
                      [

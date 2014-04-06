@@ -262,6 +262,7 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   ConvertOldRegisterVariablesToGlobalVariables ();
                break;
+            /*
             case 66: // B
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSystemBack), OnPutCreating, OnCreatingCancelled));
@@ -283,8 +284,9 @@ package editor.entity.dialog {
                break;
             case 87: // W
                if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged), OnPutCreating, OnCreatingCancelled));
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged), OnPutCreating, OnCreatingCancelled));
                break;
+            */
             default:
             {
                handled = false;

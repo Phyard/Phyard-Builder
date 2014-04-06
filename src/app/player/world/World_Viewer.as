@@ -43,13 +43,14 @@
                //ClearGameSaveData:Function; // v2.03
       public /*static*/ var Viewer_mLibServices:Object; // v2.03
                //SubmitKeyValue:Function; // v2.0?
+               //MultiplePlayer_GetInstanceInfo; // v2.06
                //MultiplePlayer_CreateInstanceDefine:Function; // v2.06
                //MultiplePlayer_CreateInstanceChannelDefine:Function; // v2.06
                //MultiplePlayer_ReplaceInstanceChannelDefine:Function; // v2.06
                //MultiplePlayer_JoinNewInstance:Function; // v2.06
                //MultiplePlayer_JoinRandomInstance:Function; // v2.06
                //MultiplePlayer_SendChannelMessage:Function; // v2.06
-   
+    
 //==============================================================================
 // 
 //==============================================================================

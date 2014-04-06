@@ -9,70 +9,8 @@
       creationComplete="OnInitPanel()"
       >
 
-   <!--mx:HBox width="100%" height="150">
-      <ed:KeyboardForSelecting id="KeyboardPanel"/>
-   </mx:HBox-->
-   <mx:HBox width="100%">
-      <mx:Spacer width="100%"/>
-      <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingLeft="15" paddingRight="15" paddingTop="5" paddingBottom="5">
-         <mx:VBox>
-            <mx:CheckBox id="CheckBox_LongPress" label="Long Press"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_ZigzagZ" label="Zigzag Z"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_Line0" label="Line Right"/>
-            <mx:CheckBox id="CheckBox_Line45" label="Line Down Right"/>
-            <mx:CheckBox id="CheckBox_Line90" label="Line Down"/>
-            <mx:CheckBox id="CheckBox_Line135" label="Line Down Left"/>
-            <mx:CheckBox id="CheckBox_Line180" label="Line Left"/>
-            <mx:CheckBox id="CheckBox_Line225" label="Line Up Left"/>
-            <mx:CheckBox id="CheckBox_Line270" label="Line Up"/>
-            <mx:CheckBox id="CheckBox_Line315" label="Line Up Right"/>
-         </mx:VBox>
-         <mx:VBox>
-            <mx:CheckBox id="CheckBox_Triangle" label="Triangle"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_ZigzagN" label="Zigzag N"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_LineArrow0" label="LineArrow Right"/>
-            <mx:CheckBox id="CheckBox_LineArrow45" label="LineArrow Down Right"/>
-            <mx:CheckBox id="CheckBox_LineArrow90" label="LineArrow Down"/>
-            <mx:CheckBox id="CheckBox_LineArrow135" label="LineArrow Down Left"/>
-            <mx:CheckBox id="CheckBox_LineArrow180" label="LineArrow Left"/>
-            <mx:CheckBox id="CheckBox_LineArrow225" label="LineArrow Up Left"/>
-            <mx:CheckBox id="CheckBox_LineArrow270" label="LineArrow Up"/>
-            <mx:CheckBox id="CheckBox_LineArrow315" label="LineArrow Up Right"/>
-         </mx:VBox>
-         <mx:VBox>
-            <mx:CheckBox id="CheckBox_Circle" label="Circle"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_ZigzagS" label="Zigzag S"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_Arrow0" label="Arrow Right"/>
-            <mx:CheckBox id="CheckBox_Arrow45" label="Arrow Down Right"/>
-            <mx:CheckBox id="CheckBox_Arrow90" label="Arrow Down"/>
-            <mx:CheckBox id="CheckBox_Arrow135" label="Arrow Down Left"/>
-            <mx:CheckBox id="CheckBox_Arrow180" label="Arrow Left"/>
-            <mx:CheckBox id="CheckBox_Arrow225" label="Arrow Up Left"/>
-            <mx:CheckBox id="CheckBox_Arrow270" label="Arrow Up"/>
-            <mx:CheckBox id="CheckBox_Arrow315" label="Arrow Up Right"/>
-         </mx:VBox>
-         <mx:VBox>
-            <mx:CheckBox id="CheckBox_FivePointStar" label="Five-Point Star"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_ZigzagLighting" label="Zigzag Lighting"/>
-            <mx:Spacer height="10"/>
-            <mx:CheckBox id="CheckBox_Pool0" label="Pool Right"/>
-            <mx:CheckBox id="CheckBox_Pool90" label="Pool Down"/>
-            <mx:CheckBox id="CheckBox_Pool180" label="Pool Left"/>
-            <mx:CheckBox id="CheckBox_Pool270" label="Pool Up"/>
-            <mx:CheckBox id="CheckBox_Wave0" label="Wave Right"/>
-            <mx:CheckBox id="CheckBox_Wave90" label="Wave Down"/>
-            <mx:CheckBox id="CheckBox_Wave180" label="Wave Left"/>
-            <mx:CheckBox id="CheckBox_Wave270" label="Wave Up"/>
-         </mx:VBox>
-      </mx:HBox>
-      <mx:Spacer width="100%"/>
+   <mx:HBox width="100%" horizontalAlign="center">
+      <ed:GestureForSelecting id="GesturePanel"/>
    </mx:HBox>
    <mx:HBox width="100%">
       <mx:Spacer width="100%"/>
@@ -104,110 +42,14 @@
          {
             mParams = initialValues;
             
-            //KeyboardPanel.selectedKeyCodes = initialValues.mGestureIDs;
-            
-            CheckBox_LongPress.selected = mParams.mGestureIDs.indexOf (GestureIDs.LongPress) >= 0;
-            CheckBox_Triangle.selected = mParams.mGestureIDs.indexOf (GestureIDs.Triangle) >= 0;
-            CheckBox_Circle.selected = mParams.mGestureIDs.indexOf (GestureIDs.Circle) >= 0;
-            CheckBox_FivePointStar.selected = mParams.mGestureIDs.indexOf (GestureIDs.FivePointStar) >= 0;
-            
-            CheckBox_ZigzagZ.selected = mParams.mGestureIDs.indexOf (GestureIDs.ZigzagZ) >= 0;
-            CheckBox_ZigzagN.selected = mParams.mGestureIDs.indexOf (GestureIDs.ZigzagN) >= 0;
-            CheckBox_ZigzagS.selected = mParams.mGestureIDs.indexOf (GestureIDs.ZigzagS) >= 0;
-            CheckBox_ZigzagLighting.selected = mParams.mGestureIDs.indexOf (GestureIDs.ZigzagLighting) >= 0;
-            
-            CheckBox_Line0.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line0) >= 0;
-            CheckBox_Line45.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line45) >= 0;
-            CheckBox_Line90.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line90) >= 0;
-            CheckBox_Line135.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line135) >= 0;
-            CheckBox_Line180.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line180) >= 0;
-            CheckBox_Line225.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line225) >= 0;
-            CheckBox_Line270.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line270) >= 0;
-            CheckBox_Line315.selected = mParams.mGestureIDs.indexOf (GestureIDs.Line315) >= 0;
-            
-            CheckBox_LineArrow0.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow0) >= 0;
-            CheckBox_LineArrow45.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow45) >= 0;
-            CheckBox_LineArrow90.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow90) >= 0;
-            CheckBox_LineArrow135.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow135) >= 0;
-            CheckBox_LineArrow180.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow180) >= 0;
-            CheckBox_LineArrow225.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow225) >= 0;
-            CheckBox_LineArrow270.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow270) >= 0;
-            CheckBox_LineArrow315.selected = mParams.mGestureIDs.indexOf (GestureIDs.LineArrow315) >= 0;
-            
-            CheckBox_Arrow0.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow0) >= 0;
-            CheckBox_Arrow45.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow45) >= 0;
-            CheckBox_Arrow90.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow90) >= 0;
-            CheckBox_Arrow135.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow135) >= 0;
-            CheckBox_Arrow180.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow180) >= 0;
-            CheckBox_Arrow225.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow225) >= 0;
-            CheckBox_Arrow270.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow270) >= 0;
-            CheckBox_Arrow315.selected = mParams.mGestureIDs.indexOf (GestureIDs.Arrow315) >= 0;
-            
-            CheckBox_Pool0.selected = mParams.mGestureIDs.indexOf (GestureIDs.Pool0) >= 0;
-            CheckBox_Pool90.selected = mParams.mGestureIDs.indexOf (GestureIDs.Pool90) >= 0;
-            CheckBox_Pool180.selected = mParams.mGestureIDs.indexOf (GestureIDs.Pool180) >= 0;
-            CheckBox_Pool270.selected = mParams.mGestureIDs.indexOf (GestureIDs.Pool270) >= 0;
-            
-            CheckBox_Wave0.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wave0) >= 0;
-            CheckBox_Wave90.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wave90) >= 0;
-            CheckBox_Wave180.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wave180) >= 0;
-            CheckBox_Wave270.selected = mParams.mGestureIDs.indexOf (GestureIDs.Wave270) >= 0;
+            GesturePanel.selectedGestureIDs = initialValues.mGestureIDs;
             
             CheckBox_AnyGestures.selected = initialValues.mGestureIDs.indexOf (GestureIDs.VirtualAnyGestures) >= 0;
          }
          
          public function GetValues (returnValues:Object):void
          {
-            //mParams.mKeyCodes = KeyboardPanel.selectedKeyCodes;
-            
-            mParams.mGestureIDs = new Array ();
-            
-            if (CheckBox_LongPress.selected) mParams.mGestureIDs.push (GestureIDs.LongPress);
-            if (CheckBox_Triangle.selected) mParams.mGestureIDs.push (GestureIDs.Triangle);
-            if (CheckBox_Circle.selected) mParams.mGestureIDs.push (GestureIDs.Circle);
-            if (CheckBox_FivePointStar.selected) mParams.mGestureIDs.push (GestureIDs.FivePointStar);
-            
-            if (CheckBox_ZigzagZ.selected) mParams.mGestureIDs.push (GestureIDs.ZigzagZ);
-            if (CheckBox_ZigzagN.selected) mParams.mGestureIDs.push (GestureIDs.ZigzagN);
-            if (CheckBox_ZigzagS.selected) mParams.mGestureIDs.push (GestureIDs.ZigzagS);
-            if (CheckBox_ZigzagLighting.selected) mParams.mGestureIDs.push (GestureIDs.ZigzagLighting);
-                        
-            if (CheckBox_Line0.selected) mParams.mGestureIDs.push (GestureIDs.Line0);
-            if (CheckBox_Line45.selected) mParams.mGestureIDs.push (GestureIDs.Line45);
-            if (CheckBox_Line90.selected) mParams.mGestureIDs.push (GestureIDs.Line90);
-            if (CheckBox_Line135.selected) mParams.mGestureIDs.push (GestureIDs.Line135);
-            if (CheckBox_Line180.selected) mParams.mGestureIDs.push (GestureIDs.Line180);
-            if (CheckBox_Line225.selected) mParams.mGestureIDs.push (GestureIDs.Line225);
-            if (CheckBox_Line270.selected) mParams.mGestureIDs.push (GestureIDs.Line270);
-            if (CheckBox_Line315.selected) mParams.mGestureIDs.push (GestureIDs.Line315);
-            
-            if (CheckBox_LineArrow0.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow0);
-            if (CheckBox_LineArrow45.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow45);
-            if (CheckBox_LineArrow90.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow90);
-            if (CheckBox_LineArrow135.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow135);
-            if (CheckBox_LineArrow180.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow180);
-            if (CheckBox_LineArrow225.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow225);
-            if (CheckBox_LineArrow270.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow270);
-            if (CheckBox_LineArrow315.selected) mParams.mGestureIDs.push (GestureIDs.LineArrow315);
-            
-            if (CheckBox_Arrow0.selected) mParams.mGestureIDs.push (GestureIDs.Arrow0);
-            if (CheckBox_Arrow45.selected) mParams.mGestureIDs.push (GestureIDs.Arrow45);
-            if (CheckBox_Arrow90.selected) mParams.mGestureIDs.push (GestureIDs.Arrow90);
-            if (CheckBox_Arrow135.selected) mParams.mGestureIDs.push (GestureIDs.Arrow135);
-            if (CheckBox_Arrow180.selected) mParams.mGestureIDs.push (GestureIDs.Arrow180);
-            if (CheckBox_Arrow225.selected) mParams.mGestureIDs.push (GestureIDs.Arrow225);
-            if (CheckBox_Arrow270.selected) mParams.mGestureIDs.push (GestureIDs.Arrow270);
-            if (CheckBox_Arrow315.selected) mParams.mGestureIDs.push (GestureIDs.Arrow315);
-            
-            if (CheckBox_Pool0.selected) mParams.mGestureIDs.push (GestureIDs.Pool0);
-            if (CheckBox_Pool90.selected) mParams.mGestureIDs.push (GestureIDs.Pool90);
-            if (CheckBox_Pool180.selected) mParams.mGestureIDs.push (GestureIDs.Pool180);
-            if (CheckBox_Pool270.selected) mParams.mGestureIDs.push (GestureIDs.Pool270);
-            
-            if (CheckBox_Wave0.selected) mParams.mGestureIDs.push (GestureIDs.Wave0);
-            if (CheckBox_Wave90.selected) mParams.mGestureIDs.push (GestureIDs.Wave90);
-            if (CheckBox_Wave180.selected) mParams.mGestureIDs.push (GestureIDs.Wave180);
-            if (CheckBox_Wave270.selected) mParams.mGestureIDs.push (GestureIDs.Wave270);
+            mParams.mGestureIDs = GesturePanel.selectedGestureIDs;
             
             if (CheckBox_AnyGestures.selected)
             {

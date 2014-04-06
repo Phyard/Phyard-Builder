@@ -27,7 +27,7 @@ package common {
       
       //
       
-      public static const InstanceChannelMode_Free:int = 0;
+      public static const InstanceChannelMode_Free:int = 0; // don't change the value, see RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine)
       public static const InstanceChannelMode_Chess:int = 1;
       public static const InstanceChannelMode_WeGo:int = 2;
       

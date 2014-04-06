@@ -429,7 +429,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Turn Timeout (seconds, 0: unlimited)", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxTurnTimeoutInPractice}),
                      ],
                      [
-                             
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define")
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Game Instance Define", null, null,
@@ -464,14 +464,6 @@ package editor.world {
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Player Action Data", null, null,
-                     [
-                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
-                     ],
-                     null
-                  );
-
                   
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceLoggedIn, services_package, "Is Game Instance Joined?", null, null,
                      null,
@@ -497,20 +489,28 @@ package editor.world {
                              new VariableDefinitionNumber ("My Seat Index"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatPlayerName, services_package, "Get Player Name At Seat Of Game Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatInfo, services_package, "Get Game Instance Seat Info", null, null,
                      null,
                      [
                              new VariableDefinitionString ("Player Name"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceChannelSeatEnabled, services_package, "Is Seat Enabled In Channel Of Game Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo, services_package, "Get Game Instance Channel Seat Info", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
-                             new VariableDefinitionNumber ("Channel Index", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxNumberOfInstanceSeats - 1}),
+                             new VariableDefinitionNumber ("Seat Index", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxNumberOfInstanceSeats - 1}),
                      ],
                      [
-                             new VariableDefinitionBoolean ("Enabled?"),
+                             new VariableDefinitionBoolean ("Channel Seat Enabled?"),
                      ]
+                  );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Player Action Data", null, null,
+                     [
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
+                     ],
+                     null
                   );
 
       // string

@@ -386,6 +386,8 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
          return;
       if (seatIndex < 0 || seatIndex >= mMultiplePlayerInstanceInfo.mNumSeats)
          return;
+      if (channelIndex < 0 || channelIndex >= MultiplePlayerDefine.MaxNumberOfInstanceChannels)
+         return;
       if (mMultiplePlayerInstanceInfo.mChannelsInfo == null)
          return;
       
@@ -559,9 +561,42 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
 // callbacks for world (be careful of compatibility problems)
 //======================================================
    
-   protected function MultiplePlayer_GetInstanceInfo ():Object
+   protected function MultiplePlayer_GetGameInstanceBasicInfo ():Object
    {
-      return mMultiplePlayerInstanceInfo;
+      return {
+         mIsLoggedIn       : IsInstanceServerLoggedIn (),
+         mIsInPlayingPhase : mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing,
+         mNumSeats         : mMultiplePlayerInstanceInfo.mNumSeats, 
+         mMySeatIndex      : mMultiplePlayerInstanceInfo.mMySeatIndex
+      };
+   }
+   
+   protected function MultiplePlayer_GetGameInstanceSeatInfo (seatIndex:int):Object
+   {
+      var badIndex:Boolean = seatIndex < 0 || seatIndex >= mMultiplePlayerInstanceInfo.mNumSeats;
+      
+      return {
+         mPlayerName     : (badIndex || mMultiplePlayerInstanceInfo.mSeatsPlayerName == null) ? null : mMultiplePlayerInstanceInfo.mSeatsPlayerName [seatIndex],
+         mLastActiveTime : (badIndex || mMultiplePlayerInstanceInfo.mSeatsLastActiveTime == null) ? 0 : mMultiplePlayerInstanceInfo.mSeatsLastActiveTime [seatIndex],
+         mIsLoggedIn     : (badIndex || mMultiplePlayerInstanceInfo.mIsSeatsConnected == null) ? false : mMultiplePlayerInstanceInfo.mIsSeatsConnected [seatIndex]
+      };
+   }
+   
+   protected function MultiplePlayer_GetGameInstanceChannelSeatInfo (channelIndex:int, seatIndex:int):Object
+   {
+      var channelInfo:Object = null;
+      
+      if (  seatIndex >= 0 && seatIndex < mMultiplePlayerInstanceInfo.mNumSeats
+         && channelIndex < 0 && channelIndex < MultiplePlayerDefine.MaxNumberOfInstanceChannels
+         && mMultiplePlayerInstanceInfo.mChannelsInfo != null)
+      {
+         channelInfo = mMultiplePlayerInstanceInfo.mChannelsInfo [channelIndex];
+      }
+      
+      return {
+         mIsEnabled      : channelInfo == null || channelInfo.mIsSeatsEnabled_Predicted == null ? false : channelInfo.mIsSeatsEnabled_Predicted [seatIndex],
+         mLastEnableTime : channelInfo == null || channelInfo.mSeatsLastEnableTime      == null ? 0     : channelInfo.mSeatsLastEnableTime      [seatIndex]
+      }
    }
    
    // inputs

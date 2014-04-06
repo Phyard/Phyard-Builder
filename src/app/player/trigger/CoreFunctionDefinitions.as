@@ -121,7 +121,14 @@ package player.trigger {
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_JoinGameInstanceByInstanceID,   JoinGameInstanceByInstanceID);
          
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendGameInstanceChannelMessage,           SendGameInstanceChannelMessage);
-
+         
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsGameInstanceLoggedIn,                 IsGameInstanceLoggedIn);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsGameInstanceInPlayingPhase,           IsGameInstanceInPlayingPhase);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceNumberOfSeats,           GetGameInstanceNumberOfSeats);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetMySeatIndexInGameInstance,           GetMySeatIndexInGameInstance);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceSeatInfo,                GetGameInstanceSeatInfo);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo,         GetGameInstanceChannelSeatInfo);
+         
       // string
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_String_Assign,                      AssignString);
@@ -1034,6 +1041,59 @@ package player.trigger {
          var messageData:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
          
          callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendChannelMessage ({mChannelIndex: channelIndex, mMessageData: messageData});
+      }
+
+      public static function IsGameInstanceLoggedIn (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var mpInstanceInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceBasicInfo ();
+
+         valueTarget.AssignValueObject (mpInstanceInfo.mIsLoggedIn);
+      }
+
+      public static function IsGameInstanceInPlayingPhase (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var mpInstanceInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceBasicInfo ();
+
+         valueTarget.AssignValueObject (mpInstanceInfo.mIsInPlayingPhase);
+      }
+
+      public static function GetGameInstanceNumberOfSeats (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var mpInstanceInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceBasicInfo ();
+
+         valueTarget.AssignValueObject (mpInstanceInfo.mNumSeats);
+      }
+
+      public static function GetMySeatIndexInGameInstance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var mpInstanceInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceBasicInfo ();
+
+         valueTarget.AssignValueObject (mpInstanceInfo.mMySeatIndex);
+      }
+
+      public static function GetGameInstanceSeatInfo (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var seatIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         var seatInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceSeatInfo (seatIndex);
+
+         valueTarget.AssignValueObject (seatInfo.mPlayerName);
+         
+         //valueTarget = valuvalueTargeteSource.mNextParameter;
+      }
+
+      public static function GetGameInstanceChannelSeatInfo (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var channelIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var seatIndex:int = int (valueSource.EvaluateValueObject ());
+         
+         var channelSeatInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceChannelSeatInfo (channelIndex, seatIndex);
+
+         valueTarget.AssignValueObject (channelSeatInfo.mIsEnabled);
+         
+         //valueTarget = valuvalueTargeteSource.mNextParameter;
       }
 
    //*******************************************************************
@@ -2275,8 +2335,6 @@ package player.trigger {
             position = stream.length;
          
          stream.position = position;
-         
-         valueTarget.AssignValueObject (stream.position);
       }
       
       public static function ByteArrayStreamReadByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

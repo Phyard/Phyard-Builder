@@ -167,8 +167,13 @@ package editor {
       
       // network
       
-      [Embed("../res/create/event_on_global_socket_message.png")]
-      public static const IconOnMultiplePlayerInstanceSeatsInfoChanged:Class;
+      [Embed("../res/create/event_on_multiple-instance-info.png")]
+      public static const IconOnMultiplePlayerInstanceInfoChanged:Class;
+      [Embed("../res/create/event_on_multiple-instance-channel-message.png")]
+      public static const IconOnMultiplePlayerInstanceChannelMessage:Class;
+      
+      [Embed("../res/create/event_on_error.png")]
+      public static const IconOnError:Class;
       
    // event id -> icon
       
@@ -232,7 +237,11 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnSystemBack   ] = IconOnSystemBack;
             
-            sEventId2IconClass [CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged] = IconOnMultiplePlayerInstanceSeatsInfoChanged;
+            sEventId2IconClass [CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged] = IconOnMultiplePlayerInstanceInfoChanged;
+            sEventId2IconClass [CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage] = IconOnMultiplePlayerInstanceChannelMessage;
+            
+            
+            sEventId2IconClass [CoreEventIds.ID_OnError] = IconOnError;
          }
          
          var iconClass:Class = sEventId2IconClass [eventId];
@@ -376,5 +385,73 @@ package editor {
       public static const KeyInsert:Class;
       [Embed("../res/keyboard/key-del-sel.png")]
       public static const KeyDel:Class;
+      
+   // gesture icons
+      
+      [Embed("../res/gesture/line-000.png")]
+      public static const Gesture_Line000:Class;
+      [Embed("../res/gesture/line-000-sel.png")]
+      public static const Gesture_Line000_Selected:Class;
+      [Embed("../res/gesture/line-045.png")]
+      public static const Gesture_Line045:Class;
+      [Embed("../res/gesture/line-045-sel.png")]
+      public static const Gesture_Line045_Selected:Class;
+      
+      [Embed("../res/gesture/line-arrow-000.png")]
+      public static const Gesture_LineArrow000:Class;
+      [Embed("../res/gesture/line-arrow-000-sel.png")]
+      public static const Gesture_LineArrow000_Selected:Class;
+      [Embed("../res/gesture/line-arrow-045.png")]
+      public static const Gesture_LineArrow045:Class;
+      [Embed("../res/gesture/line-arrow-045-sel.png")]
+      public static const Gesture_LineArrow045_Selected:Class;
+      
+      [Embed("../res/gesture/arrow-000.png")]
+      public static const Gesture_Arrow000:Class;
+      [Embed("../res/gesture/arrow-000-sel.png")]
+      public static const Gesture_Arrow000_Selected:Class;
+      [Embed("../res/gesture/arrow-045.png")]
+      public static const Gesture_Arrow045:Class;
+      [Embed("../res/gesture/arrow-045-sel.png")]
+      public static const Gesture_Arrow045_Selected:Class;
+      
+      [Embed("../res/gesture/pool-000.png")]
+      public static const Gesture_Pool000:Class;
+      [Embed("../res/gesture/pool-000-sel.png")]
+      public static const Gesture_Pool000_Selected:Class;
+      
+      [Embed("../res/gesture/wave-000.png")]
+      public static const Gesture_Wave000:Class;
+      [Embed("../res/gesture/wave-000-sel.png")]
+      public static const Gesture_Wave000_Selected:Class;
+      
+      [Embed("../res/gesture/zigzag-z.png")]
+      public static const Gesture_ZigzagZ:Class;
+      [Embed("../res/gesture/zigzag-z-sel.png")]
+      public static const Gesture_ZigzagZ_Selected:Class;
+      [Embed("../res/gesture/zigzag-s.png")]
+      public static const Gesture_ZigzagS:Class;
+      [Embed("../res/gesture/zigzag-s-sel.png")]
+      public static const Gesture_ZigzagS_Selected:Class;
+      
+      [Embed("../res/gesture/long-press.png")]
+      public static const Gesture_LongPress:Class;
+      [Embed("../res/gesture/long-press-sel.png")]
+      public static const Gesture_LongPress_Selected:Class;
+      
+      [Embed("../res/gesture/circle.png")]
+      public static const Gesture_Circle:Class;
+      [Embed("../res/gesture/circle-sel.png")]
+      public static const Gesture_Circle_Selected:Class;
+      
+      [Embed("../res/gesture/triangle.png")]
+      public static const Gesture_Triangle:Class;
+      [Embed("../res/gesture/triangle-sel.png")]
+      public static const Gesture_Triangle_Selected:Class;
+      
+      [Embed("../res/gesture/five-point-star.png")]
+      public static const Gesture_FivePointStar:Class;
+      [Embed("../res/gesture/five-point-star-sel.png")]
+      public static const Gesture_FivePointStar_Selected:Class;
    }
 }

@@ -49,7 +49,7 @@
          //var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_MultiplePlayerInstance), mMultiplePlayerInstance); //, valueSource1);
          //var valueSourceList:Parameter = valueSource0;
          
-         HandleEventById (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged, null);
+         HandleEventById (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged, null);
       }
    }
 

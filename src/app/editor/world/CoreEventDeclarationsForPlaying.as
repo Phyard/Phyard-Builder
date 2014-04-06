@@ -310,15 +310,19 @@ package editor.world {
 
       // ...
 
-         RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceSeatsInfoChanged, "OnMultiplePlayerInstanceSeatsInfoChanged", "When multiple player instance seats info changed",
+         RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged, "OnMultiplePlayerInstanceInfoChanged", "When multiple player instance info changes",
                     null
                     );
-
-         //RegisterEventDeclaration (CoreEventIds.ID_OnPlayerActionData, "OnPlayerActionData", "When player perform an action",
-         //           [
-         //               new VariableDefinitionNumber ("Player Postion Index"),
-         //               new VariableDefinitionString ("Data"),
-         //           ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage, "OnMultiplePlayerInstanceChannelMessage", "When player sends a channel message",
+                    [
+                        new VariableDefinitionNumber ("Channel Index"),
+                        new VariableDefinitionNumber ("Seat Index"),
+                        new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Message Data"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnError, "OnError", "When error occurs",
+                    [
+                        new VariableDefinitionNumber ("Error ID"),
+                    ]);
 
       // event settings
 

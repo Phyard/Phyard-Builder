@@ -107,28 +107,24 @@ package common.trigger {
       
       //public static const ID_OnPlayerJoinedInstance:int = IdPool.EventId_169;
       //public static const ID_OnPlayerLeavedInstance:int = IdPool.EventId_169;
-      
       //OnSpectatorEntered
       //OnSpectatorExited
       //OnSpectatorHaveInterestsInCurrentRound
-      
-      //public static const ID_OnInstanceStartedNewRound:int = IdPool.EventId_169;
       //public static const ID_OnPlayerReadyForNewRound:int = IdPool.EventId_169;
-      
       //public static const ID_OnPlayerLeavedInstance:int = IdPool.EventId_169;
-      
-      //public static const ID_OnPlayerPerformedAction:int = IdPool.EventId_169; // actionData use ByteArray read out
-      
       //public static const ID_OnInstanceCreated:int = IdPool.EventId_169;
       
-      //public static const ID_OnInstanceStatusChanged:int = IdPool.EventId_169;
       
-      //public static const ID_OnServerError:int = IdPool.EventId_169; // need an API: GetErrorDebugInfo (errorId)
+      //public static const ID_OnInstanceRestarted:int = IdPool.EventId_169;
       
-      public static const ID_OnMultiplePlayerInstanceSeatsInfoChanged:int = IdPool.EventId_168; //       
+      //public static const ID_OnInstanceEnterPlayingPhase:int = IdPool.EventId_169;
       
-      //public static const ID_OnPlayerActionData   :int = IdPool.EventId_169; //       
+      public static const ID_OnMultiplePlayerInstanceInfoChanged      :int = IdPool.EventId_167; //       
+      
+      public static const ID_OnMultiplePlayerInstanceChannelMessage   :int = IdPool.EventId_168; //       
 
+      public static const ID_OnError                                  :int = IdPool.EventId_169; // need an API: GetErrorDebugInfo (errorId)
+      
    // ================================
       
    }

@@ -1319,16 +1319,23 @@ package viewer {
                               ClearCookie : ClearCookie
                   },
                   mLibService : {
-                              MultiplePlayer_GetInstanceInfo: MultiplePlayer_GetInstanceInfo, 
-                              MultiplePlayer_CreateInstanceDefine: MultiplePlayer_CreateInstanceDefine, 
-                              MultiplePlayer_CreateInstanceChannelDefine: MultiplePlayer_CreateInstanceChannelDefine, 
-                              MultiplePlayer_ReplaceInstanceChannelDefine: MultiplePlayer_ReplaceInstanceChannelDefine, 
-                              MultiplePlayer_JoinNewInstance: MultiplePlayer_JoinNewInstance, // v2.06
-                              MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06
-                              MultiplePlayer_SendChannelMessage: MultiplePlayer_SendChannelMessage, // v2.06
                               //SetMultiplePlayerInstanceInfoShown: SetMultiplePlayerInstanceInfoShown, // v2.06
                               
-                              SubmitKeyValue: SubmitKeyValue
+                              MultiplePlayer_CreateInstanceDefine: MultiplePlayer_CreateInstanceDefine, // v2.06
+                              MultiplePlayer_CreateInstanceChannelDefine: MultiplePlayer_CreateInstanceChannelDefine, // v2.06
+                              MultiplePlayer_ReplaceInstanceChannelDefine: MultiplePlayer_ReplaceInstanceChannelDefine, // v2.06
+                              
+                              MultiplePlayer_JoinNewInstance: MultiplePlayer_JoinNewInstance, // v2.06
+                              MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06
+                              
+                              MultiplePlayer_SendChannelMessage: MultiplePlayer_SendChannelMessage, // v2.06
+                              
+                              MultiplePlayer_GetGameInstanceBasicInfo: MultiplePlayer_GetGameInstanceBasicInfo, // v2.06
+                              MultiplePlayer_GetGameInstanceSeatInfo: MultiplePlayer_GetGameInstanceSeatInfo, // v2.06
+                              MultiplePlayer_GetGameInstanceChannelSeatInfo: MultiplePlayer_GetGameInstanceChannelSeatInfo, // v2.06
+                              
+                              // ...
+                              SubmitKeyValue: SubmitKeyValue // v2.00 ?
                   }
                };
             }

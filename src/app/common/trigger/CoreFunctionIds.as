@@ -103,8 +103,8 @@ package common.trigger {
       public static const ID_IsGameInstanceInPlayingPhase:int           = IdPool.CoreApiId_566; // from v2.06
       public static const ID_GetGameInstanceNumberOfSeats:int           = IdPool.CoreApiId_570; // from v2.06
       public static const ID_GetMySeatIndexInGameInstance:int           = IdPool.CoreApiId_574; // from v2.06
-      public static const ID_GetGameInstanceSeatPlayerName:int          = IdPool.CoreApiId_568; // from v2.06
-      public static const ID_IsGameInstanceChannelSeatEnabled:int           = IdPool.CoreApiId_575; // from v2.06
+      public static const ID_GetGameInstanceSeatInfo:int          = IdPool.CoreApiId_568; // from v2.06
+      public static const ID_GetGameInstanceChannelSeatInfo:int           = IdPool.CoreApiId_575; // from v2.06
       
       //public static const ID_GameInstanceSendSignal:int           = IdPool.CoreApiId_569;
 

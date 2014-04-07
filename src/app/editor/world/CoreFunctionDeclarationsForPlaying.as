@@ -505,7 +505,7 @@ package editor.world {
                      ]
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Player Action Data", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Channel Message", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),

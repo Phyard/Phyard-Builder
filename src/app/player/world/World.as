@@ -996,12 +996,6 @@ package player.world {
             HandleEventById (CoreEventIds.ID_OnWorldBeforeUpdating);
 
          //-----------------------------
-         // notify multiple player instance changed
-         //-----------------------------
-            
-            UpdateMultiplePlayerInstance ();
-            
-         //-----------------------------
          // update physics
          //-----------------------------
             

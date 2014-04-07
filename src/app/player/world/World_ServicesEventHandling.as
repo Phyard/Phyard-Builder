@@ -1,75 +1,31 @@
 
 //==========================================
-// update multiple player instance
-//==========================================
-
-   public function UpdateMultiplePlayerInstance ():void
-   {
-      //if (mConnectionId
-      
-      HandleMultiplePlayerInstanceEvents ();
-   }
-
-//==========================================
-// Data ...
-//==========================================
-   
-   // to cache GlobalSocketMessage and GameInstanceChanged events in Viewer
-   
-   //private function GetFullGameId (localGameId:String):String
-   //{
-   //   var fullGameId:String = GetWorldKey ();
-   //   if (localGameId != null)
-   //   {
-   //      localGameId = TextUtil.TrimString (localGameId);
-   //      if (localGameId.length > 0)
-   //      {
-   //         fullGameId = fullGameId + "/" + localGameId;
-   //      }
-   //   }
-   //   
-   //   return fullGameId;
-   //}
-
-//==========================================
-// Events ...
-//==========================================
-   
-   private var mIsMultiplePlayerInstanceChanged:Boolean = false;
-   
-   private function HandleMultiplePlayerInstanceEvents ():void
-   {
-      if (mIsMultiplePlayerInstanceChanged)
-      {
-         mIsMultiplePlayerInstanceChanged = false;
-         
-         // ...
-         
-         //var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2);
-         //var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_MultiplePlayerInstance), mMultiplePlayerInstance); //, valueSource1);
-         //var valueSourceList:Parameter = valueSource0;
-         
-         HandleEventById (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged, null);
-      }
-   }
-
-//==========================================
 // callback for viewer
 //==========================================
    
-   public function OnMultiplePlayerEvent (params:Object):Boolean
+   public function OnMultiplePlayerEvent (eventType:String, params:Object):Boolean
    {
-      switch (params.mEventType)
+      switch (eventType)
       {
-         case "OnGameInstanceSeatsInfoChanged":
+         case "OnGameInstanceInfoChanged":
+         {
+            RegisterCachedSystemEvent ([CachedEventType_General, mEventHandlersByTypes [CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged], null]);
             break;
+         }
+         case "OnMultiplePlayerEvent":
+         {
+            var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kByteArrayClassDefinition, params.mMessageData, null);
+            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, params.mSeatIndex, valueSource2);
+            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, params.mChannelIndex, valueSource1);
+
+            RegisterCachedSystemEvent ([CachedEventType_General, mEventHandlersByTypes [CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage], valueSource0]);
+            break;
+         }
          default:
          {
             return false;
          }
       }
-      
-      mIsMultiplePlayerInstanceChanged = true;
       
       return true;
    }

@@ -299,6 +299,8 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
       if (mySeatIndex < 0 || mySeatIndex >= numSeats)
          return;
       
+      mMultiplePlayerInstanceInfo.mIsServerLoggedIn = true;
+      
       mMultiplePlayerInstanceInfo.mNumPlayedGames = numPlayedGames;
       mMultiplePlayerInstanceInfo.mNumSeats = numSeats;
       mMultiplePlayerInstanceInfo.mMySeatIndex = mySeatIndex;
@@ -308,6 +310,9 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
       mMultiplePlayerInstanceInfo.mIsSeatsConnected = new Array (numSeats);
       
       mMultiplePlayerInstanceInfo.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Pending;
+      
+      // ...
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
    }
    
    private function SetInstanceCurrentPhase (phase:int):void
@@ -324,6 +329,9 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
       }
       
       mMultiplePlayerInstanceInfo.mCurrentPhase = phase;
+      
+      // ...
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
    }
    
    private function SetSeatBasicInfo (seatIndex:int, playerName:String):void
@@ -337,6 +345,9 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
          playerName = "";
       
       mMultiplePlayerInstanceInfo.mSeatsPlayerName [seatIndex] = playerName;
+      
+      // ...
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
    }
    
    private function SetSeatDanymicInfo (seatIndex:int, lastActiveTime:int, isConnected:Boolean):void
@@ -350,6 +361,9 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
       
       mMultiplePlayerInstanceInfo.mSeatsLastActiveTime [seatIndex] = lastActiveTime;
       mMultiplePlayerInstanceInfo.mIsSeatsConnected [seatIndex] = isConnected;
+      
+      // ...
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
    }
    
    private function SetChannelConstInfo (channelIndex:int, mode:int, timeoutX8:int):void
@@ -377,6 +391,9 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
 
       channelInfo.mChannelMode = mode;
       channelInfo.mTurnTimeoutMilliseconds = timeoutX8 * 125.0;
+      
+      // ...
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
    }
    
    // SetChannelConstInfo muse be called before this function.
@@ -401,11 +418,25 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
       channelInfo.mIsSeatsEnabled [seatIndex] = isSeatEnabled;
       channelInfo.mIsSeatsEnabled_Predicted [seatIndex] = isSeatEnabled;
       channelInfo.mSeatsLastEnableTime [seatIndex] = enabledTime;
+      
+      // ...
+      if (mWorldDesignProperties != null)
+      {
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
+      }
    }
    
-   private function OnInstanceChannelMessage (channelIndex:int, senderSeatIndex:int, messagesData:ByteArray):void
+   private function OnInstanceChannelMessage (channelIndex:int, senderSeatIndex:int, messageData:ByteArray):void
    {
-      //mWorldDesignProperties.OnMultiplePlayerServerMessage ("OnGameInstanceSeatsInfoChanged");
+      if (mWorldDesignProperties != null)
+      {
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnMultiplePlayerEvent", 
+                                                       {
+                                                          mChannelIndex : channelIndex,
+                                                          mSeatIndex : senderSeatIndex,
+                                                          mMessageData : messageData
+                                                       });
+      }
    }
    
 //======================================================

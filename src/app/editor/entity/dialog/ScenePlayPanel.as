@@ -240,11 +240,15 @@ package editor.entity.dialog {
          }
       }
       
-      private static function TraceError (error:Error):void
+      private static function TraceError (error:Error, dontThrowIt:Boolean = false):void
       {
          if (Capabilities.isDebugger)
          {
             trace (error.getStackTrace ());
+            
+            if (dontThrowIt)
+               return;
+            
             throw error;
          }
       }
@@ -527,8 +531,15 @@ package editor.entity.dialog {
       }
       
       private function DestroySimulatedServers ():void
-      {         
-         CloseInstance ();
+      {
+         try
+         {
+            CloseInstance ();
+         }
+         catch (error:Error)
+         {  
+            TraceError (error);
+         }
          
          SetNumMultiplePlayers (0);
       }

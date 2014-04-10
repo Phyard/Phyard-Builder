@@ -1030,7 +1030,9 @@ package common.trigger {
                   );
                   
          RegisterCoreDeclaration (CoreFunctionIds.ID_ByteArrayStream_Create,
-                     null,
+                     [
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                     ],
                      [
                         [CoreClassIds.ValueType_ByteArrayStream,       null],
                      ]

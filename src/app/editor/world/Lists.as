@@ -162,8 +162,8 @@ package editor.world {
             {label:"Byte (8bits integer)", data:CoreClassIds.NumberTypeDetail_Int8Number},
             {label:"Short (16bits integer)", data:CoreClassIds.NumberTypeDetail_Int16Number},
             {label:"Int (32bits integer)", data:CoreClassIds.NumberTypeDetail_Int32Number},
-            {label:"Double Float (64bits float)", data:CoreClassIds.NumberTypeDetail_DoubleNumber},
             {label:"Float (32bits float)", data:CoreClassIds.NumberTypeDetail_FloatNumber},
+            {label:"Double Float (64bits float)", data:CoreClassIds.NumberTypeDetail_DoubleNumber},
          ];
          
       private static var _mMultiplePlayerInstanceNumberOfPlayersList:Array = null;

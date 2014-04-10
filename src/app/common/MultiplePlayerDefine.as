@@ -30,6 +30,8 @@ package common {
       public static const InstanceChannelMode_Free:int = 0; // don't change the value, see RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine)
       public static const InstanceChannelMode_Chess:int = 1;
       public static const InstanceChannelMode_WeGo:int = 2;
+      //public static const InstanceChannelMode_WeGoNoHolding:int = 3;
+      //public static const InstanceChannelMode_Vote:int = 4;
       
       // channel seat policy
       
@@ -45,6 +47,15 @@ package common {
       //public static const PolicyOfChannelMessageForwarding_WeGo:int = 1;
       
 //===========================================================================
+// 
+//===========================================================================
+      
+      public static const MaxMessageDataLengthToHoldReally:int = 128;
+      
+      public static const MessageEncryptionMethod_DoNothing:int = 0;
+      public static const MessageEncryptionMethod_SwapRollShift:int = 1;
+      
+//===========================================================================
 // server messages
 //===========================================================================
       
@@ -57,35 +68,40 @@ package common {
       
       public static const ServerMessageType_Error:int                   = 0x0500;
       
-      public static const ServerMessageType_InstanceServerInfo:int      = 0x1000;
+      public static const ServerMessageType_InstanceServerInfo:int             = 0x1000;
       
-      public static const ServerMessageType_InstanceBasicInfo:int       = 0x3000;
-      public static const ServerMessageType_InstanceCurrentPhase:int    = 0x3100;
-      public static const ServerMessageType_SeatBasicInfo:int           = 0x3200;
-      public static const ServerMessageType_SeatDynamicInfo:int         = 0x3300;
-      public static const ServerMessageType_AllChannelsConstInfo:int    = 0x3400;
-      public static const ServerMessageType_ChannelSeatInfo:int         = 0x3500;
+      public static const ServerMessageType_InstanceBasicInfo:int              = 0x3000;
+      public static const ServerMessageType_InstanceCurrentPhase:int           = 0x3100;
+      public static const ServerMessageType_SeatBasicInfo:int                  = 0x3200;
+      public static const ServerMessageType_SeatDynamicInfo:int                = 0x3300;
+      public static const ServerMessageType_AllChannelsConstInfo:int           = 0x3400;
+      public static const ServerMessageType_ChannelSeatInfo:int                = 0x3500;
       
-      public static const ServerMessageType_ChannelMessage:int          = 0x5000;
+      public static const ServerMessageType_ChannelMessage:int                 = 0x5000;
+      public static const ServerMessageType_ChannelMessageEncrpted:int         = 0x5100;
+      public static const ServerMessageType_ChannelMessageEncrptionCiphers:int = 0x5200;
       
 //===========================================================================
 // client messages
 //===========================================================================
       
-      public static const ClientMessageDataFormatVersion:int = 0;
+      public static const ClientMessageDataFormatVersion:int = 0x0000; // next 0x0010
       
       public static const ClientMessageType_Ping:int = 0x00;
       public static const ClientMessageType_Pong:int = 0x01;
       
-      public static const ClientMessageType_CreateInstance:int         = 0x10;
-      public static const ClientMessageType_JoinRandomInstance:int     = 0x11;
-      public static const ClientMessageType_JoinInstanceById:int       = 0x12; // todo
-      public static const ClientMessageType_GetPendingInstances:int    = 0x13; // todo
+      public static const ClientMessageType_CreateInstance:int              = 0x10;
+      public static const ClientMessageType_JoinRandomInstance:int          = 0x11;
+      public static const ClientMessageType_JoinInstanceById:int            = 0x12; // todo
+      public static const ClientMessageType_GetPendingInstances:int         = 0x13; // todo
       
-      public static const ClientMessageType_LoginInstanceServer:int    = 0x30;
-      public static const ClientMessageType_ExitCurrentInstance:int    = 0x31;
-      public static const ClientMessageType_ChannelMessage:int         = 0x32;
-      public static const ClientMessageType_SignalRestartInstance:int  = 0x33; // todo
+      public static const ClientMessageType_LoginInstanceServer:int         = 0x30;
+      public static const ClientMessageType_ExitCurrentInstance:int         = 0x31;
+      
+      public static const ClientMessageType_ChannelMessage:int              = 0x60;
+      public static const ClientMessageType_ChannelMessageWithEncrption:int = 0x61;
+      
+      public static const ClientMessageType_SignalRestartInstance:int       = 0x70; // todo
       
 //===========================================================================
 // client messages

@@ -977,7 +977,6 @@ package player.trigger {
       
       public static function CreateNewGameInstanceChannelDefine (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {  
-         valueSource = valueSource.mNextParameter;
          var channelMode:int = int (valueSource.EvaluateValueObject ());
          
          valueSource = valueSource.mNextParameter;
@@ -2276,7 +2275,17 @@ package player.trigger {
       
       public static function CreateByteArrayStream (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (new ByteArray ());
+         var data:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+         
+         var stream:ByteArray = new ByteArray ();
+         
+         if (data != null)
+         {
+            stream.writeBytes (data, 0, data.length);
+            stream.position = 0;
+         }
+         
+         valueTarget.AssignValueObject (stream);
       }
       
       public static function ByteArrayStreamGetByteArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2309,7 +2318,7 @@ package player.trigger {
             stream.writeBytes (data, 0, data.length);
             stream.position = 0;
          }
-         
+ 
          streamSource.AssignValueObject (stream); // yes, here is not valueTarget
       }
       
@@ -2446,6 +2455,7 @@ package player.trigger {
          do
          {
             var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
+            
             
             valueSource = valueSource.mNextParameter;
             var valueType:int = valueSource.EvaluateValueObject () as int;

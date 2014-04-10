@@ -61,7 +61,6 @@
       
       if (mCurrentJointInstanceRequestData != null)
       {
-trace ("111");
          if (mJoinInstanceFrequencyStat.Hit (getTimer ()))
          {
             mCurrentJointInstanceRequestData.position = 0;
@@ -74,14 +73,16 @@ trace ("111");
          return;
       }
       
-      if (mNumCachedClientMessages > 0)
+      if (GetNumCachedClientMessages () > 0)
       {
-trace ("222");
          if (mClientMessagesFrequencyStat.Hit (getTimer ()))
          {
-            mCachedClientMessagesData.position = 0;
+            var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
             
-            SendMultiplePlayerClientMessagesToInstanceServer (mCachedClientMessagesData);
+            var dataToSend:ByteArray = new ByteArray ();
+            dataToSend.writeBytes (cachedMessagesData, 0, cachedMessagesData.length);
+            dataToSend.position = 0;
+            SendMultiplePlayerClientMessagesToInstanceServer (dataToSend);
             
             ClearCachedClientMessages ();
          }
@@ -252,12 +253,14 @@ trace ("222");
             mSeatsLastActiveTime : null,
             mIsSeatsConnected : null,
             
-            mChannelsInfo : null
+            mChannelsInfo : null,
                      // mChannelMode
                      // mTurnTimeoutMilliseconds // milliseconds, no X8
                      // mIsSeatsEnabled []
                      // mIsSeatsEnabled_Predicted []
                      // mSeatsLastEnableTime []
+   
+            mPendingEncryptedMessages : null // new Dictionary ()
    };
    
    private function IsInstanceServerInfoRetrieved ():Boolean
@@ -279,7 +282,7 @@ trace ("222");
    
    private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceId:String, connectionId:String):void
    {
-trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instance id = " + instanceId + ", connectionId = " + connectionId);
+//trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instance id = " + instanceId + ", connectionId = " + connectionId);
 
       mMultiplePlayerInstanceInfo.mServerAddress = serverAddress;
       mMultiplePlayerInstanceInfo.mServerPort = serverPort;
@@ -321,11 +324,15 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
             && phase == MultiplePlayerDefine.InstancePhase_Playing)
       {
          mMultiplePlayerInstanceInfo.mChannelsInfo = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
+         
+         mMultiplePlayerInstanceInfo.mPendingEncryptedMessages = new Dictionary ();
       }
       else if (mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing 
             && phase != MultiplePlayerDefine.InstancePhase_Playing)
       {
          mMultiplePlayerInstanceInfo.mChannelsInfo = null;
+         
+         mMultiplePlayerInstanceInfo.mPendingEncryptedMessages = null;
       }
       
       mMultiplePlayerInstanceInfo.mCurrentPhase = phase;
@@ -439,6 +446,67 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
       }
    }
    
+   private function OnInstanceChannelMessageEncrpted (encryptionIndex:int, encryptedMessageData:ByteArray):void
+   {
+      if (mMultiplePlayerInstanceInfo.mPendingEncryptedMessages == null)
+         return;
+      
+      if (encryptedMessageData == null)
+         return;
+      
+      mMultiplePlayerInstanceInfo.mPendingEncryptedMessages [encryptionIndex] = encryptedMessageData;
+   }
+   
+   private function OnInstanceChannelMessageEncrptionCiphers (channelIndex:int, seatIndex:int, messageEncryptionIndex:int, messageEncryptionMethod:int, cipherData:ByteArray):void
+   {
+      if (mMultiplePlayerInstanceInfo.mPendingEncryptedMessages == null)
+         return;
+      
+      var messageData:ByteArray = mMultiplePlayerInstanceInfo.mPendingEncryptedMessages [messageEncryptionIndex];
+      if (messageData == null)
+         return;
+      
+      delete mMultiplePlayerInstanceInfo.mPendingEncryptedMessages [messageEncryptionIndex];
+      
+      var validData:Boolean = false;
+      
+      do
+      {
+         if (messageEncryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift)
+         {
+            var seed:uint = uint (cipherData.readInt ());
+            
+            Decryption_SwapRollShift (messageData, seed);
+            
+            validData = true;
+            
+            break;
+         }
+      }
+      while (false);
+      
+      if (validData)
+      {
+         OnInstanceChannelMessage (channelIndex, seatIndex, messageData);
+      }
+   }
+   
+//======================================================
+// 
+//======================================================
+   
+   private static function Encryption_SwapRollShift (messageData:ByteArray, randomSeed:uint):void
+   {
+      // only swap the beginning bytes.
+      
+   }
+   
+   private static function Decryption_SwapRollShift (messageData:ByteArray, randomSeed:uint):void
+   {
+      // only swap the beginning bytes.
+      
+   }
+   
 //======================================================
 // 
 //======================================================
@@ -456,11 +524,29 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
    
    //---------
    
-   private var mCachedClientMessagesData:ByteArray = new ByteArray ();
+   private var mCachedClientMessagesData:ByteArray = null;
    private var mNumCachedClientMessages:int = 0;
+   
+   private function GetNumCachedClientMessages ():int
+   {
+      return mNumCachedClientMessages;
+   }
+   
+   private function GetCachedClientMessagesData ():ByteArray
+   {
+      if (mCachedClientMessagesData == null)
+      {
+         mCachedClientMessagesData = new ByteArray ();
+         ClearCachedClientMessages ();
+      }
+      
+      return mCachedClientMessagesData;
+   }
    
    private function ClearCachedClientMessages ():void
    {
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+      
       mCachedClientMessagesData.length = 0;
       mNumCachedClientMessages = 0;
       
@@ -515,7 +601,9 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
    {
       // ...
       
-      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Ping);
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+      
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Ping);
       
       // ...
       
@@ -525,22 +613,27 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
    private function WriteMessage_Pong ():void
    {
       // ...
-      
-      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Pong);
+
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Pong);
       
       // ...
       
       UpdateCachedClientMessagesHeader ();
+
    }
    
    private function WriteMessage_LoginInstanceServer ():void
    {
       // ...
       
-      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_LoginInstanceServer);
-      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
-      mCachedClientMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mID);
-      mCachedClientMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+      
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_LoginInstanceServer);
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
+      cachedMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mID);
+      cachedMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
       
       // ...
       
@@ -551,25 +644,73 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
    {
       // ...
       
-      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ExitCurrentInstance);
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+      
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ExitCurrentInstance);
       
       // ...
       
       UpdateCachedClientMessagesHeader ();
    }
    
-   private function WriteMessage_ChannelMessage (channelIndex:int, messageData:ByteArray):void
+   private function WriteMessage_ChannelMessage (channelIndex:int, messageData:ByteArray, needHolding:Boolean):void
    {
+      var encryptionMethod:int = -1;
+      
+      //if (needHolding && messageData != null && messageData.length > MultiplePlayerDefine.MaxMessageDataLengthToHoldReally)
+      {
+         // too long for server to hold, so we encrypt the data here, the server just holds the encryption ciphers.
+         
+         encryptionMethod = MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift;
+      }
+      
       // ...
       
-      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ChannelMessage);
-      mCachedClientMessagesData.writeByte (channelIndex);
-      if (messageData == null) // pass
-         mCachedClientMessagesData.writeInt (-1);
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+      
+      if (encryptionMethod >= 0)
+      {
+         cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ChannelMessageWithEncrption);
+         
+         // .
+         
+         var cipherData:ByteArray = new ByteArray ();
+         if (encryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift)
+         {
+            var seed:uint = uint (Math.floor (Math.random () * (2.0 + 0x7FFFFFFF + 0x7FFFFFFF)));
+            
+            // ...
+            
+            cipherData.writeInt (int (seed));
+            
+            // ...
+            
+            Encryption_SwapRollShift (messageData, seed);
+         }
+         
+         // .
+         
+         cachedMessagesData.writeByte (encryptionMethod);
+         cachedMessagesData.writeByte (cipherData.length);
+         cachedMessagesData.writeBytes (cipherData, 0, cipherData.length);
+      }
       else
       {
-         mCachedClientMessagesData.writeInt (messageData.length & 0x7FFFFFFF);
-         mCachedClientMessagesData.writeBytes (messageData, 0, messageData.length);
+         cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ChannelMessage);
+      }
+      
+      // ...
+      
+      cachedMessagesData.writeByte (channelIndex);
+      
+      // ...
+      
+      if (messageData == null) // pass
+         cachedMessagesData.writeInt (-1);
+      else
+      {
+         cachedMessagesData.writeInt (messageData.length & 0x7FFFFFFF);
+         cachedMessagesData.writeBytes (messageData, 0, messageData.length);
       }
       
       // ...
@@ -581,7 +722,9 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
    {
       // ...
       
-      mCachedClientMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_SignalRestartInstance);
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+      
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_SignalRestartInstance);
       
       // ...
       
@@ -771,7 +914,6 @@ trace ("999 SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + ser
          
          mCurrentJointInstanceRequestData = messageData;
          
-trace ("000");
          // ...
          
          cached = true;
@@ -792,9 +934,29 @@ trace ("000");
       var channelIndex:int = params.mChannelIndex;
       var messageData:ByteArray = params.mMessageData;
       
-      WriteMessage_ChannelMessage (channelIndex, messageData);
+      var result:Boolean = false;
+      do
+      {
+         if (mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
+            break;
+         if (mMultiplePlayerInstanceInfo.mMySeatIndex < 0)
+            break;
+         if (channelIndex < 0 || channelIndex >= MultiplePlayerDefine.MaxNumberOfInstanceChannels)
+            break;
+         if (mMultiplePlayerInstanceInfo.mChannelsInfo == null)
+            break;
+         
+         var channelInfo:Object = mMultiplePlayerInstanceInfo.mChannelsInfo [channelIndex];
+         if (channelInfo == null)
+            break;
+            
+         WriteMessage_ChannelMessage (channelIndex, messageData, channelInfo.mChannelMode == MultiplePlayerDefine.InstanceChannelMode_WeGo);
+         
+         result = true;
+      }
+      while (false);
       
-      return {mResult: true};
+      return {mResult: result};
    }
    
 //======================================================
@@ -862,10 +1024,14 @@ trace ("000");
             //if (numMessages > )
             //   ...
             
+//trace (">>>>> get server messages, dataLength = " + dataLength + ", numMessages = " + numMessages);
             for (var msgIndex:int = 0; msgIndex < numMessages; ++ msgIndex)
             {
+//trace (">>>> msgIndex = " + msgIndex + ", messagesData.position = " + messagesData.position + " / " + messagesData.length);
+
                var serverMessageType:int = messagesData.readShort ();
-               
+            
+//trace (">> serverMessageType = " + serverMessageType);   
                switch (serverMessageType)
                {
                // ...
@@ -958,7 +1124,7 @@ trace ("000");
                      var seatInfoEnabledTime:int = messagesData.readInt ();
                      var seatInfoIsSeatEnabled:Boolean = (seatInfoEnabledTime & 0x80000000) != 0;
                      seatInfoEnabledTime &= 0x7FFFFFFF;
-                        
+                     
                      SetChannelDynamicInfo (seatInfoChannelIndex, seatInfoSeatIndex, seatInfoEnabledTime, seatInfoIsSeatEnabled);
                      
                      break;
@@ -969,17 +1135,67 @@ trace ("000");
                      var messageSeatIndex:int = messagesData.readByte ();
                      var channelMessageDataLength:int = messagesData.readInt ();
                      var channelMessageData:ByteArray = null;
-                     if (channelMessageDataLength != -1)
+
+                     if (channelMessageDataLength >= 0)
                      {
                         channelMessageDataLength &= 0x7FFFFFFF;
                         channelMessageData = new ByteArray ();
-                        messagesData.readBytes (channelMessageData, 0, channelMessageDataLength);
+
+                        if (channelMessageDataLength > 0)
+                        {
+                           messagesData.readBytes (channelMessageData, 0, channelMessageDataLength);
+                        }
                      }
                      
                      OnInstanceChannelMessage (mesageChannelIndex, messageSeatIndex, channelMessageData);
                      
                      break;
-                  }  
+                  }
+                  case MultiplePlayerDefine.ServerMessageType_ChannelMessageEncrpted:
+                  {
+                     var encryptionIndex:int = messagesData.readInt () & 0x7FFFFFFF;
+                     
+                     var encryptedMessageDataLength:int = messagesData.readInt ();
+                     
+                     var encryptedMessageData:ByteArray = null;
+                     
+                     if (encryptedMessageDataLength >= 0)
+                     {
+                        encryptedMessageDataLength &= 0x7FFFFFFF;
+                        encryptedMessageData = new ByteArray ();
+
+                        if (encryptedMessageDataLength > 0)
+                        {
+                           messagesData.readBytes (encryptedMessageData, 0, encryptedMessageDataLength);
+                        }
+                     }
+                     
+                     OnInstanceChannelMessageEncrpted (encryptionIndex, encryptedMessageData);
+                     
+                     break;
+                  }
+                  case MultiplePlayerDefine.ServerMessageType_ChannelMessageEncrptionCiphers:
+                  {  
+                     var cipherMesageChannelIndex:int = messagesData.readByte ();
+                     var cipherMessageSeatIndex:int = messagesData.readByte ();
+                     
+                     var messageEncryptionIndex:int = messagesData.readInt ();
+                     
+                     var messageEncryptionMethod:int = messageEncryptionIndex & 0xFF;
+                     messageEncryptionIndex = (messageEncryptionIndex >> 8) & 0xFFFFFF;
+                     
+                     var ciphereDataLength:int = messagesData.readByte () & 0xFF;
+                     var cipherData:ByteArray = new ByteArray ();
+
+                     if (ciphereDataLength > 0)
+                     {
+                        messagesData.readBytes (cipherData, 0, ciphereDataLength);
+                     }
+                     
+                     OnInstanceChannelMessageEncrptionCiphers (cipherMesageChannelIndex, cipherMessageSeatIndex, messageEncryptionIndex, messageEncryptionMethod, cipherData);
+                     
+                     break;
+                  }
                   default:
                   {
                      break;

@@ -538,7 +538,7 @@ package editor.entity.dialog {
          }
          catch (error:Error)
          {  
-            TraceError (error);
+            TraceError (error, true);
          }
          
          SetNumMultiplePlayers (0);
@@ -626,18 +626,24 @@ package editor.entity.dialog {
          messagesData.position = backupPos;
       }
       
-      private function FlushInstanceSeatClientStream (seatIndex:int):void
+      // for scheduler server, designViewer != null
+      // for instance server, designViewer == null
+      private function FlushInstanceSeatClientStream (seatIndex:int, designViewer:Viewer = null):void
       {
-         var designViewer:Viewer = mCurrentInstance.mSeatsViewer [seatIndex];
+         if (designViewer == null)
+            designViewer = mCurrentInstance.mSeatsViewer [seatIndex];
          
          if (designViewer != null)
          {
             var messagesData:ByteArray = GetInstanceSeatClientStream (seatIndex);
             
-            var dataToSend:ByteArray = new ByteArray ();
-            dataToSend.writeBytes (messagesData, 0, messagesData.length);
-            dataToSend.position = 0;
-            designViewer.OnMultiplePlayerServerMessages (dataToSend);
+            if (messagesData.length > mNumBytesInHeader)
+            {
+               var dataToSend:ByteArray = new ByteArray ();
+               dataToSend.writeBytes (messagesData, 0, messagesData.length);
+               dataToSend.position = 0;
+               designViewer.OnMultiplePlayerServerMessages (dataToSend);
+            }
          }
          
          ClearInstanceSeatClientStream (seatIndex);
@@ -679,14 +685,16 @@ package editor.entity.dialog {
                   
                   for (var iSeat:int = 0; iSeat < numSeats; ++ iSeat)
                   {
-                     if (channel.mIsSeatsEnabled [iSeat] == true)
+                     if (channel.mIsSeatsEnabled [iSeat] == true && mCurrentInstance.mSeatsViewer [iSeat] != null)
                      {
                         if ( (nowTimer - channel.mSeatsLastEnabledTime [iSeat]) > channemTurnTimeout)
                         {
                            // pass
                            OnChannelMessage (mCurrentInstance.mSeatsViewer [iSeat], 
                                              channelIndex, 
-                                             null
+                                             null, // message
+                                             -1, // encryption method 
+                                             null // cipher
                                              );
                         }
                      }
@@ -762,6 +770,8 @@ package editor.entity.dialog {
       
       private function ResetInstanceChannels ():void
       {
+         mCurrentInstance.mNextMessageEncryptionIndex = 0;
+         
          var numEnabledChannels:int = mCurrentInstance.mEnabledChannelIndexes.length;
          var timer:int = getTimer ();
          
@@ -779,6 +789,8 @@ package editor.entity.dialog {
                channel.mIsSeatsEnabled [seatIndex] = seatDefaultEnabled;
                channel.mSeatsLastEnabledTime [seatIndex] = timer;
                channel.mSeatsMessage [seatIndex] = null;
+               channel.mSeatsMessageEncryptionIndex [seatIndex] = -1;
+               channel.mSeatsMessageEncryptionMethod [seatIndex] = -1;
             }
             
             if (channel.mChannelMode == MultiplePlayerDefine.InstanceChannelMode_Chess)
@@ -832,13 +844,17 @@ package editor.entity.dialog {
             
             // ...
             
+            mNextMessageEncryptionIndex : 0, 
+            
             mEnabledChannelIndexes : enabledChannelIndexes,
             mChannels : new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels), // Channel Object
                               // mChannelMode
                               // mTurnTimeoutMilliseconds // milliseconds, not X8
                               // mIsSeatsEnabled [] boolean
-                              // mSeatsLastEnableTime [] int
+                              // mSeatsLastEnabledTime [] int
                               // mSeatsMessage [] string
+                              // mSeatsMessageEncryptionIndex [] int
+                              // mSeatsMessageEncryptionMethod [] int
             
             // voting and signal will be merged into channel
             //mVotings : new Array (MultiplePlayerDefine.MaxNumberOfInstanceVotings),
@@ -867,6 +883,8 @@ package editor.entity.dialog {
                   channel.mIsSeatsEnabled = new Array (numSeats);
                   channel.mSeatsLastEnabledTime = new Array (numSeats);
                   channel.mSeatsMessage = new Array (numSeats); // only useful for some modes
+                  channel.mSeatsMessageEncryptionIndex = new Array (numSeats); // only useful for some modes
+                  channel.mSeatsMessageEncryptionMethod = new Array (numSeats); // only useful for some modes
                   
                   continue;
                }
@@ -883,6 +901,15 @@ package editor.entity.dialog {
          SetNumMultiplePlayers (numSeats);
       }
       
+      private function GetNextMessageEncryptionIndex ():int
+      {
+         var index:int = mCurrentInstance.mNextMessageEncryptionIndex ++ ;
+         
+         mCurrentInstance.mNextMessageEncryptionIndex &= 0x00FFFFFF; // one byte reserved for encryption method, see WriteMessage_ChannelMessageEncryptionCiphers.
+         
+         return index;
+      }
+      
       // designViewer is used to determine seat index.
       // This method of determining index may be not good.
       private function JoinInstance (instance:Object, password:String, playerConnectionId:String, designViewer:Viewer):void
@@ -894,14 +921,10 @@ package editor.entity.dialog {
          if (viewerIndex < 0)
             return;
          
-trace ("888 playerConnectionId = " + playerConnectionId);
-
          if (playerConnectionId == null || playerConnectionId.length == 0)
             playerConnectionId = UUID.BuildRandomKey ();
          
          var seatIndex:int = mCurrentInstance.mSeatsPlayerConnectionID.indexOf (playerConnectionId);
-
-trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
 
          if (seatIndex != viewerIndex)
          {
@@ -918,8 +941,7 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
             mCurrentInstance.mSeatsLastActiveTime [seatIndex] = 0;
             mCurrentInstance.mSeatsLastPongTime [seatIndex] = 0;
             mCurrentInstance.mSeatsLastPingTime [seatIndex] = 0;
-            //mCurrentInstance.mSeatsViewer [seatIndex] = null; // will be confirmed in OnPlayerLoginInstanceServer.
-            mCurrentInstance.mSeatsViewer [seatIndex] = designViewer; // but to avoid null pointer in FlushInstanceSeatClientStream, we still ...
+            mCurrentInstance.mSeatsViewer [seatIndex] = null; // will be confirmed in OnPlayerLoginInstanceServer.
          }
          
          // ...
@@ -932,13 +954,13 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
          
          // ...
          
-         FlushInstanceSeatClientStream (seatIndex);
+         FlushInstanceSeatClientStream (seatIndex, designViewer);
       }
          
-      private function TryToTransitPhaseFromPendingToPlaying (writePhaseMessageIfTransitted:Boolean):void
+      private function TryToTransitPhaseFromPendingToPlaying (flushMessages:Boolean):Boolean
       {
          if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Pending)
-            return;
+            return false;
          
          var numSeats:int = mCurrentInstance.mNumSeats;
          var seatIndex:int;
@@ -948,7 +970,7 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
          {
             var connectionId:String = mCurrentInstance.mSeatsPlayerConnectionID [seatIndex];
             if (connectionId == null || connectionId.length == 0)
-               return;
+               return false;
             
             if (nowTimer - mCurrentInstance.mSeatsLastPongTime [seatIndex] > 15000)
             {
@@ -968,18 +990,23 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
                
                // ...
                
-               FlushInstanceSeatClientStream (seatIndex);
+               if (flushMessages)
+               {
+                  FlushInstanceSeatClientStream (seatIndex);
+               }
                
-               return;
+               return false;
             }
          }
          
          // ...
          
-         StartPlayingInstance (writePhaseMessageIfTransitted);
+         StartPlayingInstance (flushMessages);
+         
+         return true;
       }
       
-      private function StartPlayingInstance (writePhaseMessageIfTransitted:Boolean):void
+      private function StartPlayingInstance (flushMessages:Boolean):void
       {
          mCurrentInstance.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Playing;
          
@@ -989,25 +1016,33 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
          
          // ...
          
-         if (writePhaseMessageIfTransitted)
+         var numSeats:int = mCurrentInstance.mNumSeats;
+         var seatIndex:int;
+         
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
          {
-            var numSeats:int = mCurrentInstance.mNumSeats;
-            var seatIndex:int;
+            var connectionId:String = mCurrentInstance.mSeatsPlayerConnectionID [seatIndex];
+            if (connectionId == null || connectionId.length == 0)
+               return;
             
-            for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+            var messagesData:ByteArray = GetInstanceSeatClientStream (seatIndex);
+            
+            // ...
+            
+            WriteMessage_InstanceCurrentPhase (messagesData);
+            
+            UpdateInstanceSeatClientStreamHeader (seatIndex);
+            
+            // ...
+            
+            WriteMessage_AllChannelsConstInfo (messagesData);
+            
+            UpdateInstanceSeatClientStreamHeader (seatIndex);
+            
+            // ...
+            
+            if (flushMessages)
             {
-               var connectionId:String = mCurrentInstance.mSeatsPlayerConnectionID [seatIndex];
-               if (connectionId == null || connectionId.length == 0)
-                  return;
-               
-               var messagesData:ByteArray = GetInstanceSeatClientStream (seatIndex);
-               
-               WriteMessage_InstanceCurrentPhase (messagesData);
-               
-               UpdateInstanceSeatClientStreamHeader (seatIndex);
-               
-               // ...
-               
                FlushInstanceSeatClientStream (seatIndex);
             }
          }
@@ -1099,12 +1134,13 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
       {
          var channel:Object = mCurrentInstance.mChannels [channelIndex];
          
-         var enabledTime:int = 0x7FFFFFFF & (int (Math.round (channel.mSeatsLastEnableTime [seatIndex] * 8 / 1000)));
+         var enabledTime:int = 0x7FFFFFFF & (int (Math.round (channel.mSeatsLastEnabledTime [seatIndex] * 8 / 1000)));
          if (channel.mIsSeatsEnabled [seatIndex])
             enabledTime |= 0x80000000;
        
          dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_ChannelSeatInfo);
          dataBuffer.writeByte (channelIndex);
+         dataBuffer.writeByte (seatIndex);
          dataBuffer.writeInt (enabledTime);
       }
       
@@ -1118,8 +1154,47 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
             dataBuffer.writeInt (-1);
          else
          {
-            dataBuffer.writeInt (messageData.length & 0x7FFFFFFF);
-            dataBuffer.writeBytes (messageData);
+            var dataLength:int = messageData.length & 0x7FFFFFFF;
+            
+            dataBuffer.writeInt (dataLength);
+            dataBuffer.writeBytes (messageData, 0, dataLength);
+         }
+      }
+      
+      private function WriteMessage_ChannelMessageEncrypted (dataBuffer:ByteArray, encryptionIndex:int, encryptedMessageData:ByteArray):void
+      {
+         dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_ChannelMessageEncrpted);
+         
+         dataBuffer.writeInt (encryptionIndex);
+         
+         if (encryptedMessageData == null)
+            dataBuffer.writeInt (-1);
+         else
+         {
+            var dataLength:int = encryptedMessageData.length & 0x7FFFFFFF;
+            
+            dataBuffer.writeInt (dataLength);
+            dataBuffer.writeBytes (encryptedMessageData, 0, dataLength);
+         }
+      }
+      
+      private function WriteMessage_ChannelMessageEncryptionCiphers (dataBuffer:ByteArray, channelIndex:int, senderSeatIndex:int, encryptionIndex:int, encryptionMethod:int, encryptionCipherData:ByteArray):void
+      {
+         dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_ChannelMessageEncrptionCiphers);
+
+         dataBuffer.writeByte (channelIndex);
+         dataBuffer.writeByte (senderSeatIndex);
+         
+         dataBuffer.writeInt ((encryptionIndex << 8) | (encryptionMethod & 0xFF));
+         
+         if (encryptionCipherData == null) // can't be null
+            dataBuffer.writeByte (0);
+         else
+         {
+            var cipherDataLength:int = encryptionCipherData.length & 0xFF; // max 256
+            
+            dataBuffer.writeByte (cipherDataLength);
+            dataBuffer.writeBytes (encryptionCipherData, 0, cipherDataLength);
          }
       }
       
@@ -1144,13 +1219,9 @@ trace ("888 seatIndex = " + seatIndex + ", viewerIndex = " + viewerIndex);
       
       private function OnJoinRandomInstance (instanceDefine:Object, playerConnectionId:String, designViewer:Viewer):void
       {
-trace ("666");
-
          if (instanceDefine.mInstanceDefineData == null)
             return;
          
-trace ("777");
-
          var sameDefine:Boolean = false;
          
          if (mCurrentInstance != null)
@@ -1170,17 +1241,13 @@ trace ("777");
             }
          }
          
-trace ("888 sameDefine = " + sameDefine);
-         
          if (mCurrentInstance != null && sameDefine == false)
          {
-trace ("888 aaa");
             CloseInstance ();
          }
          
          if (mCurrentInstance == null)
          {
-trace ("888 bbb");
             CreateInstance (instanceDefine, "");
          }
          
@@ -1189,25 +1256,20 @@ trace ("888 bbb");
       
       private function OnPlayerLoginInstanceServer (designViewer:Viewer, instanceID:String, playerConnectionId:String, clientDataFormatVersion:int):void
       {
-trace ("999 aaa instanceID = " + instanceID + ", mCurrentInstance.mID = " + (mCurrentInstance == null ? null : mCurrentInstance.mID));
          if (mCurrentInstance == null || instanceID != mCurrentInstance.mID)
             return;
          
-trace ("999 bbb");
          if (playerConnectionId == null || playerConnectionId.length == 0)
             return;
          
-trace ("999 ccc");
          var newPlayerSeatIndex:int = mCurrentInstance.mSeatsPlayerConnectionID.indexOf (playerConnectionId);
          if (newPlayerSeatIndex < 0)
             return;
          
          // ...
          
-trace ("999 ddd");
          if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Pending)
          {
-trace ("999 eee");
             if (mCurrentInstance.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing)
             {
                // maybe disconnected and re-connect.
@@ -1227,13 +1289,6 @@ trace ("999 eee");
          
          // ...
          
-         // send seats info to all
-         //
-         // if instance.mLastStatus == pending && instance.mStatus == playing
-         //     send status change message to all
-         //     send instance channels info to all
-         // end if
-         
          var messagesData:ByteArray;
          
          // ...
@@ -1247,11 +1302,8 @@ trace ("999 eee");
          
          // ...
          
-trace ("999 fff, mCurrentInstance.mCurrentPhase = " + mCurrentInstance.mCurrentPhase);
-         
-         TryToTransitPhaseFromPendingToPlaying (false);
-         
-trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mCurrentPhase = " + mCurrentInstance.mCurrentPhase);
+         var transitted:Boolean = TryToTransitPhaseFromPendingToPlaying (false);
+            // if transitted, then the CurrentPhase message has already been sent.
          
          // ...
          
@@ -1262,9 +1314,12 @@ trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mC
             
             // ...
             
-            WriteMessage_InstanceCurrentPhase (messagesData);
-            
-            UpdateInstanceSeatClientStreamHeader (seatIndex);
+            if (! transitted)
+            {
+               WriteMessage_InstanceCurrentPhase (messagesData);
+               
+               UpdateInstanceSeatClientStreamHeader (seatIndex);
+            }
             
             // ...
             
@@ -1334,7 +1389,8 @@ trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mC
          TryToTransitPhaseFromPendingToPlaying (true);
       }
 
-      private function OnChannelMessage (designViewer:Viewer, channelIndex:int, theMessageData:ByteArray):void
+      // messageEncryptionMethod and messageCipherData are only valid for messages needing to hold.
+      private function OnChannelMessage (designViewer:Viewer, channelIndex:int, theMessageData:ByteArray, messageEncryptionMethod:int, messageCipherData:ByteArray):void
       {
          if (mCurrentInstance == null)
             return;
@@ -1403,11 +1459,26 @@ trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mC
             case MultiplePlayerDefine.InstanceChannelMode_WeGo:
             {
                var wegoMessages:Array = channel.mSeatsMessage;
+               var wegoMessageEncryptionIndexes:Array = channel.mSeatsMessageEncryptionIndex;
+               var wegoMessagesEncryptionMethod:Array = channel.mSeatsMessageEncryptionMethod;
+               
+               messageEncryptionMethod 
+               
                if (wegoMessages != null && wegoMessages [senderSeatIndex] == null)
                {
                   channel.mIsSeatsEnabled [senderSeatIndex] = false;
                   
-                  wegoMessages [senderSeatIndex] = theMessageData;
+                  if (messageEncryptionMethod >= 0)
+                  {
+                     wegoMessages [senderSeatIndex] = messageCipherData;
+                     wegoMessageEncryptionIndexes [senderSeatIndex] = GetNextMessageEncryptionIndex ();
+                     wegoMessagesEncryptionMethod [senderSeatIndex] = messageEncryptionMethod;
+                     
+                  }
+                  else
+                  {
+                     wegoMessages [senderSeatIndex] = theMessageData;
+                  }
                   
                   var allHaveSent:Boolean = true;
                   for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
@@ -1445,11 +1516,36 @@ trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mC
                   }
                   else
                   {
+                  
+                  // ...
+
+                     //for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+                     //{
+                     //   messagesData = GetInstanceSeatClientStream (seatIndex);
+                     //   
+                     //   WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, senderSeatIndex);
+                     //   
+                     //   UpdateInstanceSeatClientStreamHeader (seatIndex);
+                     //}
+                     
+                     // above is some info leaking.
+                     
+                     messagesData = GetInstanceSeatClientStream (senderSeatIndex);
+                     
+                     WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, senderSeatIndex);
+                     
+                     UpdateInstanceSeatClientStreamHeader (senderSeatIndex);
+                  }
+                  
+                  // ...
+                  
+                  if (messageEncryptionMethod >= 0)
+                  {
                      for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
                      {
                         messagesData = GetInstanceSeatClientStream (seatIndex);
                         
-                        WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, senderSeatIndex);
+                        WriteMessage_ChannelMessageEncrypted (messagesData, wegoMessageEncryptionIndexes [senderSeatIndex], theMessageData);
                         
                         UpdateInstanceSeatClientStreamHeader (seatIndex);
                      }
@@ -1465,7 +1561,10 @@ trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mC
                         
                         for (iSeat = 0; iSeat < numSeats; ++ iSeat)
                         {
-                           WriteMessage_ChannelMessage (messagesData, channelIndex, iSeat, wegoMessages [iSeat]);
+                           if (wegoMessageEncryptionIndexes [iSeat] >= 0)
+                              WriteMessage_ChannelMessageEncryptionCiphers (messagesData, channelIndex, iSeat, wegoMessageEncryptionIndexes [iSeat], wegoMessagesEncryptionMethod [iSeat], wegoMessages [iSeat]);
+                           else
+                              WriteMessage_ChannelMessage (messagesData, channelIndex, iSeat, wegoMessages [iSeat]);
                            
                            UpdateInstanceSeatClientStreamHeader (seatIndex);
                         }
@@ -1476,6 +1575,8 @@ trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mC
                      for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
                      {
                         wegoMessages [seatIndex] = null;
+                        wegoMessageEncryptionIndexes [seatIndex] = -1;
+                        wegoMessagesEncryptionMethod [seatIndex] = -1;
                      }
                   }
                }
@@ -1513,22 +1614,19 @@ trace ("999 newPlayerSeatIndex = " + newPlayerSeatIndex + ", mCurrentInstance.mC
       // don't change this name, 
       private function OnClientMessages (messagesData:ByteArray, designViewer:Viewer):void
       {
-trace ("333");
          try
          {
             var dataLength:int = messagesData.readInt ();
             //if (dataLength > )
             //   ...
-trace ("333, dataLength = " + dataLength);
+//trace (">>>, dataLength = " + dataLength + ", messagesData.length = " + messagesData.length);
             
             var numMessages:int = messagesData.readShort ();
             //if (numMessages > )
             //   ...
-trace ("333, numMessages = " + numMessages);
+//trace (">>>, numMessages = " + numMessages);
             
-            var msgIndex:int;
-            var messages:Array = new Array (numMessages); // ByteArrays
-            for (msgIndex = 0; msgIndex < numMessages; ++ msgIndex)
+            for (var msgIndex:int = 0; msgIndex < numMessages; ++ msgIndex)
             {
                var clientMessageType:int = messagesData.readShort ();
                
@@ -1536,7 +1634,10 @@ trace ("333, numMessages = " + numMessages);
                var connectionId:String;
                var clientDataFormatVersion:int;
                
-trace ("444 clientMessageType = " + clientMessageType);
+               var messageEncryptionMethod:int = -1;
+               var messageCipherData:ByteArray = null;
+               
+//trace (">>> clientMessageType = " + clientMessageType);
                switch (clientMessageType)
                {
                // ...
@@ -1598,19 +1699,32 @@ trace ("444 clientMessageType = " + clientMessageType);
                      
                      break;
                
+                  case MultiplePlayerDefine.ClientMessageType_ChannelMessageWithEncrption:
+                     
+                     messageEncryptionMethod = messagesData.readByte ();
+                     var messageCipherDataLength:int = messagesData.readByte () & 0xFF;
+                     messageCipherData = new ByteArray ();
+                     messagesData.readBytes (messageCipherData, 0, messageCipherDataLength);
+                     
+                     // no break here
+                     
                   case MultiplePlayerDefine.ClientMessageType_ChannelMessage:
                      
-                     var channelIndex:int = messagesData.readByte ();
-                     var channelMessageLength:int = messagesData.readInt ();
-                     var channelMessageData:ByteArray = null;
-                     if (channelMessageLength != -1)
+                     var messageChannelIndex:int = messagesData.readByte ();
+                     var messageChannelMessageLength:int = messagesData.readInt ();
+                     var messageChannelMessageData:ByteArray = null;
+                     
+                     if (messageChannelMessageLength != -1)
                      {
-                        channelMessageLength &= 0x7FFFFFFF;
-                        channelMessageData = new ByteArray ();
-                        messagesData.readBytes (channelMessageData, 0, channelMessageLength);
+                        messageChannelMessageLength &= 0x7FFFFFFF;
+                        messageChannelMessageData = new ByteArray ();
+                        if (messageChannelMessageLength > 0)
+                        {
+                           messagesData.readBytes (messageChannelMessageData, 0, messageChannelMessageLength);
+                        }
                      }
                      
-                     OnChannelMessage (designViewer, channelIndex, channelMessageData);
+                     OnChannelMessage (designViewer, messageChannelIndex, messageChannelMessageData, messageEncryptionMethod, messageCipherData);
                      
                      break;
                      

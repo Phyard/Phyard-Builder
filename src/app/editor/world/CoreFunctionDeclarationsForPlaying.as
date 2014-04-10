@@ -444,21 +444,21 @@ package editor.world {
                   );
          //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
          //            [
-         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
          //                    new VariableDefinitionString ("Password (max 30 chars, blank for public)", null, {mMaxLength: 30}),
          //            ],
          //            null
          //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package, "Join Game Instance Randomly", null, null,
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
                              //new VariableDefinitionBoolean ("Create New If No Availables"),
                      ],
                      null
                   );
          //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Game Instance By Instance ID", null, null,
          //            [
-         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define (null for default)"),
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
          //                    new VariableDefinitionString ("Instance ID"),
          //                    new VariableDefinitionString ("Password (if required)"),
          //            ],
@@ -1141,7 +1141,9 @@ package editor.world {
                   );
          
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_Create, bytearray_package, "Create Byte Array Stream", null, null,
-                     null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "The Byte Array (can be null)"),
+                     ],
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "Created Byte Array Stream"),
                      ]

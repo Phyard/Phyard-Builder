@@ -2293,7 +2293,7 @@ package player.trigger {
          var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
          
          var data:ByteArray;
-         if (stream == null) // should not
+         if (stream == null)
             data = null;
          else
          {

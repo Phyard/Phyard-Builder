@@ -315,7 +315,7 @@
       mMultiplePlayerInstanceInfo.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Pending;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "InstanceBasicInfo"});
    }
    
    private function SetInstanceCurrentPhase (phase:int):void
@@ -338,7 +338,7 @@
       mMultiplePlayerInstanceInfo.mCurrentPhase = phase;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "InstancePhaseInfo"});
    }
    
    private function SetSeatBasicInfo (seatIndex:int, playerName:String):void
@@ -354,7 +354,7 @@
       mMultiplePlayerInstanceInfo.mSeatsPlayerName [seatIndex] = playerName;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "SeatBasicInfo"});
    }
    
    private function SetSeatDanymicInfo (seatIndex:int, lastActiveTime:int, isConnected:Boolean):void
@@ -370,7 +370,7 @@
       mMultiplePlayerInstanceInfo.mIsSeatsConnected [seatIndex] = isConnected;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "SeatDanymicInfo"});
    }
    
    private function SetChannelConstInfo (channelIndex:int, mode:int, timeoutX8:int):void
@@ -400,7 +400,7 @@
       channelInfo.mTurnTimeoutMilliseconds = timeoutX8 * 125.0;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "ChannelConstInfo"});
    }
    
    // SetChannelConstInfo muse be called before this function.
@@ -429,7 +429,7 @@
       // ...
       if (mWorldDesignProperties != null)
       {
-         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", null);
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "ChannelDynamicInfo"});
       }
    }
    
@@ -437,7 +437,7 @@
    {
       if (mWorldDesignProperties != null)
       {
-         mWorldDesignProperties.OnMultiplePlayerEvent ("OnMultiplePlayerEvent", 
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnChannelSeatMessage", 
                                                        {
                                                           mChannelIndex : channelIndex,
                                                           mSeatIndex : senderSeatIndex,
@@ -481,6 +481,10 @@
             validData = true;
             
             break;
+         }
+         else if (messageEncryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_DoNothing)
+         {  
+            validData = true;
          }
       }
       while (false);
@@ -657,7 +661,7 @@
    {
       var encryptionMethod:int = -1;
       
-      //if (needHolding && messageData != null && messageData.length > MultiplePlayerDefine.MaxMessageDataLengthToHoldReally)
+      if (needHolding && messageData != null && messageData.length > MultiplePlayerDefine.MaxMessageDataLengthToHoldReally)
       {
          // too long for server to hold, so we encrypt the data here, the server just holds the encryption ciphers.
          

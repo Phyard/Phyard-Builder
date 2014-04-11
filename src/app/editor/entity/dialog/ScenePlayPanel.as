@@ -1724,6 +1724,12 @@ package editor.entity.dialog {
                         }
                      }
                      
+                     if (messageEncryptionMethod < 0 && messageChannelMessageLength > MultiplePlayerDefine.MaxMessageDataLengthToHoldReally)
+                     {
+                        messageEncryptionMethod = MultiplePlayerDefine.MessageEncryptionMethod_DoNothing;
+                        messageCipherData = new ByteArray ();
+                     }
+                     
                      OnChannelMessage (designViewer, messageChannelIndex, messageChannelMessageData, messageEncryptionMethod, messageCipherData);
                      
                      break;

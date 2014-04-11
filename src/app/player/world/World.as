@@ -986,6 +986,7 @@ package player.world {
 
          HandleAllCachedSystemEvents ();
          ClearAllCachedSystemEvents ();
+         SetGameInstanceInfoChangedInLastStep (false);
 
          for (k = 0; k < speedX; ++ k)
          {

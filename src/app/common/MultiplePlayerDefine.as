@@ -22,8 +22,6 @@ package common {
       public static const MaxNumberOfInstanceSeats:int = 4;
       
       public static const MaxNumberOfInstanceChannels:int = 8;
-      //public static const MaxNumberOfInstanceVotings:int = 8;
-      //public static const MaxNumberOfInstanceSignals:int = 8;
       
       //
       
@@ -101,15 +99,28 @@ package common {
       public static const ClientMessageType_ChannelMessage:int              = 0x60;
       public static const ClientMessageType_ChannelMessageWithEncrption:int = 0x61;
       
-      public static const ClientMessageType_SignalRestartInstance:int       = 0x70; // todo
+      public static const ClientMessageType_Signal_RestartInstance:int      = 0x70;
       
 //===========================================================================
-// client messages
+// error numbers
 //===========================================================================
       
-      public static const ErrorCode_NoErrors:int = 0;
-      public static const ErrorCode_Unknown:int = 1;
-      public static const ErrorCode_UnsupportedDataFormat:int = 100; // notify users to upgrade app.
+      public static const ErrorCode_NoErrors                 :int = 0;
+      public static const ErrorCode_Unknown                  :int = 1;
+
+      public static const ErrorCode_NetworkNotAvaiable       :int = 101;
+      public static const ErrorCode_ServerIsBusy             :int = 102;
+      public static const ErrorCode_JoinedTooManyInstances   :int = 103;
+      public static const ErrorCode_SpamUser                 :int = 103;
+      
+      public static const ErrorCode_UnsupportedDataFormat    :int = 100; // notify users to upgrade app.
+      public static const ErrorCode_BadData                  :int = 104;
+      public static const ErrorCode_TooLargeData             :int = 104;
+      public static const ErrorCode_TooManyMessages          :int = 105;
+      public static const ErrorCode_TooFrequentSendings      :int = 106;
+      
+      public static const ErrorCode_UnknownMessageType       :int = 106;
+      public static const ErrorCode_UnknownSignalType        :int = 106;
       
 //===========================================================================
 // ...

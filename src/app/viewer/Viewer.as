@@ -1329,6 +1329,7 @@ package viewer {
                               MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06
                               
                               MultiplePlayer_SendChannelMessage: MultiplePlayer_SendChannelMessage, // v2.06
+                              MultiplePlayer_SendSignalMessage : MultiplePlayer_SendSignalMessage, // v2.06
                               
                               MultiplePlayer_GetGameInstanceBasicInfo: MultiplePlayer_GetGameInstanceBasicInfo, // v2.06
                               MultiplePlayer_GetGameInstanceSeatInfo: MultiplePlayer_GetGameInstanceSeatInfo, // v2.06

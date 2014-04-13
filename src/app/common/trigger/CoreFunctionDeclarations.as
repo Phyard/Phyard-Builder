@@ -418,6 +418,11 @@ package common.trigger {
                      ],
                      null
                   );
+                  
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SendRestartInstanceSignal,
+                     null,
+                     null
+                  );
 
       // string
 

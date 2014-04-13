@@ -660,10 +660,7 @@ package editor.entity.dialog {
          if (mCurrentInstance.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Pending)
          {
             TryToTransitPhaseFromPendingToPlaying (true);
-               // for this calling is called elsewhere, this calling will never be called.
-               // if later the "call all write message calling" policy is sticked,
-               // the time consumed per single thread loop step should be added to all sort of timeouts.
-               // and the time consumed per single thread loop step should be as smaller as possible.
+            return;
          }
          
          // ...
@@ -737,13 +734,14 @@ package editor.entity.dialog {
          if (mCurrentInstance == null)
             return;
          
-         mCurrentInstance.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Pending;
-         
          // ...
          
          var numSeats:int = mCurrentInstance.mNumSeats;
+         var seatIndex:int;
          
-         for (var seatIndex:int = 0; seatIndex < numSeats; ++ seatIndex)
+         // ...
+         
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
          {
             mCurrentInstance.mSeatsMessagesDataToSend [seatIndex] = null;
             
@@ -755,27 +753,49 @@ package editor.entity.dialog {
          
          // ...
          
-         ResetInstanceChannels ()
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+         {
+            mCurrentInstance.mSeatsRestartInstanceSignalArrivalTime [seatIndex] = 0;
+         }
+         
+         // ...
+         
+         ResetInstanceChannels ();
+         
+         // ...
+         
+         mCurrentInstance.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Pending;
+         mCurrentInstance.mCurrentPhaseStartTime = getTimer ();
+         ++ mCurrentInstance.mNumPlayedGames;
       }
       
       private function BreakSeatConnection (seatIndex:int):void
       {
+         mCurrentInstance.mSeatsViewer [seatIndex] = null;
+         
          mCurrentInstance.mSeatsPlayerConnectionID [seatIndex] = null;
          mCurrentInstance.mSeatsPlayerName [seatIndex] = null;
          mCurrentInstance.mSeatsLastActiveTime [seatIndex] = 0;
          mCurrentInstance.mSeatsLastPongTime [seatIndex] = 0;
          mCurrentInstance.mSeatsLastPingTime [seatIndex] = 0;
-         mCurrentInstance.mSeatsViewer [seatIndex] = null;
       }
       
       private function ResetInstanceChannels ():void
       {
-         mCurrentInstance.mNextMessageEncryptionIndex = 0;
-         
-         var numEnabledChannels:int = mCurrentInstance.mEnabledChannelIndexes.length;
          var timer:int = getTimer ();
          
+         // ...
+         
          var numSeats:int = mCurrentInstance.mNumSeats;
+         var seatIndex:int;
+         
+         // ...
+         
+         mCurrentInstance.mNextMessageEncryptionIndex = 0;
+         
+         // ...
+          
+         var numEnabledChannels:int = mCurrentInstance.mEnabledChannelIndexes.length;
          
          for (var i:int = 0; i < numEnabledChannels; ++ i)
          {
@@ -784,7 +804,7 @@ package editor.entity.dialog {
             
             var seatDefaultEnabled:Boolean = channel.mChannelMode != MultiplePlayerDefine.InstanceChannelMode_Chess;
             
-            for (var seatIndex:int = 0; seatIndex < numSeats; ++ seatIndex)
+            for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
             {
                channel.mIsSeatsEnabled [seatIndex] = seatDefaultEnabled;
                channel.mSeatsLastEnabledTime [seatIndex] = timer;
@@ -827,10 +847,11 @@ package editor.entity.dialog {
             // ...
                         
             mCurrentPhase : MultiplePlayerDefine.InstancePhase_Pending,
+            mCurrentPhaseStartTime : 0,
             
             // ...
             
-            mNumSeats : instanceDefine.mNumSeats,
+            mNumSeats : numSeats,
 
             mSeatsPlayerConnectionID : new Array (numSeats), // string
             mSeatsClientDataFormatVersion : new Array (numSeats), // uint8
@@ -841,6 +862,10 @@ package editor.entity.dialog {
             mSeatsViewer : new Array (numSeats), // viewer
             
             mSeatsMessagesDataToSend : new Array (numSeats), // ByteArray
+            
+            // ...
+            
+            mSeatsRestartInstanceSignalArrivalTime : new Array (numSeats),
             
             // ...
             
@@ -856,11 +881,14 @@ package editor.entity.dialog {
                               // mSeatsMessageEncryptionIndex [] int
                               // mSeatsMessageEncryptionMethod [] int
             
-            // voting and signal will be merged into channel
-            //mVotings : new Array (MultiplePlayerDefine.MaxNumberOfInstanceVotings),
-            //mSignals : new Array (MultiplePlayerDefine.MaxNumberOfInstanceSignals),
+            // ...
+            
             "" : null
          };
+         
+         // ...
+         
+         mCurrentInstance.mSeatsRestartInstanceSignalArrivalTime = new Array (numSeats);
          
          // ...
          
@@ -896,7 +924,7 @@ package editor.entity.dialog {
          
          ResetInstance (true);
          
-         // ...
+         // notify UI to change
          
          SetNumMultiplePlayers (numSeats);
       }
@@ -960,6 +988,9 @@ package editor.entity.dialog {
       private function TryToTransitPhaseFromPendingToPlaying (flushMessages:Boolean):Boolean
       {
          if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Pending)
+            return false;
+         
+         if (getTimer () - mCurrentInstance.mCurrentPhaseStartTime < 5000) // minimum pending duration
             return false;
          
          var numSeats:int = mCurrentInstance.mNumSeats;
@@ -1273,7 +1304,7 @@ package editor.entity.dialog {
             if (mCurrentInstance.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing)
             {
                // maybe disconnected and re-connect.
-               // Temp not supported now.
+               // Temp, not supported now.
                // 
                // To support: need get game same info from other players then send to this player.
             }
@@ -1597,6 +1628,73 @@ package editor.entity.dialog {
          }
       }
       
+      private function OnSignal_RestartInstance (designViewer:Viewer):void
+      {
+         if (mCurrentInstance == null)
+            return;
+         
+         if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
+            return;
+         
+         var senderSeatIndex:int = mCurrentInstance.mSeatsViewer.indexOf (designViewer);
+         if (senderSeatIndex < 0)
+            return;
+         
+         // ... 
+         
+         if (mCurrentInstance.mSeatsRestartInstanceSignalArrivalTime == null)
+            return;
+         
+         mCurrentInstance.mSeatsRestartInstanceSignalArrivalTime [senderSeatIndex] = getTimer ();
+         
+         // ...
+         
+         var shouldRestart:Boolean = true;
+         
+         var numSeats:int = mCurrentInstance.mNumSeats;
+         var seatIndex:int;
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+         {
+            if (mCurrentInstance.mSeatsViewer [seatIndex] != null && mCurrentInstance.mSeatsRestartInstanceSignalArrivalTime [seatIndex] == 0)
+            {
+               shouldRestart = false;
+               break;
+            }
+         }
+         
+         if (shouldRestart)
+         {
+            ResetInstance (false);
+            
+            // ...
+            
+            var messagesData:ByteArray;
+            
+            for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+            {
+               messagesData = GetInstanceSeatClientStream (seatIndex);
+               
+               WriteMessage_InstanceBasicInfo (messagesData, seatIndex);
+               
+               UpdateInstanceSeatClientStreamHeader (seatIndex);
+            }
+            
+            for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+            {
+               messagesData = GetInstanceSeatClientStream (seatIndex);
+               
+               WriteMessage_InstanceCurrentPhase (messagesData);
+               
+               UpdateInstanceSeatClientStreamHeader (seatIndex);
+            }
+            
+            for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+            {
+               FlushInstanceSeatClientStream (seatIndex);
+            }
+         }
+      }
+      
 //============================================================================
 //   
 //============================================================================
@@ -1734,7 +1832,11 @@ package editor.entity.dialog {
                      
                      break;
                      
-                  case MultiplePlayerDefine.ClientMessageType_SignalRestartInstance:
+                  case MultiplePlayerDefine.ClientMessageType_Signal_RestartInstance:
+                     
+                     var signalType:int = messagesData.readShort ();
+                     
+                     OnSignal_RestartInstance (designViewer);
                      
                      break;
                      

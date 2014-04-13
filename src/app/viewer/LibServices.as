@@ -625,7 +625,6 @@
       // ...
       
       UpdateCachedClientMessagesHeader ();
-
    }
    
    private function WriteMessage_LoginInstanceServer ():void
@@ -722,13 +721,13 @@
       UpdateCachedClientMessagesHeader ();
    }
    
-   private function WriteMessage_SignalRestartInstance ():void
+   private function WriteMessage_Signal_RestartInstance ():void
    {
       // ...
       
       var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
       
-      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_SignalRestartInstance);
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Signal_RestartInstance);
       
       // ...
       
@@ -941,6 +940,8 @@
       var result:Boolean = false;
       do
       {
+         if (! IsInstanceServerLoggedIn ())
+            break;
          if (mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
             break;
          if (mMultiplePlayerInstanceInfo.mMySeatIndex < 0)
@@ -957,6 +958,42 @@
          WriteMessage_ChannelMessage (channelIndex, messageData, channelInfo.mChannelMode == MultiplePlayerDefine.InstanceChannelMode_WeGo);
          
          result = true;
+      }
+      while (false);
+      
+      return {mResult: result};
+   }
+   
+   //=================
+   
+   protected function MultiplePlayer_SendSignalMessage (params:Object):Object
+   {
+      var result:Boolean = false;
+      
+      do
+      {
+         if (! IsInstanceServerLoggedIn ())
+            break;
+         
+         var signalType:String = params.mSignalType; // be careful of compatibility problem.
+         var signalInfo:Object = params.mSignalInfo;
+         
+         switch (signalType)
+         {
+            case "RestartInstance":
+            {
+               if (mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing)
+               {  
+                  WriteMessage_Signal_RestartInstance ();
+               }
+               
+               break;
+            }  
+            default:
+            {
+               break;
+            }
+         }
       }
       while (false);
       

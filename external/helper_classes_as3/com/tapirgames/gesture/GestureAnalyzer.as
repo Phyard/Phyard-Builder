@@ -212,6 +212,8 @@ package com.tapirgames.gesture {
       
       private function NewAnalyzeResult (type:String, angle:Number, message:String, isCW:Boolean = true):Object
       {
+         // Generally, DON'T change the names, they are used in the old player.World plugins!!!
+         // If they are really needed to change, some modifications needs to be done before Viewer calling mWorldDesignProperties.RegisterGestureEvent to keep compatibility.
          return {
                    mGestureType: type, // the name "mGestureType" is also used at the end of Analyze
                    mGestureAngle: angle, // the name of "mGestureAngle" is also used at the end of Analyze
@@ -233,6 +235,8 @@ package com.tapirgames.gesture {
                return NewAnalyzeResult (null, 0, "too few points");
             else
                return NewAnalyzeResult (kGestureName_LongPress, 0, "one point");
+                     // here, the LongPress is LongPressFinisehd.
+                     // A LongPressStarted and a LongPressing event need to be added later.
          }
 
          // aabb box

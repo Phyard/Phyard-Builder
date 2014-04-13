@@ -512,6 +512,11 @@ package editor.world {
                      ],
                      null
                   );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendRestartInstanceSignal, services_package, "Send Signal To Restart Game Instance", null, null,
+                     null,
+                     null
+                  );
 
       // string
 

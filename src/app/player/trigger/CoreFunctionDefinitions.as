@@ -122,6 +122,8 @@ package player.trigger {
          
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendGameInstanceChannelMessage,           SendGameInstanceChannelMessage);
          
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendRestartInstanceSignal,      SendeRestartGameInstancSignalMessage);
+         
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsGameInstanceLoggedIn,                 IsGameInstanceLoggedIn);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsGameInstanceInPlayingPhase,           IsGameInstanceInPlayingPhase);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceNumberOfSeats,           GetGameInstanceNumberOfSeats);
@@ -1040,6 +1042,11 @@ package player.trigger {
          var messageData:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
          
          callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendChannelMessage ({mChannelIndex: channelIndex, mMessageData: messageData});
+      }
+      
+      public static function SendeRestartGameInstancSignalMessage (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendSignalMessage ({mSignalType: "RestartInstance", mSignalInfo: null});
       }
 
       public static function IsGameInstanceLoggedIn (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

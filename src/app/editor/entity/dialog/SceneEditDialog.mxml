@@ -44,7 +44,7 @@
             <mx:Button id="Button_ShowGlobalCodeLibEditDialog" toolTip="Edit Global Functions" click="EditorContext.GetEditorApp ().ShowGlobalCodeLibEditDialog ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/big-world-global-functions.png')" />
             -->
             <mx:Spacer width="10" />
-            <mx:Button id="Button_ComponentList" selected="true" toolTip="Scene List" click="OnClickComponentListButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-component-list.png')" selectedDownIcon="@Embed('../../../res/file/design-component-list-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-component-list-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-component-list-sel.png')" />
+            <mx:Button id="Button_ComponentList" selected="true" toolTip="Component Panel" click="OnClickComponentListButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="true" cornerRadius="0" icon="@Embed('../../../res/file/design-component-list.png')" selectedDownIcon="@Embed('../../../res/file/design-component-list-sel.png')"  selectedOverIcon="@Embed('../../../res/file/design-component-list-sel.png')"  selectedUpIcon="@Embed('../../../res/file/design-component-list-sel.png')" />
             <mx:Spacer width="10" />
             <mx:ViewStack id="ViewStack_BasicToolbar" borderStyle="solid" creationPolicy="all"
                      width="100%" 

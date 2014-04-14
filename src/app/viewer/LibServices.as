@@ -706,6 +706,8 @@
       
       cachedMessagesData.writeByte (channelIndex);
       
+      //cachedMessagesData.writeShort (channelVerifyNumber);
+      
       // ...
       
       if (messageData == null) // pass
@@ -728,6 +730,8 @@
       var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
       
       cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Signal_RestartInstance);
+      
+      cachedMessagesData.writeInt (mMultiplePlayerInstanceInfo.mNumPlayedGames);
       
       // ...
       

@@ -806,6 +806,7 @@ package editor.entity.dialog {
             
             for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
             {
+               channel.mRoundIndex = 0;
                channel.mIsSeatsEnabled [seatIndex] = seatDefaultEnabled;
                channel.mSeatsLastEnabledTime [seatIndex] = timer;
                channel.mSeatsMessage [seatIndex] = null;
@@ -875,6 +876,7 @@ package editor.entity.dialog {
             mChannels : new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels), // Channel Object
                               // mChannelMode
                               // mTurnTimeoutMilliseconds // milliseconds, not X8
+                              // mVerifyNumber // short
                               // mIsSeatsEnabled [] boolean
                               // mSeatsLastEnabledTime [] int
                               // mSeatsMessage [] string
@@ -907,7 +909,16 @@ package editor.entity.dialog {
                   
                   channel.mChannelMode = channelDefine.mChannelMode;
                   channel.mTurnTimeoutMilliseconds = channelDefine.mTurnTimeoutSecondsX8 * 125.0;
-         
+                  
+                  if (channelDefine.mChannelMode == MultiplePlayerDefine.InstanceChannelMode_Free)
+                  {
+                     channel.mVerifyNumber = int (Math.floor (Math.random () * 0x10000));
+                  }
+                  else
+                  {
+                     channel.mVerifyNumber = 0;
+                  }
+                  
                   channel.mIsSeatsEnabled = new Array (numSeats);
                   channel.mSeatsLastEnabledTime = new Array (numSeats);
                   channel.mSeatsMessage = new Array (numSeats); // only useful for some modes
@@ -1168,11 +1179,14 @@ package editor.entity.dialog {
          var enabledTime:int = 0x7FFFFFFF & (int (Math.round (channel.mSeatsLastEnabledTime [seatIndex] * 8 / 1000)));
          if (channel.mIsSeatsEnabled [seatIndex])
             enabledTime |= 0x80000000;
-       
+         
+         var verifyNumber:int = channel.mVerifyNumber;
+         
          dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_ChannelSeatInfo);
          dataBuffer.writeByte (channelIndex);
          dataBuffer.writeByte (seatIndex);
          dataBuffer.writeInt (enabledTime);
+         //dataBuffer.writeShort (verifyNumber);
       }
       
       private function WriteMessage_ChannelMessage (dataBuffer:ByteArray, channelIndex:int, senderSeatIndex:int, messageData:ByteArray):void
@@ -1456,6 +1470,7 @@ package editor.entity.dialog {
                var nextEnabledSeatIndex:int = senderSeatIndex >= numSeats - 1 ? 0 : senderSeatIndex + 1;
                channel.mIsSeatsEnabled [nextEnabledSeatIndex] = true;
                channel.mSeatsLastEnabledTime [nextEnabledSeatIndex] = newTimer;
+               ++ channel.mVerifyNumber; // turn ++
                
                for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
                {
@@ -1526,7 +1541,9 @@ package editor.entity.dialog {
                   var iSeat:int;
                   
                   if (allHaveSent)
-                  { 
+                  {
+                     ++ channel.mVerifyNumber; // round ++
+                     
                      for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
                      {
                         channel.mIsSeatsEnabled [seatIndex] = true;
@@ -1628,9 +1645,12 @@ package editor.entity.dialog {
          }
       }
       
-      private function OnSignal_RestartInstance (designViewer:Viewer):void
+      private function OnSignal_RestartInstance (designViewer:Viewer, numPlayedGames:int):void
       {
          if (mCurrentInstance == null)
+            return;
+         
+         if (mCurrentInstance.mNumPlayedGames != numPlayedGames)
             return;
          
          if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
@@ -1836,7 +1856,9 @@ package editor.entity.dialog {
                      
                      var signalType:int = messagesData.readShort ();
                      
-                     OnSignal_RestartInstance (designViewer);
+                     var numPlayedGames:int = messagesData.readInt ();
+                     
+                     OnSignal_RestartInstance (designViewer, numPlayedGames);
                      
                      break;
                      

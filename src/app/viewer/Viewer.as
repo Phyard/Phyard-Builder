@@ -1327,6 +1327,7 @@ package viewer {
                               
                               MultiplePlayer_JoinNewInstance: MultiplePlayer_JoinNewInstance, // v2.06
                               MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06
+                              MultiplePlayer_ExitInstance : MultiplePlayer_ExitCurrentInstance, // v2.06
                               
                               MultiplePlayer_SendChannelMessage: MultiplePlayer_SendChannelMessage, // v2.06
                               MultiplePlayer_SendSignalMessage : MultiplePlayer_SendSignalMessage, // v2.06

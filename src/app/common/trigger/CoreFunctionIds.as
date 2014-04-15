@@ -96,7 +96,7 @@ package common.trigger {
       public static const ID_JoinGameInstanceRandomly:int       = IdPool.CoreApiId_605; // from v2.06
       //public static const ID_GetAvailableGameInstances:int      = IdPool.CoreApiId_608;
       //public static const ID_JoinGameInstanceByInstanceID:int   = IdPool.CoreApiId_607; // from v2.06
-      //public static const ID_ExitGameInstance:int               = IdPool.CoreApiId_613;
+      public static const ID_ExitGameInstance:int               = IdPool.CoreApiId_613; // from v2.06
       public static const ID_SendGameInstanceChannelMessage:int = IdPool.CoreApiId_611; // from v2.06
       
       public static const ID_SendRestartInstanceSignal:int     = IdPool.CoreApiId_627; // from v2.06

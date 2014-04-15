@@ -73,7 +73,10 @@ package common {
       public static const ServerMessageType_SeatBasicInfo:int                  = 0x3200;
       public static const ServerMessageType_SeatDynamicInfo:int                = 0x3300;
       public static const ServerMessageType_AllChannelsConstInfo:int           = 0x3400;
-      public static const ServerMessageType_ChannelSeatInfo:int                = 0x3500;
+      public static const ServerMessageType_ChannelDynamicInfo:int             = 0x3600;
+      public static const ServerMessageType_ChannelSeatInfo:int                = 0x3700;
+      
+      public static const ServerMessageType_LoggedOff:int                      = 0x4000;
       
       public static const ServerMessageType_ChannelMessage:int                 = 0x5000;
       public static const ServerMessageType_ChannelMessageEncrpted:int         = 0x5100;
@@ -88,7 +91,7 @@ package common {
       public static const ClientMessageType_Ping:int = 0x00;
       public static const ClientMessageType_Pong:int = 0x01;
       
-      public static const ClientMessageType_CreateInstance:int              = 0x10;
+      public static const ClientMessageType_CreateInstance:int              = 0x10; // todo
       public static const ClientMessageType_JoinRandomInstance:int          = 0x11;
       public static const ClientMessageType_JoinInstanceById:int            = 0x12; // todo
       public static const ClientMessageType_GetPendingInstances:int         = 0x13; // todo
@@ -111,16 +114,16 @@ package common {
       public static const ErrorCode_NetworkNotAvaiable       :int = 101;
       public static const ErrorCode_ServerIsBusy             :int = 102;
       public static const ErrorCode_JoinedTooManyInstances   :int = 103;
-      public static const ErrorCode_SpamUser                 :int = 103;
+      public static const ErrorCode_SpamUser                 :int = 104;
       
-      public static const ErrorCode_UnsupportedDataFormat    :int = 100; // notify users to upgrade app.
-      public static const ErrorCode_BadData                  :int = 104;
-      public static const ErrorCode_TooLargeData             :int = 104;
-      public static const ErrorCode_TooManyMessages          :int = 105;
-      public static const ErrorCode_TooFrequentSendings      :int = 106;
+      public static const ErrorCode_UnsupportedDataFormat    :int = 160; // notify users to upgrade app.
+      public static const ErrorCode_BadData                  :int = 161;
+      public static const ErrorCode_TooLargeData             :int = 162;
+      public static const ErrorCode_TooManyMessages          :int = 163;
+      public static const ErrorCode_TooFrequentSendings      :int = 164;
       
-      public static const ErrorCode_UnknownMessageType       :int = 106;
-      public static const ErrorCode_UnknownSignalType        :int = 106;
+      public static const ErrorCode_UnknownMessageType       :int = 170;
+      public static const ErrorCode_UnknownSignalType        :int = 171;
       
 //===========================================================================
 // ...

@@ -438,9 +438,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
                      ],
-                     [
-                             new VariableDefinitionBoolean ("Succeeded?"),
-                     ]
+                     null
                   );
          //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
          //            [
@@ -464,6 +462,10 @@ package editor.world {
          //            ],
          //            null
          //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitGameInstance, services_package, "Exit Current Game Instance", null, null,
+                     null,
+                     null
+                  );
                   
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceLoggedIn, services_package, "Is Game Instance Joined?", null, null,
                      null,

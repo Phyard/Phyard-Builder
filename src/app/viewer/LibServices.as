@@ -159,8 +159,6 @@
       {
          if (mParamsFromEditor != null)
          {
-            mMultiplePlayerInstanceInfo.mIsServerConnected = true;
-            
             OnInstanceServerConnected ();
          }
          else
@@ -191,6 +189,8 @@
    {
       if (event != null && event.target != mMultiplePlayerInstanceInfo.mServerSocket)
          return; // this may be previous discarded socket. 
+      
+      mMultiplePlayerInstanceInfo.mIsServerConnected = true;
       
       mClientMessagesFrequencyStat.Reset ();
       ClearCachedClientMessages ();
@@ -256,6 +256,7 @@
             mChannelsInfo : null,
                      // mChannelMode
                      // mTurnTimeoutMilliseconds // milliseconds, no X8
+                     // mVerifyNumber // short
                      // mIsSeatsEnabled []
                      // mIsSeatsEnabled_Predicted []
                      // mSeatsLastEnableTime []
@@ -295,6 +296,8 @@
    
    private function SetInstanceBasicInfo (id:String, numPlayedGames:int, numSeats:int, mySeatIndex:int):void
    {
+      if (! mMultiplePlayerInstanceInfo.mIsServerConnected) // possible
+         return;
       if (id != mMultiplePlayerInstanceInfo.mID)
          return;
       if (numSeats < MultiplePlayerDefine.MinNumberOfInstanceSeats || numSeats > MultiplePlayerDefine.MaxNumberOfInstanceSeats)
@@ -388,6 +391,7 @@
          channelInfo = {
             //mChannelMode : mode,
             //mTurnTimeoutMilliseconds : timeoutX8 * 125.0,
+            mVerifyNumber : 0,
             mIsSeatsEnabled : new Array (mMultiplePlayerInstanceInfo.mNumSeats),
             mIsSeatsEnabled_Predicted : new Array (mMultiplePlayerInstanceInfo.mNumSeats),
             mSeatsLastEnableTime : new Array (mMultiplePlayerInstanceInfo.mNumSeats)
@@ -404,7 +408,22 @@
    }
    
    // SetChannelConstInfo muse be called before this function.
-   private function SetChannelDynamicInfo (channelIndex:int, seatIndex:int, enabledTime:int, isSeatEnabled:Boolean):void
+   private function SetChannelDynamicInfo (channelIndex:int, verifyNumber:int):void
+   {
+      if (channelIndex < 0 || channelIndex >= MultiplePlayerDefine.MaxNumberOfInstanceChannels)
+         return;
+      if (mMultiplePlayerInstanceInfo.mChannelsInfo == null)
+         return;
+      
+      var channelInfo:Object = mMultiplePlayerInstanceInfo.mChannelsInfo [channelIndex];
+      if (channelInfo == null)
+         return;
+      
+      channelInfo.mVerifyNumber = verifyNumber;
+   }
+   
+   // SetChannelConstInfo muse be called before this function.
+   private function SetChannelSeatInfo (channelIndex:int, seatIndex:int, enabledTime:int, isSeatEnabled:Boolean):void
    {
       if (mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
          return;
@@ -656,7 +675,7 @@
       UpdateCachedClientMessagesHeader ();
    }
    
-   private function WriteMessage_ChannelMessage (channelIndex:int, messageData:ByteArray, needHolding:Boolean):void
+   private function WriteMessage_ChannelMessage (channelIndex:int, channelVerifyNumber:int, messageData:ByteArray, needHolding:Boolean):void
    {
       var encryptionMethod:int = -1;
       
@@ -706,7 +725,7 @@
       
       cachedMessagesData.writeByte (channelIndex);
       
-      //cachedMessagesData.writeShort (channelVerifyNumber);
+      cachedMessagesData.writeShort (channelVerifyNumber);
       
       // ...
       
@@ -934,6 +953,23 @@
    //{
    //}
    
+   protected function MultiplePlayer_ExitCurrentInstance (params:Object):Object
+   {
+      if (IsInstanceServerConnected ())
+      {
+         if (IsInstanceServerLoggedIn ())
+         {
+            WriteMessage_ExitCurrentInstance (); // server will break the connection gracefully.
+         }
+         else
+         {
+            DisonnectToInstanceServer ();
+         }
+      }
+      
+      return {mResult: true};
+   }
+   
    //=================
    
    protected function MultiplePlayer_SendChannelMessage (params:Object):Object
@@ -944,22 +980,36 @@
       var result:Boolean = false;
       do
       {
+trace (">>>>>>>>>>>>> aaa");
          if (! IsInstanceServerLoggedIn ())
             break;
+trace ("bbb");
          if (mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
             break;
+trace ("ccc");
          if (mMultiplePlayerInstanceInfo.mMySeatIndex < 0)
             break;
+trace ("ddd");
          if (channelIndex < 0 || channelIndex >= MultiplePlayerDefine.MaxNumberOfInstanceChannels)
             break;
+trace ("eee");
          if (mMultiplePlayerInstanceInfo.mChannelsInfo == null)
             break;
          
+trace ("fff");
          var channelInfo:Object = mMultiplePlayerInstanceInfo.mChannelsInfo [channelIndex];
          if (channelInfo == null)
             break;
-            
-         WriteMessage_ChannelMessage (channelIndex, messageData, channelInfo.mChannelMode == MultiplePlayerDefine.InstanceChannelMode_WeGo);
+         
+trace ("ggg channelInfo.mIsSeatsEnabled = " + channelInfo.mIsSeatsEnabled);
+         if (channelInfo.mIsSeatsEnabled == null || channelInfo.mIsSeatsEnabled [mMultiplePlayerInstanceInfo.mMySeatIndex] == false)
+            break;
+         
+         //if (channelInfo.mIsSeatsEnabled_Predicted == null || channelInfo.mIsSeatsEnabled_Predicted [mMultiplePlayerInstanceInfo.mMySeatIndex] == false)
+         //  break;
+         
+trace ("hhh");
+         WriteMessage_ChannelMessage (channelIndex, channelInfo.mVerifyNumber, messageData, channelInfo.mChannelMode == MultiplePlayerDefine.InstanceChannelMode_WeGo);
          
          result = true;
       }
@@ -1076,7 +1126,7 @@
 
                var serverMessageType:int = messagesData.readShort ();
             
-//trace (">> serverMessageType = " + serverMessageType);   
+//trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                switch (serverMessageType)
                {
                // ...
@@ -1116,6 +1166,12 @@
                      var mySeatIndex:int = messagesData.readByte ();
                      
                      SetInstanceBasicInfo (id, numPlayedGames, numSeats, mySeatIndex);
+                     
+                     break;
+                  }
+                  case MultiplePlayerDefine.ServerMessageType_LoggedOff:
+                  {
+                     DisonnectToInstanceServer ();
                      
                      break;
                   }
@@ -1162,6 +1218,15 @@
                      
                      break;
                   }
+                  case MultiplePlayerDefine.ServerMessageType_ChannelDynamicInfo:
+                  {
+                     var dynamicInfoChannelIndex:int = messagesData.readByte ();
+                     var dynamicInfoChannelVerifyNumber:int = messagesData.readShort ();
+                     
+                     SetChannelDynamicInfo (dynamicInfoChannelIndex, dynamicInfoChannelVerifyNumber);
+                     
+                     break;
+                  }
                   case MultiplePlayerDefine.ServerMessageType_ChannelSeatInfo:
                   {
                      var seatInfoChannelIndex:int = messagesData.readByte ();
@@ -1170,7 +1235,7 @@
                      var seatInfoIsSeatEnabled:Boolean = (seatInfoEnabledTime & 0x80000000) != 0;
                      seatInfoEnabledTime &= 0x7FFFFFFF;
                      
-                     SetChannelDynamicInfo (seatInfoChannelIndex, seatInfoSeatIndex, seatInfoEnabledTime, seatInfoIsSeatEnabled);
+                     SetChannelSeatInfo (seatInfoChannelIndex, seatInfoSeatIndex, seatInfoEnabledTime, seatInfoIsSeatEnabled);
                      
                      break;
                   }

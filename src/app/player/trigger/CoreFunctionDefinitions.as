@@ -119,6 +119,7 @@ package player.trigger {
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_CreateGameInstance,             CreateNewGameInstance);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_JoinGameInstanceRandomly,       JoinGameInstanceRandomly);
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_JoinGameInstanceByInstanceID,   JoinGameInstanceByInstanceID);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ExitGameInstance,               ExitGameInstance);
          
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendGameInstanceChannelMessage,           SendGameInstanceChannelMessage);
          
@@ -1033,6 +1034,11 @@ package player.trigger {
       //public static function JoinGameInstanceByInstanceID (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       //{
       //}
+      
+      public static function ExitGameInstance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_ExitInstance ({});
+      }
       
       public static function SendGameInstanceChannelMessage (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {

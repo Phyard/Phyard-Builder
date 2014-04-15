@@ -344,9 +344,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine,       null],
                      ],
-                     [
-                        [CoreClassIds.ValueType_Boolean,       null],
-                     ]
+                     null
                   );
          //RegisterCoreDeclaration (CoreFunctionIds.ID_CreateGameInstance,
          //            [
@@ -370,6 +368,10 @@ package common.trigger {
          //            ],
          //            null
          //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_ExitGameInstance,
+                     null,
+                     null
+                  );
                   
          RegisterCoreDeclaration (CoreFunctionIds.ID_IsGameInstanceLoggedIn,
                      null,

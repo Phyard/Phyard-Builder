@@ -686,9 +686,11 @@ package editor.entity.dialog {
                      {
                         if ( (nowTimer - channel.mSeatsLastEnabledTime [iSeat]) > channemTurnTimeout)
                         {
+trace ("88888888888888888888 timeout");
                            // pass
                            OnChannelMessage (mCurrentInstance.mSeatsViewer [iSeat], 
                                              channelIndex, 
+                                             channel.mVerifyNumber & 0xFFFF,
                                              null, // message
                                              -1, // encryption method 
                                              null // cipher
@@ -778,6 +780,8 @@ package editor.entity.dialog {
          mCurrentInstance.mSeatsLastActiveTime [seatIndex] = 0;
          mCurrentInstance.mSeatsLastPongTime [seatIndex] = 0;
          mCurrentInstance.mSeatsLastPingTime [seatIndex] = 0;
+         
+         mCurrentInstance.mSeatsMessagesDataToSend [seatIndex] = null;
       }
       
       private function ResetInstanceChannels ():void
@@ -810,6 +814,7 @@ package editor.entity.dialog {
                channel.mIsSeatsEnabled [seatIndex] = seatDefaultEnabled;
                channel.mSeatsLastEnabledTime [seatIndex] = timer;
                channel.mSeatsMessage [seatIndex] = null;
+               channel.mIsSeatsMessageInHolding [seatIndex] = false;
                channel.mSeatsMessageEncryptionIndex [seatIndex] = -1;
                channel.mSeatsMessageEncryptionMethod [seatIndex] = -1;
             }
@@ -880,6 +885,7 @@ package editor.entity.dialog {
                               // mIsSeatsEnabled [] boolean
                               // mSeatsLastEnabledTime [] int
                               // mSeatsMessage [] string
+                              // mIsSeatsMessageInHolding [] boolean
                               // mSeatsMessageEncryptionIndex [] int
                               // mSeatsMessageEncryptionMethod [] int
             
@@ -922,6 +928,7 @@ package editor.entity.dialog {
                   channel.mIsSeatsEnabled = new Array (numSeats);
                   channel.mSeatsLastEnabledTime = new Array (numSeats);
                   channel.mSeatsMessage = new Array (numSeats); // only useful for some modes
+                  channel.mIsSeatsMessageInHolding = new Array (numSeats); // only useful for some modes
                   channel.mSeatsMessageEncryptionIndex = new Array (numSeats); // only useful for some modes
                   channel.mSeatsMessageEncryptionMethod = new Array (numSeats); // only useful for some modes
                   
@@ -1004,10 +1011,11 @@ package editor.entity.dialog {
          if (getTimer () - mCurrentInstance.mCurrentPhaseStartTime < 5000) // minimum pending duration
             return false;
          
+         var nowTimer:int = getTimer ();
+         
          var numSeats:int = mCurrentInstance.mNumSeats;
          var seatIndex:int;
          
-         var nowTimer:int = getTimer ();
          for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
          {
             var connectionId:String = mCurrentInstance.mSeatsPlayerConnectionID [seatIndex];
@@ -1016,13 +1024,15 @@ package editor.entity.dialog {
             
             if (nowTimer - mCurrentInstance.mSeatsLastPongTime [seatIndex] > 15000)
             {
-               //if (nowTimer - mCurrentInstance.mSeatsLastPingTime [seatIndex] > 6000)
+               //if (nowTimer - mCurrentInstance.mSeatsLastPingTime [seatIndex] > 9000)
                //{
                //   // break connect
                //   return;
                //}
                
                // ...
+               
+               mCurrentInstance.mSeatsLastPingTime [seatIndex] = nowTimer;
                
                var messagesData:ByteArray = GetInstanceSeatClientStream (seatIndex);
                
@@ -1060,6 +1070,7 @@ package editor.entity.dialog {
          
          var numSeats:int = mCurrentInstance.mNumSeats;
          var seatIndex:int;
+         var messagesData:ByteArray;
          
          for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
          {
@@ -1067,7 +1078,7 @@ package editor.entity.dialog {
             if (connectionId == null || connectionId.length == 0)
                return;
             
-            var messagesData:ByteArray = GetInstanceSeatClientStream (seatIndex);
+            messagesData = GetInstanceSeatClientStream (seatIndex);
             
             // ...
             
@@ -1080,6 +1091,30 @@ package editor.entity.dialog {
             WriteMessage_AllChannelsConstInfo (messagesData);
             
             UpdateInstanceSeatClientStreamHeader (seatIndex);
+            
+            // ...
+            
+            var numEnabledChannels:int = mCurrentInstance.mEnabledChannelIndexes.length;
+            
+            for (var i:int = 0; i < numEnabledChannels; ++ i)
+            {
+               var channelIndex:int = mCurrentInstance.mEnabledChannelIndexes [i];
+               
+               // ...
+               
+               WriteMessage_ChannelDynamicInfo (messagesData, channelIndex);
+               
+               UpdateInstanceSeatClientStreamHeader (seatIndex);
+               
+               // ...
+               
+               for (var iSeat:int = 0; iSeat < numSeats; ++ iSeat)
+               {
+                  WriteMessage_ChannelSeatInfo (messagesData, channelIndex, iSeat);
+                  
+                  UpdateInstanceSeatClientStreamHeader (seatIndex);
+               }
+            }
             
             // ...
             
@@ -1122,6 +1157,11 @@ package editor.entity.dialog {
          dataBuffer.writeByte (receiverSeatIndex);
       }
       
+      private function WriteMessage_LoggedOff (dataBuffer:ByteArray):void
+      {
+         dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_LoggedOff);
+      }
+      
       private function WriteMessage_InstanceCurrentPhase (dataBuffer:ByteArray):void
       {
          dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_InstanceCurrentPhase);
@@ -1149,7 +1189,7 @@ package editor.entity.dialog {
          
          dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_SeatDynamicInfo);
          dataBuffer.writeByte (seatIndex);
-         dataBuffer.writeShort (lastActiveTime);
+         dataBuffer.writeInt (lastActiveTime);
       }
       
       private function WriteMessage_AllChannelsConstInfo (dataBuffer:ByteArray):void
@@ -1172,7 +1212,18 @@ package editor.entity.dialog {
          }
       }
       
-      private function WriteMessage_ChannelDynamicInfo (dataBuffer:ByteArray, channelIndex:int, seatIndex:int):void
+      private function WriteMessage_ChannelDynamicInfo (dataBuffer:ByteArray, channelIndex:int):void
+      {
+         var channel:Object = mCurrentInstance.mChannels [channelIndex];
+         
+         var verifyNumber:int = channel.mVerifyNumber;
+         
+         dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_ChannelDynamicInfo);
+         dataBuffer.writeByte (channelIndex);
+         dataBuffer.writeShort (verifyNumber);
+      }
+      
+      private function WriteMessage_ChannelSeatInfo (dataBuffer:ByteArray, channelIndex:int, seatIndex:int):void
       {
          var channel:Object = mCurrentInstance.mChannels [channelIndex];
          
@@ -1180,13 +1231,10 @@ package editor.entity.dialog {
          if (channel.mIsSeatsEnabled [seatIndex])
             enabledTime |= 0x80000000;
          
-         var verifyNumber:int = channel.mVerifyNumber;
-         
          dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_ChannelSeatInfo);
          dataBuffer.writeByte (channelIndex);
          dataBuffer.writeByte (seatIndex);
          dataBuffer.writeInt (enabledTime);
-         //dataBuffer.writeShort (verifyNumber);
       }
       
       private function WriteMessage_ChannelMessage (dataBuffer:ByteArray, channelIndex:int, senderSeatIndex:int, messageData:ByteArray):void
@@ -1311,6 +1359,9 @@ package editor.entity.dialog {
          if (newPlayerSeatIndex < 0)
             return;
          
+         if (mCurrentInstance.mSeatsViewer [newPlayerSeatIndex] != null)
+            return;
+         
          // ...
          
          if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Pending)
@@ -1328,11 +1379,15 @@ package editor.entity.dialog {
          
          // ...
          
-         mCurrentInstance.mSeatsClientDataFormatVersion [newPlayerSeatIndex] = clientDataFormatVersion;
-         mCurrentInstance.mSeatsLastPongTime [newPlayerSeatIndex] = getTimer ();
          mCurrentInstance.mSeatsViewer [newPlayerSeatIndex] = designViewer;
          
+         mCurrentInstance.mSeatsClientDataFormatVersion [newPlayerSeatIndex] = clientDataFormatVersion;
+         mCurrentInstance.mSeatsLastPongTime [newPlayerSeatIndex] = getTimer ();
+         
          // ...
+         
+         var numSeats:int = mCurrentInstance.mNumSeats;
+         var seatIndex:int;
          
          var messagesData:ByteArray;
          
@@ -1340,7 +1395,8 @@ package editor.entity.dialog {
          
          messagesData = GetInstanceSeatClientStream (newPlayerSeatIndex);
          
-         // basic info
+         // ...
+         
          WriteMessage_InstanceBasicInfo (messagesData, newPlayerSeatIndex);
          
          UpdateInstanceSeatClientStreamHeader (newPlayerSeatIndex);
@@ -1348,46 +1404,116 @@ package editor.entity.dialog {
          // ...
          
          var transitted:Boolean = TryToTransitPhaseFromPendingToPlaying (false);
-            // if transitted, then the CurrentPhase message has already been sent.
+            // if transitted, then the CurrentPhase message has already been sent in the above calling.
+         
+         if (! transitted)
+         {
+            //messagesData = GetInstanceSeatClientStream (newPlayerSeatIndex);
+            
+            WriteMessage_InstanceCurrentPhase (messagesData);
+            
+            UpdateInstanceSeatClientStreamHeader (newPlayerSeatIndex);
+         }
          
          // ...
          
-         var numSeats:int = mCurrentInstance.mNumSeats;
-         for (var seatIndex:int = 0; seatIndex < numSeats; ++ seatIndex)
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
          {
+            // ...
+            
+            WriteMessage_SeatBasicInfo (messagesData, seatIndex);
+            
+            UpdateInstanceSeatClientStreamHeader (newPlayerSeatIndex);
+            
+            // ...
+            
+            WriteMessage_SeatDynamicInfo (messagesData, seatIndex);
+            
+            UpdateInstanceSeatClientStreamHeader (newPlayerSeatIndex);
+         }
+         
+         // ...
+         
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+         {
+            if (seatIndex == newPlayerSeatIndex)
+               continue;
+            
             messagesData = GetInstanceSeatClientStream (seatIndex);
             
             // ...
             
-            if (! transitted)
-            {
-               WriteMessage_InstanceCurrentPhase (messagesData);
-               
-               UpdateInstanceSeatClientStreamHeader (seatIndex);
-            }
+            WriteMessage_SeatBasicInfo (messagesData, newPlayerSeatIndex)
+            
+            UpdateInstanceSeatClientStreamHeader (seatIndex);
             
             // ...
             
-            var iSeat:int;
+            WriteMessage_SeatDynamicInfo (messagesData, newPlayerSeatIndex);
             
-            for (iSeat = 0; iSeat < numSeats; ++ iSeat)
-            {
-               WriteMessage_SeatBasicInfo (messagesData, iSeat)
-               
-               UpdateInstanceSeatClientStreamHeader (seatIndex);
-            }
-            
-            for (iSeat = 0; iSeat < numSeats; ++ iSeat)
-            {
-               WriteMessage_SeatDynamicInfo (messagesData, iSeat)
-               
-               UpdateInstanceSeatClientStreamHeader (seatIndex);
-            }
-            
-            // ...
-             
+            UpdateInstanceSeatClientStreamHeader (seatIndex);
+         }
+         
+         // ...
+         
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+         {
             FlushInstanceSeatClientStream (seatIndex);
          }
+      }
+      
+      private function OnPlayerLogOffInstanceServer (designViewer:Viewer):void
+      {
+         if (mCurrentInstance == null)
+            return;
+         
+         var senderSeatIndex:int = mCurrentInstance.mSeatsViewer.indexOf (designViewer);
+         if (senderSeatIndex < 0)
+            return;
+         
+         // ...
+         
+         var messagesData:ByteArray = GetInstanceSeatClientStream (senderSeatIndex);
+         
+         WriteMessage_LoggedOff (messagesData);
+         
+         UpdateInstanceSeatClientStreamHeader (senderSeatIndex);
+         
+         // ...
+         
+         var numSeats:int = mCurrentInstance.mNumSeats;
+         var seatIndex:int;
+         
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+         {
+            if (seatIndex == senderSeatIndex)
+               continue;
+            
+            messagesData = GetInstanceSeatClientStream (seatIndex);
+            
+            // ...
+            
+            WriteMessage_SeatBasicInfo (messagesData, senderSeatIndex)
+            
+            UpdateInstanceSeatClientStreamHeader (seatIndex);
+            
+            // ...
+            
+            WriteMessage_SeatDynamicInfo (messagesData, senderSeatIndex);
+            
+            UpdateInstanceSeatClientStreamHeader (seatIndex);
+         }
+         
+         // ...
+         
+         for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
+         {
+            FlushInstanceSeatClientStream (seatIndex);
+         }
+         
+         // ...
+         
+         BreakSeatConnection (senderSeatIndex);
       }
       
       private function OnPing (designViewer:Viewer):void
@@ -1435,27 +1561,38 @@ package editor.entity.dialog {
       }
 
       // messageEncryptionMethod and messageCipherData are only valid for messages needing to hold.
-      private function OnChannelMessage (designViewer:Viewer, channelIndex:int, theMessageData:ByteArray, messageEncryptionMethod:int, messageCipherData:ByteArray):void
+      private function OnChannelMessage (designViewer:Viewer, channelIndex:int, verifyNumber:int, theMessageData:ByteArray, messageEncryptionMethod:int, messageCipherData:ByteArray):void
       {
+trace ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 000");
          if (mCurrentInstance == null)
             return;
          
+trace ("111");
          if (mCurrentInstance.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
             return;
          
+trace ("222");
          var senderSeatIndex:int = mCurrentInstance.mSeatsViewer.indexOf (designViewer);
          if (senderSeatIndex < 0)
             return;
          
+trace ("333");
          var channel:Object = mCurrentInstance.mChannels [channelIndex];
          if (channel == null)
             return;
          
+trace ("444");
          mCurrentInstance.mSeatsLastPongTime [senderSeatIndex] = getTimer ();
          
          if (! channel.mIsSeatsEnabled [senderSeatIndex])
             return;
          
+trace ("555 (channel.mVerifyNumber & 0xFFFF) = " +(channel.mVerifyNumber & 0xFFFF) + ", verifyNumber = " + verifyNumber);
+
+         if ((channel.mVerifyNumber & 0xFFFF) != verifyNumber)
+            return;
+         
+trace ("666");
          var numSeats:int = mCurrentInstance.mNumSeats;
          var seatIndex:int;
          var messagesData:ByteArray;
@@ -1476,11 +1613,21 @@ package editor.entity.dialog {
                {
                   messagesData = GetInstanceSeatClientStream (seatIndex);
                   
-                  WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, senderSeatIndex);
+                  // ...
+                  
+                  WriteMessage_ChannelSeatInfo (messagesData, channelIndex, senderSeatIndex);
                   
                   UpdateInstanceSeatClientStreamHeader (seatIndex);
                   
-                  WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, nextEnabledSeatIndex);
+                  // ...
+                  
+                  WriteMessage_ChannelSeatInfo (messagesData, channelIndex, nextEnabledSeatIndex);
+                  
+                  UpdateInstanceSeatClientStreamHeader (seatIndex);
+            
+                  // ...
+                  
+                  WriteMessage_ChannelDynamicInfo (messagesData, channelIndex);
                   
                   UpdateInstanceSeatClientStreamHeader (seatIndex);
                }
@@ -1508,11 +1655,10 @@ package editor.entity.dialog {
                var wegoMessageEncryptionIndexes:Array = channel.mSeatsMessageEncryptionIndex;
                var wegoMessagesEncryptionMethod:Array = channel.mSeatsMessageEncryptionMethod;
                
-               messageEncryptionMethod 
-               
                if (wegoMessages != null && wegoMessages [senderSeatIndex] == null)
                {
                   channel.mIsSeatsEnabled [senderSeatIndex] = false;
+                  channel.mIsSeatsMessageInHolding [senderSeatIndex] = true;
                   
                   if (messageEncryptionMethod >= 0)
                   {
@@ -1529,7 +1675,8 @@ package editor.entity.dialog {
                   var allHaveSent:Boolean = true;
                   for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
                   {
-                     if (wegoMessages [seatIndex] == null)
+                     //if (wegoMessages [seatIndex] == null) // bug! may be "pass" null data
+                     if (! channel.mIsSeatsMessageInHolding [seatIndex])
                      {
                         allHaveSent = false;
                         break;
@@ -1553,10 +1700,18 @@ package editor.entity.dialog {
                      for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
                      {
                         messagesData = GetInstanceSeatClientStream (seatIndex);
+                  
+                        // ...
+                        
+                        WriteMessage_ChannelDynamicInfo (messagesData, channelIndex);
+                        
+                        UpdateInstanceSeatClientStreamHeader (seatIndex);
+                        
+                        // ...
                         
                         for (iSeat = 0; iSeat < numSeats; ++ iSeat)
                         {
-                           WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, iSeat);
+                           WriteMessage_ChannelSeatInfo (messagesData, channelIndex, iSeat);
                            
                            UpdateInstanceSeatClientStreamHeader (seatIndex);
                         }
@@ -1571,7 +1726,7 @@ package editor.entity.dialog {
                      //{
                      //   messagesData = GetInstanceSeatClientStream (seatIndex);
                      //   
-                     //   WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, senderSeatIndex);
+                     //   WriteMessage_ChannelSeatInfo (messagesData, channelIndex, senderSeatIndex);
                      //   
                      //   UpdateInstanceSeatClientStreamHeader (seatIndex);
                      //}
@@ -1580,7 +1735,7 @@ package editor.entity.dialog {
                      
                      messagesData = GetInstanceSeatClientStream (senderSeatIndex);
                      
-                     WriteMessage_ChannelDynamicInfo (messagesData, channelIndex, senderSeatIndex);
+                     WriteMessage_ChannelSeatInfo (messagesData, channelIndex, senderSeatIndex);
                      
                      UpdateInstanceSeatClientStreamHeader (senderSeatIndex);
                   }
@@ -1607,6 +1762,8 @@ package editor.entity.dialog {
                      {
                         messagesData = GetInstanceSeatClientStream (seatIndex);
                         
+                        // ...
+                        
                         for (iSeat = 0; iSeat < numSeats; ++ iSeat)
                         {
                            if (wegoMessageEncryptionIndexes [iSeat] >= 0)
@@ -1622,6 +1779,7 @@ package editor.entity.dialog {
                      
                      for (seatIndex = 0; seatIndex < numSeats; ++ seatIndex)
                      {
+                        channel.mIsSeatsMessageInHolding [seatIndex] = false;
                         wegoMessages [seatIndex] = null;
                         wegoMessageEncryptionIndexes [seatIndex] = -1;
                         wegoMessagesEncryptionMethod [seatIndex] = -1;
@@ -1659,6 +1817,8 @@ package editor.entity.dialog {
          var senderSeatIndex:int = mCurrentInstance.mSeatsViewer.indexOf (designViewer);
          if (senderSeatIndex < 0)
             return;
+         
+         mCurrentInstance.mSeatsLastPongTime [senderSeatIndex] = getTimer ();
          
          // ... 
          
@@ -1755,7 +1915,7 @@ package editor.entity.dialog {
                var messageEncryptionMethod:int = -1;
                var messageCipherData:ByteArray = null;
                
-//trace (">>> clientMessageType = " + clientMessageType);
+//trace (">>> clientMessageType = 0x" + clientMessageType.toString (16));
                switch (clientMessageType)
                {
                // ...
@@ -1796,6 +1956,12 @@ package editor.entity.dialog {
                                                  );
                      
                      break;
+                     
+                  case MultiplePlayerDefine.ClientMessageType_ExitCurrentInstance:
+                     
+                     OnPlayerLogOffInstanceServer (designViewer);
+                     
+                     break;
                
                // for all following cases, 
                //   clientDataFormatVersion = mCurrentInstance.mSeatsClientDataFormatVersion [playerSeatIndex]
@@ -1812,10 +1978,6 @@ package editor.entity.dialog {
                      OnPong (designViewer);
                
                      break;
-                     
-                  case MultiplePlayerDefine.ClientMessageType_ExitCurrentInstance:
-                     
-                     break;
                
                   case MultiplePlayerDefine.ClientMessageType_ChannelMessageWithEncrption:
                      
@@ -1829,6 +1991,7 @@ package editor.entity.dialog {
                   case MultiplePlayerDefine.ClientMessageType_ChannelMessage:
                      
                      var messageChannelIndex:int = messagesData.readByte ();
+                     var messageChannelVerifyNumber:int = (messagesData.readShort () & 0xFFFF);
                      var messageChannelMessageLength:int = messagesData.readInt ();
                      var messageChannelMessageData:ByteArray = null;
                      
@@ -1848,13 +2011,11 @@ package editor.entity.dialog {
                         messageCipherData = new ByteArray ();
                      }
                      
-                     OnChannelMessage (designViewer, messageChannelIndex, messageChannelMessageData, messageEncryptionMethod, messageCipherData);
+                     OnChannelMessage (designViewer, messageChannelIndex, messageChannelVerifyNumber, messageChannelMessageData, messageEncryptionMethod, messageCipherData);
                      
                      break;
                      
                   case MultiplePlayerDefine.ClientMessageType_Signal_RestartInstance:
-                     
-                     var signalType:int = messagesData.readShort ();
                      
                      var numPlayedGames:int = messagesData.readInt ();
                      

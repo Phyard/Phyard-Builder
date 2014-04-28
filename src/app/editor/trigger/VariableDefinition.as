@@ -202,6 +202,8 @@ package editor.trigger {
       
       //public var mIsReference:Boolean = false;
       
+      protected var mIsVisible:Boolean = true; // some reserved parameters may be not visible to designers.
+      
       // cancelled to unref TriggerEngine
       //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
@@ -233,6 +235,11 @@ package editor.trigger {
          //   //if (options.mDefaultSourceType != undefined)
          //   //   mDefaultSourceType = int (options.mDefaultSourceType);
          //}
+         
+         if (mOptions.mIsVisible != undefined)
+         {
+            mIsVisible = mOptions.mIsVisible;
+         }
       }
       
       public function GetClass ():ClassDefinition
@@ -289,6 +296,11 @@ package editor.trigger {
       public function AllowVariablesOfOtherClasses ():Boolean
       {
          return mOptions.mAllowVariablesOfOtherClasses;
+      }
+      
+      public function IsVisible ():Boolean
+      {
+         return mIsVisible;
       }
       
 //==============================================================================

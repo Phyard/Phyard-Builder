@@ -983,10 +983,10 @@ package player.world {
          // delay handle system events
          // In flash, only valid when k==0 in fact
          //-----------------------------
-
+         
+         HandleUpdateMultiplePlayerEvents ();
          HandleAllCachedSystemEvents ();
          ClearAllCachedSystemEvents ();
-         SetGameInstanceInfoChangedInLastStep (false);
 
          for (k = 0; k < speedX; ++ k)
          {

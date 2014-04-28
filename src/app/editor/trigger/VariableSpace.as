@@ -198,19 +198,27 @@ package editor.trigger {
       {
          var count:int = GetNumVariableInstances ();
 
-         if (variableDefinition.AllowVariablesOfOtherClasses ())
-            return count > 0;
+         //if (variableDefinition.AllowVariablesOfOtherClasses ()) // moved to below for now there are hidden parameters, so this is not correct any more.
+         //   return count > 0;
             
          var viDef:VariableDefinition;
          for (var i:int = 0; i < count; ++ i)
          {
             viDef = GetVariableInstanceAt (i).GetVariableDefinition ();
+            
             if (viDef != null) // always
             {
+               if (variableDefinition.AllowVariablesOfOtherClasses ())
+               {
+                  if (viDef.IsVisible ())
+                     return true;
+               }
+               
                var compitable:Boolean = variableDefinition.IsCompatibleWith (viDef) || viDef.IsCompatibleWith (variableDefinition);
                if (inPhaseForAddingVariablesOfOtherClasses)
                   compitable = ! compitable;
                
+               compitable &&= viDef.IsVisible ();
                if (compitable)
                   return true;
                
@@ -307,6 +315,7 @@ package editor.trigger {
                if (inPhaseForAddingVariablesOfOtherClasses)
                   campatible = ! campatible;
                
+               campatible &&= viDef.IsVisible ();
                if (campatible)
                {
                   item = new Object ();

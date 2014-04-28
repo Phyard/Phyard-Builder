@@ -47,7 +47,6 @@
                //MultiplePlayer_CreateInstanceDefine:Function; // v2.06
                //MultiplePlayer_CreateInstanceChannelDefine:Function; // v2.06
                //MultiplePlayer_ReplaceInstanceChannelDefine:Function; // v2.06
-               //MultiplePlayer_JoinNewInstance:Function; // v2.06
                //MultiplePlayer_JoinRandomInstance:Function; // v2.06
                //MultiplePlayer_ExitInstance:Function; // v2.06
                //MultiplePlayer_SendChannelMessage:Function; // v2.06

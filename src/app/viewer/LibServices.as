@@ -56,11 +56,11 @@
    {
       if (mMultiplePlayerInstanceInfo != null && mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing)
       {
-         // ...
+         // update local predictions.
       }
       
-      if (mCurrentJointInstanceRequestData != null)
-      {
+      if (mCurrentJointInstanceRequestData != null && mIsGettingInstanceServerInfo == false)
+      {  
          if (mJoinInstanceFrequencyStat.Hit (getTimer ()))
          {
             mCurrentJointInstanceRequestData.position = 0;
@@ -72,8 +72,8 @@
          
          return;
       }
-      
-      if (GetNumCachedClientMessages () > 0)
+
+      if (GetNumCachedClientMessages () > 0 && IsInstanceServerConnected ())
       {
          if (mClientMessagesFrequencyStat.Hit (getTimer ()))
          {
@@ -90,64 +90,106 @@
    }
    
 //======================================================
-// client -> server 
+// client -> mp http server
 //======================================================
    
-   private static var mNextRequestID:int = 0;
+   private static const kGetInstanceServerInfoURL:String = "http://www.phyard.com/api/instance/serverinfo";
    
-   // start server
-   private static const kStartServer:String = "http://mp.phyard.com/";
+   private static const kTestingWithLocalServers:Boolean = false; // for editor mode only
+   private static const kGetInstanceServerInfoURL_LocalServer:String = "http://192.168.6.131:12345/api/instance/serverinfo";
    
-   // lobby server
-   private var mMultiplePlayerSchedulerServerAddress:String = "http://mpsdl.phyard.com/bapi/"; // binary api calling entry
+   private var mIsGettingInstanceServerInfo:Boolean = false;
    
    private function SendMultiplePlayerClientMessagesToSchedulerServer (messagesData:ByteArray):void
    {
-      if (mParamsFromEditor != null)
+      if (mParamsFromEditor != null && kTestingWithLocalServers == false)
       {
          mParamsFromEditor.OnMultiplePlayerClientMessagesToSchedulerServer (messagesData, this);
       }
       else
       {
-         // URLLoader
+         DisonnectToInstanceServer ();
+         
+         var serverinfoGetURL:String = mParamsFromEditor != null ? kGetInstanceServerInfoURL_LocalServer : kGetInstanceServerInfoURL;
+         
+         var request:URLRequest = new URLRequest (serverinfoGetURL);
+         request.method = URLRequestMethod.POST;
+         request.data = messagesData;
+         request.contentType = "binary/octet-stream";
+         request.requestHeaders.push(new URLRequestHeader('Cache-Control', 'no-cache'));
+
+         var loader:URLLoader = new URLLoader ();
+         loader.dataFormat = URLLoaderDataFormat.BINARY;
+
+         loader.addEventListener(Event.COMPLETE, OnGetInstanceServerInfoCompleted);
+         //loader.addEventListener(ProgressEvent.PROGRESS, OnLoadingDataProgress);
+         loader.addEventListener(IOErrorEvent.IO_ERROR, OnGetInstanceServerInfoError);
+         loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnGetInstanceServerInfoError);
+
+         loader.load (request);
+         
+         mIsGettingInstanceServerInfo = true;
       }
    }
+
+   private function OnGetInstanceServerInfoCompleted (event:Event):void
+   {
+      var loader:URLLoader = URLLoader(event.target);
+
+      var data:ByteArray = ByteArray (loader.data);
+      
+      OnMultiplePlayerServerMessages (data);
+      
+      mIsGettingInstanceServerInfo = false;
+   }
    
-   //---------------
+   private function OnGetInstanceServerInfoError (event:Object):void
+   {
+      mIsGettingInstanceServerInfo = false;
+   }
+   
+//======================================================
+// client -> mp socket server
+//======================================================
    
    private function SendMultiplePlayerClientMessagesToInstanceServer (messagesData:ByteArray):void
    {
-      if (mParamsFromEditor != null)
+      if (mParamsFromEditor != null && kTestingWithLocalServers == false)
       {
          mParamsFromEditor.OnMultiplePlayerClientMessagesToInstanceServer (messagesData, this);
       }
-      else
+      else if (IsInstanceServerConnected ())
       {
-         if (mMultiplePlayerInstanceInfo.mServerSocket != null)
-         {
-            // mMultiplePlayerInstanceInfo.mServerSocket.writeBytes
-         }
-      }
-   }
-   
-   private function DisonnectToInstanceServer ():void
-   {
-      if (mMultiplePlayerInstanceInfo.mIsServerConnected)
-      {
-         if (mMultiplePlayerInstanceInfo.mServerSocket != null && mMultiplePlayerInstanceInfo.mServerSocket.connected)
-         {
+         //if (mMultiplePlayerInstanceInfo.mServerSocket != null)
+         //{
             try
             {
-               var theSocket:Socket = mMultiplePlayerInstanceInfo.mServerSocket;
-               mMultiplePlayerInstanceInfo.mServerSocket = null;
-               theSocket.close ();
+               mMultiplePlayerInstanceInfo.mServerSocket.writeBytes (messagesData);
+               mMultiplePlayerInstanceInfo.mServerSocket.flush ();
             }
             catch (error:Error)
             {
+               // DisonnectToInstanceServer ();
             }
+         //}
+      }
+   }
+   
+   //----------------------------------
+   
+   private function DisonnectToInstanceServer ():void
+   {
+      if (IsInstanceServerConnected ())
+      {
+         try
+         {
+            mMultiplePlayerInstanceInfo.mServerSocket.close ();
+         }
+         catch (error:Error)
+         {
          }
          
-         OnInstanceServerClosed (null);
+         SetInstanceServerConnectionStatus (false);
       }
    }
    
@@ -169,8 +211,8 @@
                
                theSocket.addEventListener(Event.CLOSE, OnInstanceServerClosed);
                theSocket.addEventListener(Event.CONNECT, OnInstanceServerConnected);
-               theSocket.addEventListener(IOErrorEvent.IO_ERROR, OnInstanceServerClosed);
-               theSocket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnInstanceServerClosed);
+               theSocket.addEventListener(IOErrorEvent.IO_ERROR, OnInstanceServerError);
+               theSocket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnInstanceServerError);
                theSocket.addEventListener(ProgressEvent.SOCKET_DATA, OnInstanceServerSocketData);
                
                theSocket.connect (mMultiplePlayerInstanceInfo.mServerAddress, mMultiplePlayerInstanceInfo.mServerPort);
@@ -187,10 +229,10 @@
    
    private function OnInstanceServerConnected (event:Event = null):void
    {
-      if (event != null && event.target != mMultiplePlayerInstanceInfo.mServerSocket)
+      if (event != null && event.target != mMultiplePlayerInstanceInfo.mServerSocket) // here is &&
          return; // this may be previous discarded socket. 
       
-      mMultiplePlayerInstanceInfo.mIsServerConnected = true;
+      SetInstanceServerConnectionStatus (true);
       
       mClientMessagesFrequencyStat.Reset ();
       ClearCachedClientMessages ();
@@ -201,26 +243,84 @@
    // event == null means close-manually
    private function OnInstanceServerClosed (event:Event = null):void
    {
-      if (event != null && event.target != mMultiplePlayerInstanceInfo.mServerSocket)
-         return; // this may be previous discarded socket. 
-      
-      // ...
-      
-      mMultiplePlayerInstanceInfo.mIsServerConnected = false;
-      
-      mMultiplePlayerInstanceInfo.mIsServerLoggedIn = false;
-   }
-   
-   private function OnInstanceServerSocketData (event:ProgressEvent):void
-   {
-      if (event == null || event.target != mMultiplePlayerInstanceInfo.mServerSocket)
+      if (event == null || event.target != mMultiplePlayerInstanceInfo.mServerSocket) // here is ||
          return;
       
       // ...
       
-      //var newMessagesData:ByteArray = new ByteArray ();
+      mMultiplePlayerInstanceInfo.mServerSocket = null;
+
+      SetInstanceServerConnectionStatus (false);
+   }
+   
+   private function OnInstanceServerError (event:Event):void
+   {
+      if (event == null || event.target != mMultiplePlayerInstanceInfo.mServerSocket) // here is ||
+         return; 
       
-      //OnMultiplePlayerServerMessages (newMessagesData);
+      DisonnectToInstanceServer ();
+   }
+   
+   private function OnInstanceServerSocketData (event:ProgressEvent):void
+   {
+      if (event == null || event.target != mMultiplePlayerInstanceInfo.mServerSocket) // here is ||
+         return;
+      
+      // ...
+      
+      while (IsInstanceServerConnected () && mMultiplePlayerInstanceInfo.mCachedServerMessages != null)
+      {
+         if (mMultiplePlayerInstanceInfo.mCachedServerMessages.length == 0)
+         { 
+            if (mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable >= MultiplePlayerDefine.ServerMessageHeadString.length + 4)
+            {
+               mMultiplePlayerInstanceInfo.mServerSocket.readBytes (mMultiplePlayerInstanceInfo.mCachedServerMessages,
+                                                                    0,
+                                                                    MultiplePlayerDefine.ServerMessageHeadString.length + 4
+                                                                    );
+               
+               continue;
+            }
+            
+            break;
+         }
+         else
+         {     
+            mMultiplePlayerInstanceInfo.mCachedServerMessage.position = 0;
+            if (MultiplePlayerDefine.ServerMessageHeadString != mMultiplePlayerInstanceInfo.mCachedServerMessage.readUTFBytes (MultiplePlayerDefine.ServerMessageHeadString.length))
+            {
+               // bad message
+               break;
+            }
+         
+            //mMultiplePlayerInstanceInfo.mCachedServerMessage.position = MultiplePlayerDefine.ServerMessageHeadString.length;
+            var messagesLength:int = mMultiplePlayerInstanceInfo.mCachedServerMessage.readInt ();
+            var numPendingBytes:int = messagesLength - mMultiplePlayerInstanceInfo.mCachedServerMessages.length;
+            if (numPendingBytes <= 0)
+            {
+               // error
+               break;
+            }
+            
+            var numBytesToRead:int = Math.min (numPendingBytes, mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
+            mMultiplePlayerInstanceInfo.mServerSocket.readBytes (mMultiplePlayerInstanceInfo.mCachedServerMessages,
+                                                                 mMultiplePlayerInstanceInfo.mCachedServerMessages.length,
+                                                                 numBytesToRead
+                                                                 );
+            
+            if (numPendingBytes == numBytesToRead)
+            {
+               mMultiplePlayerInstanceInfo.mCachedServerMessage.position = 0;
+               OnMultiplePlayerServerMessages (mMultiplePlayerInstanceInfo.mCachedServerMessages);
+               mMultiplePlayerInstanceInfo.mCachedServerMessages.length = 0;
+            }
+            
+            if (mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable <= 0)
+            {
+               break;
+            }
+         }
+      }
    }
    
 //======================================================
@@ -229,15 +329,20 @@
    
    private var mMultiplePlayerInstanceInfo:Object =  
    {
-            mServerSocket : null,  // step 1
+            //mSchedulerServerSocket : null.
+            //mSchedulerServerAddress : null,
+            //mSchedulerServerPort : 0,
+            //mSchedulerServerConnected : false,
             
+            mServerSocket : null,  // step 1
             mServerAddress : null,
             mServerPort : 0,
-            
             mIsServerConnected : false, // step 2
             
             mID : "", // instance id, null or blank means invalid
             mMyConnectionID : "", // pls keep it non-null
+            
+            mCachedServerMessages : null,
             
             mIsServerLoggedIn : false, // step 3
             
@@ -249,9 +354,9 @@
 
             mNumSeats : 0,
             mMySeatIndex : -1,
-            mSeatsPlayerName : null,
-            mSeatsLastActiveTime : null,
-            mIsSeatsConnected : null,
+            mSeatsPlayerName : null, // [mNumSeats]
+            mSeatsLastActiveTime : null, // [mNumSeats]
+            mIsSeatsConnected : null, // [mNumSeats]
             
             mChannelsInfo : null,
                      // mChannelMode
@@ -273,12 +378,38 @@
    
    private function IsInstanceServerConnected ():Boolean
    {
-      return mMultiplePlayerInstanceInfo.mIsServerConnected;
+      return   mMultiplePlayerInstanceInfo.mIsServerConnected;
+            // for editor mode, socket is null
+            //&& mMultiplePlayerInstanceInfo.mServerSocket != null
+            //&& mMultiplePlayerInstanceInfo.mServerSocket.connected;
    }
    
    private function IsInstanceServerLoggedIn ():Boolean
    {
       return IsInstanceServerConnected () && mMultiplePlayerInstanceInfo.mIsServerLoggedIn;
+   }
+   
+   private function SetInstanceServerConnectionStatus (connected:Boolean):void
+   {
+      if (mMultiplePlayerInstanceInfo.mIsServerConnected != connected)
+      {
+         var connBroken:Boolean = mMultiplePlayerInstanceInfo.mIsServerConnected;
+         
+         mMultiplePlayerInstanceInfo.mIsServerConnected = connected;
+         
+         if (connBroken)
+         {
+            mMultiplePlayerInstanceInfo.mIsServerLoggedIn = false;
+            
+            mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "LoggedOut"});
+         }
+         else
+         {
+            mMultiplePlayerInstanceInfo.mCachedServerMessages = new ByteArray ();
+            
+            //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "Connected"});
+         }
+      }
    }
    
    private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceId:String, connectionId:String):void
@@ -294,7 +425,8 @@
       mMultiplePlayerInstanceInfo.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Inactive;
    }
    
-   private function SetInstanceBasicInfo (id:String, numPlayedGames:int, numSeats:int, mySeatIndex:int):void
+   // const info is only sent when player logs in.
+   private function SetInstanceConstInfo (id:String, numSeats:int):void
    {
       if (! mMultiplePlayerInstanceInfo.mIsServerConnected) // possible
          return;
@@ -302,46 +434,55 @@
          return;
       if (numSeats < MultiplePlayerDefine.MinNumberOfInstanceSeats || numSeats > MultiplePlayerDefine.MaxNumberOfInstanceSeats)
          return;
-      if (mySeatIndex < 0 || mySeatIndex >= numSeats)
-         return;
       
       mMultiplePlayerInstanceInfo.mIsServerLoggedIn = true;
       
-      mMultiplePlayerInstanceInfo.mNumPlayedGames = numPlayedGames;
       mMultiplePlayerInstanceInfo.mNumSeats = numSeats;
-      mMultiplePlayerInstanceInfo.mMySeatIndex = mySeatIndex;
       
       mMultiplePlayerInstanceInfo.mSeatsPlayerName = new Array (numSeats);
       mMultiplePlayerInstanceInfo.mSeatsLastActiveTime = new Array (numSeats);
       mMultiplePlayerInstanceInfo.mIsSeatsConnected = new Array (numSeats);
       
-      mMultiplePlayerInstanceInfo.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Pending;
+      // ...
+      
+      mMultiplePlayerInstanceInfo.mChannelsInfo = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "InstanceBasicInfo"});
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "LoggedIn"});
    }
    
-   private function SetInstanceCurrentPhase (phase:int):void
+   private function SetInstancePlayInfo (numPlayedGames:int, mySeatIndex:int):void
    {
-      if (     mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing 
-            && phase == MultiplePlayerDefine.InstancePhase_Playing)
-      {
-         mMultiplePlayerInstanceInfo.mChannelsInfo = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
-         
-         mMultiplePlayerInstanceInfo.mPendingEncryptedMessages = new Dictionary ();
-      }
-      else if (mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing 
-            && phase != MultiplePlayerDefine.InstancePhase_Playing)
-      {
-         mMultiplePlayerInstanceInfo.mChannelsInfo = null;
-         
-         mMultiplePlayerInstanceInfo.mPendingEncryptedMessages = null;
-      }
+      if (mySeatIndex < 0 || mySeatIndex >= mMultiplePlayerInstanceInfo.mNumSeats)
+         return;
       
-      mMultiplePlayerInstanceInfo.mCurrentPhase = phase;
+      mMultiplePlayerInstanceInfo.mNumPlayedGames = numPlayedGames;
+      mMultiplePlayerInstanceInfo.mMySeatIndex = mySeatIndex;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "InstancePhaseInfo"});
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "InstanceReset"});
+   }
+   
+   private function SetInstanceCurrentPhase (newPhase:int):void
+   {
+      var phaseChanged:Boolean = (mMultiplePlayerInstanceInfo.mCurrentPhase != newPhase);
+      
+      if (phaseChanged)
+      {
+         if (newPhase == MultiplePlayerDefine.InstancePhase_Playing)
+         {
+            mMultiplePlayerInstanceInfo.mPendingEncryptedMessages = new Dictionary ();
+         }
+         else if (mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing)
+         {
+            mMultiplePlayerInstanceInfo.mPendingEncryptedMessages = null;
+         }
+         
+         mMultiplePlayerInstanceInfo.mCurrentPhase = newPhase;
+         
+         // ...
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "PhaseChanged"});
+      }
    }
    
    private function SetSeatBasicInfo (seatIndex:int, playerName:String):void
@@ -357,7 +498,7 @@
       mMultiplePlayerInstanceInfo.mSeatsPlayerName [seatIndex] = playerName;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "SeatBasicInfo"});
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "SeatBasicInfoChanged"});
    }
    
    private function SetSeatDanymicInfo (seatIndex:int, lastActiveTime:int, isConnected:Boolean):void
@@ -373,13 +514,11 @@
       mMultiplePlayerInstanceInfo.mIsSeatsConnected [seatIndex] = isConnected;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "SeatDanymicInfo"});
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "SeatDanymicInfoChanged"});
    }
    
    private function SetChannelConstInfo (channelIndex:int, mode:int, timeoutX8:int):void
    {
-      if (mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
-         return;
       if (mMultiplePlayerInstanceInfo.mChannelsInfo == null)
          return;
       if (channelIndex < 0 || channelIndex >= MultiplePlayerDefine.MaxNumberOfInstanceChannels)
@@ -404,7 +543,7 @@
       channelInfo.mTurnTimeoutMilliseconds = timeoutX8 * 125.0;
       
       // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "ChannelConstInfo"});
+      //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "ChannelConstInfo"}); // along with "LoggedIn"
    }
    
    // SetChannelConstInfo muse be called before this function.
@@ -420,6 +559,9 @@
          return;
       
       channelInfo.mVerifyNumber = verifyNumber;
+      
+      // ...
+      //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "ChannelDynamicInfoChanged"}); // not visible to designers
    }
    
    // SetChannelConstInfo muse be called before this function.
@@ -446,10 +588,7 @@
       channelInfo.mSeatsLastEnableTime [seatIndex] = enabledTime;
       
       // ...
-      if (mWorldDesignProperties != null)
-      {
-         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mInfoType: "ChannelDynamicInfo"});
-      }
+      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "ChannelSeatInfoChanged"});
    }
    
    private function OnInstanceChannelMessage (channelIndex:int, senderSeatIndex:int, messageData:ByteArray):void
@@ -534,15 +673,24 @@
 // 
 //======================================================
    
+   private var mPosOfNumMessagesInHeader:int = 0; // will be updated correctly.
+   
    private function WriteMultiplePlayerMessagesHeader (messagesData:ByteArray, numMessages:int):void
    {
       if (messagesData == null)
          return;
       
+      var currentDataLength:int = messagesData.length;
+      
       messagesData.position = 0;
-
-      messagesData.writeInt (messagesData.length); // the whole length 
-      messagesData.writeShort (numMessages);
+      
+      messagesData.writeUTFBytes (MultiplePlayerDefine.ClientMessageHeadString);
+      
+      messagesData.writeInt (currentDataLength); // the whole length
+      
+      mPosOfNumMessagesInHeader = messagesData.position;
+      
+      messagesData.writeShort (numMessages); // some messages need to be handled together.
    }
    
    //---------
@@ -591,19 +739,19 @@
 // write client messages
 //======================================================
    
-   private function WriteMessage_CreateInstance (buffer:ByteArray, instanceDefineData:ByteArray, password:String):void
-   {     
-      WriteMultiplePlayerMessagesHeader (buffer, 0);
-      
-      buffer.writeShort (MultiplePlayerDefine.ClientMessageType_CreateInstance);
-      buffer.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
-      buffer.writeInt (instanceDefineData.length);
-      buffer.writeBytes (instanceDefineData);
-      buffer.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
-      buffer.writeUTF (password);
-      
-      WriteMultiplePlayerMessagesHeader (buffer, 1);
-   }
+   //private function WriteMessage_CreateInstance (buffer:ByteArray, instanceDefineData:ByteArray, password:String):void
+   //{     
+   //   WriteMultiplePlayerMessagesHeader (buffer, 0);
+   //   
+   //   buffer.writeShort (MultiplePlayerDefine.ClientMessageType_CreateInstance);
+   //   buffer.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
+   //   buffer.writeInt (instanceDefineData.length);
+   //   buffer.writeBytes (instanceDefineData);
+   //   buffer.writeUTF (password);
+   //   buffer.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
+   //   
+   //   WriteMultiplePlayerMessagesHeader (buffer, 1);
+   //}
    
    private function WriteMessage_JoinRandomInstance (buffer:ByteArray, instanceDefineData:ByteArray):void
    {     
@@ -622,6 +770,9 @@
    
    private function WriteMessage_Ping ():void
    {
+      if (! IsInstanceServerLoggedIn ())
+         return;
+      
       // ...
       
       var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
@@ -635,6 +786,9 @@
    
    private function WriteMessage_Pong ():void
    {
+      if (! IsInstanceServerLoggedIn ())
+         return;
+      
       // ...
 
       var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
@@ -648,6 +802,9 @@
    
    private function WriteMessage_LoginInstanceServer ():void
    {
+      if (! IsInstanceServerConnected ()) // here is connected or loggedin
+         return;
+      
       // ...
       
       var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
@@ -662,21 +819,29 @@
       UpdateCachedClientMessagesHeader ();
    }
    
-   private function WriteMessage_ExitCurrentInstance ():void
-   {
-      // ...
-      
-      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
-      
-      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ExitCurrentInstance);
-      
-      // ...
-      
-      UpdateCachedClientMessagesHeader ();
-   }
+   //private function WriteMessage_ExitCurrentInstance ():void
+   //{
+   //   if (! IsInstanceServerLoggedIn ()) // here need "logged in" to send message, but the player may be not logged in yet. So it is hard to break connection gracefully.
+   //      return;
+   //   
+   //   // ...
+   //   
+   //   var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+   //   
+   //   cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ExitCurrentInstance);
+   //   
+   //   // ...
+   //   
+   //   UpdateCachedClientMessagesHeader ();
+   //}
    
    private function WriteMessage_ChannelMessage (channelIndex:int, channelVerifyNumber:int, messageData:ByteArray, needHolding:Boolean):void
    {
+      if (! IsInstanceServerLoggedIn ())
+         return;
+      
+      // ...
+      
       var encryptionMethod:int = -1;
       
       if (needHolding && messageData != null && messageData.length > MultiplePlayerDefine.MaxMessageDataLengthToHoldReally)
@@ -744,6 +909,9 @@
    
    private function WriteMessage_Signal_RestartInstance ():void
    {
+      if (! IsInstanceServerLoggedIn ())
+         return;
+      
       // ...
       
       var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
@@ -765,7 +933,7 @@
    {
       return {
          mIsLoggedIn       : IsInstanceServerLoggedIn (),
-         mIsInPlayingPhase : mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing,
+         mIsInPlayingPhase : IsInstanceServerLoggedIn () && (mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing),
          mNumSeats         : mMultiplePlayerInstanceInfo.mNumSeats, 
          mMySeatIndex      : mMultiplePlayerInstanceInfo.mMySeatIndex
       };
@@ -787,15 +955,15 @@
       var channelInfo:Object = null;
       
       if (  seatIndex >= 0 && seatIndex < mMultiplePlayerInstanceInfo.mNumSeats
-         && channelIndex < 0 && channelIndex < MultiplePlayerDefine.MaxNumberOfInstanceChannels
+         && channelIndex >= 0 && channelIndex < MultiplePlayerDefine.MaxNumberOfInstanceChannels
          && mMultiplePlayerInstanceInfo.mChannelsInfo != null)
       {
          channelInfo = mMultiplePlayerInstanceInfo.mChannelsInfo [channelIndex];
       }
       
       return {
-         mIsEnabled      : channelInfo == null || channelInfo.mIsSeatsEnabled_Predicted == null ? false : channelInfo.mIsSeatsEnabled_Predicted [seatIndex],
-         mLastEnableTime : channelInfo == null || channelInfo.mSeatsLastEnableTime      == null ? 0     : channelInfo.mSeatsLastEnableTime      [seatIndex]
+         mIsEnabled      : (channelInfo == null || channelInfo.mIsSeatsEnabled_Predicted == null) ? false : channelInfo.mIsSeatsEnabled_Predicted [seatIndex],
+         mLastEnableTime : (channelInfo == null || channelInfo.mSeatsLastEnableTime      == null) ? 0     : channelInfo.mSeatsLastEnableTime      [seatIndex]
       }
    }
    
@@ -887,36 +1055,36 @@
    // inputs
    //    mInstanceDefine
    //    mPassword
-   protected function MultiplePlayer_JoinNewInstance (params:Object):Object
-   {
-      var cached:Boolean = false;
-      
-      do
-      {
-         var instanceDefine:Object = params.mInstanceDefine;
-         if (instanceDefine == null)
-            break;
-         
-         //
-         
-         var instanceDefineData:ByteArray = MultiplePlayerInstanceDefine2ByteArray (instanceDefine);
-         
-         // ...
-         
-         var messageData:ByteArray = new ByteArray ();
-         
-         WriteMessage_CreateInstance (messageData, instanceDefineData, params.mPassword);
-         
-         mCurrentJointInstanceRequestData = messageData;
-         
-         // ...
-         
-         cached = true;
-      }
-      while (false);
-      
-      return {mResult: cached};
-   }
+   //protected function MultiplePlayer_JoinNewInstance (params:Object):Object
+   //{
+   //   var cached:Boolean = false;
+   //   
+   //   do
+   //   {
+   //      var instanceDefine:Object = params.mInstanceDefine;
+   //      if (instanceDefine == null)
+   //         break;
+   //      
+   //      //
+   //      
+   //      var instanceDefineData:ByteArray = MultiplePlayerInstanceDefine2ByteArray (instanceDefine);
+   //      
+   //      // ...
+   //      
+   //      var messageData:ByteArray = new ByteArray ();
+   //      
+   //      WriteMessage_CreateInstance (messageData, instanceDefineData, params.mPassword);
+   //      
+   //      mCurrentJointInstanceRequestData = messageData;
+   //      
+   //      // ...
+   //      
+   //      cached = true;
+   //   }
+   //   while (false);
+   //   
+   //   return {mResult: cached};
+   //}
    
    // inputs
    //    mInstanceDefine
@@ -957,17 +1125,19 @@
    {
       if (IsInstanceServerConnected ())
       {
-         if (IsInstanceServerLoggedIn ())
-         {
-            WriteMessage_ExitCurrentInstance (); // server will break the connection gracefully.
-         }
-         else
-         {
+         //if (IsInstanceServerLoggedIn ())
+         //{
+         //   WriteMessage_ExitCurrentInstance (); // server will break the connection gracefully.
+         //}
+         //else
+         //{
             DisonnectToInstanceServer ();
-         }
+         //}
+         
+         return {mResult: true};
       }
       
-      return {mResult: true};
+      return {mResult: false};
    }
    
    //=================
@@ -1111,6 +1281,10 @@ trace ("hhh");
       {
          try
          {
+            var method:String = messagesData.readUTFBytes (MultiplePlayerDefine.ServerMessageHeadString.length);
+            //if (method !== MultiplePlayerDefine.ServerMessageHeadString)
+            //   ...
+            
             var dataLength:int = messagesData.readInt ();
             //if (dataLength > )
             //   ...
@@ -1119,14 +1293,14 @@ trace ("hhh");
             //if (numMessages > )
             //   ...
             
-//trace (">>>>> get server messages, dataLength = " + dataLength + ", numMessages = " + numMessages);
+trace (">>>>> get server messages, dataLength = " + dataLength + ", numMessages = " + numMessages);
             for (var msgIndex:int = 0; msgIndex < numMessages; ++ msgIndex)
             {
-//trace (">>>> msgIndex = " + msgIndex + ", messagesData.position = " + messagesData.position + " / " + messagesData.length);
+trace (">>>> msgIndex = " + msgIndex + ", messagesData.position = " + messagesData.position + " / " + messagesData.length);
 
                var serverMessageType:int = messagesData.readShort ();
             
-//trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
+trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                switch (serverMessageType)
                {
                // ...
@@ -1158,20 +1332,27 @@ trace ("hhh");
                      
                      break;
                   }
-                  case MultiplePlayerDefine.ServerMessageType_InstanceBasicInfo:
+                  case MultiplePlayerDefine.ServerMessageType_InstanceConstInfo:
                   {
-                     var id:String = messagesData.readUTF ();
-                     var numPlayedGames:int = messagesData.readInt ();
+                     var instanceId:String = messagesData.readUTF ();
                      var numSeats:int = messagesData.readByte ();
-                     var mySeatIndex:int = messagesData.readByte ();
                      
-                     SetInstanceBasicInfo (id, numPlayedGames, numSeats, mySeatIndex);
+                     SetInstanceConstInfo (instanceId, numSeats);
                      
                      break;
                   }
-                  case MultiplePlayerDefine.ServerMessageType_LoggedOff:
+                  //case MultiplePlayerDefine.ServerMessageType_LoggedOff:
+                  //{
+                  //   DisonnectToInstanceServer ();
+                  //   
+                  //   break;
+                  //}
+                  case MultiplePlayerDefine.ServerMessageType_InstancePlayInfo:
                   {
-                     DisonnectToInstanceServer ();
+                     var numPlayedGames:int = messagesData.readInt ();
+                     var mySeatIndex:int = messagesData.readByte ();
+                     
+                     SetInstancePlayInfo (numPlayedGames, mySeatIndex);
                      
                      break;
                   }
@@ -1308,6 +1489,10 @@ trace ("hhh");
                   }
                   default:
                   {
+                     trace ("unknown server message type: 0x" + serverMessageType.toString (16));
+                     if (Capabilities.isDebugger)            
+                        throw new Error ();;
+                     
                      break;
                   }
                }
@@ -1316,6 +1501,8 @@ trace ("hhh");
          catch (error:Error)
          {
             TraceError (error);
+            
+            DisonnectToInstanceServer ();
          }
             
          //UpdateMultiplePlayerInstanceInfoText ();

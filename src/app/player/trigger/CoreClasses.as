@@ -210,7 +210,7 @@ package player.trigger {
       //   return sModuleClassDefinition;
       //}
       
-      public static const kBooelanClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
+      public static const kBooleanClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
       //public static function GetBooleanClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
       //{
       //   if (sBooelanClassDefinition == null)
@@ -236,6 +236,8 @@ package player.trigger {
       //   
       //   return sStringClassDefinition;
       //}
+      
+      public static const kMultiplePlayerInstanceClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_MultiplePlayerInstance);
       
 //==============================================================
 // 

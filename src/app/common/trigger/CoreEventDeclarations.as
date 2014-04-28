@@ -313,10 +313,16 @@ package common.trigger {
      // ...
 
          RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged,
-                    null
-                    );
+                    [
+                        [CoreClassIds.ValueType_MultiplePlayerInstance,       null],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage,
                     [
+                        [CoreClassIds.ValueType_MultiplePlayerInstance,       null],
                         [CoreClassIds.ValueType_Number,       0],
                         [CoreClassIds.ValueType_Number,       0],
                         [CoreClassIds.ValueType_ByteArray,       null],

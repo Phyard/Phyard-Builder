@@ -34,6 +34,7 @@ package viewer {
    import flash.net.SharedObject;
    import flash.net.SharedObjectFlushStatus;
    import flash.net.URLRequest;
+   import flash.net.URLRequestHeader;
    import flash.net.URLLoader;
    import flash.net.URLRequestMethod;
    import flash.net.URLLoaderDataFormat;
@@ -48,6 +49,8 @@ package viewer {
    import flash.media.SoundTransform;
    
    import flash.net.Socket;
+   
+   import mx.utils.SHA256;
    
    import com.tapirgames.util.TimeSpan;
    import com.tapirgames.util.GraphicsUtil;
@@ -1325,7 +1328,6 @@ package viewer {
                               MultiplePlayer_CreateInstanceChannelDefine: MultiplePlayer_CreateInstanceChannelDefine, // v2.06
                               MultiplePlayer_ReplaceInstanceChannelDefine: MultiplePlayer_ReplaceInstanceChannelDefine, // v2.06
                               
-                              MultiplePlayer_JoinNewInstance: MultiplePlayer_JoinNewInstance, // v2.06
                               MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06
                               MultiplePlayer_ExitInstance : MultiplePlayer_ExitCurrentInstance, // v2.06
                               

@@ -311,10 +311,16 @@ package editor.world {
       // ...
 
          RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged, "OnMultiplePlayerInstanceInfoChanged", "When multiple player instance info changes",
-                    null
-                    );
+                    [
+                        new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, "Multiple Player Instance", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Instance Connection Status Changed?"),
+                        new VariableDefinitionBoolean ("Instance Reset?"),
+                        new VariableDefinitionBoolean ("Instance Phase Changed?"),
+                        new VariableDefinitionBoolean ("Instance Seats Info Changed?"),
+                    ]);
          RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage, "OnMultiplePlayerInstanceChannelMessage", "When player sends a channel message",
                     [
+                        new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, "Multiple Player Instance", null, {mIsVisible: false}),
                         new VariableDefinitionNumber ("Channel Index"),
                         new VariableDefinitionNumber ("Seat Index"),
                         new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Message Data"),

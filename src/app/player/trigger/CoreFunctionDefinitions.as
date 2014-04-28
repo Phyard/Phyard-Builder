@@ -731,7 +731,7 @@ package player.trigger {
          CoreClasses.AssignValue (kTempClassInstanceForNewInstance, valueTarget.GetVariableInstance ());
       }
 
-      public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kBooelanClassDefinition, false);
+      public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kBooleanClassDefinition, false);
 
       public static function CommonEquals (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {

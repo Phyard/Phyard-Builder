@@ -10,10 +10,6 @@ package common {
       
       //
       
-      public static const MaxAllowedStringLength:int = 100; // the length head for string is a short. Null string will be treated as blank string.
-                                                      // increase 10 each time
-      //
-      
       public static const MaxTurnTimeoutInPractice:int = 1800; // half an hour
       
       //
@@ -57,6 +53,8 @@ package common {
 // server messages
 //===========================================================================
       
+      public static const ServerMessageHeadString:String = "SOCK";
+      
       // public static const ServerMessageDataFormatVersion:int = 0;
          // server messages don't have a format.
          // server may return different message formats or types on different client message data formats
@@ -68,15 +66,16 @@ package common {
       
       public static const ServerMessageType_InstanceServerInfo:int             = 0x1000;
       
-      public static const ServerMessageType_InstanceBasicInfo:int              = 0x3000;
-      public static const ServerMessageType_InstanceCurrentPhase:int           = 0x3100;
-      public static const ServerMessageType_SeatBasicInfo:int                  = 0x3200;
-      public static const ServerMessageType_SeatDynamicInfo:int                = 0x3300;
-      public static const ServerMessageType_AllChannelsConstInfo:int           = 0x3400;
+      public static const ServerMessageType_InstanceConstInfo:int              = 0x3000;
+      public static const ServerMessageType_InstancePlayInfo:int               = 0x3100;
+      public static const ServerMessageType_InstanceCurrentPhase:int           = 0x3200;
+      public static const ServerMessageType_SeatBasicInfo:int                  = 0x3300;
+      public static const ServerMessageType_SeatDynamicInfo:int                = 0x3400;
+      public static const ServerMessageType_AllChannelsConstInfo:int           = 0x3500;
       public static const ServerMessageType_ChannelDynamicInfo:int             = 0x3600;
       public static const ServerMessageType_ChannelSeatInfo:int                = 0x3700;
       
-      public static const ServerMessageType_LoggedOff:int                      = 0x4000;
+      //public static const ServerMessageType_LoggedOff:int                      = 0x4000; // some hard to break gracefully.
       
       public static const ServerMessageType_ChannelMessage:int                 = 0x5000;
       public static const ServerMessageType_ChannelMessageEncrpted:int         = 0x5100;
@@ -85,6 +84,8 @@ package common {
 //===========================================================================
 // client messages
 //===========================================================================
+      
+      public static const ClientMessageHeadString:String = "PLAY"; // for server convenience to differentiate between play messagea and http message.
       
       public static const ClientMessageDataFormatVersion:int = 0x0000; // next 0x0010
       
@@ -97,7 +98,7 @@ package common {
       public static const ClientMessageType_GetPendingInstances:int         = 0x13; // todo
       
       public static const ClientMessageType_LoginInstanceServer:int         = 0x30;
-      public static const ClientMessageType_ExitCurrentInstance:int         = 0x31;
+      //public static const ClientMessageType_ExitCurrentInstance:int         = 0x31; // cancelled
       
       public static const ClientMessageType_ChannelMessage:int              = 0x60;
       public static const ClientMessageType_ChannelMessageWithEncrption:int = 0x61;

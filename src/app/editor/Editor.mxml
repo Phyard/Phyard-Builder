@@ -601,7 +601,17 @@
          if (returnCode != Define.k_ReturnCode_Successed)
          {
             //Alert.show("Some errors in loading! returnCode = " + returnCode, "Error");
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            
+            var message:String = "";
+            try
+            {
+               message = data.readUTF ();
+            }
+            catch (error:Error)
+            {
+            }
+            
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode + ", message = " + message, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
             return;
          }
          

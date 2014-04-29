@@ -1000,7 +1000,7 @@ package editor.entity.dialog {
          
          var messagesData:ByteArray = GetInstanceSeatClientStream (seatIndex);
          
-         WriteMessage_InstanceServerInfo (messagesData, playerConnectionId);
+         WriteMessage_InstanceServerInfo (messagesData, mCurrentInstance.mInstanceDefineDigest, playerConnectionId);
          
          UpdateInstanceSeatClientStreamHeader (seatIndex);
          
@@ -1129,12 +1129,12 @@ package editor.entity.dialog {
 //   
 //============================================================================
       
-      private function WriteMessage_InstanceServerInfo (dataBuffer:ByteArray, playerConnectionId:String):void
+      private function WriteMessage_InstanceServerInfo (dataBuffer:ByteArray, instanceDefineDigest:String, playerConnectionId:String):void
       {
          dataBuffer.writeShort (MultiplePlayerDefine.ServerMessageType_InstanceServerInfo);
          dataBuffer.writeUTF ("127.0.0.1"); // host
          dataBuffer.writeShort (5678); // port
-         dataBuffer.writeUTF (mCurrentInstance.mID);
+         dataBuffer.writeUTF (instanceDefineDigest);
          dataBuffer.writeUTF (playerConnectionId);
       }
       
@@ -1354,9 +1354,9 @@ package editor.entity.dialog {
          JoinInstance (mCurrentInstance, "", playerConnectionId, designViewer);
       }
       
-      private function OnPlayerLoginInstanceServer (designViewer:Viewer, instanceID:String, playerConnectionId:String, clientDataFormatVersion:int):void
+      private function OnPlayerLoginInstanceServer (designViewer:Viewer, instanceDefineDigest:String, playerConnectionId:String, clientDataFormatVersion:int):void
       {
-         if (mCurrentInstance == null || instanceID != mCurrentInstance.mID)
+         if (mCurrentInstance == null || instanceDefineDigest != mCurrentInstance.mInstanceDefineDigest)
             return;
          
          if (playerConnectionId == null || playerConnectionId.length == 0)
@@ -1931,7 +1931,7 @@ trace (">>>, numMessages = " + numMessages);
             {
                var clientMessageType:int = messagesData.readShort ();
                
-               var instanceId:String;
+               var instanceDefineDigest:String;
                var connectionId:String;
                var clientDataFormatVersion:int;
                
@@ -1969,11 +1969,11 @@ trace (">>>, numMessages = " + numMessages);
                   case MultiplePlayerDefine.ClientMessageType_LoginInstanceServer:
                      
                      clientDataFormatVersion = messagesData.readShort () & 0xFFFF;
-                     instanceId = messagesData.readUTF ();
+                     instanceDefineDigest = messagesData.readUTF ();
                      connectionId = messagesData.readUTF ();
                      
                      OnPlayerLoginInstanceServer (designViewer, 
-                                                  instanceId,
+                                                  instanceDefineDigest,
                                                   connectionId,
                                                   clientDataFormatVersion
                                                  );

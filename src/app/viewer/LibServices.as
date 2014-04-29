@@ -340,6 +340,8 @@
             mIsServerConnected : false, // step 2
             
             mID : "", // instance id, null or blank means invalid
+            
+            mInstanceDefineDigest : "", // must be a length-64 hex number string
             mMyConnectionID : "", // pls keep it non-null
             
             mCachedServerMessages : null,
@@ -412,14 +414,14 @@
       }
    }
    
-   private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceId:String, connectionId:String):void
+   private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:String, connectionId:String):void
    {
 //trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instance id = " + instanceId + ", connectionId = " + connectionId);
 
       mMultiplePlayerInstanceInfo.mServerAddress = serverAddress;
       mMultiplePlayerInstanceInfo.mServerPort = serverPort;
       
-      mMultiplePlayerInstanceInfo.mID = instanceId;
+      mMultiplePlayerInstanceInfo.mInstanceDefineDigest = instanceDefineDigest;
       mMultiplePlayerInstanceInfo.mMyConnectionID = connectionId;
       
       mMultiplePlayerInstanceInfo.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Inactive;
@@ -430,13 +432,12 @@
    {
       if (! mMultiplePlayerInstanceInfo.mIsServerConnected) // possible
          return;
-      if (id != mMultiplePlayerInstanceInfo.mID)
-         return;
       if (numSeats < MultiplePlayerDefine.MinNumberOfInstanceSeats || numSeats > MultiplePlayerDefine.MaxNumberOfInstanceSeats)
          return;
       
       mMultiplePlayerInstanceInfo.mIsServerLoggedIn = true;
       
+      mMultiplePlayerInstanceInfo.mID = id;
       mMultiplePlayerInstanceInfo.mNumSeats = numSeats;
       
       mMultiplePlayerInstanceInfo.mSeatsPlayerName = new Array (numSeats);
@@ -811,7 +812,7 @@
       
       cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_LoginInstanceServer);
       cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
-      cachedMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mID);
+      cachedMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mInstanceDefineDigest);
       cachedMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
       
       // ...
@@ -1309,7 +1310,7 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   {
                      SetInstanceServerInfo (messagesData.readUTF (), // server address
                                             messagesData.readShort () & 0xFFFF, // server port
-                                            messagesData.readUTF (), // instance id
+                                            messagesData.readUTF (), // instance define digest
                                             messagesData.readUTF () // my connection id
                                             );
                      

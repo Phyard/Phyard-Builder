@@ -76,14 +76,20 @@ package univiewer
 
          mUniViewerUrl =  LoaderInfo(this.loaderInfo).url;
 
+         //? why not use LoaderInfo(this.loaderInfo).parameters? 
+         // forget. 
+         // Maybe params in url are not parsed as parameters. (in fact, Flash Player does do this. So needs a test)
          const ViewerFileEquals:String = "ViewerFile=";
          const RevisionIdEquals:String = "RevisionId=";
          const WorldFileEquals:String = "WorldFile=";
          var index1:int = mUniViewerUrl.indexOf (ViewerFileEquals);
          var index2:int = mUniViewerUrl.indexOf (RevisionIdEquals);
          var index3:int = mUniViewerUrl.indexOf (WorldFileEquals);
+         
          if (index1 >= 0 && index2 >= 0 && index3 >= 0)
          {
+            // why this block? maybe useless now.
+            
             var indexEnd:int;
 
             index1 += ViewerFileEquals.length;
@@ -129,9 +135,9 @@ package univiewer
             var loader:URLLoader = new URLLoader ();
             loader.dataFormat = URLLoaderDataFormat.BINARY;
 
-            loader.addEventListener(Event.COMPLETE, OnLoadInfoComplete);
-            loader.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
-            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            loader.addEventListener (Event.COMPLETE, OnLoadInfoComplete);
+            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
+            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
 
             mLoadingStage = " info ";
             loader.load(request);
@@ -202,7 +208,7 @@ package univiewer
       {
          //SetInfoText (null);
 
-         var MainClass:Object = ApplicationDomain.currentDomain.getDefinition("Main") as Class;
+         var MainClass:Object = ApplicationDomain.currentDomain.getDefinition ("Main") as Class;
          if (MainClass == null)
          {
             SetInfoText ("Loading error! No main entry");

@@ -27,7 +27,7 @@ package common {
          return majorVersion.toString (16) + (minorVersion < 16 ? ".0" : ".") + minorVersion.toString (16);
       }
    
-//==================================== hex string playcode ======================================================
+//==================================== hex string playcode (old, for compatibility) ======================================================
       
       public static function HexString2ByteArray (hexString:String):ByteArray
       {
@@ -43,7 +43,7 @@ package common {
          
          for (var ci:int = 0; ci < hexString.length; ci += 2)
          {
-            byteArray [index ++] = ParseByteFromHexString (hexString.substr (ci, 2));
+            byteArray [index ++] = ParseByteFromHexString (hexString.substr (ci, 2)); // slow
          }
          
          return byteArray;
@@ -121,6 +121,32 @@ package common {
          
          return str;
       }
+
+//==================================== ByteArray2HexString (not a counterpart of above HexString2ByteArray) ======================================================
+
+      public static const HexChars:Array = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+
+      public static function ByteArray2HexString (ba:ByteArray):String
+      {
+         if (ba == null)
+            return "";
+         
+         var count:int = ba.length;
+         
+         var stream:ByteArray = new ByteArray ();
+         stream.length = count + count;
+         stream.position = 0;
+         
+         var index:int;
+         for (var i:int = 0; i < count; ++ i)
+         {
+            stream [index ++] = (ba [i] & 0xF0) >> 4;
+            stream [index ++] =  ba [i] & 0x0F;
+         }
+         
+         stream.position = 0;
+         return stream.readUTFBytes (stream.length);
+      }
       
 //==================================== readUTF/writeUTF ======================================================
       
@@ -129,22 +155,37 @@ package common {
       public static const Mask_NumMoreBytes:int = (1 << (Shift_MoreBytes + 1)) | (1 << Shift_MoreBytes);
       public static const Mask_LengthValueInFirstByte:int = (1 << Shift_MoreBytes) - 1;
       
-      public static function WriteVaryLengthUTF (data:ByteArray, utfText:String):void
+      public static function WriteVaryLengthUTF (buffer:ByteArray, utfText:String):void
       {
-         if (utfText == null)
+         var stringBytes:ByteArray = null;
+         
+         if (utfText != null)
          {
-            data.writeByte (Bit_IsNull);
+            stringBytes = new ByteArray ();
+            stringBytes.writeMultiByte (utfText, "utf-8");
+            
+            stringBytes.position = 0;
+         }
+         
+         WriteVaryLengthData (buffer, stringBytes);
+      }
+      
+      public static function WriteVaryLengthData (buffer:ByteArray, dataContent:ByteArray):void
+      {
+         if (dataContent == null)
+         {
+            buffer.writeByte (Bit_IsNull);
             return;
          }
          
-         var length:int = utfText.length;
+         var length:int = dataContent.length;
          
          var b0:int = length & Mask_LengthValueInFirstByte;
-         length >> Mask_LengthValueInFirstByte;
+         length >>= Mask_LengthValueInFirstByte;
          var b1:int = length & 0xFF;
-         length >> 8;
+         length >>= 8;
          var b2:int = length & 0xFF;
-         length >> 8;
+         length >>= 8;
          var b3:int = length & 0xFF;
          
          var numMoreBytes:int;
@@ -158,28 +199,51 @@ package common {
             numMoreBytes = 0;
          
          b0 |= (numMoreBytes << Shift_MoreBytes);
-         data.writeByte (b0);
+         buffer.writeByte (b0);
          if (numMoreBytes >= 1)
          {
-            data.writeByte (b1);
+            buffer.writeByte (b1);
             if (numMoreBytes >= 2)
             {
-               data.writeByte (b2);
+               buffer.writeByte (b2);
                if (numMoreBytes >= 3)
                {
-                  data.writeByte (b3);
+                  buffer.writeByte (b3);
                }
             }
          }
          
-         data.writeMultiByte (utfText, "utf-8");
+//trace (">>> write, dataContent.length = " + dataContent.length + ", b0 = " + b0 + ", b1 = " + b1 + ", b2 = " + b2 + ", b3 = " + b3);
+         
+         buffer.writeBytes (dataContent, 0, dataContent.length);
       }
       
-      public static function ReadVaryLengthUTF (data:ByteArray):String
+      public static function ReadVaryLengthUTF (buffer:ByteArray):String
       {
+         if (buffer == null)
+            return null;
+         
          try
          {
-            var b0:int = data.readByte () & 0xFF;
+            var dataContent:ByteArray = ReadVaryLengthData (buffer);
+            dataContent.position = 0;
+            return dataContent.readMultiByte (dataContent.length, "utf-8");
+         }
+         catch (error:Error)
+         {
+            trace (error.getStackTrace ());
+         }
+         
+         return null;
+      }
+      
+      public static function ReadVaryLengthData (buffer:ByteArray):ByteArray
+      {
+         var dataContent:ByteArray;
+         
+         try
+         {
+            var b0:int = buffer.readByte () & 0xFF;
             
             var isNull:Boolean = (b0 & Bit_IsNull) != 0;
             
@@ -187,19 +251,55 @@ package common {
                return null;
             
             var numMoreBytes:int = (b0 & Mask_NumMoreBytes) >> Shift_MoreBytes;
-            var b1:int = 0xFF & (numMoreBytes >= 1 ? data.readByte () : 0);
-            var b2:int = 0xFF & (numMoreBytes >= 2 ? data.readByte () : 0);
-            var b3:int = 0xFF & (numMoreBytes >= 3 ? data.readByte () : 0);
+            var b1:int = 0xFF & (numMoreBytes >= 1 ? buffer.readByte () : 0);
+            var b2:int = 0xFF & (numMoreBytes >= 2 ? buffer.readByte () : 0);
+            var b3:int = 0xFF & (numMoreBytes >= 3 ? buffer.readByte () : 0);
             
             var length:int = (b0 & Mask_LengthValueInFirstByte) | (((((b3 << 8) | b2) << 8) | b1) << Shift_MoreBytes);
             
-            return data.readMultiByte (length, "utf-8");
+//trace ("<<<<<<< read length = " + length + ", b0 = " + b0 + ", b1 = " + b1 + ", b2 = " + b2 + ", b3 = " + b3);
+            
+            dataContent = new ByteArray ();
+            buffer.readBytes (dataContent, 0, length);
          }
          catch (error:Error)
          {
+            dataContent = null;
+            trace (error.getStackTrace ());
          }
          
-         return null;
+         return dataContent;
+      }
+      
+//====================================  ======================================================
+      
+      public static function ByteArrayReadBytes (stream:ByteArray, count:int):ByteArray
+      {
+         var ba:ByteArray = new ByteArray (); 
+         ba.length = count;
+         stream.readBytes (ba, 0, count);
+         
+         return ba;
+      }
+      
+      public static function CompareTwoByteArrays (ba1:ByteArray, ba2:ByteArray):Boolean
+      {
+         if (ba1 != ba2)
+         {
+            if (ba1 == null || ba2 == null)
+               return false;
+            var i:int = ba1.length;
+            if (i != ba2.length)
+               return false;
+            
+            while (-- i >= 0)
+            {
+               if (ba1 [i] != ba2 [i])
+                  return false;
+            }
+         }
+         
+         return true;
       }
       
 //==================================== base64 playcode ======================================================

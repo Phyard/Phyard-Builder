@@ -220,6 +220,20 @@ package editor.world {
             {label:"Chess Mode", data:MultiplePlayerDefine.InstanceChannelMode_Chess},
             {label:"WeGo Mode", data:MultiplePlayerDefine.InstanceChannelMode_WeGo},
          ];
+      
+      public static const mMultiplePlayerPlayerStatusList:Array = [
+            {label:"Not Connected", data:MultiplePlayerDefine.PlayerStatus_NotConnected},
+            {label:"Wandering", data:MultiplePlayerDefine.PlayerStatus_Wandering},
+            {label:"Queuing", data:MultiplePlayerDefine.PlayerStatus_Queuing},
+            {label:"Joined", data:MultiplePlayerDefine.PlayerStatus_Joined},
+         ];
+      
+      public static const mMultiplePlayerInstancePhaseList:Array = [
+            {label:"Unknown", data:MultiplePlayerDefine.InstancePhase_Inactive},
+            {label:"Idling", data:MultiplePlayerDefine.InstancePhase_Idling},
+            {label:"Waiting", data:MultiplePlayerDefine.InstancePhase_Waiting},
+            {label:"Playing", data:MultiplePlayerDefine.InstancePhase_Playing},
+         ];
          
    }
 }

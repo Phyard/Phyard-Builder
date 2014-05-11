@@ -9,16 +9,16 @@
       {
          var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstanceSeatsInfoChanged, null);
          var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstancePhaseChanged, valueSource4);
-         var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstanceReset, valueSource3);
-         var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstanceConnectionStatusChanged, valueSource2);
+         var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsPlayerStatusChanged, valueSource3);
+         var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstanceServerConnectionStatusChanged, valueSource2);
          var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kMultiplePlayerInstanceClassDefinition, null, valueSource1);
          
          // ...
          
          mIsGameInstanceInfoChangedInLastStep = false;
          
-         mIsGameInstanceConnectionStatusChanged = false;
-         mIsGameInstanceReset = false;
+         mIsGameInstanceServerConnectionStatusChanged = false;
+         mIsPlayerStatusChanged = false;
          mIsGameInstancePhaseChanged = false;
          mIsGameInstanceSeatsInfoChanged = false;
          
@@ -35,8 +35,8 @@
 
    private var mIsGameInstanceInfoChangedInLastStep:Boolean = false;
       
-      private var mIsGameInstanceConnectionStatusChanged:Boolean = false;
-      private var mIsGameInstanceReset:Boolean = false;
+      private var mIsGameInstanceServerConnectionStatusChanged:Boolean = false;
+      private var mIsPlayerStatusChanged:Boolean = false;
       private var mIsGameInstancePhaseChanged:Boolean = false;
       private var mIsGameInstanceSeatsInfoChanged:Boolean = false;
 
@@ -53,13 +53,13 @@
             mIsGameInstanceInfoChangedInLastStep = true;
             
             var reason:String = params == null ? null : params.mReason;
-            if (reason == "LoggedIn" || reason == "LoggedOut")
-               mIsGameInstanceConnectionStatusChanged = true;
-            else if (reason == "InstanceReset")
-               mIsGameInstanceReset = true;
-            else if (reason == "PhaseChanged")
+            if (reason == "Connected" || reason == "Disconnected") // in fact, these will never happen. 
+               mIsGameInstanceServerConnectionStatusChanged = true;
+            else if (reason == "PlayerStatusChanged")
+               mIsPlayerStatusChanged = true;
+            else if (reason == "InstancePhaseChanged")
                mIsGameInstancePhaseChanged = true;
-            else if (reason == "SeatBasicInfoChanged" || reason == "SeatDanymicInfoChanged" || reason == "ChannelSeatInfoChanged")
+            else if (reason == "MySeatIndexChanged" || reason == "SeatBasicInfoChanged" || reason == "SeatDanymicInfoChanged" || reason == "ChannelSeatInfoChanged")
                mIsGameInstanceSeatsInfoChanged = true;
             
             break;

@@ -373,14 +373,18 @@ package common.trigger {
                      null
                   );
                   
-         RegisterCoreDeclaration (CoreFunctionIds.ID_IsGameInstanceLoggedIn,
-                     null,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_IsInMutiplayerPlayerStatus,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       50], //MultiplePlayerDefine.PlayerStatus_Joined],
+                     ],
                      [
                         [CoreClassIds.ValueType_Boolean,       null],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_IsGameInstanceInPlayingPhase,
-                     null,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_IsInGameInstancePhase,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       100], //MultiplePlayerDefine.InstancePhase_Playing],
+                     ],
                      [
                         [CoreClassIds.ValueType_Boolean,       null],
                      ]
@@ -421,8 +425,10 @@ package common.trigger {
                      null
                   );
                   
-         RegisterCoreDeclaration (CoreFunctionIds.ID_SendRestartInstanceSignal,
-                     null,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
                      null
                   );
 

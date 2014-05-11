@@ -99,10 +99,10 @@ package common.trigger {
       public static const ID_ExitGameInstance:int               = IdPool.CoreApiId_613; // from v2.06
       public static const ID_SendGameInstanceChannelMessage:int = IdPool.CoreApiId_611; // from v2.06
       
-      public static const ID_SendRestartInstanceSignal:int     = IdPool.CoreApiId_627; // from v2.06
+      public static const ID_SendSignal_ChangeInstancePhase:int     = IdPool.CoreApiId_627; // from v2.06
       
-      public static const ID_IsGameInstanceLoggedIn:int           = IdPool.CoreApiId_565; // from v2.06
-      public static const ID_IsGameInstanceInPlayingPhase:int           = IdPool.CoreApiId_566; // from v2.06
+      public static const ID_IsInMutiplayerPlayerStatus:int           = IdPool.CoreApiId_565; // from v2.06
+      public static const ID_IsInGameInstancePhase:int           = IdPool.CoreApiId_566; // from v2.06
       public static const ID_GetGameInstanceNumberOfSeats:int           = IdPool.CoreApiId_570; // from v2.06
       public static const ID_GetMySeatIndexInGameInstance:int           = IdPool.CoreApiId_574; // from v2.06
       public static const ID_GetGameInstanceSeatInfo:int          = IdPool.CoreApiId_568; // from v2.06

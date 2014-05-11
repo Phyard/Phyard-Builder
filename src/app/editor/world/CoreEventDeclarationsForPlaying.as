@@ -313,8 +313,8 @@ package editor.world {
          RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged, "OnMultiplePlayerInstanceInfoChanged", "When multiple player instance info changes",
                     [
                         new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, "Multiple Player Instance", null, {mIsVisible: false}),
-                        new VariableDefinitionBoolean ("Instance Connection Status Changed?"),
-                        new VariableDefinitionBoolean ("Instance Reset?"),
+                        new VariableDefinitionBoolean ("Instance Server Connection Status Changed? (Reserved Now)", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("My Player Status Changed?"),
                         new VariableDefinitionBoolean ("Instance Phase Changed?"),
                         new VariableDefinitionBoolean ("Instance Seats Info Changed?"),
                     ]);

@@ -44,5 +44,31 @@ package common {
       {
          return BuildKey (Math.floor (Math.random () * kShift24bits));
       }
+      
+      //========================
+      // 16 bytes UUID, for multiple player simulated server
+      //========================
+      
+      public static function BuildUUID ():ByteArray
+      {
+         var time:Number = new Date ().getTime () - kTime20090101;
+         var time1:int = int (time / kShift24bits) & (kShift24bits - 1);
+         var time2:int = time & (kShift24bits - 1);
+         
+         var random0:int = Math.floor (Math.random () * kShift24bits);
+         var random1:int = Math.floor (Math.random () * kShift24bits);
+         var random2:int = Math.floor (Math.random () * kShift24bits);
+         
+         var bytes:ByteArray = new ByteArray ();
+         bytes.length = 16;
+         FillByteArrayWith24bits (bytes, 0, random0);
+         FillByteArrayWith24bits (bytes, 3, random1);
+         FillByteArrayWith24bits (bytes, 6, random2);
+         bytes [9] = Math.floor (Math.random () * 256)
+         FillByteArrayWith24bits (bytes, 10, time1);
+         FillByteArrayWith24bits (bytes, 13, time2);
+         
+         return bytes;
+      }
    }
 }

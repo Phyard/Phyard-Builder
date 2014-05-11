@@ -73,7 +73,7 @@
          return;
       }
 
-      if (GetNumCachedClientMessages () > 0 && IsInstanceServerConnected ())
+      if (GetNumCachedClientMessages () > 0 && IsInstanceServerSocketConnected ())
       {
          if (mClientMessagesFrequencyStat.Hit (getTimer ()))
          {
@@ -93,16 +93,17 @@
 // client -> mp http server
 //======================================================
    
-   private static const kGetInstanceServerInfoURL:String = "http://www.phyard.com/api/instance/serverinfo";
    
-   private static const kTestingWithLocalServers:Boolean = false; // for editor mode only
-   private static const kGetInstanceServerInfoURL_LocalServer:String = "http://192.168.6.131:12345/api/instance/serverinfo";
+   private static const kUseRealServersForcely                :Boolean = false; // for editor mode only
+   private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.6.131:1618/api/design/instance";
+   private static const kGetInstanceServerInfoURL             :String  = "http://128.199.226.247:1618/api/design/instance";
+                                                                      // "http://www.phyard.com/api/design/instance";
    
    private var mIsGettingInstanceServerInfo:Boolean = false;
    
    private function SendMultiplePlayerClientMessagesToSchedulerServer (messagesData:ByteArray):void
    {
-      if (mParamsFromEditor != null && kTestingWithLocalServers == false)
+      if (mParamsFromEditor != null && kUseRealServersForcely == false)
       {
          mParamsFromEditor.OnMultiplePlayerClientMessagesToSchedulerServer (messagesData, this);
       }
@@ -154,11 +155,11 @@
    
    private function SendMultiplePlayerClientMessagesToInstanceServer (messagesData:ByteArray):void
    {
-      if (mParamsFromEditor != null && kTestingWithLocalServers == false)
+      if (mParamsFromEditor != null && kUseRealServersForcely == false)
       {
          mParamsFromEditor.OnMultiplePlayerClientMessagesToInstanceServer (messagesData, this);
       }
-      else if (IsInstanceServerConnected ())
+      else if (IsInstanceServerSocketConnected ())
       {
          //if (mMultiplePlayerInstanceInfo.mServerSocket != null)
          //{
@@ -179,7 +180,7 @@
    
    private function DisonnectToInstanceServer ():void
    {
-      if (IsInstanceServerConnected ())
+      if (IsInstanceServerSocketConnected ())
       {
          try
          {
@@ -189,7 +190,7 @@
          {
          }
          
-         SetInstanceServerConnectionStatus (false);
+         SetInstanceServerSocketConnectionStatus (false);
       }
    }
    
@@ -199,7 +200,7 @@
       
       if (IsInstanceServerInfoRetrieved ())
       {
-         if (mParamsFromEditor != null)
+         if (mParamsFromEditor != null && kUseRealServersForcely == false)
          {
             OnInstanceServerConnected ();
          }
@@ -232,12 +233,13 @@
       if (event != null && event.target != mMultiplePlayerInstanceInfo.mServerSocket) // here is &&
          return; // this may be previous discarded socket. 
       
-      SetInstanceServerConnectionStatus (true);
+      SetInstanceServerSocketConnectionStatus (true);
       
       mClientMessagesFrequencyStat.Reset ();
       ClearCachedClientMessages ();
       
       WriteMessage_LoginInstanceServer ();
+      WriteMessage_JoinRandomInstance (); // now only this way is supported
    }
    
    // event == null means close-manually
@@ -250,7 +252,7 @@
       
       mMultiplePlayerInstanceInfo.mServerSocket = null;
 
-      SetInstanceServerConnectionStatus (false);
+      SetInstanceServerSocketConnectionStatus (false);
    }
    
    private function OnInstanceServerError (event:Event):void
@@ -268,7 +270,7 @@
       
       // ...
       
-      while (IsInstanceServerConnected () && mMultiplePlayerInstanceInfo.mCachedServerMessages != null)
+      while (IsInstanceServerSocketConnected () && mMultiplePlayerInstanceInfo.mCachedServerMessages != null)
       {
          if (mMultiplePlayerInstanceInfo.mCachedServerMessages.length == 0)
          { 
@@ -337,28 +339,40 @@
             mServerSocket : null,  // step 1
             mServerAddress : null,
             mServerPort : 0,
-            mIsServerConnected : false, // step 2
-            
-            mID : "", // instance id, null or blank means invalid
+            mIsServerSocketConnected : false, // step 2
             
             mInstanceDefineDigest : "", // must be a length-64 hex number string
-            mMyConnectionID : "", // pls keep it non-null
+            mMyConnectionID : null, // 
             
             mCachedServerMessages : null,
             
-            mIsServerLoggedIn : false, // step 3
-            
-            mNumPlayedGames : 0,
+            //mIsServerLoggedIn : false, // step 3
+            mPlayerStatus : MultiplePlayerDefine.PlayerStatus_NotConnected,
             
             // ====================== followings may be used by World, pls keep the compatibility =========================//
             
+            // === wandering ====
+            
+            // mWaitingInstances
+            
+            // === queuing ===
+            
+            mNumQueuingPlayers : 0,
+            mMyQueueingOrder : -1,
+            
+            // === joined ===
+            
+            mID : null , // instance id, 16 bytes uuid
+                        
             mCurrentPhase : MultiplePlayerDefine.InstancePhase_Inactive,
-
+            
+            mNumPlayedGames : 0, // a value used for server to discard unwanted messages from last game session.
+            
             mNumSeats : 0,
             mMySeatIndex : -1,
             mSeatsPlayerName : null, // [mNumSeats]
             mSeatsLastActiveTime : null, // [mNumSeats]
-            mIsSeatsConnected : null, // [mNumSeats]
+            mIsSeatsPlayerJoined : null, // [mNumSeats]
             
             mChannelsInfo : null,
                      // mChannelMode
@@ -378,45 +392,56 @@
             && mMultiplePlayerInstanceInfo.mServerPort > 0;
    }
    
-   private function IsInstanceServerConnected ():Boolean
+   private function IsInstanceServerSocketConnected ():Boolean
    {
-      return   mMultiplePlayerInstanceInfo.mIsServerConnected;
-            // for editor mode, socket is null
+      return   mMultiplePlayerInstanceInfo.mIsServerSocketConnected;
+            // bug: for editor mode, socket is null
             //&& mMultiplePlayerInstanceInfo.mServerSocket != null
             //&& mMultiplePlayerInstanceInfo.mServerSocket.connected;
    }
    
    private function IsInstanceServerLoggedIn ():Boolean
    {
-      return IsInstanceServerConnected () && mMultiplePlayerInstanceInfo.mIsServerLoggedIn;
+      //return IsInstanceServerSocketConnected () && mMultiplePlayerInstanceInfo.mIsServerLoggedIn;
+      return IsInstanceServerSocketConnected () 
+         && (mMultiplePlayerInstanceInfo.mPlayerStatus != MultiplePlayerDefine.PlayerStatus_NotConnected);
    }
    
-   private function SetInstanceServerConnectionStatus (connected:Boolean):void
+   private function IsInstanceJoined ():Boolean
    {
-      if (mMultiplePlayerInstanceInfo.mIsServerConnected != connected)
+      return IsInstanceServerSocketConnected () 
+         && (mMultiplePlayerInstanceInfo.mPlayerStatus == MultiplePlayerDefine.PlayerStatus_Joined)
+         && (mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Inactive);
+   }
+   
+   private function SetInstanceServerSocketConnectionStatus (connected:Boolean):void
+   {
+      if (mMultiplePlayerInstanceInfo.mIsServerSocketConnected != connected)
       {
-         var connBroken:Boolean = mMultiplePlayerInstanceInfo.mIsServerConnected;
+         var connBroken:Boolean = mMultiplePlayerInstanceInfo.mIsServerSocketConnected;
          
-         mMultiplePlayerInstanceInfo.mIsServerConnected = connected;
+         mMultiplePlayerInstanceInfo.mIsServerSocketConnected = connected;
          
          if (connBroken)
          {
-            mMultiplePlayerInstanceInfo.mIsServerLoggedIn = false;
+            //mMultiplePlayerInstanceInfo.mIsServerLoggedIn = false;
             
-            mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "LoggedOut"});
+            //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "Disconnected"}); // will call "PlayerStatusChanged" instead in the following line
+            SetPlayerStatus (MultiplePlayerDefine.PlayerStatus_NotConnected);
          }
          else
          {
             mMultiplePlayerInstanceInfo.mCachedServerMessages = new ByteArray ();
             
-            //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "Connected"});
+            //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "Connected"}); // not logged in yet
          }
       }
    }
    
-   private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:String, connectionId:String):void
+   //private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:String, connectionId:String):void
+   private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:ByteArray, connectionId:ByteArray):void
    {
-//trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instance id = " + instanceId + ", connectionId = " + connectionId);
+trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instanceDefineDigest = <" + instanceDefineDigest.length + ">, connectionId = <" + connectionId.length + ">");
 
       mMultiplePlayerInstanceInfo.mServerAddress = serverAddress;
       mMultiplePlayerInstanceInfo.mServerPort = serverPort;
@@ -427,45 +452,74 @@
       mMultiplePlayerInstanceInfo.mCurrentPhase = MultiplePlayerDefine.InstancePhase_Inactive;
    }
    
-   // const info is only sent when player logs in.
-   private function SetInstanceConstInfo (id:String, numSeats:int):void
+   private function SetQueuingInfo (numPlayersInQueuing:int, myQueuingOrder:int):void
    {
-      if (! mMultiplePlayerInstanceInfo.mIsServerConnected) // possible
+      mMultiplePlayerInstanceInfo.mNumQueuingPlayers = numPlayersInQueuing;
+      mMultiplePlayerInstanceInfo.mMyQueueingOrder = myQueuingOrder;
+   }
+   
+   private function SetPlayerStatus (playerStatus:int):void
+   {
+trace ("555 SetPlayerStatus, newPhase = " + playerStatus + ", old [hase = " + mMultiplePlayerInstanceInfo.mPlayerStatus);
+      if (mMultiplePlayerInstanceInfo.mPlayerStatus != playerStatus)
+      {
+         mMultiplePlayerInstanceInfo.mPlayerStatus = playerStatus;
+         
+         if (playerStatus != MultiplePlayerDefine.PlayerStatus_Joined)
+         {
+trace ("555 aaa");
+            SetInstanceCurrentPhase (MultiplePlayerDefine.InstancePhase_Inactive);
+         }
+         
+         // ...
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "PlayerStatusChanged"});
+      }
+   }
+   
+   // const info is only sent when player logs in.
+   private function SetInstanceConstInfo (id:ByteArray, numSeats:int):void
+   {
+      if (! mMultiplePlayerInstanceInfo.mIsServerSocketConnected) // possible
          return;
       if (numSeats < MultiplePlayerDefine.MinNumberOfInstanceSeats || numSeats > MultiplePlayerDefine.MaxNumberOfInstanceSeats)
          return;
       
-      mMultiplePlayerInstanceInfo.mIsServerLoggedIn = true;
+      //mMultiplePlayerInstanceInfo.mIsServerLoggedIn = true;
       
       mMultiplePlayerInstanceInfo.mID = id;
       mMultiplePlayerInstanceInfo.mNumSeats = numSeats;
       
       mMultiplePlayerInstanceInfo.mSeatsPlayerName = new Array (numSeats);
       mMultiplePlayerInstanceInfo.mSeatsLastActiveTime = new Array (numSeats);
-      mMultiplePlayerInstanceInfo.mIsSeatsConnected = new Array (numSeats);
+      mMultiplePlayerInstanceInfo.mIsSeatsPlayerJoined = new Array (numSeats);
       
       // ...
       
       mMultiplePlayerInstanceInfo.mChannelsInfo = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
-      
-      // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "LoggedIn"});
    }
    
-   private function SetInstancePlayInfo (numPlayedGames:int, mySeatIndex:int):void
+   private function SetMySeatIndex(mySeatIndex:int):void
    {
       if (mySeatIndex < 0 || mySeatIndex >= mMultiplePlayerInstanceInfo.mNumSeats)
          return;
       
+      if (mMultiplePlayerInstanceInfo.mMySeatIndex != mySeatIndex)
+      {
+         mMultiplePlayerInstanceInfo.mMySeatIndex = mySeatIndex;
+         
+         // ...
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "MySeatIndexChanged"});
+      }
+   }
+   
+   private function SetInstancePlayInfo (numPlayedGames:int):void
+   {
       mMultiplePlayerInstanceInfo.mNumPlayedGames = numPlayedGames;
-      mMultiplePlayerInstanceInfo.mMySeatIndex = mySeatIndex;
-      
-      // ...
-      mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "InstanceReset"});
    }
    
    private function SetInstanceCurrentPhase (newPhase:int):void
    {
+trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " + mMultiplePlayerInstanceInfo.mCurrentPhase);
       var phaseChanged:Boolean = (mMultiplePlayerInstanceInfo.mCurrentPhase != newPhase);
       
       if (phaseChanged)
@@ -482,7 +536,7 @@
          mMultiplePlayerInstanceInfo.mCurrentPhase = newPhase;
          
          // ...
-         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "PhaseChanged"});
+         mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "InstancePhaseChanged"});
       }
    }
    
@@ -502,17 +556,17 @@
       mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "SeatBasicInfoChanged"});
    }
    
-   private function SetSeatDanymicInfo (seatIndex:int, lastActiveTime:int, isConnected:Boolean):void
+   private function SetSeatDanymicInfo (seatIndex:int, lastActiveTime:int, isJoined:Boolean):void
    {
       if (seatIndex < 0 || seatIndex >= mMultiplePlayerInstanceInfo.mNumSeats)
          return;
       if (mMultiplePlayerInstanceInfo.mSeatsLastActiveTime == null)
          return;
-      if (mMultiplePlayerInstanceInfo.mIsSeatsConnected == null)
+      if (mMultiplePlayerInstanceInfo.mIsSeatsPlayerJoined == null)
          return;
       
       mMultiplePlayerInstanceInfo.mSeatsLastActiveTime [seatIndex] = lastActiveTime;
-      mMultiplePlayerInstanceInfo.mIsSeatsConnected [seatIndex] = isConnected;
+      mMultiplePlayerInstanceInfo.mIsSeatsPlayerJoined [seatIndex] = isJoined;
       
       // ...
       mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "SeatDanymicInfoChanged"});
@@ -544,7 +598,7 @@
       channelInfo.mTurnTimeoutMilliseconds = timeoutX8 * 125.0;
       
       // ...
-      //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "ChannelConstInfo"}); // along with "LoggedIn"
+      //mWorldDesignProperties.OnMultiplePlayerEvent ("OnGameInstanceInfoChanged", {mReason: "ChannelConstInfo"}); // always along with InstancePhaseChanged message
    }
    
    // SetChannelConstInfo muse be called before this function.
@@ -754,15 +808,14 @@
    //   WriteMultiplePlayerMessagesHeader (buffer, 1);
    //}
    
-   private function WriteMessage_JoinRandomInstance (buffer:ByteArray, instanceDefineData:ByteArray):void
+   private function WriteMessage_JoinRandomInstanceRequest (buffer:ByteArray, instanceDefineData:ByteArray):void
    {     
       WriteMultiplePlayerMessagesHeader (buffer, 0);
       
-      buffer.writeShort (MultiplePlayerDefine.ClientMessageType_JoinRandomInstance);
+      buffer.writeShort (MultiplePlayerDefine.ClientMessageType_JoinRandomInstanceRequest);
       buffer.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
       buffer.writeInt (instanceDefineData.length);
       buffer.writeBytes (instanceDefineData);
-      buffer.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
       
       WriteMultiplePlayerMessagesHeader (buffer, 1);
    }
@@ -803,7 +856,7 @@
    
    private function WriteMessage_LoginInstanceServer ():void
    {
-      if (! IsInstanceServerConnected ()) // here is connected or loggedin
+      if (! IsInstanceServerSocketConnected ()) // here is connected or loggedin
          return;
       
       // ...
@@ -812,13 +865,31 @@
       
       cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_LoginInstanceServer);
       cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
-      cachedMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mInstanceDefineDigest);
-      cachedMessagesData.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
+      cachedMessagesData.writeBytes (mMultiplePlayerInstanceInfo.mMyConnectionID, 0, MultiplePlayerDefine.Length_PlayerConnID); //writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
       
       // ...
       
       UpdateCachedClientMessagesHeader ();
    }
+   
+   private function WriteMessage_JoinRandomInstance ():void
+   {
+      if (! IsInstanceServerSocketConnected ()) // here is connected or loggedin
+         return;
+      
+      // ...
+      
+      var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
+      
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_JoinRandomInstance);
+      cachedMessagesData.writeBytes (mMultiplePlayerInstanceInfo.mInstanceDefineDigest, 0, MultiplePlayerDefine.Length_InstanceDefineHashKey); //writeUTF (mMultiplePlayerInstanceInfo.mInstanceDefineDigest);
+      
+      // ...
+      
+      UpdateCachedClientMessagesHeader ();
+   }
+   
+   
    
    //private function WriteMessage_ExitCurrentInstance ():void
    //{
@@ -829,7 +900,7 @@
    //   
    //   var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
    //   
-   //   cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_ExitCurrentInstance);
+   //   cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_LeaveCurrentInstance);
    //   
    //   // ...
    //   
@@ -838,7 +909,7 @@
    
    private function WriteMessage_ChannelMessage (channelIndex:int, channelVerifyNumber:int, messageData:ByteArray, needHolding:Boolean):void
    {
-      if (! IsInstanceServerLoggedIn ())
+      if (! IsInstanceJoined ())
          return;
       
       // ...
@@ -889,6 +960,8 @@
       
       // ...
       
+      cachedMessagesData.writeInt (mMultiplePlayerInstanceInfo.mNumPlayedGames);
+      
       cachedMessagesData.writeByte (channelIndex);
       
       cachedMessagesData.writeShort (channelVerifyNumber);
@@ -908,18 +981,18 @@
       UpdateCachedClientMessagesHeader ();
    }
    
-   private function WriteMessage_Signal_RestartInstance ():void
+   private function WriteMessage_Signal_ChangeInstancePhase (newPhase:int):void
    {
-      if (! IsInstanceServerLoggedIn ())
+      if (! IsInstanceJoined ())
          return;
       
       // ...
       
       var cachedMessagesData:ByteArray = GetCachedClientMessagesData ();
       
-      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Signal_RestartInstance);
+      cachedMessagesData.writeShort (MultiplePlayerDefine.ClientMessageType_Signal_ChangeInstancePhase);
       
-      cachedMessagesData.writeInt (mMultiplePlayerInstanceInfo.mNumPlayedGames);
+      cachedMessagesData.writeByte (newPhase);
       
       // ...
       
@@ -933,8 +1006,9 @@
    protected function MultiplePlayer_GetGameInstanceBasicInfo ():Object
    {
       return {
-         mIsLoggedIn       : IsInstanceServerLoggedIn (),
-         mIsInPlayingPhase : IsInstanceServerLoggedIn () && (mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing),
+         mPlayerStatus     : mMultiplePlayerInstanceInfo.mPlayerStatus,
+         mInstancePhase    : mMultiplePlayerInstanceInfo.mPlayerStatus == MultiplePlayerDefine.PlayerStatus_Joined ? 
+                             mMultiplePlayerInstanceInfo.mCurrentPhase : MultiplePlayerDefine.InstancePhase_Inactive,
          mNumSeats         : mMultiplePlayerInstanceInfo.mNumSeats, 
          mMySeatIndex      : mMultiplePlayerInstanceInfo.mMySeatIndex
       };
@@ -947,7 +1021,7 @@
       return {
          mPlayerName     : (badIndex || mMultiplePlayerInstanceInfo.mSeatsPlayerName == null) ? null : mMultiplePlayerInstanceInfo.mSeatsPlayerName [seatIndex],
          mLastActiveTime : (badIndex || mMultiplePlayerInstanceInfo.mSeatsLastActiveTime == null) ? 0 : mMultiplePlayerInstanceInfo.mSeatsLastActiveTime [seatIndex],
-         mIsLoggedIn     : (badIndex || mMultiplePlayerInstanceInfo.mIsSeatsConnected == null) ? false : mMultiplePlayerInstanceInfo.mIsSeatsConnected [seatIndex]
+         mIsPlayerJoined : (badIndex || mMultiplePlayerInstanceInfo.mIsSeatsPlayerJoined == null) ? false : mMultiplePlayerInstanceInfo.mIsSeatsPlayerJoined [seatIndex]
       };
    }
    
@@ -1089,7 +1163,7 @@
    
    // inputs
    //    mInstanceDefine
-   protected function MultiplePlayer_JoinRandomInstance (params:Object):Object
+   protected function MultiplePlayer_SendJoinRandomInstanceRequest (params:Object):Object
    {
       var cached:Boolean = false;
       
@@ -1105,7 +1179,7 @@
          
          var messageData:ByteArray = new ByteArray ();
          
-         WriteMessage_JoinRandomInstance (messageData, instanceDefineData);
+         WriteMessage_JoinRandomInstanceRequest (messageData, instanceDefineData);
          
          mCurrentJointInstanceRequestData = messageData;
          
@@ -1124,9 +1198,9 @@
    
    protected function MultiplePlayer_ExitCurrentInstance (params:Object):Object
    {
-      if (IsInstanceServerConnected ())
+      if (IsInstanceServerSocketConnected ())
       {
-         //if (IsInstanceServerLoggedIn ())
+         //if (IsInstanceJoined ())
          //{
          //   WriteMessage_ExitCurrentInstance (); // server will break the connection gracefully.
          //}
@@ -1151,35 +1225,27 @@
       var result:Boolean = false;
       do
       {
-trace (">>>>>>>>>>>>> aaa");
-         if (! IsInstanceServerLoggedIn ())
+         if (! IsInstanceJoined ())
             break;
-trace ("bbb");
          if (mMultiplePlayerInstanceInfo.mCurrentPhase != MultiplePlayerDefine.InstancePhase_Playing)
             break;
-trace ("ccc");
          if (mMultiplePlayerInstanceInfo.mMySeatIndex < 0)
             break;
-trace ("ddd");
          if (channelIndex < 0 || channelIndex >= MultiplePlayerDefine.MaxNumberOfInstanceChannels)
             break;
-trace ("eee");
          if (mMultiplePlayerInstanceInfo.mChannelsInfo == null)
             break;
          
-trace ("fff");
          var channelInfo:Object = mMultiplePlayerInstanceInfo.mChannelsInfo [channelIndex];
          if (channelInfo == null)
             break;
          
-trace ("ggg channelInfo.mIsSeatsEnabled = " + channelInfo.mIsSeatsEnabled);
          if (channelInfo.mIsSeatsEnabled == null || channelInfo.mIsSeatsEnabled [mMultiplePlayerInstanceInfo.mMySeatIndex] == false)
             break;
          
          //if (channelInfo.mIsSeatsEnabled_Predicted == null || channelInfo.mIsSeatsEnabled_Predicted [mMultiplePlayerInstanceInfo.mMySeatIndex] == false)
          //  break;
          
-trace ("hhh");
          WriteMessage_ChannelMessage (channelIndex, channelInfo.mVerifyNumber, messageData, channelInfo.mChannelMode == MultiplePlayerDefine.InstanceChannelMode_WeGo);
          
          result = true;
@@ -1195,32 +1261,39 @@ trace ("hhh");
    {
       var result:Boolean = false;
       
-      do
+      try
       {
-         if (! IsInstanceServerLoggedIn ())
-            break;
-         
-         var signalType:String = params.mSignalType; // be careful of compatibility problem.
-         var signalInfo:Object = params.mSignalInfo;
-         
-         switch (signalType)
+         do
          {
-            case "RestartInstance":
+            if (! IsInstanceJoined ())
+               break;
+            
+            var signalType:String = params.mSignalType; // be careful of compatibility problem.
+            
+            switch (signalType)
             {
-               if (mMultiplePlayerInstanceInfo.mCurrentPhase == MultiplePlayerDefine.InstancePhase_Playing)
-               {  
-                  WriteMessage_Signal_RestartInstance ();
+               case "ChangeInstancePhase":
+               {
+                  var newPhase:int = params.mNewPhase;
+                  if (MultiplePlayerDefine.IsValidInstancePhase (newPhase) && newPhase != mMultiplePlayerInstanceInfo.mCurrentPhase)
+                  {  
+                     WriteMessage_Signal_ChangeInstancePhase (newPhase);
+                  }
+                  
+                  break;
+               }  
+               default:
+               {
+                  break;
                }
-               
-               break;
-            }  
-            default:
-            {
-               break;
             }
          }
+         while (false);
       }
-      while (false);
+      catch (error:Error)
+      {
+         result = false;
+      }
       
       return {mResult: result};
    }
@@ -1248,10 +1321,19 @@ trace ("hhh");
       
       // ...
       
+      var fullGameID:String = instanceDefine.mGameID;
+      
+      if (mDesignAuthorSlotRevision != null)
+      {
+         fullGameID = "/" + mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID + "/" + fullGameID;
+      }
+      
+      // ...
+      
       var instanceDefineData:ByteArray = new ByteArray ();
       
-      instanceDefineData.writeUTF (instanceDefine.mGameID);
       instanceDefineData.writeByte (instanceDefine.mNumberOfSeats);
+      instanceDefineData.writeUTF (fullGameID);
       
       instanceDefineData.writeByte (numEnabledChannles);
       for (var i:int = 0; i < numEnabledChannles; ++ i)
@@ -1294,12 +1376,12 @@ trace ("hhh");
             //if (numMessages > )
             //   ...
             
-trace (">>>>> get server messages, dataLength = " + dataLength + ", numMessages = " + numMessages);
+trace (">>>>> get server messages, method = " + method + ", dataLength = " + dataLength + ", numMessages = " + numMessages);
             for (var msgIndex:int = 0; msgIndex < numMessages; ++ msgIndex)
             {
 trace (">>>> msgIndex = " + msgIndex + ", messagesData.position = " + messagesData.position + " / " + messagesData.length);
 
-               var serverMessageType:int = messagesData.readShort ();
+               var serverMessageType:int = messagesData.readShort () & 0xFFFF;
             
 trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                switch (serverMessageType)
@@ -1310,8 +1392,8 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   {
                      SetInstanceServerInfo (messagesData.readUTF (), // server address
                                             messagesData.readShort () & 0xFFFF, // server port
-                                            messagesData.readUTF (), // instance define digest
-                                            messagesData.readUTF () // my connection id
+                                            DataFormat3.ByteArrayReadBytes (messagesData, MultiplePlayerDefine.Length_InstanceDefineHashKey), // messagesData.readUTF (), // instance define digest
+                                            DataFormat3.ByteArrayReadBytes (messagesData, MultiplePlayerDefine.Length_PlayerConnID) // messagesData.readUTF () // my connection id
                                             );
                      
                      ConnectToInstanceServer ();
@@ -1333,27 +1415,38 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                      
                      break;
                   }
+                  case MultiplePlayerDefine.ServerMessageType_QueuingInfo:
+                  {
+                     var numPlayersInQueuing:int = messagesData.readShort () & 0xFFFF;
+                     var myQueuingOrder:int = messagesData.readShort () & 0xFFFF;
+                     
+                     SetQueuingInfo (numPlayersInQueuing, myQueuingOrder);
+                     
+                     break;
+                  }
                   case MultiplePlayerDefine.ServerMessageType_InstanceConstInfo:
                   {
-                     var instanceId:String = messagesData.readUTF ();
+                     var instanceId:ByteArray = DataFormat3.ByteArrayReadBytes (messagesData, MultiplePlayerDefine.Length_InstanceID); // var instanceId:String = messagesData.readUTF ();
                      var numSeats:int = messagesData.readByte ();
                      
                      SetInstanceConstInfo (instanceId, numSeats);
                      
                      break;
                   }
-                  //case MultiplePlayerDefine.ServerMessageType_LoggedOff:
-                  //{
-                  //   DisonnectToInstanceServer ();
-                  //   
-                  //   break;
-                  //}
-                  case MultiplePlayerDefine.ServerMessageType_InstancePlayInfo:
+                  
+                  case MultiplePlayerDefine.ServerMessageType_MySeatIndex:
                   {
-                     var numPlayedGames:int = messagesData.readInt ();
                      var mySeatIndex:int = messagesData.readByte ();
                      
-                     SetInstancePlayInfo (numPlayedGames, mySeatIndex);
+                     SetMySeatIndex (mySeatIndex);
+                     
+                     break;
+                  }
+                  case MultiplePlayerDefine.ServerMessageType_InstancePlayingInfo:
+                  {
+                     var numPlayedGames:int = messagesData.readInt ();
+                     
+                     SetInstancePlayInfo (numPlayedGames);
                      
                      break;
                   }
@@ -1378,10 +1471,10 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   {
                      var dynamicInfoSeatIndex:int = messagesData.readByte ();
                      var dynamicInfoLastActiveTime:int = messagesData.readInt ();
-                     var dynamicInfoIsConnected:Boolean = (dynamicInfoLastActiveTime & 0x80000000) == 0;
+                     var dynamicInfoIsJoined:Boolean = (dynamicInfoLastActiveTime & 0x80000000) == 0;
                      dynamicInfoLastActiveTime &= 0x7FFFFFFF;
                      
-                     SetSeatDanymicInfo (dynamicInfoSeatIndex, dynamicInfoLastActiveTime, dynamicInfoIsConnected);
+                     SetSeatDanymicInfo (dynamicInfoSeatIndex, dynamicInfoLastActiveTime, dynamicInfoIsJoined);
                      
                      break;
                   }
@@ -1485,6 +1578,14 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                      }
                      
                      OnInstanceChannelMessageEncrptionCiphers (cipherMesageChannelIndex, cipherMessageSeatIndex, messageEncryptionIndex, messageEncryptionMethod, cipherData);
+                     
+                     break;
+                  }
+                  case MultiplePlayerDefine.ServerMessageType_PlayerStatus:
+                  {
+                     var playerStatus:int = messagesData.readByte () & 0xFF;
+                     
+                     SetPlayerStatus (playerStatus);
                      
                      break;
                   }

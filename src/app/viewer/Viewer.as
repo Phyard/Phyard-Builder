@@ -103,6 +103,8 @@ package viewer {
 
       private var mBuildContextMenu:Boolean = true;
 
+      // one of the following 2 is null
+      private var mDesignAuthorSlotRevision:Object = null; // mAuthor, mAuthorForURL, mSlotID, mRevision
       private var mWorldPlayCode:String = null;
       private var mWorldPlayCodeFormat:String = null;
 
@@ -759,9 +761,9 @@ package viewer {
 //======================================================================
 // 
 //======================================================================
-
-      private var mUniViewerUrl:String;
-      private var mFlashParams:Object;
+      
+      //private var mUniViewerUrl:String;
+      //private var mFlashParams:Object;
 
       private var mWorldPluginUrl:String;
       private var mLoadDataUrl:String;
@@ -782,39 +784,49 @@ package viewer {
             }
             else if (mParamsFromUniViewer != null)
             {
-               mFlashParams = mParamsFromUniViewer.mFlashVars;
+               //mFlashParams = mParamsFromUniViewer.mFlashVars;
 
-               mUniViewerUrl = mParamsFromUniViewer.mUniViewerUrl;
+               //mUniViewerUrl = mParamsFromUniViewer.mUniViewerUrl;
 
                var stream:ByteArray = mParamsFromUniViewer.mDesignInfoStream;
                var designRevision:int = stream.readInt ();
                var worldPluginUrl:String = stream.readUTF ();
-
+               
+               if (mParamsFromUniViewer.mFlashVars.author != null && mParamsFromUniViewer.mFlashVars.slot != null)
+               {
+                  mDesignAuthorSlotRevision = {
+                              mAuthor : mParamsFromUniViewer.mFlashVars.author.replace (".", " ").replace ("_", " "),
+                              mAuthorForURL : mParamsFromUniViewer.mFlashVars.author.replace (" ", "_"),
+                              mSlotID : parseInt (mParamsFromUniViewer.mFlashVars.slot),
+                              mRevision : designRevision
+                           };
+               }
+               
                if (worldPluginUrl.indexOf ("://") < 0)
                {
-                  var index:int = mUniViewerUrl.indexOf ("/uniplayer.swf");
+                  var index:int = mParamsFromUniViewer.mUniViewerUrl.indexOf ("/uniplayer.swf");
                   if (index < 0)
-                     index = mUniViewerUrl.indexOf ("/swfs/univiewer");
+                     index = mParamsFromUniViewer.mUniViewerUrl.indexOf ("/swfs/univiewer");
 
                   if (index < 0)
                   {
-                     throw new Error ("Invalid url: " + mUniViewerUrl);
+                     throw new Error ("Invalid url: " + mParamsFromUniViewer.mUniViewerUrl);
                   }
 
-                  worldPluginUrl = mUniViewerUrl.substring (0, index) + "/swfs/" + worldPluginUrl;
+                  worldPluginUrl = mParamsFromUniViewer.mUniViewerUrl.substring (0, index) + "/swfs/" + worldPluginUrl;
                }
 
                mWorldPluginUrl = worldPluginUrl;
 
                var loadDataUrl:String;
-               if (mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0)  // for play, add the return published revison id
+               if (mParamsFromUniViewer.mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0)  // for play, add the return published revison id
                {
-                  loadDataUrl = mUniViewerUrl.replace (/\/uniplayer\.*swf/, "/api/design/loaddata");
+                  loadDataUrl = mParamsFromUniViewer.mUniViewerUrl.replace (/\/uniplayer\.*swf/, "/api/design/loaddata");
                   loadDataUrl = loadDataUrl + "&revision=" + designRevision;
                }
                else // for view, the revision is already caontained in mUniViewerUrl
                {
-                  loadDataUrl = mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loaddata");
+                  loadDataUrl = mParamsFromUniViewer.mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loaddata");
                   loadDataUrl = loadDataUrl + "&view=1"; // indication for view
                }
 
@@ -832,8 +844,8 @@ package viewer {
 
                mLoadDataUrl = loadDataUrl;
 
-               mWorldPlayCode = mFlashParams.playcode;
-               mWorldPlayCodeFormat = mFlashParams.compressformat;
+               mWorldPlayCode = mParamsFromUniViewer.mFlashVars.playcode;
+               mWorldPlayCodeFormat = mParamsFromUniViewer.mFlashVars.compressformat;
                if (mWorldPlayCode != null && mWorldPlayCode.length == 0)
                {
                   mWorldPlayCode = null;
@@ -1210,7 +1222,9 @@ package viewer {
                {
                   //mWorldBinaryData = (mWorldPluginProperties.WorldFormat_HexString2ByteArray as Function) (mWorldPlayCode); // before v1.55
 
-                  if (mParamsFromUniViewer != null && mFlashParams != null && DataFormat3.CompressFormat_Base64 == mWorldPlayCodeFormat)
+                  //if (mParamsFromUniViewer != null && mFlashParams != null && DataFormat3.CompressFormat_Base64 == mWorldPlayCodeFormat)
+                  // changed since v2.06: seems mFlashParams will never be null if mParamsFromUniViewer != null
+                  if (mParamsFromUniViewer != null && DataFormat3.CompressFormat_Base64 == mWorldPlayCodeFormat)
                   {
                      mWorldBinaryData = DataFormat3.DecodeString2ByteArray (mWorldPlayCode); // from v1.55
                      mWorldBinaryData.uncompress ();
@@ -1328,7 +1342,7 @@ package viewer {
                               MultiplePlayer_CreateInstanceChannelDefine: MultiplePlayer_CreateInstanceChannelDefine, // v2.06
                               MultiplePlayer_ReplaceInstanceChannelDefine: MultiplePlayer_ReplaceInstanceChannelDefine, // v2.06
                               
-                              MultiplePlayer_JoinRandomInstance: MultiplePlayer_JoinRandomInstance, // v2.06
+                              MultiplePlayer_SendJoinRandomInstanceRequest: MultiplePlayer_SendJoinRandomInstanceRequest, // v2.06
                               MultiplePlayer_ExitInstance : MultiplePlayer_ExitCurrentInstance, // v2.06
                               
                               MultiplePlayer_SendChannelMessage: MultiplePlayer_SendChannelMessage, // v2.06
@@ -2222,29 +2236,33 @@ package viewer {
 
             var forumEmbedCode:String = null;
 
-            var url:String = mParamsFromUniViewer.mUniViewerUrl;
-
-            const AuthorEquals:String = "author=";
-            var index1:int = url.indexOf (AuthorEquals);
-            var index2:int;
-            if (index1 >= 0)
+            //var url:String = mParamsFromUniViewer.mUniViewerUrl;
+            //
+            //const AuthorEquals:String = "author=";
+            //var index1:int = url.indexOf (AuthorEquals);
+            //var index2:int;
+            //if (index1 >= 0)
+            //{
+            //   index1 += AuthorEquals.length;
+            //   index2 = url.indexOf ("&", index1);
+            //   if (index2 < 0) index2 = url.length;
+            //   var author:String = url.substring (index1, index2);
+            //
+            //   const SlotEquals:String = "slot=";
+            //   index1 = url.indexOf (SlotEquals);
+            //   if (index1 >= 0)
+            //   {
+            //      index1 += SlotEquals.length;
+            //      index2 = url.indexOf ("&", index1);
+            //      if (index2 < 0) index2 = url.length;
+            //      var slotId:String = url.substring (index1, index2);
+            //
+            //      forumEmbedCode = "{@http://www.phyard.com/design/" + author + "/" + slotId + "@}";
+            //   }
+            //}
+            if (mDesignAuthorSlotRevision != null)
             {
-               index1 += AuthorEquals.length;
-               index2 = url.indexOf ("&", index1);
-               if (index2 < 0) index2 = url.length;
-               var author:String = url.substring (index1, index2);
-
-               const SlotEquals:String = "slot=";
-               index1 = url.indexOf (SlotEquals);
-               if (index1 >= 0)
-               {
-                  index1 += SlotEquals.length;
-                  index2 = url.indexOf ("&", index1);
-                  if (index2 < 0) index2 = url.length;
-                  var slotId:String = url.substring (index1, index2);
-
-                  forumEmbedCode = "{@http://www.phyard.com/design/" + author + "/" + slotId + "@}";
-               }
+               forumEmbedCode = "{@http://www.phyard.com/design/" + mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID + "@}";
             }
             else if (mWorldBinaryData != null)
             {

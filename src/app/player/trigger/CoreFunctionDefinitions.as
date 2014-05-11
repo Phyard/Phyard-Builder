@@ -123,10 +123,10 @@ package player.trigger {
          
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendGameInstanceChannelMessage,           SendGameInstanceChannelMessage);
          
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendRestartInstanceSignal,      SendeRestartGameInstancSignalMessage);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SendSignal_ChangeInstancePhase,      SendSignalMessage_ChangeInstancePhase);
          
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsGameInstanceLoggedIn,                 IsGameInstanceLoggedIn);
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsGameInstanceInPlayingPhase,           IsGameInstanceInPlayingPhase);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsInMutiplayerPlayerStatus,        IsInMutiplayerPlayerStatus);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsInGameInstancePhase,             IsInGameInstancePhase);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceNumberOfSeats,           GetGameInstanceNumberOfSeats);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetMySeatIndexInGameInstance,           GetMySeatIndexInGameInstance);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceSeatInfo,                GetGameInstanceSeatInfo);
@@ -1021,14 +1021,14 @@ package player.trigger {
       //      }
       //   }
       //   
-      //   callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_JoinRandomInstance ({mInstanceDefine: instanceDefine, mPassword: password});
+      //   callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendCreateNewInstanceRequest ({mInstanceDefine: instanceDefine, mPassword: password});
       //}
       
       public static function JoinGameInstanceRandomly (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var instanceDefine:Object = valueSource.EvaluateValueObject () as Object;
          
-         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_JoinRandomInstance ({mInstanceDefine: instanceDefine});
+         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendJoinRandomInstanceRequest ({mInstanceDefine: instanceDefine});
       }
       
       //public static function JoinGameInstanceByInstanceID (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -1050,23 +1050,29 @@ package player.trigger {
          callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendChannelMessage ({mChannelIndex: channelIndex, mMessageData: messageData});
       }
       
-      public static function SendeRestartGameInstancSignalMessage (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      public static function SendSignalMessage_ChangeInstancePhase (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendSignalMessage ({mSignalType: "RestartInstance", mSignalInfo: null});
+         var newPhase:int = int (valueSource.EvaluateValueObject ());
+         
+         callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_SendSignalMessage ({mSignalType: "ChangeInstancePhase", mNewPhase: newPhase});
+      }
+      
+      public static function IsInMutiplayerPlayerStatus (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var mpInstanceInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceBasicInfo ();
+         
+         var whichStatus:int = Math.round (Number (valueSource.EvaluateValueObject ()));
+
+         valueTarget.AssignValueObject (mpInstanceInfo.mPlayerStatus == whichStatus);
       }
 
-      public static function IsGameInstanceLoggedIn (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      public static function IsInGameInstancePhase (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var mpInstanceInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceBasicInfo ();
 
-         valueTarget.AssignValueObject (mpInstanceInfo.mIsLoggedIn);
-      }
+         var whichPhase:int = Math.round (Number (valueSource.EvaluateValueObject ()));
 
-      public static function IsGameInstanceInPlayingPhase (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var mpInstanceInfo:Object = callingContext.mWorld.Viewer_mLibServices.MultiplePlayer_GetGameInstanceBasicInfo ();
-
-         valueTarget.AssignValueObject (mpInstanceInfo.mIsInPlayingPhase);
+         valueTarget.AssignValueObject (mpInstanceInfo.mInstancePhase == whichPhase);
       }
 
       public static function GetGameInstanceNumberOfSeats (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -2442,7 +2448,8 @@ package player.trigger {
             if (stream == null)
                break;
             
-            boolValue = stream.readBoolean ();
+            if (stream.length - stream.position > 1)
+               boolValue = stream.readBoolean ();
          }
          while (false);
          
@@ -2463,12 +2470,11 @@ package player.trigger {
       
       public static function ByteArrayStreamReadNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var valueObject:Object = 0;
+         var valueObject:Object;
          
          do
          {
             var stream:ByteArray = valueSource.EvaluateValueObject () as ByteArray;
-            
             
             valueSource = valueSource.mNextParameter;
             var valueType:int = valueSource.EvaluateValueObject () as int;
@@ -2476,20 +2482,20 @@ package player.trigger {
             switch (valueType)
             {
                case CoreClassIds.NumberTypeDetail_Int8Number:
-                  valueObject = stream == null ? 0 : stream.readByte ();
+                  valueObject = (stream == null || (stream.length - stream.position < 1)) ? 0 : stream.readByte ();
                   break;
                case CoreClassIds.NumberTypeDetail_Int16Number:
-                  valueObject = stream == null ? 0 : stream.readShort ();
+                  valueObject = (stream == null || (stream.length - stream.position < 2)) ? 0 : stream.readShort ();
                   break;
                case CoreClassIds.NumberTypeDetail_Int32Number:
-                  valueObject = stream == null ? 0 : stream.readInt ();
+                  valueObject = (stream == null || (stream.length - stream.position < 4)) ? 0 : stream.readInt ();
                   break;
                case CoreClassIds.NumberTypeDetail_DoubleNumber:
-                  valueObject = stream == null ? NaN : stream.readDouble ();
+                  valueObject = (stream == null || (stream.length - stream.position < 8)) ? NaN : stream.readDouble ();
                   break;
                case CoreClassIds.NumberTypeDetail_FloatNumber:
                default:
-                  valueObject = stream == null ? NaN : stream.readFloat ();
+                  valueObject = (stream == null || (stream.length - stream.position < 4)) ? NaN : stream.readFloat ();
                   break;
             }
          }
@@ -2505,28 +2511,28 @@ package player.trigger {
             return;
          
          valueSource = valueSource.mNextParameter;
-         var numberValue:Object = valueSource.EvaluateValueObject ();
+         var numberValue:Number = Number (valueSource.EvaluateValueObject ());
          
          valueSource = valueSource.mNextParameter;
-         var valueType:int = valueSource.EvaluateValueObject () as int;
+         var valueType:int = Math.round (Number (valueSource.EvaluateValueObject ()));
          
          switch (valueType)
          {
             case CoreClassIds.NumberTypeDetail_Int8Number:
-               stream.writeByte (numberValue as int);
+               stream.writeByte (Math.round (numberValue));
                break;
             case CoreClassIds.NumberTypeDetail_Int16Number:
-               stream.writeShort (numberValue as int);
+               stream.writeShort (Math.round (numberValue));
                break;
             case CoreClassIds.NumberTypeDetail_Int32Number:
-               stream.writeInt (numberValue as int);
+               stream.writeInt (Math.round (numberValue));
                break;
             case CoreClassIds.NumberTypeDetail_DoubleNumber:
-               stream.writeDouble (numberValue as Number);
+               stream.writeDouble (numberValue);
                break;
             case CoreClassIds.NumberTypeDetail_FloatNumber:
             default:
-               stream.writeFloat (numberValue as Number);
+               stream.writeFloat (numberValue);
                break;
          }
       }

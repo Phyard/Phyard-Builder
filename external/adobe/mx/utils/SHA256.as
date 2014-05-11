@@ -59,7 +59,7 @@ package mx.utils
         *  @playerversion AIR 1.1
         *  @productversion Flex 3
         */   
-        public static function computeDigest(byteArray:ByteArray):String
+        public static function computeDigest(byteArray:ByteArray):ByteArray //String
         {
             // Preprocessing
             
@@ -263,11 +263,27 @@ package mx.utils
             
             // final digest is h1 | h2 | h3 | h4 | h5 | h6 | h7
             // convert H(i) variables to hex strings and concatinate
-            return toHex(h0) + toHex(h1) +
-                   toHex(h2) + toHex(h3) +
-                   toHex(h4) + toHex(h5) +
-                   toHex(h6) + toHex(h7);
+            //return toHex(h0) + toHex(h1) +
+            //       toHex(h2) + toHex(h3) +
+            //       toHex(h4) + toHex(h5) +
+            //       toHex(h6) + toHex(h7);
+            
+            var digest:ByteArray = new ByteArray ();
+            digest.length = 32;
+            digest.position = 0;
+            digest.writeInt (h0);
+            digest.writeInt (h1);
+            digest.writeInt (h2);
+            digest.writeInt (h3);
+            digest.writeInt (h4);
+            digest.writeInt (h5);
+            digest.writeInt (h6);
+            digest.writeInt (h7);
+            digest.position = 0;
+            return digest;
         }
+        
+        
 
         
         /**
@@ -290,7 +306,7 @@ package mx.utils
 //                m[i] = byteArray[i + startingIndex];
 //            }
         }
-        
+/*        
         private static function toHex(n:uint):String
         {
             var s:String = n.toString(16);
@@ -310,7 +326,7 @@ package mx.utils
             
             return s;
         }
-        
+*/    
         // The below functions are defined in Federal Information
         // Processing Standards Publication 180-2
         // at 

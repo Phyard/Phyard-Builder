@@ -467,16 +467,20 @@ package editor.world {
                      null
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceLoggedIn, services_package, "Is Game Instance Joined?", null, null,
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInMutiplayerPlayerStatus, services_package, "Am I In The Specified Multiplayer Status?", "@#0 = (My Multiplayer Status == $0)", "@#0 = (My Multiplayer Status == $0)",
                      [
-                             new VariableDefinitionBoolean ("Joined?"),
+                             new VariableDefinitionNumber ("The Specified Status", null, {mValueLists: Lists.mMultiplePlayerPlayerStatusList}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("In This Status?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsGameInstanceInPlayingPhase, services_package, "Is Game Instance In Playing Phase?", null, null,
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInGameInstancePhase, services_package, "Is Game Instance In The Specified Phase?", "@#0 = (Game Instance Phase == $0)", "@#0 = (Game Instance Phase == $0)",
                      [
-                             new VariableDefinitionBoolean ("Is In Playing Phase?"),
+                             new VariableDefinitionNumber ("The Specified Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("In This Phase?"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceNumberOfSeats, services_package, "Get Number Of Seats In Game Instance", null, null,
@@ -515,8 +519,10 @@ package editor.world {
                      null
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendRestartInstanceSignal, services_package, "Send Signal To Restart Game Instance", null, null,
-                     null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package, "Send Signal To Restart Game Instance", null, null,
+                     [
+                             new VariableDefinitionNumber ("New Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
+                     ],
                      null
                   );
 

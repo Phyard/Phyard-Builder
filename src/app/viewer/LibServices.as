@@ -94,8 +94,8 @@
 //======================================================
    
    
-   private static const kUseRealServersForcely                :Boolean = false; // for editor mode only
-   private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.6.131:1618/api/design/instance";
+   private static const kUseRealServersForcely                :Boolean = Capabilities.isDebugger; // true; // for editor mode only
+   private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.6.132:1618/api/design/instance";
    private static const kGetInstanceServerInfoURL             :String  = "http://128.199.226.247:1618/api/design/instance";
                                                                       // "http://www.phyard.com/api/design/instance";
    
@@ -111,7 +111,8 @@
       {
          DisonnectToInstanceServer ();
          
-         var serverinfoGetURL:String = mParamsFromEditor != null ? kGetInstanceServerInfoURL_LocalServer : kGetInstanceServerInfoURL;
+         var serverinfoGetURL:String = Capabilities.isDebugger ? kGetInstanceServerInfoURL_LocalServer : kGetInstanceServerInfoURL;
+         //var serverinfoGetURL:String = kGetInstanceServerInfoURL;
          
          var request:URLRequest = new URLRequest (serverinfoGetURL);
          request.method = URLRequestMethod.POST;
@@ -288,21 +289,26 @@
          }
          else
          {     
-            mMultiplePlayerInstanceInfo.mCachedServerMessage.position = 0;
-            if (MultiplePlayerDefine.ServerMessageHeadString != mMultiplePlayerInstanceInfo.mCachedServerMessage.readUTFBytes (MultiplePlayerDefine.ServerMessageHeadString.length))
+            mMultiplePlayerInstanceInfo.mCachedServerMessages.position = 0;
+            if (MultiplePlayerDefine.ServerMessageHeadString != mMultiplePlayerInstanceInfo.mCachedServerMessages.readUTFBytes (MultiplePlayerDefine.ServerMessageHeadString.length))
             {
                // bad message
                break;
             }
          
-            //mMultiplePlayerInstanceInfo.mCachedServerMessage.position = MultiplePlayerDefine.ServerMessageHeadString.length;
-            var messagesLength:int = mMultiplePlayerInstanceInfo.mCachedServerMessage.readInt ();
+            //mMultiplePlayerInstanceInfo.mCachedServerMessages.position = MultiplePlayerDefine.ServerMessageHeadString.length;
+            var messagesLength:int = mMultiplePlayerInstanceInfo.mCachedServerMessages.readInt ();
             var numPendingBytes:int = messagesLength - mMultiplePlayerInstanceInfo.mCachedServerMessages.length;
+            
+trace (">>> ************ [OnInstanceServerSocketData]: messagesLength = " + messagesLength + ", numPendingBytes = " + numPendingBytes);
+            
             if (numPendingBytes <= 0)
             {
                // error
                break;
             }
+            
+trace (">>> ************ : numPendingBytes = " + numPendingBytes + ", mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable = " + mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
             
             var numBytesToRead:int = Math.min (numPendingBytes, mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
             mMultiplePlayerInstanceInfo.mServerSocket.readBytes (mMultiplePlayerInstanceInfo.mCachedServerMessages,
@@ -310,9 +316,10 @@
                                                                  numBytesToRead
                                                                  );
             
+trace (">>> ************ : numBytesToRead = " + numBytesToRead + ", mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable = " + mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
             if (numPendingBytes == numBytesToRead)
             {
-               mMultiplePlayerInstanceInfo.mCachedServerMessage.position = 0;
+               mMultiplePlayerInstanceInfo.mCachedServerMessages.position = 0;
                OnMultiplePlayerServerMessages (mMultiplePlayerInstanceInfo.mCachedServerMessages);
                mMultiplePlayerInstanceInfo.mCachedServerMessages.length = 0;
             }
@@ -460,14 +467,12 @@ trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverP
    
    private function SetPlayerStatus (playerStatus:int):void
    {
-trace ("555 SetPlayerStatus, newPhase = " + playerStatus + ", old [hase = " + mMultiplePlayerInstanceInfo.mPlayerStatus);
       if (mMultiplePlayerInstanceInfo.mPlayerStatus != playerStatus)
       {
          mMultiplePlayerInstanceInfo.mPlayerStatus = playerStatus;
          
          if (playerStatus != MultiplePlayerDefine.PlayerStatus_Joined)
          {
-trace ("555 aaa");
             SetInstanceCurrentPhase (MultiplePlayerDefine.InstancePhase_Inactive);
          }
          
@@ -519,7 +524,6 @@ trace ("555 aaa");
    
    private function SetInstanceCurrentPhase (newPhase:int):void
    {
-trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " + mMultiplePlayerInstanceInfo.mCurrentPhase);
       var phaseChanged:Boolean = (mMultiplePlayerInstanceInfo.mCurrentPhase != newPhase);
       
       if (phaseChanged)
@@ -685,7 +689,12 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
       
       do
       {
-         if (messageEncryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift)
+         if (messageEncryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_DoNothing)
+         {  
+            validData = true;
+            break;
+         }
+         else if (messageEncryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift)
          {
             var seed:uint = uint (cipherData.readInt ());
             
@@ -694,10 +703,6 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
             validData = true;
             
             break;
-         }
-         else if (messageEncryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_DoNothing)
-         {  
-            validData = true;
          }
       }
       while (false);
@@ -802,7 +807,7 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
    //   buffer.writeShort (MultiplePlayerDefine.ClientMessageDataFormatVersion);
    //   buffer.writeInt (instanceDefineData.length);
    //   buffer.writeBytes (instanceDefineData);
-   //   buffer.writeUTF (password);
+   //   buffer.writeUTF (password); // todo: use writeByte + writeUTFBytes
    //   buffer.writeUTF (mMultiplePlayerInstanceInfo.mMyConnectionID);
    //   
    //   WriteMultiplePlayerMessagesHeader (buffer, 1);
@@ -920,7 +925,8 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
       {
          // too long for server to hold, so we encrypt the data here, the server just holds the encryption ciphers.
          
-         encryptionMethod = MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift;
+         // todo: implement MessageEncryptionMethod_SwapRollShift
+         encryptionMethod = MultiplePlayerDefine.MessageEncryptionMethod_DoNothing; // MessageEncryptionMethod_SwapRollShift;
       }
       
       // ...
@@ -934,7 +940,11 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
          // .
          
          var cipherData:ByteArray = new ByteArray ();
-         if (encryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift)
+         if (encryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_DoNothing)
+         {
+            // do nothing
+         }
+         else if (encryptionMethod == MultiplePlayerDefine.MessageEncryptionMethod_SwapRollShift)
          {
             var seed:uint = uint (Math.floor (Math.random () * (2.0 + 0x7FFFFFFF + 0x7FFFFFFF)));
             
@@ -1069,7 +1079,7 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
                                                     mChannelIndex: 0, 
                                                     mChannelDefine: MultiplePlayer_CreateInstanceChannelDefine ({
                                                        mChannelMode: MultiplePlayerDefine.InstanceChannelMode_Free,
-                                                       mTurnTimeoutSeconds: MultiplePlayerDefine.MaxTurnTimeoutInPractice
+                                                       mTurnTimeoutSeconds: 0 // MultiplePlayerDefine.MaxTurnTimeoutInPractice
                                                     }).mChannelDefine
                                                   })
       
@@ -1143,6 +1153,8 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
    //      //
    //      
    //      var instanceDefineData:ByteArray = MultiplePlayerInstanceDefine2ByteArray (instanceDefine);
+   //      if (instanceDefineData == null)
+   //         break;
    //      
    //      // ...
    //      
@@ -1174,6 +1186,8 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
             break;
          
          var instanceDefineData:ByteArray = MultiplePlayerInstanceDefine2ByteArray (instanceDefine);
+         if (instanceDefineData == null)
+            break;
          
          // ...
          
@@ -1322,18 +1336,24 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
       // ...
       
       var fullGameID:String = instanceDefine.mGameID;
-      
+      if (fullGameID == null) // no possible, just for following convenience
+         fullGameID = "";
       if (mDesignAuthorSlotRevision != null)
       {
          fullGameID = "/" + mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID + "/" + fullGameID;
       }
+      
+      if (fullGameID.length < MultiplePlayerDefine.MinInstanceFullGameIdLength || fullGameID.length > MultiplePlayerDefine.MaxInstanceFullGameIdLength)
+         return null;
       
       // ...
       
       var instanceDefineData:ByteArray = new ByteArray ();
       
       instanceDefineData.writeByte (instanceDefine.mNumberOfSeats);
-      instanceDefineData.writeUTF (fullGameID);
+      instanceDefineData.writeByte (fullGameID.length);
+      if (fullGameID.length > 0)
+         instanceDefineData.writeUTFBytes (fullGameID);
       
       instanceDefineData.writeByte (numEnabledChannles);
       for (var i:int = 0; i < numEnabledChannles; ++ i)
@@ -1376,7 +1396,7 @@ trace ("666 SetInstanceCurrentPhase, newPhase = " + newPhase + ", old [hase = " 
             //if (numMessages > )
             //   ...
             
-trace (">>>>> get server messages, method = " + method + ", dataLength = " + dataLength + ", numMessages = " + numMessages);
+trace (">>>>>>>>>>>>>>>>> get server messages, method = " + method + ", dataLength = " + dataLength + ", numMessages = " + numMessages);
             for (var msgIndex:int = 0; msgIndex < numMessages; ++ msgIndex)
             {
 trace (">>>> msgIndex = " + msgIndex + ", messagesData.position = " + messagesData.position + " / " + messagesData.length);
@@ -1390,8 +1410,9 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                
                   case MultiplePlayerDefine.ServerMessageType_InstanceServerInfo:
                   {
-                     SetInstanceServerInfo (messagesData.readUTF (), // server address
-                                            messagesData.readShort () & 0xFFFF, // server port
+                     var addressLen:int = messagesData.readUnsignedByte ();
+                     SetInstanceServerInfo (messagesData.readUTFBytes (addressLen), // server address
+                                            messagesData.readUnsignedShort (), // server port
                                             DataFormat3.ByteArrayReadBytes (messagesData, MultiplePlayerDefine.Length_InstanceDefineHashKey), // messagesData.readUTF (), // instance define digest
                                             DataFormat3.ByteArrayReadBytes (messagesData, MultiplePlayerDefine.Length_PlayerConnID) // messagesData.readUTF () // my connection id
                                             );
@@ -1417,8 +1438,8 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   }
                   case MultiplePlayerDefine.ServerMessageType_QueuingInfo:
                   {
-                     var numPlayersInQueuing:int = messagesData.readShort () & 0xFFFF;
-                     var myQueuingOrder:int = messagesData.readShort () & 0xFFFF;
+                     var numPlayersInQueuing:int = messagesData.readShort ();
+                     var myQueuingOrder:int = messagesData.readShort ();
                      
                      SetQueuingInfo (numPlayersInQueuing, myQueuingOrder);
                      
@@ -1427,7 +1448,7 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   case MultiplePlayerDefine.ServerMessageType_InstanceConstInfo:
                   {
                      var instanceId:ByteArray = DataFormat3.ByteArrayReadBytes (messagesData, MultiplePlayerDefine.Length_InstanceID); // var instanceId:String = messagesData.readUTF ();
-                     var numSeats:int = messagesData.readByte ();
+                     var numSeats:int = messagesData.readUnsignedByte ();
                      
                      SetInstanceConstInfo (instanceId, numSeats);
                      
@@ -1436,7 +1457,7 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   
                   case MultiplePlayerDefine.ServerMessageType_MySeatIndex:
                   {
-                     var mySeatIndex:int = messagesData.readByte ();
+                     var mySeatIndex:int = messagesData.readByte (); // -1 for visitor
                      
                      SetMySeatIndex (mySeatIndex);
                      
@@ -1452,7 +1473,7 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   }
                   case MultiplePlayerDefine.ServerMessageType_InstanceCurrentPhase:
                   {
-                     var newCurrentPhase:int = messagesData.readByte ();
+                     var newCurrentPhase:int = messagesData.readUnsignedByte ();
                      
                      SetInstanceCurrentPhase (newCurrentPhase);
                      
@@ -1461,7 +1482,8 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   case MultiplePlayerDefine.ServerMessageType_SeatBasicInfo:
                   {
                      var basicInfoSeatIndex:int = messagesData.readByte ();
-                     var basicInfoPlayerName:String = messagesData.readUTF ();
+                     var basicInfoPlayerNameLen:int = messagesData.readUnsignedByte ();
+                     var basicInfoPlayerName:String = messagesData.readUTFBytes (basicInfoPlayerNameLen);
                      
                      SetSeatBasicInfo (basicInfoSeatIndex, basicInfoPlayerName);
                      
@@ -1496,7 +1518,7 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   case MultiplePlayerDefine.ServerMessageType_ChannelDynamicInfo:
                   {
                      var dynamicInfoChannelIndex:int = messagesData.readByte ();
-                     var dynamicInfoChannelVerifyNumber:int = messagesData.readShort ();
+                     var dynamicInfoChannelVerifyNumber:int = messagesData.readUnsignedShort ();
                      
                      SetChannelDynamicInfo (dynamicInfoChannelIndex, dynamicInfoChannelVerifyNumber);
                      
@@ -1583,7 +1605,7 @@ trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                   }
                   case MultiplePlayerDefine.ServerMessageType_PlayerStatus:
                   {
-                     var playerStatus:int = messagesData.readByte () & 0xFF;
+                     var playerStatus:int = messagesData.readUnsignedByte ();
                      
                      SetPlayerStatus (playerStatus);
                      

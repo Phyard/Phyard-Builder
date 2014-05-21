@@ -243,6 +243,8 @@ package viewer {
       // the isTheLastViewer param is added since v2.06, for multiple players feature.
       public function Destroy (isTheLastViewer:Boolean):void
       {
+         DisonnectToInstanceServer ();
+         
          if (mWorldDesignProperties != null) // && mWorldDesignProperties.OnViewerDestroyed != null)
          {
             try

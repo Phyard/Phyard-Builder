@@ -519,7 +519,7 @@ package editor.world {
                      null
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package, "Send Signal To Restart Game Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package, "Send Signal To Change Game Instance Phase", null, null,
                      [
                              new VariableDefinitionNumber ("New Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
                      ],

@@ -2,12 +2,21 @@
 package common {
    
    public class MultiplePlayerDefine
-   {
-   
+   {  
       public static const Length_PlayerConnID          :int = 16; // uuid
       public static const Length_InstanceID            :int = 16; // uuid
       public static const Length_InstanceDefineHashKey :int = 32; // sha256 hash
+      
+      // todo: the followings are not checked on client side yet.
             
+      public static const MaxPlayerNameLength:int = 26; // player name is stored as as UTF with 2 bytes length header
+      
+      public static const MaxInstanceDefineDataLength:int =  2000;
+      public static const MinInstanceFullGameIdLength:int =  16;
+      public static const MaxInstanceFullGameIdLength:int =  127;
+      public static const MinDesignAuthorNameLength  :int =  3;
+      public static const MaxDesignAuthorNameLength  :int =  32; // it is 16 on phyard.com now
+      
 //===========================================================================
 //  when changing these values, please consider compatibility 
 //===========================================================================
@@ -15,6 +24,7 @@ package common {
       //
       
       public static const MaxTurnTimeoutInPractice:int = 1800; // half an hour
+      public static const MaxTurnTimeoutX8InPractice:int = (MaxTurnTimeoutInPractice << 3);
       
       //
       
@@ -28,6 +38,7 @@ package common {
       public static const InstanceChannelMode_Free:int = 0; // don't change the value, see RegisterCoreDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine)
       public static const InstanceChannelMode_Chess:int = 1;
       public static const InstanceChannelMode_WeGo:int = 2;
+      public static const MaxInstanceChannelMode:int = InstanceChannelMode_WeGo;
       //public static const InstanceChannelMode_WeGoNoHolding:int = 3;
       //public static const InstanceChannelMode_Vote:int = 4;
       
@@ -48,7 +59,8 @@ package common {
 // 
 //===========================================================================
       
-      public static const MaxMessageDataLengthToHoldReally:int = 128;
+      public static const MaxMessageDataLengthToHoldReally:int = 127; // not 128 is for server convenience, one byte for length header.
+                                                                      // The max possible value is 255.
       
       public static const MessageEncryptionMethod_DoNothing:int = 0;
       public static const MessageEncryptionMethod_SwapRollShift:int = 1;
@@ -140,11 +152,15 @@ package common {
 //===========================================================================
 // ...
 //===========================================================================
-      
-      public static const PlayerStatus_NotConnected:int = 0; // <=> not logged in
+
+      // the 2 are only useful on server side.
+      //public static const PlayerStatus_Free:int       = 0; // socket not connected.
+      //public static const PlayerStatus_Pending:int    = 1; // socket connected, but not logged in yet. Not visible to designers.
+                                                             
+      public static const PlayerStatus_NotConnected:int = 0; // for client side only <=> server side free + server side pending
       public static const PlayerStatus_Wandering:int    = 10;
       public static const PlayerStatus_Queuing:int      = 30;
-      public static const PlayerStatus_Joined:int       = 50; // don't change the value
+      public static const PlayerStatus_Joined:int       = 50;
       
 //===========================================================================
 // ...
@@ -153,7 +169,9 @@ package common {
       public static const InstancePhase_Inactive:int = 0;
       public static const InstancePhase_Idling:int   = 60;
       public static const InstancePhase_Waiting:int  = 80;
-      public static const InstancePhase_Playing:int  = 100; // don't change the value
+      public static const InstancePhase_Playing:int  = 100;
+      
+      public static const InstancePhase_Invalid:int = 255;
       
       public static function IsValidInstancePhase (phase:int):Boolean
       {

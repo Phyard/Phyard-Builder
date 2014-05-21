@@ -25,7 +25,9 @@ package common {
          FillByteArrayWith24bits (bytes, 6, time1);
          FillByteArrayWith24bits (bytes, 9, time2);
          
-         var base64String:String = DataFormat3.EncodeByteArray2String (bytes);
+         var base64String:String = DataFormat3.EncodeByteArray2String (bytes, true); // old version use non-standard Base64, 
+                                                                                     // which may contains ",", 
+                                                                                     // which is an invalid flash ahre object filename char.
          
          //var key:String = (spaceName == null ? base64String : spaceName + "/" + base64String);
          //return key;

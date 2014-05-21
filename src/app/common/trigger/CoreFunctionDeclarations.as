@@ -427,7 +427,7 @@ package common.trigger {
                   
          RegisterCoreDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       60], //MultiplePlayerDefine.InstancePhase_Idling],
                      ],
                      null
                   );

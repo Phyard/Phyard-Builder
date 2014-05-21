@@ -310,7 +310,7 @@ package common {
       public static const CompressFormat_Base64:String = "base64";
       
       //public static const Base64Chars:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="; // standard
-        public static const Base64Chars_URL:String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_,"; // standard url. Generally the last ',' is useless (mustBeAlign4 = false)
+        public static const Base64Chars_URL   :String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_,"; // standard url. Generally the last ',' is useless (mustBeAlign4 = false)
         public static const Base64Chars_Phyard:String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,._"; // phyard special
         // here the chars (+/=) in standard base64 set has problems in url. So use another set instead.
         // it is possible use other 3 chars set for the last 3 chars with the current set simultaneously later.
@@ -361,7 +361,8 @@ package common {
          
          var num_chars:int = text.length;
          var num_triples:int = num_chars / 4;
-         var num_extras:int = num_chars - num_triples * 4;
+         var num_triples_x_4:int = num_triples * 4;
+         var num_extras:int = num_chars - num_triples_x_4;
          
          //if (num_extras != 0)
          //{
@@ -385,7 +386,8 @@ package common {
          var i_char:int = 0;
          data.position = 0;
          
-         while (i_char < num_triples_x_3)
+         //while (i_char < num_triples_x_3) // bug!
+         while (i_char < num_triples_x_4)
          {
             b0 = table_char2index [text.charCodeAt (i_char ++)]; // char code may be larger than 127 or not a valid Base64 char. AS3 array return 0 for them.
             b1 = table_char2index [text.charCodeAt (i_char ++)];

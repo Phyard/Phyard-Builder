@@ -160,11 +160,11 @@ package common {
             }
          }
          
-         // preferences (since v2.06)
+         // todo: preferences
          
          worldDefine.mPreferences.mAppBackgroundColor = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetSurroundingBackgroundColor ();
-         worldDefine.mPreferences.mViewportWidth = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellWidth ();
-         worldDefine.mPreferences.mViewportHeight = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellHeight ();
+         worldDefine.mPreferences.mGridCellWidth = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellWidth ();
+         worldDefine.mPreferences.mGridCellHeight = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellHeight ();
          //ChangeBackgroundColor
          //SetGridCellSize
 

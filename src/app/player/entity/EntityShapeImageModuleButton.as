@@ -6,7 +6,7 @@ package player.entity {
    
    import com.tapirgames.util.GraphicsUtil;
    
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
    
    import player.physics.PhysicsProxyShape;
@@ -142,7 +142,7 @@ package player.entity {
          }
          
          mModuleIndexUp = moduleIndex;
-         mModuleInstanceUp = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexUp));
+         mModuleInstanceUp = new ModuleInstance (Global.sTheGlobal.GetImageModuleByGlobalIndex (mModuleIndexUp));
          
          // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
          DelayUpdateAppearance ();
@@ -168,7 +168,7 @@ package player.entity {
          // mModuleIndexUp should be set earlier than this
          mModuleIndexOver = moduleIndex;
          if (mModuleIndexOver >= 0)
-            mModuleInstanceOver = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexOver));
+            mModuleInstanceOver = new ModuleInstance (Global.sTheGlobal.GetImageModuleByGlobalIndex (mModuleIndexOver));
          else
          {
             mModuleInstanceOver = null;
@@ -199,7 +199,7 @@ package player.entity {
          // mModuleIndexUp should be set earlier than this
          mModuleIndexDown = moduleIndex;
          if (mModuleIndexDown >= 0)
-            mModuleInstanceDown = new ModuleInstance (Global.GetImageModuleByGlobalIndex (mModuleIndexDown));
+            mModuleInstanceDown = new ModuleInstance (Global.sTheGlobal.GetImageModuleByGlobalIndex (mModuleIndexDown));
          else
          {
             mModuleInstanceDown = null;
@@ -361,7 +361,8 @@ package player.entity {
          // only mModuleInstanceUp is reponsiible for physics building
          if (mPhysicsShapeProxy != null && mModuleInstanceUp != null)
          {
-            mModuleInstanceUp.RebuildPhysicsProxy (mPhysicsShapeProxy, mLocalTransform);
+            var accTrans:Transform2D = mWorld.GetCoordinateSystem ().As_D2P_Vector_Transform_CombineByTransform (mLocalTransform);
+            mModuleInstanceUp.RebuildPhysicsProxy (mPhysicsShapeProxy, accTrans);
          }
       }
 

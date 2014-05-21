@@ -160,6 +160,15 @@ package common {
             }
          }
          
+         // todo: preferences
+         
+         worldDefine.mPreferences.mAppBackgroundColor = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetSurroundingBackgroundColor ();
+         worldDefine.mPreferences.mGridCellWidth = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellWidth ();
+         worldDefine.mPreferences.mGridCellHeight = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellHeight ();
+         //ChangeBackgroundColor
+         //SetGridCellSize
+
+         
          // scenes
          
          var numScenes:int = editorWorld.GetNumScenes ();
@@ -1030,7 +1039,7 @@ package common {
                sceneDefine.mCollisionCategoryDefines.push (ccDefine);
             }
             
-            sceneDefine.mDefaultCollisionCategoryIndex = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (scene.GetCollisionCategoryManager ().GetDefaultCollisionCategory ());
+            sceneDefine.mDefaultCollisionCategoryIndex = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (scene.GetCollisionCategoryManager ().GetDefaultCollisionCategory (), false);
             
             var ccFriendPairs:Array = scene.GetCollisionCategoryManager ().GetCollisionCategoryFriendPairs ();
             for (var pairId:int = 0; pairId < ccFriendPairs.length; ++ pairId)
@@ -1039,8 +1048,8 @@ package common {
                
                var pairDefine:Object = new Object ();
                
-               pairDefine.mCollisionCategory1Index = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory1);
-               pairDefine.mCollisionCategory2Index = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory2);
+               pairDefine.mCollisionCategory1Index = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory1, false);
+               pairDefine.mCollisionCategory2Index = scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (friendPair.mCategory2, false);
                
                sceneDefine.mCollisionCategoryFriendLinkDefines.push (pairDefine);
             }
@@ -2256,7 +2265,7 @@ package common {
                if (collisionCategory != null)
                   ccDefine.mKey = collisionCategory.GetKey ();
                
-               ccatRefIndex_CorrectionTable [ccId] = ccatManager.GetCollisionCategoryIndex (collisionCategory);
+               ccatRefIndex_CorrectionTable [ccId] = ccatManager.GetCollisionCategoryIndex (collisionCategory, true);
             }
             
             //if (isNewWorldToLoadAll)

@@ -9,7 +9,8 @@ package player.module {
 
    public class AssembledModule extends Module
    {
-   
+      // 
+      
       protected var mModuleParts:Array;
          // must NOT be null
       
@@ -22,16 +23,16 @@ package player.module {
          mModuleParts = moduleParts;
       }
       
-      public function AdjustModulePartsTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
-      {
-         if (mModuleParts != null)
-         {
-            for each (var modulePart:ModulePart in mModuleParts)
-            {
-               modulePart.AdjustTransformInPhysics (worldCoordinateSystem);
-            }
-         }
-      }
+      //public function AdjustModulePartsTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
+      //{
+      //   if (mModuleParts != null)
+      //   {
+      //      for each (var modulePart:ModulePart in mModuleParts)
+      //      {
+      //         modulePart.AdjustTransformInPhysics (worldCoordinateSystem);
+      //      }
+      //   }
+      //}
       
       override public function BuildAppearance (frameIndex:int, moduleSprite:ModuleSprite, transform:Transform2D, alpha:Number):void
       {
@@ -50,7 +51,9 @@ package player.module {
       {
          for each (var moudlePart:ModulePart in mModuleParts)
          {
-            var accTranform:Transform2D = transform == null ? transform.Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransformInPhysics ());
+            // ??? clone null transform?
+            //var accTranform:Transform2D = transform == null ? transform.Clone () : Transform2D.CombineTransforms (transform, moudlePart.GetTransformInPhysics ());
+            var accTranform:Transform2D = Transform2D.CombineTransforms (transform, moudlePart.GetTransform ());
             moudlePart.GetModule ().BuildPhysicsProxy (0, physicsShapeProxy, accTranform);
          }
       }

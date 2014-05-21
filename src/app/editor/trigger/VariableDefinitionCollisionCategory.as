@@ -47,14 +47,14 @@ package editor.trigger {
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent
       {
-         var category_list:Array = scene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (isForPureCustomFunction);
+         var category_list:Array = scene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (true, isForPureCustomFunction);
          
          var category:CollisionCategory = valueSourceDirect.GetValueObject () as CollisionCategory;
          var sel_index:int = -1;
          var category_index:int = -1;
          if (category != null)
             category_index = category.GetAppearanceLayerId ();
-         sel_index = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (category_index, category_list);
+         sel_index = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (true, category_index, category_list);
          
          var combo_box:ComboBox = new ComboBox ();
          combo_box.dataProvider = category_list;

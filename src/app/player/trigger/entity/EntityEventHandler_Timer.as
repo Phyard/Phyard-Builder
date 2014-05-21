@@ -59,7 +59,7 @@ package player.trigger.entity
    
                   mPreEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPreFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPreTimer));
                   mPreEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
-                  mPreEventHandlerDefinition.SetCodeSnippetDefine (preCodeSnippetDefine, extraInfos);
+                  mPreEventHandlerDefinition.SetCodeSnippetDefine (mWorld, preCodeSnippetDefine, extraInfos);
                }
                
                if (entityDefine.mPostFunctionDefine != undefined)
@@ -70,7 +70,7 @@ package player.trigger.entity
    
                   mPostEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mPostFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (CoreEventIds.ID_OnWorldPostTimer));
                   mPostEventHandlerDefinition.SetLocalVariableReferences (mEventHandlerDefinition.GetLocalVariableReferences ());
-                  mPostEventHandlerDefinition.SetCodeSnippetDefine (postCodeSnippetDefine, extraInfos);
+                  mPostEventHandlerDefinition.SetCodeSnippetDefine (mWorld, postCodeSnippetDefine, extraInfos);
                }
             }
             //<<
@@ -234,7 +234,7 @@ package player.trigger.entity
          // pre handling
          if (mPreEventHandlerDefinition != null) // should not be null
          {
-            mPreEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+            mPreEventHandlerDefinition.ExcuteEventHandler (mWorld.GetFunctionCallingContext (), mTimerEventHandlerValueSourceList);
          }
          
          // handling
@@ -251,7 +251,7 @@ package player.trigger.entity
          // post handling (if pre handlign is called , the post must be also be called)
          if (mPostEventHandlerDefinition != null) // should not be null
          {
-            mPostEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+            mPostEventHandlerDefinition.ExcuteEventHandler (mWorld.GetFunctionCallingContext (), mTimerEventHandlerValueSourceList);
          } 
       }      
       public function HandleEntityPairTimerEvent ():void
@@ -266,7 +266,7 @@ package player.trigger.entity
          // pre handling
          if (mPreEventHandlerDefinition != null) // should not be null
          {
-            mPreEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+            mPreEventHandlerDefinition.ExcuteEventHandler (mWorld.GetFunctionCallingContext (), mTimerEventHandlerValueSourceList);
          }
          
          // handling
@@ -283,7 +283,7 @@ package player.trigger.entity
          // post handling (if pre handlign is called , the post must be also be called)
          if (mPostEventHandlerDefinition != null) // should not be null
          {
-            mPostEventHandlerDefinition.ExcuteEventHandler (mTimerEventHandlerValueSourceList);
+            mPostEventHandlerDefinition.ExcuteEventHandler (mWorld.GetFunctionCallingContext (), mTimerEventHandlerValueSourceList);
          } 
       }   }
 }

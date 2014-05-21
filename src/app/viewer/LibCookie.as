@@ -16,6 +16,10 @@
       {
          try
          {
+            // flash share object file name can't contains ","
+            filename = filename.replace (/,/g, "-");
+            filename = filename.replace (/./g, "_");
+            
             var so:SharedObject = SharedObject.getLocal (filename);
             
             //trace ("so.data.mSavedData = " + so.data.mSavedData);
@@ -34,6 +38,10 @@
       {
          try 
          {
+            // flash share object file name can't contains ","
+            filename = filename.replace (/,/g, "-");
+            filename = filename.replace (/./g, "_");
+            
             var so:SharedObject = SharedObject.getLocal (filename);
             so.data.mSavedData = savedData;
             so.data.mInt = 5;

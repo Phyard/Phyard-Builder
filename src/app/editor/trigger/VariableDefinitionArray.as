@@ -36,7 +36,7 @@ package editor.trigger {
       
       override public function Clone ():VariableDefinition
       {
-         return new VariableDefinitionArray (mName, mDescription);
+         return new VariableDefinitionArray (mName, mDescription, mOptions);
       }
 
 //==============================================================================

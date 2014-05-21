@@ -6,7 +6,7 @@ package player.sound
    import flash.events.IOErrorEvent;
    import flash.events.SecurityErrorEvent;
    
-   import player.design.Global;
+   import player.world.Global;
    
    import common.sound.SoundFile;
 
@@ -78,14 +78,15 @@ package player.sound
             mCallbackOnLoadError = onLoadError;
             
             // ...
-            Global.Viewer_mLibSound.LoadSoundFromBytes (fileData, OnLoadSoundComplete, OnLoadSoundError, 
-                                                                                                {
-                                                                                                   mFileFormat: GetFileFormat (),
-                                                                                                   mSamplingRate: GetSamplingRate (),
-                                                                                                   mSampleSize: GetSampleSize (),
-                                                                                                   mIsStereo: IsStereo (),
-                                                                                                   mNumSamples: GetNumSamples ()
-                                                                                                }
+            Global.sTheGlobal.Viewer_mLibSound_LoadSoundFromBytes (fileData, 
+                                                                   OnLoadSoundComplete, OnLoadSoundError, 
+                                                                   {
+                                                                      mFileFormat: GetFileFormat (),
+                                                                      mSamplingRate: GetSamplingRate (),
+                                                                      mSampleSize: GetSampleSize (),
+                                                                      mIsStereo: IsStereo (),
+                                                                      mNumSamples: GetNumSamples ()
+                                                                   }
             );
          }
       }

@@ -4,9 +4,12 @@ package editor.world {
    
    import com.tapirgames.util.TextUtil;
    
-   import common.Define;
-   import common.KeyCodes;
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueDefine;
+   
+   import common.Define;
+   import common.MultiplePlayerDefine;
+   import common.KeyCodes;
    
    public class Lists
    {
@@ -154,5 +157,83 @@ package editor.world {
             {label:"Fade Out + Fade In", data:Define.SceneSwitchingStyle_FadingOutThenFadingIn},
             {label:"Blend", data:Define.SceneSwitchingStyle_Blend},
          ];
+         
+      public static const mNumberDetailList:Array = [
+            {label:"Byte (8bits integer)", data:CoreClassIds.NumberTypeDetail_Int8Number},
+            {label:"Short (16bits integer)", data:CoreClassIds.NumberTypeDetail_Int16Number},
+            {label:"Int (32bits integer)", data:CoreClassIds.NumberTypeDetail_Int32Number},
+            {label:"Float (32bits float)", data:CoreClassIds.NumberTypeDetail_FloatNumber},
+            {label:"Double Float (64bits float)", data:CoreClassIds.NumberTypeDetail_DoubleNumber},
+         ];
+         
+      private static var _mMultiplePlayerInstanceNumberOfPlayersList:Array = null;
+      public static function get mMultiplePlayerInstanceNumberOfPlayersList ():Array
+      {
+         if (_mMultiplePlayerInstanceNumberOfPlayersList == null)
+         {
+            _mMultiplePlayerInstanceNumberOfPlayersList = new Array (MultiplePlayerDefine.MinNumberOfInstanceSeats - MultiplePlayerDefine.MinNumberOfInstanceSeats);
+            
+            var index:int = 0;
+            for (var numPlayers:int = MultiplePlayerDefine.MinNumberOfInstanceSeats; numPlayers <= MultiplePlayerDefine.MaxNumberOfInstanceSeats; ++ numPlayers)
+            {
+               _mMultiplePlayerInstanceNumberOfPlayersList [index ++] = {label: "", data: numPlayers};
+            }
+         }
+         
+         return _mMultiplePlayerInstanceNumberOfPlayersList;
+      }
+         
+      private static var _mMultiplePlayerInstanceChannelList:Array = null;
+      public static function get mMultiplePlayerInstanceChannelList ():Array
+      {
+         if (_mMultiplePlayerInstanceChannelList == null)
+         {
+            _mMultiplePlayerInstanceChannelList = new Array (MultiplePlayerDefine.MaxNumberOfInstanceChannels);
+            for (var channelIndex:int = 0; channelIndex < MultiplePlayerDefine.MaxNumberOfInstanceChannels; ++ channelIndex)
+            {
+               _mMultiplePlayerInstanceChannelList [channelIndex] = {label: "Channel", data: channelIndex};
+            }
+         }
+         
+         return _mMultiplePlayerInstanceChannelList;
+      }
+      
+      //public static const mPolicyOfInitialChannelSeatsEnabledStatusList:Array = [
+      //      {label:"Disable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_DisableAll},
+      //      {label:"Enable All", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_EnableAll},
+      //      {label:"Random One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_RandomOne},
+      //      {label:"Alternative One", data:MultiplePlayerDefine.PolicyOfInitialChannelSeatsEnabledStatus_Alternative},
+      //   ];
+      //   
+      //public static const mPolicyOfNextChannelSeatsEnabledStatusList:Array = [
+      //      {label:"Keep Current", data:MultiplePlayerDefine.PolicyOfNextChannelSeatsEnabledStatus_DoNothing},
+      //      {label:"Enable Next And Disable Others", data:MultiplePlayerDefine.PolicyOfNextChannelSeatsEnabledStatus_NextOne},
+      //   ];
+      //   
+      //public static const mPolicyOfChannelMessageForwardingList:Array = [
+      //      {label:"Forwards Instantly", data:MultiplePlayerDefine.PolicyOfChannelMessageForwarding_Instant},
+      //      {label:"Forwards At Round End", data:MultiplePlayerDefine.PolicyOfChannelMessageForwarding_WeGo},
+      //   ];
+      
+      public static const mMultiplePlayerChannelModeList:Array = [
+            {label:"Free Mode", data:MultiplePlayerDefine.InstanceChannelMode_Free},
+            {label:"Chess Mode", data:MultiplePlayerDefine.InstanceChannelMode_Chess},
+            {label:"WeGo Mode", data:MultiplePlayerDefine.InstanceChannelMode_WeGo},
+         ];
+      
+      public static const mMultiplePlayerPlayerStatusList:Array = [
+            {label:"Not Connected", data:MultiplePlayerDefine.PlayerStatus_NotConnected},
+            {label:"Wandering", data:MultiplePlayerDefine.PlayerStatus_Wandering},
+            {label:"Queuing", data:MultiplePlayerDefine.PlayerStatus_Queuing},
+            {label:"Joined", data:MultiplePlayerDefine.PlayerStatus_Joined},
+         ];
+      
+      public static const mMultiplePlayerInstancePhaseList:Array = [
+            {label:"Unknown", data:MultiplePlayerDefine.InstancePhase_Inactive},
+            {label:"Idling", data:MultiplePlayerDefine.InstancePhase_Idling},
+            {label:"Waiting", data:MultiplePlayerDefine.InstancePhase_Waiting},
+            {label:"Playing", data:MultiplePlayerDefine.InstancePhase_Playing},
+         ];
+         
    }
 }

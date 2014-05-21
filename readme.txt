@@ -6,6 +6,7 @@ Here is just a simple license overview:
   /external/box2d_as3_v210: zlib License
   /external/box2dflash: zlib License
   /external/box2dex: zlib License
+  /external/adobe: Mozilla Public License Version 1.1
 
 -----------
 

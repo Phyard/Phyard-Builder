@@ -153,6 +153,7 @@ package player.physics {
       
       private static const Half_B2_FLT_EPSILON:Number = b2Settings.b2_epsilon * 0.5;
       
+      // since v2.06, params values for this fucntions are all pixel unit. The transform should transform the values into physics unit.
       public function AddCircle (transform:Transform2D, radius:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
          if ( (! buildBorder) && (! buildInterior))
@@ -209,7 +210,7 @@ package player.physics {
                   
                   var localVertexes:Array = TransformPolyPoints2Vertexes (transform, localPoints, false);
                   
-                  CreatePolyline (isStatic, fixture_def, localVertexes, halfBorderThickness, true, true, true);
+                  CreatePolyline (isStatic, fixture_def, localVertexes, halfBorderThickness * transform.mScale, true, true, true);
                   
                   return;
                }
@@ -241,6 +242,7 @@ package player.physics {
          _b2Fixtures.push (fixture);
       }
       
+      // since v2.06, transform should transform the values into physics unit.
       private static function TransformPolyPoints2Vertexes (transform:Transform2D, points:Array, assureCW:Boolean):Array
       {
          if (assureCW && transform.mFlipped)
@@ -264,6 +266,7 @@ package player.physics {
          return vertexes;
       }
       
+      // since v2.06, params values for this fucntions are all pixel unit. The transform should transform the values into physics unit.
       public function AddPolyline (transform:Transform2D, localPoints:Array, buildInterior:Boolean, curveThickness:Number, roundEnds:Boolean, closed:Boolean):void
       {
          if (! buildInterior)
@@ -284,9 +287,10 @@ package player.physics {
          
          var localVertexes:Array = TransformPolyPoints2Vertexes (transform, localPoints, false);
          
-         CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * curveThickness, closed, true, roundEnds);
+         CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * curveThickness * transform.mScale, closed, true, roundEnds);
       }
       
+      // params values for this fucntions is physics unit.
       private function CreatePolyline (isStatic:Boolean, fixture_def:b2FixtureDef, inputBodyLocalVertexes:Array, halfCurveThickness:Number, isClosed:Boolean, isRoundJoints:Boolean, isRoundEnds:Boolean):void
       {
          var vertexCount:int = inputBodyLocalVertexes.length;
@@ -539,6 +543,7 @@ package player.physics {
          }
       }
       
+      // since v2.06, params values for this fucntions are all pixel unit. The transform should transform the values into physics unit.
       public function AddPolygon (transform:Transform2D, localPoints:Array, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number):void
       {
          if ( (! buildBorder) && (! buildInterior))
@@ -609,16 +614,17 @@ package player.physics {
             {
                if (borderThickness >= b2Settings.b2_epsilon)
                {
-                  CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * borderThickness, true, true, true);
+                  CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * borderThickness* transform.mScale, true, true, true);
                }
             }
          }
          else if (buildBorder)
          {
-            CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * borderThickness, true, true, true);
+            CreatePolyline (isStatic, fixture_def, localVertexes, 0.5 * borderThickness* transform.mScale, true, true, true);
          }
       }
       
+      // since v2.06, params values for this fucntions are all pixel unit. The transform should transform the values into physics unit.
       public function AddRectangle (transform:Transform2D, halfWidth:Number, halfHeight:Number, buildInterior:Boolean, buildBorder:Boolean, borderThickness:Number, roundCorners:Boolean = false):void
       {
          if ( (! buildBorder) && (! buildInterior))
@@ -701,7 +707,7 @@ package player.physics {
                
                bodyLocalVertexes = TransformPolyPoints2Vertexes (transform, localPoints, false);
                
-               CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness, true, roundCorners, roundCorners);
+               CreatePolyline (isStatic, fixture_def, bodyLocalVertexes, halfBorderThickness * transform.mScale, true, roundCorners, roundCorners);
             }
             else
             {

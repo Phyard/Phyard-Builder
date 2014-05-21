@@ -876,7 +876,7 @@ package common {
             var func_declaration:FunctionDeclaration = World.GetPlayerCoreFunctionDeclarationById (func_id);
             
             for (i = 0; i < num_inputs; ++ i)
-               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetailBit (i));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
@@ -884,9 +884,9 @@ package common {
             
             for (i = 0; i < num_inputs; ++ i)
             {
-               //WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], (variableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               //WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], (variableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double);
                vd = variableDefines [i] as VariableDefine;
-               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               WriteValueSourceDefinIntoBinFile (binFile, inputValueSourceDefines [i], vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetailBit_Double);
             }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -939,7 +939,7 @@ package common {
          {
             var property_source_define:ValueSourceDefine_EntityProperty = valueSourceDefine as ValueSourceDefine_EntityProperty;
             
-            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double); // CoreClassIds.NumberTypeDetail_Double is useless
+            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double); // CoreClassIds.NumberTypeDetailBit_Double is useless
             
             //>> before v2.05
             ////binFile.writeShort (property_source_define.mSpacePackageId); // before v2.03
@@ -951,7 +951,7 @@ package common {
             //<<
             
             //>>since v2.05
-            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mPropertyValueSourceDefine, classType, valueType, CoreClassIds.NumberTypeDetail_Double, true); // CoreClassIds.NumberTypeDetail_Double is useless
+            WriteValueSourceDefinIntoBinFile (binFile, property_source_define.mPropertyValueSourceDefine, classType, valueType, CoreClassIds.NumberTypeDetailBit_Double, true); // CoreClassIds.NumberTypeDetailBit_Double is useless
             //<<
          }
       }
@@ -988,7 +988,7 @@ package common {
          {
             var property_target_define:ValueTargetDefine_EntityProperty = valueTargetDefine as ValueTargetDefine_EntityProperty;
             
-            WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double); // CoreClassIds.NumberTypeDetail_Double is useless
+            WriteValueSourceDefinIntoBinFile (binFile, property_target_define.mEntityValueSourceDefine, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double); // CoreClassIds.NumberTypeDetailBit_Double is useless
             
             ////binFile.writeShort (property_target_define.mSpacePackageId); // before v2.03
             ////>> from v2.03
@@ -1028,8 +1028,8 @@ package common {
             
             if (supportInitalValues)
             {
-               //CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double, variableDefine.mDirectValueSourceDefine.mValueObject);
-               CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mClassType, variableDefine.mValueType, CoreClassIds.NumberTypeDetail_Double, variableDefine.mValueObject);
+               //CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double, variableDefine.mDirectValueSourceDefine.mValueObject);
+               CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mClassType, variableDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double, variableDefine.mValueObject);
             }
          }
       }
@@ -1421,7 +1421,10 @@ package common {
                   if (ccatIndex >= 0 && ccatIndex < correctionTables.mCcatRefIndex_CorrectionTable)
                      directSourceDefine.mValueObject = correctionTables.mCcatRefIndex_CorrectionTable [ccatIndex];
                   else
-                     ccatIndex = Define.CCatId_Hidden;
+                  {
+                     //ccatIndex = Define.CCatId_Hidden;
+                     ccatIndex = Define.CCatId_None; // since v2.06
+                  }
                }
                else if (valueType == CoreClassIds.ValueType_Module)
                {

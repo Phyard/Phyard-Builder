@@ -1,6 +1,5 @@
 package player.trigger
 {
-   import player.design.Global;
    import player.trigger.CoreFunctionDefinitions;
    
    import common.trigger.CoreFunctionIds;
@@ -12,7 +11,7 @@ package player.trigger
          super (lineNumber, functionDefinition, valueSourceList, valueTargetList);
       }
       
-      override public function Call ():void
+      override public function Call (callingContext:FunctionCallingContext):void
       {
          CoreClasses.AssignValue (mInputValueSourceList.GetVariableInstance (), mReturnValueTargetList.GetVariableInstance ());
       }

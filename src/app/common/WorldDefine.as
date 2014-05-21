@@ -8,17 +8,20 @@ package common {
       public var mViewerParams:Object;
       
       public var mCurrentSceneId:int = 0; // for editing undo scene, added from v2.00
-                                          // also for viewer
+                                          // also for playing to load/merge a specified scene
       
       public var mForRestartLevel:Boolean = false; // for playing, add from v1.5?. For fast loading
       
       public var mPlayerWorldHints:Object; // not used now. When and why it is added? 
       
+      // the two are used for global data now. SceneDefine also has two such properties.
       public var mDontFillMissedFields:Boolean = false; // from v2.00. For fast loading
       public var mDontAdjustNumberValues:Boolean = false; // from v2.00. For fast loading
       
       //public var mDontReloadGlobalAssets:Boolean = false; // from v2.00. For fast loading
-                                                            // useless from v2.05
+                                                            // removed from v2.05, now useless for any versions
+      
+      public var mWorldCrossStagesData:Object; // from v2.06. For reused some data of last player world instance.
             
    // ...
       
@@ -31,6 +34,8 @@ package common {
       
       public var mShareSourceCode:Boolean = false;
       public var mPermitPublishing:Boolean = false;
+      
+      public var mPreferences:Object = new Object (); // from v2.06
       
       public var mSceneDefines:Array = new Array (); // for undo point or scene-exporting, except one scene, only key is stored for other scenes
       

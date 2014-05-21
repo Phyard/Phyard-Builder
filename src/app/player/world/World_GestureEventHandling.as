@@ -41,7 +41,7 @@
          return;
       
       var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kStringClassDefinition, null, null); // name
-      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooelanClassDefinition, false, valueSource3); // cw / ccw
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, valueSource3); // cw / ccw
       var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2); // angle
       var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, -1, valueSource1);
       

@@ -8,7 +8,7 @@ package common {
    
    import player.WorldPlugin;
    
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
 
    import player.entity.EntityBody;
@@ -72,6 +72,7 @@ package common {
 
    import common.trigger.CoreEventIds;
    
+   import common.ViewerDefine;
    import common.Define;
 
    public class DataFormat2
@@ -260,12 +261,15 @@ package common {
       }
       
       // playerWorld != null for cloning shape or merging scene, otherwise for loading from stretch
-      // - isMergingScene is true for merging scene, otherwise for cloning shape
-      // 
-      // todo: support multiple scenes
+      //    isMergingScene is true for merging scene, otherwise for cloning shape
+      // playerWorld == null for loading scene or restart scene
+      //    worldDefine.mForRestartLevel
+      //    worldDefine.mDontReloadGlobalAssets is deprecated since v2.06.
+      // worldDefine.mCurrentSceneId
+      // worldDefine.mViewerParams
       // 
       // for Viewer, the prototype is WorldDefine2PlayerWorld (defObject:Object) for all versions of World
-      // see Viewer.as to get why here use Object instead of WorldDefine
+      // see Viewer.as to get why using Object instead of WorldDefine here.
       public static function WorldDefine2PlayerWorld (defObject:Object, playerWorld:World = null, isMergingScene:Boolean = false):World
       {
          var worldDefine:WorldDefine = defObject as WorldDefine;
@@ -319,22 +323,39 @@ package common {
          if (isLoaingFromStretch)
          {
             //
-            Global.InitGlobalData (worldDefine.mForRestartLevel, Global.sTheGlobal != null/*worldDefine.mDontReloadGlobalAssets*/);
-            Global.mWorldDefine = worldDefine;
+            
+            //Global.sTheGlobal.Initialize/*InitGlobalData*/ (worldDefine, worldDefine.mForRestartLevel, worldDefine.mDontReloadGlobalAssets);
+            //Global.mWorldDefine = worldDefine; // moved into above line.
+            if (Global.sTheGlobal == null)
+            {
+               Global.OnCreate (worldDefine);
+            }
+            else
+            {
+               Global.sTheGlobal.Reset (); // worldDefine must be still the last worldDefine.
+            }
             
             //
-            playerWorld = new World (sceneDefine) ; //worldDefine);
+            playerWorld = new World (sceneDefine); //worldDefine);
+            
+            // sicne v2.06, move part from Global.InitGlobalDatam new Initialize, to World.InitVariableSpaces
+            playerWorld.SetWorldCrossStagesData (worldDefine.mWorldCrossStagesData, /*worldDefine.mDontReloadGlobalAssets,*/
+                                                 worldDefine.mForRestartLevel);
+            worldDefine.mWorldCrossStagesData = null;
+            
+            // ...
             playerWorld.SetCurrentSceneId (worldDefine.mCurrentSceneId);
             extraInfos.mBeinningCCatIndex = 0;
             playerWorld.CreateCollisionCategories (sceneDefine.mCollisionCategoryDefines, sceneDefine.mCollisionCategoryFriendLinkDefines); //worldDefine.mCollisionCategoryDefines, worldDefine.mCollisionCategoryFriendLinkDefines);
             playerWorld.SetBasicInfos (worldDefine);
-            Global.SetCurrentWorld (playerWorld);
+            //Global.SetCurrentWorld (playerWorld);
             
-            // ...
-            Global.UpdateCoreClassDefaultInitialValues ();
-            Global.CreateOrResetCoreFunctionDefinitions ();
+            // the two lines are put into Global.Initialize now, for they don't need a world instance any more.
+            //Global.sTheGlobal.UpdateCoreClassDefaultInitialValues ();
+            //Global.sTheGlobal.CreateOrResetCoreFunctionDefinitions ();
             
-            // ...
+            // not needs to use plugin interface, but don't want to change it.
+            worldDefine.mViewerParams.mWorld = playerWorld;
             WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
             worldDefine.mViewerParams = null;
          }
@@ -447,21 +468,21 @@ package common {
 
          if (isLoaingFromStretch || isMergingScene)
          {
-            var oldNumCustomClasses:int = Global.GetNumCustomClasses ();
+            var oldNumCustomClasses:int = /*Global*/playerWorld.GetNumCustomClasses ();
             
             if (isMergingScene)
             {
                extraInfos.mBeginningCustomClassIndex = oldNumCustomClasses;
             }
 
-            Global.InitCustomClassDefinitions (sceneDefine.mClassDefines, isMergingScene);
+            /*Global*/playerWorld.InitCustomClassDefinitions (playerWorld, sceneDefine.mClassDefines, isMergingScene);
          }
 
       // init custom variables / correct entity refernce ids
 
          if (isLoaingFromStretch) // the following half is drawing feet for snakes // && (! worldDefine.mDontReloadGlobalAssets))
          {
-            Global.InitWorldCustomVariables (worldDefine.mWorldVariableDefines, worldDefine.mGameSaveVariableDefines);
+            /*Global*/playerWorld.InitWorldCustomVariables (playerWorld, worldDefine.mWorldVariableDefines, worldDefine.mGameSaveVariableDefines);
          }
          
          // these are the default values for isLoaingFromStretch and cloning shape, not for isMergingScene
@@ -476,14 +497,14 @@ package common {
             {
                if (worldDefine.mForRestartLevel)
                   extraInfos.mSessionVariableIdMappingTable = new Array (sceneDefine.mSessionVariableDefines.length);
-               extraInfos.mBeinningSessionVariableIndex = Global.GetSessionVariableSpace ().GetNumVariables ();
-               extraInfos.mBeinningGlobalVariableIndex = Global.GetGlobalVariableSpace ().GetNumVariables ();
-               extraInfos.mBeinningCustomEntityVariableIndex = Global.GetCustomEntityVariableSpace ().GetNumVariables ();
+               extraInfos.mBeinningSessionVariableIndex = /*Global*/playerWorld.GetSessionVariableSpace ().GetNumVariables ();
+               extraInfos.mBeinningGlobalVariableIndex = /*Global*/playerWorld.GetGlobalVariableSpace ().GetNumVariables ();
+               extraInfos.mBeinningCustomEntityVariableIndex = /*Global*/playerWorld.GetCustomEntityVariableSpace ().GetNumVariables ();
             }
             
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            extraInfos.mSessionVariableMappingTable = Global.InitSceneCustomVariables (
+            extraInfos.mSessionVariableMappingTable = /*Global*/playerWorld.InitSceneCustomVariables (playerWorld, 
                                         sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
                                         sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
                                         sceneDefine.mSessionVariableDefines, extraInfos.mSessionVariableIdMappingTable,
@@ -560,14 +581,14 @@ package common {
 
          if (isLoaingFromStretch || isMergingScene)
          {
-            var oldNumCustomFunctions:int = Global.GetNumCustomFunctions ();
+            var oldNumCustomFunctions:int = /*Global*/playerWorld.GetNumCustomFunctions ();
             
             if (isMergingScene)
             {
                extraInfos.mBeginningCustomFunctionIndex = oldNumCustomFunctions;
             }
 
-            Global.CreateCustomFunctionDefinitions (sceneDefine.mFunctionDefines, isMergingScene, extraInfos.mBeginningCustomClassIndex);
+            /*Global*/playerWorld.CreateCustomFunctionDefinitions (playerWorld, sceneDefine.mFunctionDefines, isMergingScene, extraInfos.mBeginningCustomClassIndex);
 
             var numFunctions:int = sceneDefine.mFunctionDefines.length;
             for (var functionId:int = 0; functionId < numFunctions; ++ functionId)
@@ -576,9 +597,9 @@ package common {
                var codeSnippetDefine:CodeSnippetDefine = (functionDefine.mCodeSnippetDefine as CodeSnippetDefine).Clone (); // ! clone is important
                codeSnippetDefine.DisplayValues2PhysicsValues (playerWorld.GetCoordinateSystem ());
 
-               var customFunction:FunctionDefinition_Custom = Global.GetCustomFunctionDefinition (functionId + oldNumCustomFunctions);
+               var customFunction:FunctionDefinition_Custom = /*Global*/playerWorld.GetCustomFunctionDefinition (functionId + oldNumCustomFunctions);
                customFunction.SetDesignDependent (functionDefine.mDesignDependent); // useless
-               customFunction.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               customFunction.SetCodeSnippetDefine (playerWorld, codeSnippetDefine, extraInfos);
             }
          }
          else // Adjust Cloned Entities Z Order
@@ -601,8 +622,8 @@ package common {
          
          if (isLoaingFromStretch)
          {
-            Global.CreateImageModules (worldDefine.mImageDefines, worldDefine.mPureImageModuleDefines, worldDefine.mAssembledModuleDefines, worldDefine.mSequencedModuleDefines);
-            Global.CreateSounds (worldDefine.mSoundDefines);
+            Global.sTheGlobal.CreateImageModules (worldDefine.mImageDefines, worldDefine.mPureImageModuleDefines, worldDefine.mAssembledModuleDefines, worldDefine.mSequencedModuleDefines);
+            Global.sTheGlobal.CreateSounds (worldDefine.mSoundDefines);
             //Global.CheckWorldBuildingStatus (); // bug, EntityModule.mModuleIndex is not set yet. Moved to the end now.
          }
 
@@ -3818,7 +3839,7 @@ package common {
             
             if (worldDefine.mVersion < 0x0151)
             {
-               sceneDefine.mSettings.mViewerUiFlags = Define.PlayerUiFlags_BeforeV0151;
+               sceneDefine.mSettings.mViewerUiFlags = ViewerDefine.PlayerUiFlags_BeforeV0151;
                sceneDefine.mSettings.mPlayBarColor = 0x606060;
                sceneDefine.mSettings.mViewportWidth = 600;
                sceneDefine.mSettings.mViewportHeight = 600;

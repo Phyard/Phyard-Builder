@@ -347,10 +347,14 @@ package editor.entity {
 
       public function GetCollisionCategoryIndex ():int
       {
-         var index:int = mEntityContainer.GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory);
+         var index:int = mEntityContainer.GetCollisionCategoryManager ().GetCollisionCategoryIndex (mCollisionCategory, false);
 
-         if (index == Define.CCatId_Hidden)
+         //if (index == Define.CCatId_Hidden)
+         if (index < 0)
+         {
             mCollisionCategory = null;
+            index = Define.CCatId_Hidden;
+         }
 
          return index;
       }
@@ -358,6 +362,10 @@ package editor.entity {
       public function SetCollisionCategoryIndex (index:int):void
       {
          mCollisionCategory = mEntityContainer.GetCollisionCategoryManager ().GetCollisionCategoryByIndex (index);
+         if (mCollisionCategory == null)
+         {
+            // think as HiddenCCat
+         }
       }
 
    }

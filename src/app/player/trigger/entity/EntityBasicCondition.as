@@ -41,7 +41,7 @@ package player.trigger.entity
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
                mConditionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetBoolFunctionDeclaration ());
-               mConditionDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               mConditionDefinition.SetCodeSnippetDefine (mWorld, codeSnippetDefine, extraInfos);
             }
          }
       }
@@ -83,7 +83,7 @@ package player.trigger.entity
          mValueTarget.mValueObject = false;
          
          // if (mConditionListDefinition != null) // should not be null
-         mConditionDefinition.DoCall (null, mValueTarget); // outputValueTarget);
+         mConditionDefinition.DoCall (mWorld.GetFunctionCallingContext (), null, mValueTarget); // outputValueTarget);
          
          //return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
          return Boolean (mValueTarget.EvaluateValueObject ());

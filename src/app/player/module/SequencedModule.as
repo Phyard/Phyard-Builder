@@ -23,16 +23,16 @@ package player.module {
          mModuleSequences = moduleSequences;
       }
       
-      public function AdjustModuleSequencesTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
-      {
-         if (mModuleSequences != null)
-         {
-            for each (var moduleSequence:ModuleSequence in mModuleSequences)
-            {
-               moduleSequence.AdjustTransformInPhysics (worldCoordinateSystem);
-            }
-         }
-      }
+      //public function AdjustModuleSequencesTransformInPhysics (worldCoordinateSystem:CoordinateSystem):void
+      //{
+      //   if (mModuleSequences != null)
+      //   {
+      //      for each (var moduleSequence:ModuleSequence in mModuleSequences)
+      //      {
+      //         moduleSequence.AdjustTransformInPhysics (worldCoordinateSystem);
+      //      }
+      //   }
+      //}
       
       override public function GetNumFrames ():int
       {
@@ -75,7 +75,9 @@ package player.module {
          if (frameIndex >= 0 && frameIndex < mModuleSequences.length)
          {
             var moudlePart:ModuleSequence = mModuleSequences [frameIndex] as ModuleSequence;
-            moudlePart.GetModule ().BuildPhysicsProxy (0, physicsShapeProxy, Transform2D.CombineTransforms (transform, moudlePart.GetTransformInPhysics ()));
+            //var accTranform:Transform2D = Transform2D.CombineTransforms (transform, moudlePart.GetTransformInPhysics ());
+            var accTranform:Transform2D = Transform2D.CombineTransforms (transform, moudlePart.GetTransform ());
+            moudlePart.GetModule ().BuildPhysicsProxy (0, physicsShapeProxy, accTranform);
          }
       }
    }

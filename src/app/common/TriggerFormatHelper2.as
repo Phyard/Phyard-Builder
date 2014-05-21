@@ -4,7 +4,7 @@ package common {
    import flash.utils.ByteArray;
    import flash.utils.Dictionary;
    
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
    import player.entity.Entity;
    import player.world.CollisionCategory;
@@ -74,7 +74,9 @@ package common {
    
    public class TriggerFormatHelper2
    {
-      public static function BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld:World, variableSpace:VariableSpace, functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
+      // playerWorld == null is for core APIs and later potiential custom global and library functions.
+      // [this param is removed] toClearRefs is only meaningful when playerWorld == null.
+      public static function BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld:World, /*toClearRefs:Boolean,*/ variableSpace:VariableSpace, functionDeclaration:FunctionCoreBasicDefine, forInputParams:Boolean):VariableSpace
       {
          var variableInstance:VariableInstance;
          var i:int;
@@ -116,12 +118,12 @@ package common {
                variableInstance.SetRealClassDefinition (classDefinition);
                
                //variableInstance.SetValueObject (functionDeclaration.GetInputParamDefaultValue (i));
-               if (playerWorld == null) // avoid memory consuming after testing in editor.
-                  variableInstance.SetValueObject (null);
-               else
-               {
+               //if (toClearRefs) //playerWorld == null) // avoid memory consuming after testing in editor.
+               //   variableInstance.SetValueObject (null);
+               //else
+               //{
                   variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetInputParamDefaultValue (i)));
-               }
+               //}
             }
          }
          else
@@ -156,12 +158,12 @@ package common {
                variableInstance.SetRealClassDefinition (classDefinition);
                
                //variableInstance.SetValueObject (functionDeclaration.GetOutputParamDefaultValue (i));
-               if (playerWorld == null) // avoid memory consuming after testing in editor.
-                  variableInstance.SetValueObject (null);
-               else
-               {
+               //if (toClearRefs) //playerWorld == null) // avoid memory consuming after testing in editor.
+               //   variableInstance.SetValueObject (null);
+               //else
+               //{
                   variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetOutputParamDefaultValue (i)));
-               }
+               //}
             }
          }
          
@@ -250,19 +252,19 @@ package common {
       
       // coreFunction == null means this is the first time to create the function.
       // otherwise, means to reset initial ClassInstance for all sources and target to avoid memory leak and logic errors.
-      public static function CreateCoreFunctionDefinition (playerWorld:World, coreFunction:FunctionDefinition_Core, functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
+      public static function CreateCoreFunctionDefinition (/*playerWorld:World*//*toClearRefs:Boolean,*/ coreFunction:FunctionDefinition_Core, functionDeclaration:FunctionCoreBasicDefine, callback:Function):FunctionDefinition_Core
       {
          if (coreFunction == null)
          {
             return new FunctionDefinition_Core (
-                        BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, true), 
-                        BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, false), 
+                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ null, functionDeclaration, true), 
+                        BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ null, functionDeclaration, false), 
                         callback);
          }
          else // to reset param values
          {
-            BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetInputVariableSpace (), functionDeclaration, true);
-            BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
+            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ coreFunction.GetInputVariableSpace (), functionDeclaration, true);
+            BuildParamDefinesDefinesFormFunctionDeclaration (/*playerWorld*/null, /*toClearRefs,*/ coreFunction.GetOutputVariableSpace (), functionDeclaration, false);
             
             return coreFunction;
          }
@@ -272,7 +274,7 @@ package common {
 // define -> definition (player)
 //==============================================================================================
       
-      // functionDefine must be null, functionDeclaration may be null (custom function) or non-null (predefined function, which is not core).
+      // functionDefine must not be null, functionDeclaration may be null (custom function) or non-null (predefined function, which is not core).
       // customClassIdShiftOffset is used for custom functions.
       public static function FunctionDefine2FunctionDefinition (playerWorld:World, functionDefine:FunctionDefine, functionDeclaration:FunctionCoreBasicDefine, customClassIdShiftOffset:int = 0):FunctionDefinition_Custom
       {
@@ -290,8 +292,8 @@ package common {
             // Currently, still create one for each instance.
             
             //costomFunction = new FunctionDefinition_Custom (BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, true), BuildParamDefinesDefinesFormFunctionDeclaration (functionDeclaration, false), numLocals);
-            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, true);
-            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, null, functionDeclaration, false);
+            inputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, /*false,*/ null, functionDeclaration, true);
+            outputVariableSpace = BuildParamDefinesDefinesFormFunctionDeclaration (playerWorld, /*false,*/ null, functionDeclaration, false);
          }
          else
          {
@@ -550,7 +552,7 @@ package common {
          }
          else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_Custom)
          {
-            func_definition = Global.GetCustomFunctionDefinition (function_id + extraInfos.mBeginningCustomFunctionIndex);
+            func_definition = /*Global*/playerWorld.GetCustomFunctionDefinition (function_id + extraInfos.mBeginningCustomFunctionIndex);
          }
          else if (funcCallingDefine.mFunctionType == FunctionTypeDefine.FunctionType_PreDefined)
          {
@@ -659,7 +661,7 @@ package common {
             //assert (valueType == direct_source_define.mValueType);
 
             value_source = new Parameter_DirectConstant (
-                                    Global.GetClassDefinition (classType, valueType),
+                                    Global.sTheGlobal.GetClassDefinition (playerWorld, classType, valueType),
                                     CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos)
                                  ); 
          }
@@ -676,12 +678,12 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
-                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
-                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
@@ -690,24 +692,24 @@ package common {
                      //variable_index += extraInfos.mBeinningSessionVariableIndex;
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
-                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
-                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
                   // will not merge with new ones
-                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
                   if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                     var variable_space:VariableSpace = /*Global*/playerWorld.GetRegisterVariableSpace (valueType);
                      if (variable_space != null)
                         variable_instance = variable_space.GetVariableByIndex (variable_index);
                   }
@@ -778,7 +780,7 @@ package common {
             //                  );
             
             // since v2.05, 0 <- null + null
-            var theClass:ClassDefinition = Global.GetClassDefinition (classType, valueType);
+            var theClass:ClassDefinition = Global.sTheGlobal.GetClassDefinition (playerWorld, classType, valueType);
             value_source = new Parameter_DirectConstant (
                                  theClass,
                                  theClass.mGetNullFunc () // this function must be not null
@@ -812,12 +814,12 @@ package common {
             {
                case ValueSpaceTypeDefine.ValueSpace_World:
                   // will not merge with new ones
-                  variable_instance = (Global.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetWorldVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_GameSave:
                   // will not merge with new ones
-                  variable_instance = (Global.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGameSaveVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Session:
@@ -826,23 +828,23 @@ package common {
                      //variable_index += extraInfos.mBeinningSessionVariableIndex;
                      variable_index = extraInfos.mSessionVariableIdMappingTable [variable_index];
                   }
-                  variable_instance = (Global.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetSessionVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Global:
                   if (variable_index >= 0)
                      variable_index += extraInfos.mBeinningGlobalVariableIndex;
-                  variable_instance = (Global.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_CommonGlobal:
-                  variable_instance = (Global.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
+                  variable_instance = (/*Global*/playerWorld.GetCommonGlobalVariableSpace () as VariableSpace).GetVariableByIndex (variable_index);
                   
                   break;
                case ValueSpaceTypeDefine.ValueSpace_Register:
                   if (classType == ClassTypeDefine.ClassType_Core)
                   {
-                     var variable_space:VariableSpace = Global.GetRegisterVariableSpace (valueType);
+                     var variable_space:VariableSpace = /*Global*/playerWorld.GetRegisterVariableSpace (valueType);
                      if (variable_space != null)
                         variable_instance = variable_space.GetVariableByIndex (variable_index);
                   }
@@ -1160,7 +1162,7 @@ package common {
             var func_declaration:FunctionCoreBasicDefine = CoreFunctionDeclarations.GetCoreFunctionDeclaration (func_id);
             
             for (i = 0; i < num_inputs; ++ i)
-               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetail (i));
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, func_declaration.GetInputParamValueType (i), func_declaration.GetInputNumberTypeDetailBit (i));
          }
          else if (func_type == FunctionTypeDefine.FunctionType_Custom)
          {
@@ -1168,9 +1170,9 @@ package common {
             
             for (i = 0; i < num_inputs; ++ i)
             {
-               //inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               //inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, (calledInputVariableDefines [i] as VariableDefine).mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double);
                vd = calledInputVariableDefines [i] as VariableDefine;
-               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetail_Double);
+               inputValueSourceDefines [i] = LoadValueSourceDefineFromBinFile (binFile, vd.mClassType, vd.mValueType, CoreClassIds.NumberTypeDetailBit_Double);
             }
          }
          else // if (func_type == FunctionTypeDefine.FunctionType_PreDefined)
@@ -1225,7 +1227,7 @@ package common {
          {
             //>> before v2.05
             //valueSourceDefine = new ValueSourceDefine_EntityProperty (
-            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
             //      //binFile.readShort (), // before v2.03
             //      (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
             //      binFile.readShort ()
@@ -1234,8 +1236,8 @@ package common {
             
             //sine v2.05
             valueSourceDefine = new ValueSourceDefine_EntityProperty (
-                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
-                  LoadValueSourceDefineFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetail_Double, true) as ValueSourceDefine_Variable
+                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
+                  LoadValueSourceDefineFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetailBit_Double, true) as ValueSourceDefine_Variable
                );
             //<<
          }
@@ -1285,7 +1287,7 @@ package common {
          {
             //>> before v2.05
             //valueTargetDefine = new ValueTargetDefine_EntityProperty (
-            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+            //      LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
             //      //binFile.readShort (), // before v2.03
             //      (binFile.readByte () & 0x00) | binFile.readByte (), // from v2.03
             //      binFile.readShort ()
@@ -1294,7 +1296,7 @@ package common {
             
             //sine v2.05
             valueTargetDefine = new ValueTargetDefine_EntityProperty (
-                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetail_Double),
+                  LoadValueSourceDefineFromBinFile (binFile, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, CoreClassIds.NumberTypeDetailBit_Double),
                   LoadValueTargetDefineFromBinFile (binFile, true) as ValueTargetDefine_Variable
                );
             //<<
@@ -1344,11 +1346,11 @@ package common {
             valueType = binFile.readShort ();
             //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
             //                                                valueType,
-            //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
+            //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
             //                                                );
             variableDefine.mClassType = classType;
             variableDefine.mValueType = valueType;
-            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetail_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
+            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
             
             //variableSpaceDefine.mVariableDefines [i] = variableDefine; // v1.52 only
             variableDefines.push (variableDefine);
@@ -1711,17 +1713,17 @@ package common {
                      if (valueType == CoreClassIds.ValueType_Number)
                      {
                         directNumber = Number (direcSourceDefine.mValueObject);
-                        numberDetail = funcDclaration.GetInputNumberTypeDetail (j);
+                        numberDetail = funcDclaration.GetInputNumberTypeDetailBit (j);
                         
                         switch (numberDetail)
                         {
-                           case CoreClassIds.NumberTypeDetail_Single:
+                           case CoreClassIds.NumberTypeDetailBit_Single:
                               directNumber = ValueAdjuster.Number2Precision (directNumber, 6);
                               break;
-                           case CoreClassIds.NumberTypeDetail_Integer:
+                           case CoreClassIds.NumberTypeDetailBit_Integer:
                               directNumber = Math.round (directNumber);
                               break;
-                           case CoreClassIds.NumberTypeDetail_Double:
+                           case CoreClassIds.NumberTypeDetailBit_Double:
                            default:
                               directNumber = ValueAdjuster.Number2Precision (directNumber, 12);
                               break;

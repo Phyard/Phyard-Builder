@@ -13,14 +13,14 @@ package player.trigger
       
    //public static var mEnableTrace:Boolean = true;
       
-      public function Excute ():void
+      public function Excute (callingContext:FunctionCallingContext):void
       {
          var calling:FunctionCalling = mFirstFunctionCalling;
          
    //if (mEnableTrace) trace ("-----------");
          while (calling != null)
          {
-            calling.Call ();
+            calling.Call (callingContext);
    //if (mEnableTrace) trace (calling.GetLineNumber () + "> mNextFunctionCalling = " + calling.mNextFunctionCalling);
             calling = calling.mNextFunctionCalling;
          }

@@ -322,9 +322,9 @@ package editor.trigger {
 //
 //=================================================================
       
-      public function GetInputNumberTypeDetail (inputId:int):int
+      public function GetInputNumberTypeDetailBit (inputId:int):int
       {
-         return CoreClassIds.NumberTypeDetail_Double;
+         return CoreClassIds.NumberTypeDetailBit_Double;
       }
       
       public function GetInputNumberTypeUsage (inputId:int):int

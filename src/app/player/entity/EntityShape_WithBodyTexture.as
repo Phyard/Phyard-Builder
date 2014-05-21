@@ -4,7 +4,7 @@ package player.entity {
    
    import com.tapirgames.util.GraphicsUtil;
 
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
    
    import player.physics.PhysicsProxyShape;
@@ -78,7 +78,7 @@ package player.entity {
          }
          
          mBodyTextureModuleIndex = bodyTextureModuleIndex;
-         mBodyTextureModule = Global.GetImageModuleByGlobalIndex (mBodyTextureModuleIndex) as ImageBitmap;
+         mBodyTextureModule = Global.sTheGlobal.GetImageModuleByGlobalIndex (mBodyTextureModuleIndex) as ImageBitmap;
          if (mBodyTextureModule == null)
             mBodyTextureModuleIndex = -1;
          

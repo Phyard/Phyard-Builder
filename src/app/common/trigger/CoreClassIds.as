@@ -92,12 +92,21 @@ package common.trigger {
       public static const ValueType_Array:int = 30;
       //public static const ValueType_Function:int = 31;
       
+      public static const ValueType_ByteArray:int = 50; // sicne v2.06
+      public static const ValueType_ByteArrayStream:int = 55; // sicne v2.06
+      
       public static const ValueType_Entity:int            = 60;
       public static const ValueType_CollisionCategory:int = 61;
       
       public static const ValueType_Module:int            = 70;
 
-      public static const ValueType_Sound:int            = 90;
+      public static const ValueType_Sound:int            = 90; 
+      
+      //public static const ValueType_Bitmap:int            = 92;
+      
+      public static const ValueType_MultiplePlayerInstance:int     = 95;
+      public static const ValueType_MultiplePlayerInstanceDefine:int     = 96;
+      public static const ValueType_MultiplePlayerInstanceChannelDefine:int     = 97;
       
       public static const ValueType_Scene:int            = 100;
       
@@ -126,11 +135,17 @@ package common.trigger {
       
       // for direct numbers, default number is a double float (64 bits float), default is general number
       
-      // most 16 details
+      // most 16 details (DON'T change this values)
       
-      public static const NumberTypeDetail_Double :int = 0 << 16; // 64 bits float, default
-      public static const NumberTypeDetail_Single :int = 1 << 16; // 32 bits float
-      public static const NumberTypeDetail_Integer:int = 2 << 16; // 32 bits int
+      public static const NumberTypeDetail_DoubleNumber  :int = 0;
+      public static const NumberTypeDetail_Int8Number    :int = 1;
+      public static const NumberTypeDetail_Int16Number   :int = 2;
+      public static const NumberTypeDetail_FloatNumber   :int = 3;
+      public static const NumberTypeDetail_Int32Number   :int = 4;
+      
+      public static const NumberTypeDetailBit_Double :int = NumberTypeDetail_DoubleNumber << 16; // 64 bits float, default, don't change its value.
+      public static const NumberTypeDetailBit_Single :int = NumberTypeDetail_FloatNumber  << 16; // 32 bits float
+      public static const NumberTypeDetailBit_Integer:int = NumberTypeDetail_Int32Number  << 16; // 32 bits int
       
       // most 256 usages, assume offset_rotation must be zero
       

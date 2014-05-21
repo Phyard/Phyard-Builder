@@ -26,6 +26,7 @@ package editor.world {
       public static var mCoreClasses:Array = new Array (CoreClassIds.NumCoreClasses);
       
       private static const sCoreCodePackage:CodePackage = new CodePackage ("Core");
+         private static const sMultiplePlayerCodePackage:CodePackage = new CodePackage ("Multiple Player", sCoreCodePackage);
 
       public static function GetCoreClassPackage ():CodePackage
       {
@@ -57,21 +58,21 @@ package editor.world {
                             "aBool",
                             false,
                             ValidateValueObject_Boolean
-                         ).SetSceneDataDependent (false);
+                         ).SetSceneDataDependent (false).SetGameSavable (true);
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Number, 
                             "aNumber",
                             0,
                             ValidateValueObject_Number
-                         ).SetSceneDataDependent (false);
+                         ).SetSceneDataDependent (false).SetGameSavable (true);
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_String, 
                             "aText",
                             "",
                             ValidateValueObject_String
-                         ).SetSceneDataDependent (false);
+                         ).SetSceneDataDependent (false).SetGameSavable (true);
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Entity, 
@@ -113,8 +114,43 @@ package editor.world {
                             "anArray",
                             null,
                             ValidateValueObject_ArrayAndCustomObject
+                         ).SetSceneDataDependent (false).SetGameSavable (true);
+                                   
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_ByteArray, 
+                            "aByteArray",
+                            null,
+                            ValidateValueObject_ArrayAndCustomObject
+                         ).SetSceneDataDependent (false).SetGameSavable (true);
+                                   
+         RegisterCoreClass (sCoreCodePackage,
+                            CoreClassIds.ValueType_ByteArrayStream, 
+                            "aByteArrayStream",
+                            null,
+                            ValidateValueObject_ArrayAndCustomObject
+                         ).SetSceneDataDependent (true);
+                                   
+         RegisterCoreClass (null,
+                            CoreClassIds.ValueType_MultiplePlayerInstance, 
+                            "aMultiPlayerInstance",
+                            null,
+                            ValidateValueObject_ArrayAndCustomObject
                          ).SetSceneDataDependent (false);
                                    
+         RegisterCoreClass (sMultiplePlayerCodePackage,
+                            CoreClassIds.ValueType_MultiplePlayerInstanceDefine, 
+                            "aMultiPlayerInstanceDefine",
+                            null,
+                            ValidateValueObject_ArrayAndCustomObject
+                         ).SetSceneDataDependent (false);
+                                   
+         RegisterCoreClass (sMultiplePlayerCodePackage,
+                            CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, 
+                            "aMultiPlayerInstanceChannelDefine",
+                            null,
+                            ValidateValueObject_ArrayAndCustomObject
+                         ).SetSceneDataDependent (false);
+                         
          RegisterCoreClass (null, //sCoreCodePackage,
                             CoreClassIds.ValueType_Class, 
                             "aClass",
@@ -258,7 +294,9 @@ package editor.world {
 // util functions
 //===========================================================
 
-      private static function RegisterCoreClass (codePacakge:CodePackage, classId:int, defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null):ClassDefinition_Core
+      private static function RegisterCoreClass (codePacakge:CodePackage, classId:int, 
+                                                 defaultInstanceName:String, initialInitialValue:Object, valueValidateFunc:Function = null
+                                                 ):ClassDefinition_Core
       {
          var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
 
@@ -334,7 +372,7 @@ package editor.world {
                if (ccat == null || scene == null)
                   return -1;
                
-               return scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (ccat);
+               return scene.GetCollisionCategoryManager ().GetCollisionCategoryIndex (ccat, true);
             }
             case CoreClassIds.ValueType_Module:
             {
@@ -369,6 +407,14 @@ package editor.world {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_ByteArray:
+               return null; // maybe non-null direct values will be supported.
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return null;
             case CoreClassIds.ValueType_Class:
                var aClass:ClassDefinition = valueObject as ClassDefinition;
                if (aClass == null)
@@ -466,6 +512,14 @@ package editor.world {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_ByteArray:
+               return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return null;
             case CoreClassIds.ValueType_Class:
                return CodeLibManager.GetClass (scene.GetCodeLibManager (), valueObject.mClassType, valueObject.mValueType);
             case CoreClassIds.ValueType_Object:
@@ -514,6 +568,14 @@ package editor.world {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_ByteArray:
+               return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return null;
             case CoreClassIds.ValueType_Class:
                var tokens:Array = String (direct_value).split (",");
                return {mClassType : parseInt (tokens [0]), mValueType : parseInt (tokens [1])};
@@ -541,13 +603,13 @@ package editor.world {
             case CoreClassIds.ValueType_Number:
                switch (numberDetail)
                {
-                  case CoreClassIds.NumberTypeDetail_Single:
+                  case CoreClassIds.NumberTypeDetailBit_Single:
                      binFile.writeFloat (valueObject as Number);
                      break;
-                  case CoreClassIds.NumberTypeDetail_Integer:
+                  case CoreClassIds.NumberTypeDetailBit_Integer:
                      binFile.writeInt (valueObject as Number);
                      break;
-                  case CoreClassIds.NumberTypeDetail_Double:
+                  case CoreClassIds.NumberTypeDetailBit_Double:
                   default:
                      binFile.writeDouble (valueObject as Number);
                      break;
@@ -588,6 +650,17 @@ package editor.world {
                //   binFile.writeShort (values.length);
                //}
                
+               break;
+            case CoreClassIds.ValueType_ByteArray:
+               binFile.writeByte (0); // null
+               break;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               binFile.writeByte (0); // null
+               break;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               binFile.writeByte (0); // null
                break;
             case CoreClassIds.ValueType_Class:
                binFile.writeByte (valueObject.mClassType);

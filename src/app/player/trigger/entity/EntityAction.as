@@ -38,7 +38,7 @@ package player.trigger.entity
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
                
                mVoidFunctionDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetVoidFunctionDeclaration  ());
-               mVoidFunctionDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               mVoidFunctionDefinition.SetCodeSnippetDefine (mWorld, codeSnippetDefine, extraInfos);
             }
          }
       }
@@ -49,7 +49,7 @@ package player.trigger.entity
       
       public function Perform ():void
       {
-         mVoidFunctionDefinition.DoCall (null, null);
+         mVoidFunctionDefinition.DoCall (mWorld.GetFunctionCallingContext (), null, null);
       }
       
 //=============================================================

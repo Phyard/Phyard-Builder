@@ -113,7 +113,7 @@ package editor.ccat {
          return mCollisionGroupFriendPairs;
       }
       
-      public function GetCollisionCategoryIndex (category:CollisionCategory):int
+      public function GetCollisionCategoryIndex (category:CollisionCategory, allowReturnNoneCCatId:Boolean):int
       {
          //if (category == null || ! contains (category))
          //   return Define.CCatId_Hidden;
@@ -121,7 +121,12 @@ package editor.ccat {
          //return getChildIndex (category);
          
          if (category == null)
-            return Define.CCatId_Hidden;
+         {
+            if (allowReturnNoneCCatId)
+               return Define.CCatId_None; // since v2.06
+            else
+               return Define.CCatId_Hidden;
+         }
          
          return category.GetAppearanceLayerId ();
       }
@@ -143,7 +148,7 @@ package editor.ccat {
          var category:CollisionCategory = new CollisionCategory (this, ValidateAssetKey (key), GetRecommendAssetName (ccName));
          addChild (category);
          
-         //category.SetCategoryName ( GetRecommendName (ccName), false ); // moved to above.
+         //category.SetCategoryName ( GetRecommendName (ccName), false); // moved to above. 
          
          //mNameLookupTable [category.GetCategoryName ()] = category;
          
@@ -305,11 +310,17 @@ package editor.ccat {
 //   queries
 //=================================================================================
 
-      public function GetCollisionCategoryListDataProvider (isForPureCustomFunction:Boolean = false):Array
+      // isForPureCustomFunction
+      public function GetCollisionCategoryListDataProvider (allowNoneCCat:Boolean, isForPureCustomFunction:Boolean = false):Array
       {
          var list:Array = new Array ();
-
-         list.push ({label:"-1:{Hidden Category}", mCategoryIndex:Define.CCatId_Hidden});
+         
+         if (allowNoneCCat)
+         {
+            list.push ({label: Define.CCatId_None + ":{null}", mCategoryIndex:Define.CCatId_None});
+         }
+         
+         list.push ({label: Define.CCatId_Hidden + ":{Hidden Category}", mCategoryIndex:Define.CCatId_Hidden});
 
          if (! isForPureCustomFunction)
          {
@@ -332,15 +343,23 @@ package editor.ccat {
          return list;
       }
 
-      public static function CollisionCategoryIndex2SelectListSelectedIndex (categoryIndex:int, dataProvider:Array):int
+      public static function CollisionCategoryIndex2SelectListSelectedIndex (allowNoneCCat:Boolean, categoryIndex:int, dataProvider:Array):int
       {
-         for (var i:int = 0; i < dataProvider.length; ++ i)
+         do
          {
-            if (dataProvider[i].mCategoryIndex == categoryIndex)
-               return i;
+            for (var i:int = 0; i < dataProvider.length; ++ i)
+            {
+               if (dataProvider[i].mCategoryIndex == categoryIndex)
+                  return i;
+            }
+            
+            categoryIndex = allowNoneCCat ? Define.CCatId_None : Define.CCatId_Hidden;
+            
+            continue;
          }
-
-         return CollisionCategoryIndex2SelectListSelectedIndex (Define.CCatId_Hidden, dataProvider);
+         while (false);
+         
+         return 0; // will never go here.
       }
       
 //=============================================

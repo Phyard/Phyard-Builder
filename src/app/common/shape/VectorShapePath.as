@@ -50,17 +50,17 @@ package common.shape
 // for playing
 //==============================================
 
-      protected var mPathThicknessInPhysics:Number;
+      //protected var mPathThicknessInPhysics:Number;
 
-      public function GetPathThicknessInPhysics ():Number
-      {
-         return mPathThicknessInPhysics;
-      }
+      //public function GetPathThicknessInPhysics ():Number
+      //{
+      //   return mPathThicknessInPhysics;
+      //}
 
-      public function SetPathThicknessInPhysics (thickness:Number):void
-      {
-         mPathThicknessInPhysics = thickness;
-      }
+      //public function SetPathThicknessInPhysics (thickness:Number):void
+      //{
+      //   mPathThicknessInPhysics = thickness;
+      //}
 
    }
 }

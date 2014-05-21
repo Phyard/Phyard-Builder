@@ -18,7 +18,7 @@ package player.image
    
    import player.module.Module;
    
-   import player.design.Global;
+   import player.world.Global;
 
    public class ImageBitmap extends Module
    {
@@ -76,7 +76,7 @@ package player.image
             mCallbackOnLoadError = onLoadError;
             
             // ...
-            Global.Viewer_mLibGraphics.LoadImageFromBytes (fileData, OnLoadImageComplete, OnLoadImageError);
+            Global.sTheGlobal.Viewer_mLibGraphics_LoadImageFromBytes (fileData, OnLoadImageComplete, OnLoadImageError);
          }
       }
       

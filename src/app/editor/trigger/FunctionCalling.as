@@ -280,17 +280,17 @@ package editor.trigger {
             {
                directSource = source as ValueSource_Direct;
                directValue = Number (directSource.GetValueObject ());
-               numberDetail = mFunctionDeclaration.GetInputNumberTypeDetail (i);
+               numberDetail = mFunctionDeclaration.GetInputNumberTypeDetailBit (i);
                
                switch (numberDetail)
                {
-                  case CoreClassIds.NumberTypeDetail_Single:
+                  case CoreClassIds.NumberTypeDetailBit_Single:
                      directValue = ValueAdjuster.Number2Precision (directValue, 6);
                      break;
-                  case CoreClassIds.NumberTypeDetail_Integer:
+                  case CoreClassIds.NumberTypeDetailBit_Integer:
                      directValue = Math.round (directValue);
                      break;
-                  case CoreClassIds.NumberTypeDetail_Double:
+                  case CoreClassIds.NumberTypeDetailBit_Double:
                   default:
                      directValue = ValueAdjuster.Number2Precision (directValue, 12);
                      break;

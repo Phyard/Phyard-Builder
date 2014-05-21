@@ -53,7 +53,7 @@ package player.trigger.entity
                else
                   mFilterDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, TriggerEngine.GetEntityFilterFunctionDeclaration ());
                
-               mFilterDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               mFilterDefinition.SetCodeSnippetDefine (mWorld, codeSnippetDefine, extraInfos);
             }
          }
       }
@@ -72,7 +72,7 @@ package player.trigger.entity
          var inputValueSource:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity, null);
          
          // if (mFilterDefinition != null) // should not be null
-         mFilterDefinition.DoCall (inputValueSource, mValueTarget); // outputValueTarget);
+         mFilterDefinition.DoCall (mWorld.GetFunctionCallingContext (), inputValueSource, mValueTarget); // outputValueTarget);
          
          TriggerEngine.ReleaseDirectParameter_Source (inputValueSource);
          //return TriggerEngine.ReleaseDirectParameter_Target (outputValueTarget) as Boolean;
@@ -93,7 +93,7 @@ package player.trigger.entity
          var inputValueSource0:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity1, inputValueSource1);
          
          // if (mFilterDefinition != null) // should not be null
-         mFilterDefinition.DoCall (inputValueSource0, mValueTarget); //outputValueTarget);
+         mFilterDefinition.DoCall (mWorld.GetFunctionCallingContext (), inputValueSource0, mValueTarget); //outputValueTarget);
          
          TriggerEngine.ReleaseDirectParameter_Source (inputValueSource0);
          TriggerEngine.ReleaseDirectParameter_Source (inputValueSource1);

@@ -8,6 +8,7 @@ package editor.entity {
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxyCircle;
    
+   import common.ViewerDefine;
    import common.Define;
    
    public class SubEntityDistanceAnchor extends SubEntityJointAnchor 

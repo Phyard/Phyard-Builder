@@ -1,7 +1,5 @@
 package player.trigger
 {
-   import player.design.Global;
-   
    import common.trigger.CoreFunctionIds;
    
    public class FunctionCalling_ConditionWithComparer extends FunctionCalling_Condition
@@ -11,7 +9,7 @@ package player.trigger
          super (lineNumber, functionDefinition, valueSourceList, valueTargetList);
       }
       
-      override public function Call ():void
+      override public function Call (callingContext:FunctionCallingContext):void
       {
          //if (mBooleanReturnValueTarget == null)
          //   return;

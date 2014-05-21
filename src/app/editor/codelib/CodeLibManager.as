@@ -576,9 +576,10 @@ package editor.codelib {
 
       internal var mCoreAndCustomClassesDataProvider:XML = null;
       private static var sCoreClassesDataProvider:XML = null;
+      private static var sSceneIndependentClassesDataProvider:XML = null;
       private static var sGameSaveClassesDataProvider:XML = null;
       
-      public static function GetTypesDataProviderForMenu (codeLibManager:CodeLibManager, isCurrentSceneDataDependent:Boolean, isAnySceneDataIndependent:Boolean):XML
+      public static function GetTypesDataProviderForMenu (codeLibManager:CodeLibManager, isCurrentSceneDataDependent:Boolean, isAnySceneDataIndependent:Boolean, isForGameSave:Boolean):XML
       {
          if (isCurrentSceneDataDependent) // codeLibManager must not be null.
          {
@@ -591,14 +592,24 @@ package editor.codelib {
             
             return codeLibManager.mCoreAndCustomClassesDataProvider;
          }
-         else // codeLibManager is null
+         else // codeLibManager must be null
          {
             if (isAnySceneDataIndependent)
             {
-               if (sGameSaveClassesDataProvider == null)
-                  BuildGameSaveClassesDataProvider ();
-               
-               return sGameSaveClassesDataProvider;
+               if (isForGameSave)
+               {
+                  if (sGameSaveClassesDataProvider == null)
+                     BuildGameSaveClassesDataProvider ();
+                  
+                  return sGameSaveClassesDataProvider;
+               }
+               else
+               {
+                  if (sSceneIndependentClassesDataProvider == null)
+                     BuildSceneIndependentClassesDataProvider ();
+                  
+                  return sSceneIndependentClassesDataProvider;
+               }
             }
             else // codeLibManager is null
             {
@@ -645,23 +656,30 @@ package editor.codelib {
       {
          var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
          
-         sCoreClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, true);
+         sCoreClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, false, false);
+      }
+      
+      private static function BuildSceneIndependentClassesDataProvider ():void
+      {
+         var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
+         
+         sSceneIndependentClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, true, false);
       }
       
       private static function BuildGameSaveClassesDataProvider ():void
       {
          var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
          
-         sGameSaveClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, false);
+         sGameSaveClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, true, true);
          
-         for each (var menuItem:Object in sGameSaveClassesDataProvider.menuitem)
-         {
-            if (menuItem.@["scene_data_dependent"] == true)
-            {
-               //sGameSaveClassesDataProvider.removeChild (menuItem);
-               delete menuItem.parent().children()[menuItem.childIndex()];
-            }
-         }
+         //for each (var menuItem:Object in sGameSaveClassesDataProvider.menuitem)
+         //{
+         //   if (menuItem.@["scene_data_dependent"] == true)
+         //   {
+         //      //sGameSaveClassesDataProvider.removeChild (menuItem);
+         //      delete menuItem.parent().children()[menuItem.childIndex()];
+         //   }
+         //}
       }
       
       public static const kCustomPackagename:String = "Custom";
@@ -701,7 +719,7 @@ package editor.codelib {
          
          if (GetNumClasses () > 0)
          {
-            var customClassesDataProvider:XML = ConvertCodePackageToXML (topPackage, null, null, false);
+            var customClassesDataProvider:XML = ConvertCodePackageToXML (topPackage, null, null, false, false);
             
             mCoreAndCustomClassesDataProvider = <root />;
             mCoreAndCustomClassesDataProvider.appendChild (sCoreClassesDataProvider);
@@ -723,19 +741,20 @@ package editor.codelib {
 
       // top level
       // forFunctions: true for functions, false for classes.
-      private static function CreateXmlFromCodePackages (packages:Array, forFunctions:Boolean, allowSceneDependentClasses:Boolean = true):XML
+      private static function CreateXmlFromCodePackages (packages:Array, forFunctions:Boolean):XML
       {
          var xml:XML = <root />;
 
          for each (var codePackage:CodePackage in packages)
          {
-            ConvertCodePackageToXML (codePackage, xml, packages, forFunctions, allowSceneDependentClasses);
+            ConvertCodePackageToXML (codePackage, xml, packages, forFunctions);
          }
 
          return xml;
       }
 
-      private static function ConvertCodePackageToXML (codePackage:CodePackage, parentXml:XML, topCodePackages:Array, forFunctions:Boolean, allowSceneDependentClasses:Boolean = true):XML
+      // the ending params ae only for classes.
+      private static function ConvertCodePackageToXML (codePackage:CodePackage, parentXml:XML, topCodePackages:Array, forFunctions:Boolean, onlyAllowSceneIndependentClasses:Boolean = true, forGameSave:Boolean = false):XML
       {
          codePackage.UpdateElementOrders ();
          
@@ -753,9 +772,12 @@ package editor.codelib {
             var childCodePackage:CodePackage = codePackage.GetChildCodePackageAtIndex (i);
             if (topCodePackages == null || topCodePackages.indexOf (childCodePackage) < 0)
             {
-               ConvertCodePackageToXML (childCodePackage, package_element, topCodePackages, forFunctions);
+               var child_pkg_element:XML = ConvertCodePackageToXML (childCodePackage, package_element, topCodePackages, forFunctions, onlyAllowSceneIndependentClasses, forGameSave);
 
-               ++ num_items;
+               if (child_pkg_element.@name == childCodePackage.GetName ()) // false for removed.
+               {
+                  ++ num_items;
+               } 
             }
          }
          
@@ -791,27 +813,36 @@ package editor.codelib {
             {
                aClass = codePackage.GetClassAtIndex (j);
                
-               if (allowSceneDependentClasses || (! aClass.IsSceneDataDependent ()))
-               {
-                  class_element = <menuitem />;
-                  class_element.@name = aClass.GetName ();
-                  class_element.@id = aClass.GetID ();
-                  class_element.@type = aClass.GetClassType ();
-   
-                  package_element.appendChild (class_element);
-   
-                  ++ num_items;
-               }
+               if (onlyAllowSceneIndependentClasses && aClass.IsSceneDataDependent ())
+                  continue;
+               
+               if (forGameSave && (! aClass.IsGameSavable ()))
+                  continue;
+               
+               // ...
+               
+               class_element = <menuitem />;
+               class_element.@name = aClass.GetName ();
+               class_element.@id = aClass.GetID ();
+               class_element.@type = aClass.GetClassType ();
+
+               package_element.appendChild (class_element);
+
+               ++ num_items;
             }
          }
 
-         if (num_items == 0)
+         if (num_items == 0 && parentXml != null)
          {
-            var element:XML = <menuitem />;
-            element.@name = "[nothing]";
-            element.@id = -1;
-
-            package_element.appendChild (element);
+            //var element:XML = <menuitem />;
+            //element.@name = "[nothing]";
+            //element.@id = -1;
+            //
+            //package_element.appendChild (element);
+            
+            delete parentXml.menuitem [parentXml.menuitem.length () - 1];
+            
+            package_element.@name = "";
          }
          
          return package_element;

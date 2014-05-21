@@ -129,7 +129,7 @@ package player.entity {
                      -1, // not draw border
                      true, // draw background
                      GetFilledColor (), 
-                     mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData (),
+                     mBodyTextureModule == null ? null : mBodyTextureModule.GetBitmapData (), 
                      mBodyTextureTransform == null ? null : mBodyTextureTransform.ToMatrix ()
                   );
             
@@ -292,8 +292,12 @@ package player.entity {
          if (mPhysicsShapeProxy != null)
          {
             //mPhysicsShapeProxy.AddCircle (mIsStatic, 0, 0, mRadius, mBuildInterior, mBuildBorder, mBorderThickness);
-            mPhysicsShapeProxy.AddCircle (mLocalTransform,
-                                          mRadius, mBuildInterior, mBuildBorder, mBorderThickness
+            var accTrans:Transform2D = mWorld.GetCoordinateSystem ().As_D2P_Vector_Transform_CombineByTransform (mLocalTransform);
+            mPhysicsShapeProxy.AddCircle (accTrans,
+                                          mWorld.GetCoordinateSystem ().P2D_Length (mRadius), 
+                                          mBuildInterior, 
+                                          mBuildBorder, 
+                                          mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness)
                                           );
          }
       }

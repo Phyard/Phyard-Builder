@@ -102,7 +102,30 @@ package common.trigger {
    // system back
       
       public static const ID_OnSystemBack:int = IdPool.EventId_189;
+      
+   // multiple players
+      
+      //public static const ID_OnPlayerJoinedInstance:int = IdPool.EventId_169;
+      //public static const ID_OnPlayerLeavedInstance:int = IdPool.EventId_169;
+      //OnSpectatorEntered
+      //OnSpectatorExited
+      //OnSpectatorHaveInterestsInCurrentRound
+      //public static const ID_OnPlayerReadyForNewRound:int = IdPool.EventId_169;
+      //public static const ID_OnPlayerLeavedInstance:int = IdPool.EventId_169;
+      //public static const ID_OnInstanceCreated:int = IdPool.EventId_169;
+      
+      
+      //public static const ID_OnInstanceRestarted:int = IdPool.EventId_169;
+      
+      //public static const ID_OnInstanceEnterPlayingPhase:int = IdPool.EventId_169;
+      
+      public static const ID_OnMultiplePlayerInstanceInfoChanged      :int = IdPool.EventId_167; //       
+      
+      public static const ID_OnMultiplePlayerInstanceChannelMessage   :int = IdPool.EventId_168; //       
 
+      public static const ID_OnError                                  :int = IdPool.EventId_169; // need an API: GetErrorDebugInfo (errorId)
+      
    // ================================
+      
    }
 }

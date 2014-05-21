@@ -120,6 +120,7 @@
          <fileset dir="${dir.external}/helper_classes_as3" />
          <fileset dir="${dir.external}/box2d_as3_v210" />
          <fileset dir="${dir.external}/box2dex_v210" />
+         <fileset dir="${dir.external}/adobe" />
       </copy>
       <copy todir="${dir.build.src}/res" overwrite="true">
          <fileset dir="${dir.build.res-compiled}" />

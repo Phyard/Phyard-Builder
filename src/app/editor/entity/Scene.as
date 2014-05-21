@@ -89,6 +89,7 @@ package editor.entity {
    
    import common.CoordinateSystem;
    
+   import common.ViewerDefine;
    import common.Define;
    import common.ValueAdjuster;
    
@@ -266,11 +267,11 @@ package editor.entity {
       //<<
 
       //>>1.51
-      private var mViewerUiFlags:int = Define.DefaultPlayerUiFlags;
+      private var mViewerUiFlags:int = ViewerDefine.DefaultPlayerUiFlags;
       private var mPlayBarColor:uint = 0x606060;
 
-      private var mViewportWidth:int = Define.DefaultPlayerWidth;
-      private var mViewportHeight:int = Define.DefaultPlayerHeight;
+      private var mViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
+      private var mViewportHeight:int = ViewerDefine.DefaultPlayerHeight;
       //<<
 
       //>>v1.60
@@ -741,7 +742,7 @@ package editor.entity {
          if (selectIt)
          {
             circle.ValidateAfterJustCreated ();
-            circle.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
+            circle.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory (), false));
             
             circle.SetPosition (mouseX, mouseY);
             SetSelectedAsset (circle);
@@ -762,7 +763,7 @@ package editor.entity {
          if (selectIt)
          {
             rect.ValidateAfterJustCreated ();
-            rect.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
+            rect.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory (), false));
             
             rect.SetPosition (mouseX, mouseY);
             SetSelectedAsset (rect);
@@ -783,7 +784,7 @@ package editor.entity {
          if (selectIt)
          {
             polygon.ValidateAfterJustCreated ();
-            polygon.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
+            polygon.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory (), false));
             
             polygon.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polygon);
@@ -804,7 +805,7 @@ package editor.entity {
          if (selectIt)
          {
             polyline.ValidateAfterJustCreated ();
-            polyline.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
+            polyline.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory (), false));
             
             polyline.SetPosition (mouseX, mouseY);
             SetSelectedAsset (polyline);
@@ -964,7 +965,7 @@ package editor.entity {
             SetSelectedAsset (imageModule);
          }
 
-         imageModule.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
+         imageModule.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory (), false));
 
          return imageModule;
       }
@@ -984,7 +985,7 @@ package editor.entity {
             SetSelectedAsset (imageModuleButton);
          }
 
-         imageModuleButton.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory ()));
+         imageModuleButton.SetCollisionCategoryIndex (mCollisionCategoryManager.GetCollisionCategoryIndex (mCollisionCategoryManager.GetDefaultCollisionCategory (), false));
 
          return imageModuleButton;
       }

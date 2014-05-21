@@ -51,6 +51,10 @@ package common.trigger {
 
       public static const EventId_150:int = 150;
 
+      public static const EventId_167:int = 167;
+      public static const EventId_168:int = 168;
+      public static const EventId_169:int = 169;
+
       public static const EventId_189:int = 189;
       
       public static const EventId_190:int = 190;
@@ -174,7 +178,7 @@ package common.trigger {
       public static const CoreApiId_116:int = 116; //
       public static const CoreApiId_117:int = 117; //
       public static const CoreApiId_118:int = 118; //
-
+      
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
       public static const CoreApiId_122:int = 122; //
@@ -192,11 +196,28 @@ package common.trigger {
       public static const CoreApiId_134:int = 134; //
       public static const CoreApiId_135:int = 135; //
       public static const CoreApiId_136:int = 136; //
-
+      public static const CoreApiId_137:int = 137; //
+      public static const CoreApiId_138:int = 138; //
+      public static const CoreApiId_139:int = 139; //
+      public static const CoreApiId_140:int = 140; //
+      public static const CoreApiId_141:int = 141; //
+      public static const CoreApiId_142:int = 142; //
+      public static const CoreApiId_143:int = 143; //
+      public static const CoreApiId_144:int = 144; //
+      public static const CoreApiId_145:int = 145; //
+      public static const CoreApiId_146:int = 146; //
+      public static const CoreApiId_147:int = 147; //
+      public static const CoreApiId_148:int = 148; //
+      public static const CoreApiId_149:int = 149; //
       public static const CoreApiId_150:int = 150; //
       public static const CoreApiId_151:int = 151; //
       public static const CoreApiId_152:int = 152; //
       public static const CoreApiId_153:int = 153; //
+      public static const CoreApiId_154:int = 154; //
+      public static const CoreApiId_155:int = 155; //
+      public static const CoreApiId_156:int = 156; //
+      public static const CoreApiId_157:int = 157; //
+      public static const CoreApiId_158:int = 158; //
 
       public static const CoreApiId_170:int = 170; //
       public static const CoreApiId_171:int = 171; //
@@ -287,7 +308,18 @@ package common.trigger {
 
       public static const CoreApiId_530:int = 530; //
       public static const CoreApiId_531:int = 531; //
-
+      
+      public static const CoreApiId_565:int = 565; // services
+      public static const CoreApiId_566:int = 566; // services
+      public static const CoreApiId_567:int = 567; // services
+      public static const CoreApiId_568:int = 568; // services
+      public static const CoreApiId_569:int = 569; // services
+      public static const CoreApiId_570:int = 570; // services
+      public static const CoreApiId_571:int = 571; // services
+      public static const CoreApiId_572:int = 572; // services
+      public static const CoreApiId_573:int = 573; // services
+      public static const CoreApiId_574:int = 574; // services
+      public static const CoreApiId_575:int = 575; // services
       public static const CoreApiId_576:int = 576; // design
       public static const CoreApiId_577:int = 577; // design
       public static const CoreApiId_578:int = 578; // design
@@ -317,12 +349,15 @@ package common.trigger {
       public static const CoreApiId_602:int = 602; // design
       public static const CoreApiId_603:int = 603; // design
       public static const CoreApiId_604:int = 604; // design
-
+      public static const CoreApiId_605:int = 605; // services
+      public static const CoreApiId_606:int = 606; // services
+      public static const CoreApiId_607:int = 607; // services   
+      public static const CoreApiId_608:int = 608; // services   
       public static const CoreApiId_609:int = 609; // design
       public static const CoreApiId_610:int = 610; // design
-      
+      public static const CoreApiId_611:int = 611; // services      
       public static const CoreApiId_612:int = 612; // design
-      
+      public static const CoreApiId_613:int = 613; // services   
       public static const CoreApiId_614:int = 614; // design
       public static const CoreApiId_615:int = 615; // gesture
       public static const CoreApiId_616:int = 616; // 
@@ -336,6 +371,7 @@ package common.trigger {
       public static const CoreApiId_624:int = 624; // 
       public static const CoreApiId_625:int = 625; // 
       public static const CoreApiId_626:int = 626; // 
+      public static const CoreApiId_627:int = 627; // 
 
       public static const CoreApiId_700:int = 700; // world
 
@@ -632,3 +668,4 @@ package common.trigger {
 
    }
 }
+

@@ -99,7 +99,6 @@ package common.trigger {
                     [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                     ]);
-      }
 
        // ...
 
@@ -310,6 +309,32 @@ package common.trigger {
                     [
                         [CoreClassIds.ValueType_Boolean,      false],
                     ]);
+
+     // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged,
+                    [
+                        [CoreClassIds.ValueType_MultiplePlayerInstance,       null],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage,
+                    [
+                        [CoreClassIds.ValueType_MultiplePlayerInstance,       null],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_ByteArray,       null],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnError,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                    ]);
+         
+      // ...
+         
+      }
 
 //===========================================================
 // util functions

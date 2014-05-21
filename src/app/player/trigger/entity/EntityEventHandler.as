@@ -68,7 +68,7 @@ package player.trigger.entity
                codeSnippetDefine.DisplayValues2PhysicsValues (mWorld.GetCoordinateSystem ());
 
                mEventHandlerDefinition = TriggerFormatHelper2.FunctionDefine2FunctionDefinition (mWorld, entityDefine.mFunctionDefine, CoreEventDeclarations.GetCoreEventHandlerDeclarationById (mEventId));
-               mEventHandlerDefinition.SetCodeSnippetDefine (codeSnippetDefine, extraInfos);
+               mEventHandlerDefinition.SetCodeSnippetDefine (mWorld, codeSnippetDefine, extraInfos);
             }
 
             // external condition
@@ -231,7 +231,7 @@ package player.trigger.entity
          if (mEnabledChangedStep < mWorld.GetSimulatedSteps () || mEnabledChangedStepStage < mWorld.GetStepStage ())
          {
             //mEventHandlerDefinition.DoCall (valueSourceList, null);
-            mEventHandlerDefinition.ExcuteEventHandler (valueSourceList, valueTargetList);
+            mEventHandlerDefinition.ExcuteEventHandler (mWorld.GetFunctionCallingContext (), valueSourceList, valueTargetList);
 
             if (mExternalAction != null)
             {

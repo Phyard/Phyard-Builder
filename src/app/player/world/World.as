@@ -3,7 +3,7 @@ package player.world {
    import flash.system.IME;
 
    import flash.utils.ByteArray;
-
+   import flash.system.Capabilities;
    import flash.utils.Dictionary;
 
    import flash.display.Sprite;
@@ -21,16 +21,16 @@ package player.world {
    import flash.ui.KeyLocation;
    import flash.events.FocusEvent;
 
-   import flash.utils.Dictionary;
-
    import flash.ui.Mouse;
+   
+   import com.tapirgames.util.RandomNumberGenerator;
+   import com.tapirgames.util.MersenneTwisterRNG;
+   import com.tapirgames.util.TextUtil;
 
    import player.physics.PhysicsEngine;
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJoint;
-
-   import player.design.Global;
 
    import player.entity.Entity;
    import player.entity.EntityVoid;
@@ -56,7 +56,14 @@ package player.world {
    import player.trigger.data.ListElement_EntitySelector;
    
    import player.trigger.CoreClasses;
-
+   import player.trigger.ClassDefinition;
+   import player.trigger.ClassDefinition_Custom;
+   import player.trigger.ClassInstance;
+   import player.trigger.VariableSpace;
+   import player.trigger.VariableInstance;
+   import player.trigger.VariableDeclaration;
+   import player.trigger.FunctionDefinition_Custom;
+   import player.trigger.FunctionCallingContext;
    import player.trigger.Parameter;
    import player.trigger.Parameter_DirectConstant;
    import player.trigger.Parameter_DirectMutable;
@@ -65,25 +72,30 @@ package player.world {
    import player.mode.ModeMoveWorldScene;
 
    import common.CoordinateSystem;
-
+   
+   import common.trigger.define.ClassDefine;
+   import common.trigger.define.FunctionDefine;
+   import common.trigger.ValueDefine;
    import common.trigger.CoreClassIds;
    import common.trigger.CoreEventIds;
    import common.trigger.IdPool;
-   import common.trigger.ValueDefine;
+   import common.trigger.ClassTypeDefine;
+   import common.trigger.ValueSpaceTypeDefine;
 
+   import common.UUID;
+   import common.ViewerDefine;
    import common.Define;
    import common.ValueAdjuster;
-   
    import common.KeyCodes;
    import common.GestureIDs;
 
    import common.DataFormat2;
+   import common.TriggerFormatHelper2;
 
    public class World extends Sprite
    {
    // includes
 
-      include "../trigger/CoreFunctionDefinitions_World.as";
       include "World_CameraAndView.as";
       include "World_SystemEventHandling.as";
       include "World_ParticleManager.as";
@@ -92,10 +104,15 @@ package player.world {
       include "World_ContactEventHandling.as";
       include "World_KeyboardEventHandling.as";
       include "World_GestureEventHandling.as";
+      include "World_ServicesEventHandling.as";
       include "World_GeneralEventHandling.as";
+      include "World_CodeLib.as";
+      include "World_APIs.as";
+      include "World_Viewer.as";
+      include "World_MersenneTwisterRNG.as";
       include "World_Misc.as";
 
-   //
+   // ...
 
       public static const DefaultWorldWidth :int = Define.DefaultWorldWidth;
       public static const DefaultWorldHeight:int = Define.DefaultWorldHeight;
@@ -253,6 +270,8 @@ package player.world {
       // ...
 
          CreateGraphicsLayers ();
+      
+      // ...
 
       // ...
 
@@ -273,7 +292,7 @@ package player.world {
       {
          if (mBuildingStatus == 0)
          {
-            mBuildingStatus = Global.CheckWorldBuildingStatus ();
+            mBuildingStatus = Global.sTheGlobal.CheckWorldBuildingStatus ();
          }
          
          //if ((! mInitialized) && mBuildingStatus == 1)
@@ -728,6 +747,12 @@ package player.world {
          mInitialized = true;
          
       //------------------------------------
+      // reset calling context
+      //------------------------------------
+      
+         ResetFunctionCallingContext ();
+         
+      //------------------------------------
       // init some structures
       //------------------------------------
 
@@ -891,6 +916,12 @@ package player.world {
       {
          if (mDestroyed)
             return;
+         
+      //------------------------------------
+      // reset calling context
+      //------------------------------------
+      
+         ResetFunctionCallingContext ();
 
       //-----------------------------
       // remove the delay removeds
@@ -952,7 +983,8 @@ package player.world {
          // delay handle system events
          // In flash, only valid when k==0 in fact
          //-----------------------------
-
+         
+         HandleUpdateMultiplePlayerEvents ();
          HandleAllCachedSystemEvents ();
          ClearAllCachedSystemEvents ();
 
@@ -1047,7 +1079,7 @@ package player.world {
       
       public function SetDelayToLoadSceneIndex (sceneIndex:int, sceneSwitchingStyle:int):void
       {
-         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         if (mDelayRestartRequested == false && Global.sTheGlobal.IsInvalidScene (mDelayToLoadSceneIndex))
          {
             mDelayToLoadSceneIndex = sceneIndex;
             mSceneSwitchingStyle = sceneSwitchingStyle;
@@ -1057,7 +1089,7 @@ package player.world {
       private var mDelayRestartRequested:Boolean = false;
       public function SetDelayRestartRequested (sceneSwitchingStyle:int):void
       {
-         if (mDelayRestartRequested == false && Global.IsInvalidScene (mDelayToLoadSceneIndex))
+         if (mDelayRestartRequested == false && Global.sTheGlobal.IsInvalidScene (mDelayToLoadSceneIndex))
          {
             mDelayRestartRequested = true;
             mSceneSwitchingStyle = sceneSwitchingStyle;
@@ -1807,5 +1839,28 @@ package player.world {
 
          return ccat1.mEnemyTable [ccat2.mArrayIndex];
       }
+      
+//====================================================================================================
+//   code
+//====================================================================================================
+      
+      protected var mFunctionCallingContext:FunctionCallingContext;
+      
+      private function ResetFunctionCallingContext ():void
+      {
+         if (mFunctionCallingContext == null)
+            mFunctionCallingContext = new FunctionCallingContext (this);
+         
+         mFunctionCallingContext.Reset ();
+      }
+      
+      public function GetFunctionCallingContext ():FunctionCallingContext
+      {
+         return mFunctionCallingContext;
+      }
+      
    }
 }
+
+
+

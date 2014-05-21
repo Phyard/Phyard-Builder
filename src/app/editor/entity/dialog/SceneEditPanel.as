@@ -60,6 +60,7 @@ package editor.entity.dialog {
    import common.trigger.CoreEventIds;
    
    import common.ValueAdjuster;
+   import common.ViewerDefine;
    import common.Define;
    import common.Version;
    
@@ -152,12 +153,12 @@ package editor.entity.dialog {
       
       override protected function GetMaxAllowedScale ():Number
       {
-         return Define.MaxWorldZoomScale;
+         return ViewerDefine.MaxWorldZoomScale;
       }
       
       override protected function GetMinAllowedScale ():Number
       {
-         return Define.MinWorldZoomScale;
+         return ViewerDefine.MinWorldZoomScale;
       }
       
       override protected function OnResize (event:Event):void 
@@ -261,6 +262,7 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   ConvertOldRegisterVariablesToGlobalVariables ();
                break;
+            /*
             case 66: // B
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSystemBack), OnPutCreating, OnCreatingCancelled));
@@ -280,6 +282,11 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldBeforeRepainting), OnPutCreating, OnCreatingCancelled));
                break;
+            case 87: // W
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged), OnPutCreating, OnCreatingCancelled));
+               break;
+            */
             default:
             {
                handled = false;
@@ -1117,8 +1124,8 @@ package editor.entity.dialog {
       private function RetrieveShapePhysicsProperties (shape:EntityShape, values:Object):void
       {        
          values.mCollisionCategoryIndex = shape.GetCollisionCategoryIndex ();
-         values.mCollisionCategoryListDataProvider = mScene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider ();
-         values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
+         values.mCollisionCategoryListDataProvider = mScene.GetCollisionCategoryManager ().GetCollisionCategoryListDataProvider (false, false);
+         values.mCollisionCategoryListSelectedIndex = CollisionCategoryManager.CollisionCategoryIndex2SelectListSelectedIndex (false, shape.GetCollisionCategoryIndex (), values.mCollisionCategoryListDataProvider);
          
          values.mIsPhysicsEnabled = shape.IsPhysicsEnabled ();
          values.mIsSensor = shape.mIsSensor;

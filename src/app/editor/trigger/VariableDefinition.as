@@ -156,6 +156,16 @@ package editor.trigger {
                return new VariableDefinitionScene (variableName);
             case CoreClassIds.ValueType_Array:
                return new VariableDefinitionArray (variableName);
+            case CoreClassIds.ValueType_ByteArray:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, variableName);
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, variableName);
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, variableName);
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, variableName);
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, variableName);
             case CoreClassIds.ValueType_Class:
                return new VariableDefinitionClass (variableName);
             case CoreClassIds.ValueType_Object:
@@ -192,6 +202,8 @@ package editor.trigger {
       
       //public var mIsReference:Boolean = false;
       
+      protected var mIsVisible:Boolean = true; // some reserved parameters may be not visible to designers.
+      
       // cancelled to unref TriggerEngine
       //private var mDefaultSourceType:int = ValueSourceTypeDefine.ValueSource_Direct;
       
@@ -223,6 +235,11 @@ package editor.trigger {
          //   //if (options.mDefaultSourceType != undefined)
          //   //   mDefaultSourceType = int (options.mDefaultSourceType);
          //}
+         
+         if (mOptions.mIsVisible != undefined)
+         {
+            mIsVisible = mOptions.mIsVisible;
+         }
       }
       
       public function GetClass ():ClassDefinition
@@ -279,6 +296,11 @@ package editor.trigger {
       public function AllowVariablesOfOtherClasses ():Boolean
       {
          return mOptions.mAllowVariablesOfOtherClasses;
+      }
+      
+      public function IsVisible ():Boolean
+      {
+         return mIsVisible;
       }
       
 //==============================================================================

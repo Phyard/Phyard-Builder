@@ -23,12 +23,12 @@
    //
    //=====================================================================================
    
-   private var mViewerUiFlags:int = Define.DefaultPlayerUiFlags;
+   private var mViewerUiFlags:int = ViewerDefine.DefaultPlayerUiFlags;
    private var mPlayBarColor:uint = 0x606060;
-   private var mPreferredViewportWidth:int = Define.DefaultPlayerWidth;
-   private var mPreferredViewportHeight:int = Define.DefaultPlayerHeight;
-   private var mRealViewportWidth:int = Define.DefaultPlayerWidth;
-   private var mRealViewportHeight:int = Define.DefaultPlayerHeight;
+   private var mPreferredViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
+   private var mPreferredViewportHeight:int = ViewerDefine.DefaultPlayerHeight;
+   private var mRealViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
+   private var mRealViewportHeight:int = ViewerDefine.DefaultPlayerHeight;
    
    private var mCameraRotatingEnabled:Boolean = false;
    

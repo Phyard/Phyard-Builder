@@ -3,9 +3,11 @@ package editor.world {
    import editor.trigger.*;
 
    import common.trigger.CoreFunctionIds;
-
+   import common.trigger.CoreClassIds;
    import common.trigger.ValueSourceTypeDefine;
    import common.trigger.IdPool;
+   
+   import common.MultiplePlayerDefine;
    import common.Define;
 
    public class CoreFunctionDeclarationsForPlaying
@@ -54,6 +56,7 @@ package editor.world {
          var string_package:CodePackage = new CodePackage ("String", sGlobalCodePackage);
          var array_package:CodePackage   = new CodePackage ("Array", sGlobalCodePackage);
             var array_element_package:CodePackage   = array_package; // new CodePackage ("Element", array_package);
+         var bytearray_package:CodePackage   = new CodePackage ("ByteArray", sGlobalCodePackage);
          var system_package:CodePackage = new CodePackage ("System", sGlobalCodePackage);
          var services_package:CodePackage = new CodePackage ("Services", sGlobalCodePackage);
 
@@ -406,12 +409,128 @@ package editor.world {
                      ],
                      null
                   );
+                  
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ConnectToMultiplePlayerServer, services_package, "Connect To Multiple Player Server", null, null,
+         //            null,
+         //            null
+         //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine, services_package, "Create Game Instance Define", null, null,
+                     [
+                             new VariableDefinitionString ("Sub Game ID (most 30 chars, blank is ok)", null, {mMaxLength: 30}),
+                             new VariableDefinitionNumber ("Number Of Players", null, {mValueLists: Lists.mMultiplePlayerInstanceNumberOfPlayersList}),
+                     ],
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Created Instance Define"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package, "Create Game Instance Channel Define", null, null,
+                     [
+                             new VariableDefinitionNumber ("Channel Mode", null, {mValueLists: Lists.mMultiplePlayerChannelModeList}),
+                             new VariableDefinitionNumber ("Turn Timeout (seconds, 0: unlimited)", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxTurnTimeoutInPractice}),
+                     ],
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define")
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Game Instance Define", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
+                     ],
+                     null
+                  );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
+         //            [
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+         //                    new VariableDefinitionString ("Password (max 30 chars, blank for public)", null, {mMaxLength: 30}),
+         //            ],
+         //            null
+         //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package, "Join Game Instance Randomly", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+                             //new VariableDefinitionBoolean ("Create New If No Availables"),
+                     ],
+                     null
+                  );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Game Instance By Instance ID", null, null,
+         //            [
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+         //                    new VariableDefinitionString ("Instance ID"),
+         //                    new VariableDefinitionString ("Password (if required)"),
+         //            ],
+         //            null
+         //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitGameInstance, services_package, "Exit Current Game Instance", null, null,
+                     null,
+                     null
+                  );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInMutiplayerPlayerStatus, services_package, "Am I In The Specified Multiplayer Status?", "@#0 = (My Multiplayer Status == $0)", "@#0 = (My Multiplayer Status == $0)",
+                     [
+                             new VariableDefinitionNumber ("The Specified Status", null, {mValueLists: Lists.mMultiplePlayerPlayerStatusList}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("In This Status?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInGameInstancePhase, services_package, "Is Game Instance In The Specified Phase?", "@#0 = (Game Instance Phase == $0)", "@#0 = (Game Instance Phase == $0)",
+                     [
+                             new VariableDefinitionNumber ("The Specified Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("In This Phase?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceNumberOfSeats, services_package, "Get Number Of Seats In Game Instance", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Number Of Seats"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetMySeatIndexInGameInstance, services_package, "Get My Seat Index In Game Instance", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("My Seat Index"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatInfo, services_package, "Get Game Instance Seat Info", null, null,
+                     null,
+                     [
+                             new VariableDefinitionString ("Player Name"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo, services_package, "Get Game Instance Channel Seat Info", null, null,
+                     [
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
+                             new VariableDefinitionNumber ("Seat Index", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxNumberOfInstanceSeats - 1}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Channel Seat Enabled?"),
+                     ]
+                  );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Channel Message", null, null,
+                     [
+                             new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
+                     ],
+                     null
+                  );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package, "Send Signal To Change Game Instance Phase", null, null,
+                     [
+                             new VariableDefinitionNumber ("New Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
+                     ],
+                     null
+                  );
 
       // string
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Assign, string_package, "= (Assign String)", "@#0 = $0", "@#0 = $0",
                      [
-                             new VariableDefinitionString ("Source String"),
+                             new VariableDefinitionString ("Source String", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionString ("Target String"),
@@ -420,8 +539,8 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_ConditionAssign, string_package, "?= (Condition Assign String)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
-                             new VariableDefinitionString ("Source String 1"),
-                             new VariableDefinitionString ("Source String 2"),
+                             new VariableDefinitionString ("Source String 1", null, {mAllowVariablesOfOtherClasses: true}),
+                             new VariableDefinitionString ("Source String 2", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionString ("Target String"),
@@ -564,7 +683,7 @@ package editor.world {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_Assign, bool_package, "= (Assign Boolean)", "@#0 = $0", "@#0 = $0",
                      [
-                             new VariableDefinitionBoolean ("Source Boolean"),
+                             new VariableDefinitionBoolean ("Source Boolean", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionBoolean ("Target Boolean"),
@@ -573,8 +692,8 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_ConditionAssign, bool_package, "=? (Condition Assign Boolean)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
-                             new VariableDefinitionBoolean ("Source Boolean 1"),
-                             new VariableDefinitionBoolean ("Source Boolean 2"),
+                             new VariableDefinitionBoolean ("Source Boolean 1", null, {mAllowVariablesOfOtherClasses: true}),
+                             new VariableDefinitionBoolean ("Source Boolean 2", null, {mAllowVariablesOfOtherClasses: true}),
                      ],
                      [
                              new VariableDefinitionBoolean ("Target Boolean"),
@@ -991,6 +1110,153 @@ package editor.world {
                      false
                   );
 
+       // byte array
+         
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_Create, bytearray_package, "Create Byte Array", null, null,
+                     [
+                              new VariableDefinitionNumber ("Initial Length"),
+                     ],
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Created Byte Array"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_CreateFromBase64String, bytearray_package, "Create Byte Array From Base64 String", null, null,
+                     [
+                              new VariableDefinitionString ("Input Base64 String"),
+                     ],
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Created Byte Array"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_ToBase64String, bytearray_package, "Byte Array To Base64 String", "ByteArray2Base64String", "ByteArray2Base64String",
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "The Byte Array"),
+                     ],
+                     [
+                              new VariableDefinitionString ("Output Base64 String"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_Compress, bytearray_package, "Compress Byte Array", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Input Byte Array"),
+                     ],
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Compressed Byte Array"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArray_Uncompress, bytearray_package, "Uncompress Byte Array", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Input Byte Array"),
+                     ],
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Uncompressed Byte Array"),
+                     ]
+                  );
+         
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_Create, bytearray_package, "Create Byte Array Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "The Byte Array (can be null)"),
+                     ],
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "Created Byte Array Stream"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetByteArray, bytearray_package, "Get Byte Array Of Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                     ],
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "The Byte Array"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetByteArray, bytearray_package, "Set Byte Array Of Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "New Byte Array"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_GetCursorPosition, bytearray_package, "Get Cursor Position Of Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                     ],
+                     [
+                              new VariableDefinitionNumber ("Cursor Position"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_SetCursorPosition, bytearray_package, "Set Cursor Position Of Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionNumber ("Cursor Position"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadByteArray, bytearray_package, "Read Byte Array From Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Byte Array To Fill"),
+                              new VariableDefinitionNumber ("Offset To Fill"),
+                              new VariableDefinitionNumber ("Number Of Bytes To Read (0 for all)"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteByteArray, bytearray_package, "Write Byte Array Into Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Source Byte Array"),
+                              new VariableDefinitionNumber ("Source Offset"),
+                              new VariableDefinitionNumber ("Number Of Bytes To Write (0 for all)"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadBoolean, bytearray_package, "Read Boolean From Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                     ],
+                     [
+                              new VariableDefinitionBoolean ("The Boolean Value"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteBoolean, bytearray_package, "Write Boolean Into Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionBoolean ("The Boolean Value"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadNumber, bytearray_package, "Read Number From Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionNumber ("Number Detail", null, {mValueLists:Lists.mNumberDetailList}),
+                     ],
+                     [
+                              new VariableDefinitionNumber ("The Number Value"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteNumber, bytearray_package, "Write Number Into Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionNumber ("The Number Value"),
+                              new VariableDefinitionNumber ("Number Detail", null, {mValueLists:Lists.mNumberDetailList}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadUTF, bytearray_package, "Read UTF String From Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                     ],
+                     [
+                              new VariableDefinitionString ("The UTF String"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteUTF, bytearray_package, "Write UTF String Into Stream", null, null,
+                     [
+                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
+                              new VariableDefinitionString ("The UTF String"),
+                     ],
+                     null
+                  );
+         
        // math basic ops
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Assign, numbe_general_package, "= (Number Assign)", "@#0 = $0", "@#0 = $0",
@@ -2499,6 +2765,14 @@ package editor.world {
                              new VariableDefinitionNumber ("World Vector Y"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetScale, entity_common_package, "Get Entity Scale",  null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Current Scale"),
+                     ]
+                  );
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_IsDestroyed, entity_common_package, "Is Entity Destroyed", null, null,
                      [
@@ -3195,14 +3469,6 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_GetScale, shape_common_package, "Get Entity Scale",  null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Current Scale"),
-                     ]
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_ScaleWithFixedPoint, shape_common_package, "Scale Shape With Fixed Point", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -3606,18 +3872,18 @@ package editor.world {
 
       // game / entity / shape / thickness
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderThickness, shape_geometry_package, "Get Shape Border Thickness", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderThickness, shape_geometry_package, "Get Shape Border Thickness (Physics Unit)", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionNumber ("The Thickness"),
+                             new VariableDefinitionNumber ("The Thickness (Physics Unit)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness, shape_geometry_package, "Set Shape Border Thickness", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness, shape_geometry_package, "Set Shape Border Thickness (Physics Unit)", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
-                             new VariableDefinitionNumber ("New Thickness"),
+                             new VariableDefinitionNumber ("New Thickness (Physics Unit)"),
                      ],
                      null
                   );

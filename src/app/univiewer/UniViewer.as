@@ -13,6 +13,7 @@ package univiewer
    import flash.geom.Point;
    import flash.system.LoaderContext;
    import flash.system.ApplicationDomain;
+   import flash.system.Security;
    import flash.net.URLRequest;
    import flash.net.URLLoader;
    import flash.net.URLRequestMethod;
@@ -24,6 +25,7 @@ package univiewer
    import flash.ui.ContextMenu;
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
+   import flash.external.ExternalInterface;
 
    public dynamic class UniViewer extends Sprite
    {
@@ -42,6 +44,8 @@ package univiewer
       public function UniViewer ()
       {
          addEventListener(Event.ADDED_TO_STAGE , OnAddedToStage)
+         
+         //Security.allowDomain("*");
       }
 
       private var mUniViewerUrl:String;
@@ -54,19 +58,38 @@ package univiewer
 
          //
          SetInfoText ("Loading ... (" + StartLoadingPercent + "%)");
+         
+         //>> websockets
+         //if (ExternalInterface.available)
+         //{
+         //    try
+         //    {
+         //       ExternalInterface.addCallback("call", ContainerCallEmbed);
+         //    }
+         //    catch (error:Error)
+         //    {
+         //    }
+         //}
+         //<<
 
          // init
 
          mUniViewerUrl =  LoaderInfo(this.loaderInfo).url;
 
+         //? why not use LoaderInfo(this.loaderInfo).parameters? 
+         // forget. 
+         // Maybe params in url are not parsed as parameters. (in fact, Flash Player does do this. So needs a test)
          const ViewerFileEquals:String = "ViewerFile=";
          const RevisionIdEquals:String = "RevisionId=";
          const WorldFileEquals:String = "WorldFile=";
          var index1:int = mUniViewerUrl.indexOf (ViewerFileEquals);
          var index2:int = mUniViewerUrl.indexOf (RevisionIdEquals);
          var index3:int = mUniViewerUrl.indexOf (WorldFileEquals);
+         
          if (index1 >= 0 && index2 >= 0 && index3 >= 0)
          {
+            // why this block? maybe useless now.
+            
             var indexEnd:int;
 
             index1 += ViewerFileEquals.length;
@@ -112,9 +135,9 @@ package univiewer
             var loader:URLLoader = new URLLoader ();
             loader.dataFormat = URLLoaderDataFormat.BINARY;
 
-            loader.addEventListener(Event.COMPLETE, OnLoadInfoComplete);
-            loader.addEventListener(IOErrorEvent.IO_ERROR, OnLoadingError);
-            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
+            loader.addEventListener (Event.COMPLETE, OnLoadInfoComplete);
+            loader.addEventListener (IOErrorEvent.IO_ERROR, OnLoadingError);
+            loader.addEventListener (SecurityErrorEvent.SECURITY_ERROR, OnLoadingError);
 
             mLoadingStage = " info ";
             loader.load(request);
@@ -185,7 +208,7 @@ package univiewer
       {
          //SetInfoText (null);
 
-         var MainClass:Object = ApplicationDomain.currentDomain.getDefinition("Main") as Class;
+         var MainClass:Object = ApplicationDomain.currentDomain.getDefinition ("Main") as Class;
          if (MainClass == null)
          {
             SetInfoText ("Loading error! No main entry");
@@ -201,6 +224,10 @@ package univiewer
          paramsFromUniViewer.SetLoadingText = SetInfoText;
          paramsFromUniViewer.GetViewportSize = GetViewportSize;
          paramsFromUniViewer.mBackgroundColor = 0xDDDDA0;
+         
+         //>> websockets
+         //paramsFromUniViewer.EmbedCallContainer = EmbedCallContainer;
+         //<<
 
          var viewer:Sprite = (MainClass.Call as Function) ("NewViewer", {mParamsFromUniViewer: paramsFromUniViewer}) as Sprite;
          viewer.alpha = 0.0;
@@ -279,5 +306,37 @@ package univiewer
             mInfoTextField.y = 0.5 * (stage.stageHeight - mInfoTextField.height);
          }
       }
+      
+//============================================================================
+//   
+//============================================================================
+      
+      // don't change this name, 
+      //public function ContainerCallEmbed (funcName:String, params:Object):void
+      //{
+      //   if (mViewer != null)
+      //   {
+      //      return mViewer.ContainerCallEmbed (funcName, params);
+      //   }
+      //   
+      //   return null;
+      //}
+      
+      // don't change this name, 
+      //public function EmbedCallContainer (funcName:String, params:Object):Object
+      //{
+      //   if (ExternalInterface.available)
+      //   {
+      //       try
+      //       {
+      //          return ExternalInterface.call(funcName, params);
+      //       }
+      //       catch (error:Error)
+      //       {
+      //       }
+      //   }
+      //   
+      //   return null;
+      //}
    }
 }

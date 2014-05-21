@@ -107,9 +107,7 @@ package editor.entity {
          
          AdjustBackgroundSize ();
          
-//trace ("111 mTextLayer.parent = " + mTextLayer.parent);
          super.UpdateAppearance ();
-//trace ("222 mTextLayer.parent = " + mTextLayer.parent);
          
          addChild (mTextLayer);
          

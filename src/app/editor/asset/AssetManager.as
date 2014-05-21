@@ -16,6 +16,7 @@ package editor.asset {
    
    import common.CoordinateSystem;
    
+   import common.UUID;
    import common.Define;
    import common.ValueAdjuster;
    
@@ -1509,7 +1510,7 @@ package editor.asset {
          
          while (key == null || mLookupTableByKey [key] != null)
          {
-            key = EditorObject.BuildKey (GetAccAssetId ());
+            key = UUID.BuildKey (GetAccAssetId ());
          }
          
          return key;

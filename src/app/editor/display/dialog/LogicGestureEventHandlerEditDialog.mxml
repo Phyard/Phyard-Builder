@@ -3,7 +3,7 @@
      The TitleWindowApp application displays this component.
      You cannot run it independently. -->
 
-<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*" xmlns:ed="editor.controls.*"
+<mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
     title="Event Handler Setting" width="700">
 
    <mx:TabNavigator width="100%" height="100%">

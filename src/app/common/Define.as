@@ -9,7 +9,6 @@ package common {
 // general
 //===========================================================================
       
-      public static const AboutUrl:String = "http://www.phyard.com";
       public static const EditingTutorialUrl:String = "http://wiki.colorinfection.com";
       public static const ShowcasesUrl:String = "http://www.phyard.com/hot";
       public static const EmbedTutorialUrl:String = "http://sites.google.com/site/colorinfectiondocument/documents/publish-your-puzzles";
@@ -58,33 +57,6 @@ package common {
       public static const LargeWorldHalfWidth:int = 12000; 
       public static const LargeWorldHalfHeight:int = 12000; 
       
-      public static const DefaultPlayerSkinPlayBarHeight:int = 20;
-      public static const DefaultPlayerWidth:int = 500; //600; 
-      public static const DefaultPlayerHeight:int = 500; //600; 
-      
-      // there are 32 bits for the flags (this flags are added from v1.51)
-      public static const PlayerUiFlag_UseDefaultSkin:int               = 1 << 0;
-      public static const PlayerUiFlag_ShowSpeedAdjustor:int            = 1 << 1;
-      public static const PlayerUiFlag_ShowScaleAdjustor:int            = 1 << 2;
-      public static const PlayerUiFlag_ShowHelpButton:int               = 1 << 3;
-      public static const PlayerUiFlag_ShowSoundController:int          = 1 << 4; // add from v1.59
-      public static const PlayerUiFlag_UseCustomLevelFinishedDialog:int = 1 << 5; // add from v2.02
-      public static const PlayerUiFlag_AdaptiveViewportSize:int         = 1 << 7;
-      public static const PlayerUiFlag_UseOverlaySkin:int               = 1 << 8; // add from v1.59
-                                                                 // bit 9-15 are reserved for skin type
-      
-      // not include v1.51
-      public static const PlayerUiFlags_BeforeV0151:int = PlayerUiFlag_UseDefaultSkin 
-                                                        | PlayerUiFlag_ShowSpeedAdjustor
-                                                        | PlayerUiFlag_ShowScaleAdjustor 
-                                                        | PlayerUiFlag_ShowHelpButton
-                                                        ;
-      // 
-      public static const DefaultPlayerUiFlags:int = PlayerUiFlag_UseDefaultSkin
-                                                        | PlayerUiFlag_ShowSoundController
-                                                        | PlayerUiFlag_UseOverlaySkin
-                                                        ;
-      
       public static const WorldFieldMargin:int = 1024; // how much the entites can be put outside of the player field.
       
       public static const MinAppFPS:Number = 10.0;
@@ -108,9 +80,6 @@ package common {
       {
          return sceneLeft == - LargeWorldHalfWidth / 2 && sceneTop == - LargeWorldHalfHeight / 2 && sceneWidth == LargeWorldHalfWidth && sceneHeight == LargeWorldHalfHeight;
       }
-      
-      public static const MaxWorldZoomScale:Number = 32.0;
-      public static const MinWorldZoomScale:Number = 1.0 / 32.0;
       
       // ...
       public static const BodyCloneOffsetX:uint = 20;
@@ -184,6 +153,7 @@ package common {
       
       public static const DefaultCCatName:String = "Category";
       
+      public static const CCatId_None:int = -2;
       public static const CCatId_Hidden:int = -1;
       public static const MinCCatId:int = -1;
       
@@ -362,7 +332,7 @@ package common {
       public static const MaxEntityPairesCountEachOneToOnePairAssigner:int = 32; // valid for EntityAssignerType_Many and EntityPairAssignerType_OneToOne
       
 //===========================================================================
-// Coding
+// Coding 
 //===========================================================================
       
       public static const CodingFormat_Traditional:int = 0;
@@ -374,7 +344,7 @@ package common {
       public static const PackageDefaultName:String = "Package";
       
 //===========================================================================
-// colors
+// colors 
 //===========================================================================
       
       public static const ColorObjectBorder:uint = 0x000000;

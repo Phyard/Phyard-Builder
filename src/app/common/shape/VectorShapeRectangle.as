@@ -87,27 +87,27 @@ package common.shape
 // for playing
 //==============================================
 
-      protected var mHalfWidthInPhysics:Number;
-      protected var mHalfHeightInPhysics:Number;
+      //protected var mHalfWidthInPhysics:Number;
+      //protected var mHalfHeightInPhysics:Number;
 
-      public function GetHalfWidthInPhysics ():Number
-      {
-         return mHalfWidthInPhysics;
-      }
+      //public function GetHalfWidthInPhysics ():Number
+      //{
+      //   return mHalfWidthInPhysics;
+      //}
 
-      public function SetHalfWidthInPhysics (halfWidth:Number):void
-      {
-         mHalfWidthInPhysics = halfWidth;
-      }
+      //public function SetHalfWidthInPhysics (halfWidth:Number):void
+      //{
+      //   mHalfWidthInPhysics = halfWidth;
+      //}
 
-      public function GetHalfHeightInPhysics ():Number
-      {
-         return mHalfHeightInPhysics;
-      }
+      //public function GetHalfHeightInPhysics ():Number
+      //{
+      //   return mHalfHeightInPhysics;
+      //}
 
-      public function SetHalfHeightInPhysics (halfHeight:Number):void
-      {
-         mHalfHeightInPhysics = halfHeight;
-      }
+      //public function SetHalfHeightInPhysics (halfHeight:Number):void
+      //{
+      //   mHalfHeightInPhysics = halfHeight;
+      //}
    }
 }

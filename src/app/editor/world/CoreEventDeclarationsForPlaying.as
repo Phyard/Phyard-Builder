@@ -2,7 +2,8 @@
 package editor.world {
 
    import editor.trigger.*;
-
+   
+   import common.trigger.CoreClassIds;
    import common.trigger.CoreEventIds;
 
    public class CoreEventDeclarationsForPlaying
@@ -305,6 +306,28 @@ package editor.world {
                     null,
                     [
                         new VariableDefinitionBoolean ("Already Handled?"),
+                    ]);
+
+      // ...
+
+         RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged, "OnMultiplePlayerInstanceInfoChanged", "When multiple player instance info changes",
+                    [
+                        new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, "Multiple Player Instance", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Instance Server Connection Status Changed? (Reserved Now)", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("My Player Status Changed?"),
+                        new VariableDefinitionBoolean ("Instance Phase Changed?"),
+                        new VariableDefinitionBoolean ("Instance Seats Info Changed?"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage, "OnMultiplePlayerInstanceChannelMessage", "When player sends a channel message",
+                    [
+                        new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, "Multiple Player Instance", null, {mIsVisible: false}),
+                        new VariableDefinitionNumber ("Channel Index"),
+                        new VariableDefinitionNumber ("Seat Index"),
+                        new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Message Data"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnError, "OnError", "When error occurs",
+                    [
+                        new VariableDefinitionNumber ("Error ID"),
                     ]);
 
       // event settings

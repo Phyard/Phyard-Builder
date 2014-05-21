@@ -1,6 +1,6 @@
 package player.trigger
 {
-   import player.design.Global;
+   import player.world.World;
    
    import common.trigger.ValueSpaceTypeDefine;
    import common.trigger.define.CodeSnippetDefine;
@@ -79,9 +79,9 @@ package player.trigger
       }
       //<<
       
-      public function SetCodeSnippetDefine (codeSnippetDefine:CodeSnippetDefine, extraInfos:Object):void
+      public function SetCodeSnippetDefine (playerWorld:World, codeSnippetDefine:CodeSnippetDefine, extraInfos:Object):void
       {
-         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, Global.GetCurrentWorld (), codeSnippetDefine, extraInfos);
+         mCodeSnippet = TriggerFormatHelper2.CreateCodeSnippet (this, /*Global.GetCurrentWorld ()*/playerWorld, codeSnippetDefine, extraInfos);
          mPrimaryFunctionInstance.SetAsCurrent ();
       }
       
@@ -130,7 +130,7 @@ package player.trigger
       }
       
       // general calling
-      override public function DoCall (inputParamList:Parameter, outputParamList:Parameter):void
+      override public function DoCall (callingContext:FunctionCallingContext, inputParamList:Parameter, outputParamList:Parameter):void
       {
          // 1. push 
          
@@ -142,7 +142,7 @@ package player.trigger
             //>> fixed in v2.04
             mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
             //<<
-            mCodeSnippet.Excute ();
+            mCodeSnippet.Excute (callingContext);
             mCurrentFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
             
             mCurrentFunctionInstance = null;
@@ -163,7 +163,7 @@ package player.trigger
             //<<
             mCurrentFunctionInstance.SetAsCurrent ();
             
-            mCodeSnippet.Excute ();
+            mCodeSnippet.Excute (callingContext);
             
             mCurrentFunctionInstance = mCurrentFunctionInstance.mPrevFunctionInstance;
             mCurrentFunctionInstance.SetAsCurrent ();
@@ -172,9 +172,9 @@ package player.trigger
       }
       
       // special for event handlers, a little faster than DoCall. Maybe it is not worthy to create this function.
-      // NOTICE: DON'T call this function in iteration functions
-      // as event handler, no returns
-      public function ExcuteEventHandler (inputParamList:Parameter, outputParamList:Parameter = null):void
+      // NOTICE: DON'T call this function in iteration functions.
+      // as event handler, no returns ([edit]: some new event handlers such as ID_OnSystemBack, have returns)
+      public function ExcuteEventHandler (callingContext:FunctionCallingContext, inputParamList:Parameter, outputParamList:Parameter = null):void
       {
          mPrimaryFunctionInstance.mInputVariableSpace.GetValuesFromParameters (inputParamList);
          
@@ -182,7 +182,7 @@ package player.trigger
          mPrimaryFunctionInstance.mOutputVariableSpace.GetValuesFromParameters (outputParamList); // set default values. (output parameters are also input parameters)
          //<<
 
-         mCodeSnippet.Excute ();
+         mCodeSnippet.Excute (callingContext);
          
          if (outputParamList != null)
          {

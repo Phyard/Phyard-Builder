@@ -85,6 +85,29 @@ package common.trigger {
 
       public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
       public static const ID_SubmitKeyValue_Number:int          = IdPool.CoreApiId_576; // from v2.03
+      
+      //public static const ID_ConnectToMultiplePlayerServer:int           = IdPool.CoreApiId_567;
+
+      public static const ID_CreateNewGameInstanceChannelDefine:int           = IdPool.CoreApiId_573; // from v2.06
+      public static const ID_CreateNewGameInstanceDefine:int           = IdPool.CoreApiId_572; // from v2.06
+      public static const ID_GameInstanceDefineSetChannelDefine:int           = IdPool.CoreApiId_571; // from v2.06
+      
+      //public static const ID_CreateGameInstance:int             = IdPool.CoreApiId_606; // from v2.06
+      public static const ID_JoinGameInstanceRandomly:int       = IdPool.CoreApiId_605; // from v2.06
+      //public static const ID_GetAvailableGameInstances:int      = IdPool.CoreApiId_608;
+      //public static const ID_JoinGameInstanceByInstanceID:int   = IdPool.CoreApiId_607; // from v2.06
+      public static const ID_ExitGameInstance:int               = IdPool.CoreApiId_613; // from v2.06
+      public static const ID_SendGameInstanceChannelMessage:int = IdPool.CoreApiId_611; // from v2.06
+      
+      public static const ID_SendSignal_ChangeInstancePhase:int     = IdPool.CoreApiId_627; // from v2.06
+      
+      public static const ID_IsInMutiplayerPlayerStatus:int           = IdPool.CoreApiId_565; // from v2.06
+      public static const ID_IsInGameInstancePhase:int           = IdPool.CoreApiId_566; // from v2.06
+      public static const ID_GetGameInstanceNumberOfSeats:int           = IdPool.CoreApiId_570; // from v2.06
+      public static const ID_GetMySeatIndexInGameInstance:int           = IdPool.CoreApiId_574; // from v2.06
+      public static const ID_GetGameInstanceSeatInfo:int          = IdPool.CoreApiId_568; // from v2.06
+      public static const ID_GetGameInstanceChannelSeatInfo:int           = IdPool.CoreApiId_575; // from v2.06
+      //public static const ID_CanSendChannelMessageNow:int           = IdPool.CoreApiId_569;
 
    // string
 
@@ -162,6 +185,28 @@ package common.trigger {
       public static const ID_Array_GetElement:int       = IdPool.CoreApiId_118; // v2.05
       //public static const ID_Array_IndexOf:int                   = IdPool.CoreApiId_135; // v2.05
       //public static const ID_Array_LastIndexOf:int               = IdPool.CoreApiId_136; // v2.05
+
+   // byte array
+   
+      public static const ID_ByteArray_Create:int       = IdPool.CoreApiId_137; // v2.06
+      public static const ID_ByteArray_CreateFromBase64String:int       = IdPool.CoreApiId_138; // v2.06
+      public static const ID_ByteArray_ToBase64String:int       = IdPool.CoreApiId_139; // v2.06
+      public static const ID_ByteArray_Compress:int       = IdPool.CoreApiId_140; // v2.06
+      public static const ID_ByteArray_Uncompress:int       = IdPool.CoreApiId_141; // v2.06
+      
+      public static const ID_ByteArrayStream_Create:int       = IdPool.CoreApiId_142; // v2.06
+      public static const ID_ByteArrayStream_GetByteArray:int       = IdPool.CoreApiId_143; // v2.06
+      public static const ID_ByteArrayStream_SetByteArray:int       = IdPool.CoreApiId_144; // v2.06
+      public static const ID_ByteArrayStream_GetCursorPosition:int       = IdPool.CoreApiId_145; // v2.06
+      public static const ID_ByteArrayStream_SetCursorPosition:int       = IdPool.CoreApiId_146; // v2.06
+      public static const ID_ByteArrayStream_ReadByteArray:int       = IdPool.CoreApiId_147; // v2.06
+      public static const ID_ByteArrayStream_WriteByteArray:int       = IdPool.CoreApiId_148; // v2.06
+      public static const ID_ByteArrayStream_ReadBoolean:int       = IdPool.CoreApiId_149; // v2.06
+      public static const ID_ByteArrayStream_WriteBoolean:int       = IdPool.CoreApiId_154; // v2.06
+      public static const ID_ByteArrayStream_ReadNumber:int       = IdPool.CoreApiId_155; // v2.06
+      public static const ID_ByteArrayStream_WriteNumber:int       = IdPool.CoreApiId_156; // v2.06
+      public static const ID_ByteArrayStream_ReadUTF:int       = IdPool.CoreApiId_157; // v2.06
+      public static const ID_ByteArrayStream_WriteUTF:int       = IdPool.CoreApiId_158; // v2.06
 
    // math basic op
 

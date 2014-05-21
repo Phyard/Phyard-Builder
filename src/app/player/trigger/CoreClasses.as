@@ -3,7 +3,7 @@ package player.trigger {
    import flash.utils.ByteArray;
    import flash.utils.Dictionary;
 
-   import player.design.Global;
+   import player.world.Global;
    import player.world.World;
    import player.world.CollisionCategory;
    
@@ -109,6 +109,7 @@ package player.trigger {
          GetCoreClassDefinition (CoreClassIds.ValueType_Entity).mToStringFunc = Entity2String;
          GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory).mToStringFunc = CCat2String;
          GetCoreClassDefinition (CoreClassIds.ValueType_Array).mToStringFunc = Array2String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_ByteArray).mToStringFunc = ByteArray2String;
          
          for each (var primitiveClassId:int in [CoreClassIds.ValueType_Boolean, 
                                                 CoreClassIds.ValueType_Number, 
@@ -198,6 +199,8 @@ package player.trigger {
       //   return sArrayClassDefinition;
       //}
       
+      public static const kByteArrayClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_ByteArray);
+      
       public static const kModuleClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Module);
       //public static function GetModuleClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
       //{
@@ -207,7 +210,7 @@ package player.trigger {
       //   return sModuleClassDefinition;
       //}
       
-      public static const kBooelanClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
+      public static const kBooleanClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_Boolean);
       //public static function GetBooleanClassDefinition ():ClassDefinition_Core // should be called in InitCoreClassDefinitions ()
       //{
       //   if (sBooelanClassDefinition == null)
@@ -233,6 +236,8 @@ package player.trigger {
       //   
       //   return sStringClassDefinition;
       //}
+      
+      public static const kMultiplePlayerInstanceClassDefinition:ClassDefinition_Core = GetCoreClassDefinition (CoreClassIds.ValueType_MultiplePlayerInstance);
       
 //==============================================================
 // 
@@ -366,6 +371,13 @@ package player.trigger {
          var anArray:Array = valueObject as Array; // not null for sure
             
          return className + "#" + ConvertArrayToString (anArray, extraInfos as Dictionary);
+      }
+      
+      public static function ByteArray2String (valueObject:Object, className:String, extraInfos:Object):String
+      {
+         var byteArray:ByteArray = valueObject as ByteArray; // not null for sure
+            
+         return className + "#<" + byteArray.length + ">";
       }
 
       private static function ConvertArrayToString (values:Array, convertedArrays:Dictionary = null):String
@@ -601,6 +613,7 @@ package player.trigger {
       
       // define -> instance
       
+      // playerWorld can be null.
       public static function ValidateInitialDirectValueObject_Define2Object (playerWorld:World, classType:int, valueType:int, valueObject:Object, extraInfos:Object = null):Object
       {
          if (classType != ClassTypeDefine.ClassType_Core)
@@ -643,7 +656,8 @@ package player.trigger {
                   return null;
                
                //var ccatIndex:int = valueObject as int; // before v2.05. bug: null -> 0
-               var ccatIndex:int = valueObject == null ? Define.CCatId_Hidden : (valueObject as int);
+               //var ccatIndex:int = valueObject == null ? Define.CCatId_Hidden : (valueObject as int); // 2.05
+               var ccatIndex:int = valueObject == null ? Define.CCatId_None : (valueObject as int); // since v2.06
                if (ccatIndex >= 0 && extraInfos != null)
                   ccatIndex += extraInfos.mBeinningCCatIndex;
                return playerWorld.GetCollisionCategoryById (ccatIndex);
@@ -677,19 +691,39 @@ package player.trigger {
                //   
                //}
             }
+            case CoreClassIds.ValueType_ByteArray:
+               return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return null;
             case CoreClassIds.ValueType_Class:
                var aClass:ClassDefinition = kVoidClassDefinition;
                
                if (valueObject != null)
                {  
                   var theClassId:int = valueObject.mValueType;
+                  
                   if (valueObject.mClassType == ClassTypeDefine.ClassType_Custom)
                   {
-                     if (theClassId >= 0 && extraInfos != null)
-                        theClassId = theClassId + extraInfos.mBeginningCustomClassIndex;
+                     if (playerWorld != null)
+                     {
+                        if (theClassId >= 0 && extraInfos != null)
+                           theClassId = theClassId + extraInfos.mBeginningCustomClassIndex;
+                        
+                         var bClass:ClassDefinition = playerWorld.GetCustomClassDefinition (theClassId);
+                         if (bClass != null)
+                         {
+                           aClass = bClass;
+                         }
+                     }
                   }
-                  
-                  aClass = Global.GetClassDefinition (valueObject.mClassType, theClassId);
+                  else
+                  {
+                      aClass = GetCoreClassDefinition (theClassId);
+                  }
                }
                   
                return aClass;
@@ -739,6 +773,14 @@ package player.trigger {
                //{
                //   
                //}
+            case CoreClassIds.ValueType_ByteArray:
+               return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               return null;
             case CoreClassIds.ValueType_Class:
                if (valueObject == null)
                   return ClassTypeDefine.ClassType_Core + "," + CoreClassIds.ValueType_Void;
@@ -766,11 +808,11 @@ package player.trigger {
             case CoreClassIds.ValueType_Number:
                switch (numberDetail)
                {
-                  case CoreClassIds.NumberTypeDetail_Single:
+                  case CoreClassIds.NumberTypeDetailBit_Single:
                      return binFile.readFloat ();
-                  case CoreClassIds.NumberTypeDetail_Integer:
+                  case CoreClassIds.NumberTypeDetailBit_Integer:
                      return binFile.readInt ();
-                  case CoreClassIds.NumberTypeDetail_Double:
+                  case CoreClassIds.NumberTypeDetailBit_Double:
                   default:
                      return binFile.readDouble ();
                }
@@ -802,6 +844,17 @@ package player.trigger {
                //}
                
                break;
+            case CoreClassIds.ValueType_ByteArray:
+               var nullByteArray:Boolean = binFile.readByte () == 0;
+               return null;
+            case CoreClassIds.ValueType_ByteArrayStream:
+               var nullByteArrayStream:Boolean = binFile.readByte () == 0;
+               return null;
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+               var nullMpInstance:Boolean = binFile.readByte () == 0;
+               return null;
             case CoreClassIds.ValueType_Class:
                return {mClassType : binFile.readByte (), mValueType : binFile.readShort ()};
             case CoreClassIds.ValueType_Object:

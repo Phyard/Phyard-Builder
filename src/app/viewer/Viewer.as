@@ -1291,6 +1291,7 @@ package viewer {
             //   worldDefine.mDontReloadGlobalAssets = dontReloadGlobalAssets;
             //}
             if (worldDefine.hasOwnProperty ("mWorldCrossStagesData"))
+            {
                if ((forRestartLevel || dontReloadGlobalAssets) && mOldWorldDesignProperties != null)
                {
                   worldDefine.mWorldCrossStagesData = mOldWorldDesignProperties.GetWorldCrossStagesData ();
@@ -1299,6 +1300,7 @@ package viewer {
                {
                   worldDefine.mWorldCrossStagesData = null;
                }
+            }
             if (worldDefine.hasOwnProperty ("mViewerParams"))
             {
                worldDefine.mViewerParams = {

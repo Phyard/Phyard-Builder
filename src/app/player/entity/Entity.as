@@ -253,6 +253,18 @@ package player.entity {
          return mTransform.mRotation;
       }
 
+      public function GetCosRotation ():Number
+      {
+         //return mPhysicsRotation;
+         return mTransform.cos;
+      }
+
+      public function GetSinRotation ():Number
+      {
+         //return mPhysicsRotation;
+         return mTransform.sin;
+      }
+
       // to avoid a large rotation jump
       // targetRotation - shape.GetRotation ()
       // the targetRotation value just represents a direction.

@@ -1145,8 +1145,13 @@ package player.entity {
          {
             FlagWorldCentroidSynchronized (true);
             
-            var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
-            var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
+            //var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
+            //var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
+            // bug fixed in v2.06.
+            var cos:Number = mBody.GetCosRotation ();
+            var sin:Number = mBody.GetSinRotation ();
+            var worldLocalCentroidX:Number = mLocalCentroidX * cos - mLocalCentroidY * sin;
+            var worldLocalCentroidY:Number = mLocalCentroidX * sin + mLocalCentroidY * cos;
             
             mWorldCentroidX = mBody.GetPositionX () + worldLocalCentroidX;
             mWorldCentroidY = mBody.GetPositionY () + worldLocalCentroidY;
@@ -1174,8 +1179,13 @@ package player.entity {
          {
             FlagVelocitySynchronized (true);
             
-            var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
-            var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
+            //var worldLocalCentroidX:Number = mLocalCentroidX * mBody.mCosRotation - mLocalCentroidY * mBody.mSinRotation;
+            //var worldLocalCentroidY:Number = mLocalCentroidX * mBody.mSinRotation + mLocalCentroidY * mBody.mCosRotation;
+            // fix the bug in v2.06
+            var cos:Number = mBody.GetCosRotation ();
+            var sin:Number = mBody.GetSinRotation ();
+            var worldLocalCentroidX:Number = mLocalCentroidX * cos - mLocalCentroidY * sin;
+            var worldLocalCentroidY:Number = mLocalCentroidX * sin + mLocalCentroidY * cos;
             
             mAngularVelocity = mBody.GetAngularVelocity ();
             // this vector cross bug is fixed in v1.56

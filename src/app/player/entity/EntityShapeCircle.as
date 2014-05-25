@@ -150,6 +150,8 @@ package player.entity {
             var aiType:int = GetShapeAiType ();
             if (mWorld.mInColorBlindMode && (aiType == Define.ShapeAiType_Infected || aiType == Define.ShapeAiType_Uninfected ||aiType == Define.ShapeAiType_DontInfect))
             {
+               decoColor = 0xB0B0B0;
+               
                if (aiType == Define.ShapeAiType_DontInfect)
                {
                   DrawDecoration (decoColor, displayRadius * 0.618, 4, false);

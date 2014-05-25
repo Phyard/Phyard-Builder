@@ -210,9 +210,9 @@ package player.entity {
          The physics proxy position and this entity postion should be always synchronized.
       */
       
-      internal var mCosRotation:Number = 1.0;
-      internal var mSinRotation:Number = 0.0;
-      private var mLastRotation:Number = 0.0;
+      //internal var mCosRotation:Number = 1.0;
+      //internal var mSinRotation:Number = 0.0;
+      //private var mLastRotation:Number = 0.0;
       
       // EntityBody.Update () will never be called. SynchronizeWithPhysicsProxy will do what Update () should do.
       override public function SynchronizeWithPhysicsProxy ():void

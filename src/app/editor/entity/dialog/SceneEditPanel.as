@@ -262,6 +262,9 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   ConvertOldRegisterVariablesToGlobalVariables ();
                break;
+            case 78: // N
+               SnapSelectedEnttiesToGrid ();
+               break;
             /*
             case 66: // B
                if (ctrlHold && shiftHold)
@@ -274,9 +277,6 @@ package editor.entity.dialog {
             case 77: // M
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSequencedModuleLoopToEnd), OnPutCreating, OnCreatingCancelled));
-               break;
-            case 78: // N
-               SnapSelectedEnttiesToGrid ();
                break;
             case 80: // P
                if (ctrlHold && shiftHold)

@@ -261,6 +261,8 @@
 //   So every mouse event will not be triggered twice.
 //=============================================================
 
+   // this is not a perfect fix.
+   // todo: try to use DisplayObjectContianer.getObjectsUnderPoint and dispatchEvent instead
    public function OnViewerEvent (event:Event):void
    {
       if (event is MouseEvent)

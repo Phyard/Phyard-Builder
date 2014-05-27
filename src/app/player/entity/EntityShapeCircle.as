@@ -150,7 +150,7 @@ package player.entity {
             var aiType:int = GetShapeAiType ();
             if (mWorld.mInColorBlindMode && (aiType == Define.ShapeAiType_Infected || aiType == Define.ShapeAiType_Uninfected ||aiType == Define.ShapeAiType_DontInfect))
             {
-               decoColor = 0xB0B0B0;
+               decoColor = 0x909090;
                
                if (aiType == Define.ShapeAiType_DontInfect)
                {

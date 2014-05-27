@@ -185,8 +185,22 @@ package viewer {
       {
          mDefaultRenderQuality = stage.quality;
          
-         addEventListener (Event.ENTER_FRAME, Update);
+         // ...
+         
+         CheckPlatformCapabilities ();
+         
+         if (mTouchEventClass != null)
+         {
+            addEventListener (/*mTouchEventClass.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
+            addEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
+            addEventListener (/*mTouchEventClass.TOUCH_END*/"touchEnd", OnTouchEnd);
+         }
+         
+         // ...
+         
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
+         addEventListener (Event.ENTER_FRAME, Update);
+         
          addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
@@ -202,8 +216,6 @@ package viewer {
          stage.addEventListener (Event.DEACTIVATE, OnDeactivated);
          
          // ...
-         
-         CheckPlatformCapabilities ();
 
          ParseParams ();
          
@@ -226,12 +238,20 @@ package viewer {
          removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
          removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
          removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+         
          removeEventListener (Event.ENTER_FRAME, Update);
          removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
          
          //removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage); 
                // this one don't need to be removed. Otherwise, 
                // the game package optimization for 1-level will crash.
+         
+         if (mTouchEventClass != null)
+         {
+            removeEventListener (/*mTouchEventClass.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
+            removeEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
+            removeEventListener (/*mTouchEventClass.TOUCH_END*/"touchEnd", OnTouchEnd);
+         }
          
          // ...
          
@@ -298,12 +318,13 @@ package viewer {
 //======================================================================
 
       private static var mIsTouchScreen:Boolean = false; // false for PC device
-         private static var mIsPhoneDevice:Boolean = false; // only valid when mIsMobileDevice is true
+         //private static var mIsPhoneDevice:Boolean = false; // only valid when mIsMobileDevice is true
       
       private static var mGeolocationClass:Object = null;
       private static var mAccelerometerClass:Object = null;
-         private static var mAccelerometer:Object; //flash.sensors.Accelerometer;
+         private static var mAccelerometerInstance:Object; //flash.sensors.Accelerometer;
       private static var mMultitouchClass:Object = null;
+      private static var mTouchEventClass:Object = null;
       
       private static var mPlatformCapabilitiesChecked:Boolean = false;
       
@@ -330,17 +351,17 @@ package viewer {
                 // UNIX 5,0,55,0  // Flash Player 5 for UNIX
             //Capabilities.serverString
             
-            var dpi:int = Capabilities.screenDPI;
-            var screenX:int = Capabilities.screenResolutionX;
-            var screenY:int = Capabilities.screenResolutionY;
-            var diagonal:Number = Math.sqrt((screenX*screenX)+(screenY*screenY))/dpi;
-            // if diagonal is higher than 6, we will assume it is a tablet or PC
-            mIsPhoneDevice = diagonal < 6;
-
-            if (mIsPhoneDevice)
-            {
-               mIsTouchScreen = true;
-            }
+            //var dpi:int = Capabilities.screenDPI;
+            //var screenX:int = Capabilities.screenResolutionX;
+            //var screenY:int = Capabilities.screenResolutionY;
+            //var diagonal:Number = Math.sqrt((screenX*screenX)+(screenY*screenY))/dpi;
+            //// if diagonal is higher than 6, we will assume it is a tablet or PC
+            //mIsPhoneDevice = diagonal < 6;
+            //
+            //if (mIsPhoneDevice)
+            //{
+            //   mIsTouchScreen = true;
+            //}
             //else
             //{
             //   var manufacturer:String = Capabilities.manufacturer;
@@ -365,9 +386,13 @@ package viewer {
             if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Geolocation"))
             {
                mGeolocationClass = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Geolocation") as Class;
-               if (! mGeolocationClass.isSupported)
+               if (mGeolocationClass != null && (! mGeolocationClass.isSupported))
                {
                   mGeolocationClass = null;
+               }
+               
+               if (mGeolocationClass != null)
+               {
                }
             }
                
@@ -379,14 +404,15 @@ package viewer {
             if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Accelerometer"))
             {
                mAccelerometerClass = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Accelerometer") as Class;
-               if (! mAccelerometerClass.isSupported)
+               if (mAccelerometerClass != null && (! mAccelerometerClass.isSupported))
                {
                   mAccelerometerClass = null;
                }
-               else
+               
+               if (mAccelerometerClass != null)
                {
-                  mAccelerometer = new mAccelerometerClass ();
-                  mAccelerometer.addEventListener("update", OnAccelerationUpdate); //AccelerometerEvent.UPDATE, onUpdate)
+                  mAccelerometerInstance = new mAccelerometerClass ();
+                  mAccelerometerInstance.addEventListener("update", OnAccelerationUpdate); //AccelerometerEvent.UPDATE, onUpdate)
                } 
             }
                
@@ -398,15 +424,23 @@ package viewer {
             if (ApplicationDomain.currentDomain.hasDefinition ("flash.ui.Multitouch"))
             {
                mMultitouchClass = ApplicationDomain.currentDomain.getDefinition ("flash.ui.Multitouch") as Class;
-               if (mMultitouchClass.maxTouchPoints <= 0)
+               
+               //if (mMultitouchClass.maxTouchPoints <= 0)
+               //{
+               //   mMultitouchClass = null;
+               //}
+               
+               if (mMultitouchClass != null && (! mMultitouchClass.supportsTouchEvents))
                {
-                  mMultitouchClass = null;
+                  mMultitouchClass = false;
                }
             }
                
-            if (mMultitouchClass != null)
+            mIsTouchScreen = mMultitouchClass != null;
+            
+            if (mIsTouchScreen && ApplicationDomain.currentDomain.hasDefinition ("flash.events.TouchEvent"))
             {
-               mIsTouchScreen = true;
+               mTouchEventClass = ApplicationDomain.currentDomain.getDefinition ("flash.events.TouchEvent") as Class;
             }
          }
          catch (error:Error)
@@ -495,118 +529,226 @@ package viewer {
       private function SetMouseGestureSupported (supported:Boolean, draw:Boolean):void
       {
          mEnabledMouseGesture = supported;
-         mDrawdMouseGesture = draw;
+         mDrawdMouseGesture = supported && draw;
          
-         mGesturePaintLayer.visible = mEnabledMouseGesture && mDrawdMouseGesture;
+         //mGesturePaintLayer.visible = mEnabledMouseGesture && mDrawdMouseGesture;
          
          if (! mEnabledMouseGesture)
          {
-            mGestureAnalyzer = null;
+            //mGestureAnalyzer = null;
             ClearGesturePaintLayer ();
          }
       }
       
       // ...
       
-      private var mGestureInBuilding:Boolean = false;
+      //private var mGestureAnalyzer:GestureAnalyzer = null;
+      
+      private var mGestureInfoTable:Dictionary = new Dictionary ();
+      private var mGestureInfos:Array = new Array (32);
+      private var mNumGestureInfos:int = 0;
+      
+      private function CreateGestureInfo (touchId:int):Object
+      {
+         var gestureInfo:Object = {
+                     mGestureAnalyzer: CreateGestureAnalyzer (),
+                     mGestureSprite  : new Sprite ()
+                  };
+         
+         if (mDrawdMouseGesture)
+         {
+            mGesturePaintLayer.addChild (gestureInfo.mGestureSprite);
+            mGesturePaintLayer.visible = true;
+         }
+         
+         mGestureInfos [mNumGestureInfos ++] = gestureInfo;
+         
+         mGestureInfoTable [touchId] = gestureInfo;
+         
+         return gestureInfo;
+      }
       
       private function ClearGesturePaintLayer ():void
       {
-         mGesturePaintLayer.graphics.clear ();
-         mGesturePaintLayer.alpha = 1.0;
+         //mGesturePaintLayer.graphics.clear ();
+         while (mGesturePaintLayer.numChildren > 0)
+            mGesturePaintLayer.removeChildAt (0);
+         
+         //mGesturePaintLayer.alpha = 1.0;
          mGesturePaintLayer.visible = false;
+         
+         if (mNumGestureInfos > 0)
+         {
+            mGestureInfoTable = new Dictionary ();
+            mGestureInfos = new Array (32);
+            mNumGestureInfos = 0;
+         }
       }
       
       private function UpdateGesturePaintLayer ():void
       {  
-         if (mGesturePaintLayer.visible && mGestureAnalyzer == null)
+         //if (mGesturePaintLayer.visible && mGestureAnalyzer == null)
+         //{
+         //   mGesturePaintLayer.alpha -= 1.0 / stage.frameRate; // mWorldDesignProperties.GetPreferredFPS ()
+         //   if (mGesturePaintLayer.alpha < 0)
+         //   {
+         //      ClearGesturePaintLayer ();
+         //   }
+         //}
+         
+         if (mGesturePaintLayer.visible)
          {
-            mGesturePaintLayer.alpha -= 1.0 / stage.frameRate; // mWorldDesignProperties.GetPreferredFPS ()
-            if (mGesturePaintLayer.alpha < 0)
+            var deltaAlpha:Number = 1.0 / stage.frameRate;
+            var i:int = 0;
+            var gestureInfo:Object;
+            while (i < mNumGestureInfos)
+            {
+               gestureInfo = mGestureInfos [i];
+               if (gestureInfo.mGestureAnalyzer == null)
+               {
+                  gestureInfo.mGestureSprite.alpha -= deltaAlpha;
+                  if (gestureInfo.mGestureSprite.alpha <= 0.0)
+                  {
+                     mGestureInfos [i] = mGestureInfos [-- mNumGestureInfos];
+                     mGestureInfos [mNumGestureInfos] = null;
+                     
+                     continue;
+                  }
+               }
+               
+               ++ i;
+            }
+            
+            if (mNumGestureInfos <= 0)
             {
                ClearGesturePaintLayer ();
             }
          }
       }
       
-      private var mGestureAnalyzer:GestureAnalyzer = null;
-      
-      private function OnMouseDown (event:MouseEvent):void
+      private function OnGestureBegin (touchId:int, eventStageX:Number, eventStageY:Number):void
       {
+         //if (mEnabledMouseGesture)
+         //{
+         //   mGestureAnalyzer = CreateGestureAnalyzer ();
+         //   ClearGesturePaintLayer ();
+         //   mGesturePaintLayer.visible = mDrawdMouseGesture;
+         //   
+         //   RegisterGesturePoint (eventStageX, eventStageY);
+         //}
+         
          if (mEnabledMouseGesture)
          {
-            mGestureAnalyzer = CreateGestureAnalyzer ();
-            ClearGesturePaintLayer ();
-            mGesturePaintLayer.visible = mDrawdMouseGesture;
+            var gestureInfo:Object = CreateGestureInfo (touchId);
             
-            RegisterGesturePoint (event);
+            RegisterGesturePoint (gestureInfo, eventStageX, eventStageY);
          }
       }
       
-      private function OnMouseMove (event:MouseEvent):void
+      private function OnGesturePaint (touchId:int, eventStageX:Number, eventStageY:Number, buttomDown:Boolean):void
       {
-         if (mGestureAnalyzer != null)
+         var gestureInfo:Object = mGestureInfoTable [touchId];
+         
+         if (gestureInfo != null)
          {
-            if (mEnabledMouseGesture && event.buttonDown)
+            if (mEnabledMouseGesture && buttomDown)
             {
-               RegisterGesturePoint (event);
+               RegisterGesturePoint (gestureInfo, eventStageX, eventStageY);
             }
             else
             {
-               mGestureAnalyzer = null;
-               ClearGesturePaintLayer ();
+               //mGestureAnalyzer = null;
+               //ClearGesturePaintLayer ();
+               
+               gestureInfo.mGestureAnalyzer = null;
             }
          }
       }
       
-      private function OnMouseUp (event:MouseEvent):void
+      private function OnGestureEnd (touchId:int, eventStageX:Number, eventStageY:Number):void
       {
-         if (mGestureAnalyzer != null)
+         var gestureInfo:Object = mGestureInfoTable [touchId];
+         
+         if (gestureInfo != null)
          {
             if (mEnabledMouseGesture)
             {
-               RegisterGesturePoint (event);
+               RegisterGesturePoint (gestureInfo, eventStageX, eventStageY);
 
-               var result:Object = mGestureAnalyzer.Analyze ();
+               var result:Object = gestureInfo.mGestureAnalyzer.Analyze ();
                
                if (mPlayerWorld != null && result.mGestureType != null)
                   mWorldDesignProperties.RegisterGestureEvent (result);
             }
+            
+            gestureInfo.mGestureAnalyzer = null;
          }
-         else
-         {
-            ClearGesturePaintLayer ();
-         }
-         
-         mGestureAnalyzer = null;
+         //else
+         //{
+         //   ClearGesturePaintLayer ();
+         //}
+         //
+         //mGestureAnalyzer = null;
       }
       
-      private function RegisterGesturePoint (event:MouseEvent):void
+      private function OnMouseDown (event:MouseEvent):void
+      {
+         OnGestureBegin (0, event.stageX, event.stageY);
+      }
+      
+      private function OnMouseMove (event:MouseEvent):void
+      {
+         OnGesturePaint (0, event.stageX, event.stageY, event.buttonDown);
+      }
+      
+      private function OnMouseUp (event:MouseEvent):void
+      {
+         OnGestureEnd (0, event.stageX, event.stageY);
+      }
+      
+      private function OnTouchBegin (touchEvent:Object):void
+      {
+         OnGestureBegin (touchEvent.touchPointID, touchEvent.stageX, touchEvent.stageY);
+      }
+      
+      private function OnTouchMove (touchEvent:Object):void
+      {
+         OnGesturePaint (touchEvent.touchPointID, touchEvent.stageX, touchEvent.stageY, true);
+      }
+      
+      private function OnTouchEnd (touchEvent:Object):void
+      {
+         OnGestureEnd (touchEvent.touchPointID, touchEvent.stageX, touchEvent.stageY);
+      }
+      
+      //private function RegisterGesturePoint (event:MouseEvent):void
+      private function RegisterGesturePoint (gestureInfo:Object, eventStageX:Number, eventStgeY:Number):void
       {
          if (mStateId != StateId_Playing || mCurrentPlayingStatePhase != PlayingStatePhase_Stepping)
             return;
          
-         if (mGestureAnalyzer == null)
+         if (gestureInfo == null || gestureInfo.mGestureAnalyzer == null)
             return;
          
-         var gesturePoint:GesturePoint = mGestureAnalyzer.RegisterPoint (event.stageX / stage.scaleX, event.stageY / stage.scaleY, getTimer ());
+         //var gesturePoint:GesturePoint = mGestureAnalyzer.RegisterPoint (event.stageX / stage.scaleX, event.stageY / stage.scaleY, getTimer ());
+         var gesturePoint:GesturePoint = gestureInfo.mGestureAnalyzer.RegisterPoint (eventStageX / stage.scaleX, eventStgeY / stage.scaleY, getTimer ());
          if (gesturePoint != null)
          {
             var point:Point = globalToLocal (new Point (gesturePoint.mX * stage.scaleX, gesturePoint.mY * stage.scaleY));
             if (gesturePoint.mPrevPoint == null)
             {
-               mGesturePaintLayer.graphics.lineStyle ();
-               mGesturePaintLayer.graphics.beginFill (0x00FF00);
-               mGesturePaintLayer.graphics.drawCircle (point.x, point.y, 9);
-               mGesturePaintLayer.graphics.endFill ();
+               gestureInfo.mGestureSprite.graphics.lineStyle ();
+               gestureInfo.mGestureSprite.graphics.beginFill (0x00FF00);
+               gestureInfo.mGestureSprite.graphics.drawCircle (point.x, point.y, 9);
+               gestureInfo.mGestureSprite.graphics.endFill ();
             }
             else
             {
-               mGesturePaintLayer.graphics.lineStyle(9, 0x00FF00);
-               mGesturePaintLayer.graphics.moveTo (point.x, point.y);
+               gestureInfo.mGestureSprite.graphics.lineStyle(9, 0x00FF00);
+               gestureInfo.mGestureSprite.graphics.moveTo (point.x, point.y);
 
                point = globalToLocal (new Point (gesturePoint.mPrevPoint.mX * stage.scaleX, gesturePoint.mPrevPoint.mY * stage.scaleY));
-               mGesturePaintLayer.graphics.lineTo (point.x, point.y);
+               gestureInfo.mGestureSprite.graphics.lineTo (point.x, point.y);
             }
          }
       }
@@ -617,6 +759,7 @@ package viewer {
 
       // !!! this function is introduced from v2.00 to fix the missed event triggerings caused by gesture shape overlapping.
       // ref: http://stackoverflow.com/questions/4924558/listen-to-click-event-on-overlapped-sprites
+      // todo: still not a good fix! See player.World.OnViewerEvent for more.
       
       private function OnMouseEvent_GesturePaintLayer (event:MouseEvent):void
       {
@@ -1878,7 +2021,7 @@ package viewer {
          var skinParams:Object = {
                   mIsOverlay: mUseOverlaySkin || useOverlaySkinForcely,
                   mIsTouchScreen: mIsTouchScreen,
-                  mIsPhoneDevice: mIsPhoneDevice,
+                  //mIsPhoneDevice: mIsPhoneDevice,
                   
                   OnRestart: OnRestart,
                   OnStart: OnStart,

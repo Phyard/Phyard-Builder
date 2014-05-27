@@ -21,9 +21,9 @@ package viewer {
       {
          mIsOverlay = params.mIsOverlay;
          mIsTouchScreen = params.mIsTouchScreen;
-         mIsPhoneDevice = params.mIsPhoneDevice;
-         if (mIsPhoneDevice)
-            mIsTouchScreen = true; // forcely
+         //mIsPhoneDevice = params.mIsPhoneDevice;
+         //if (mIsPhoneDevice)
+         //   mIsTouchScreen = true; // forcely
          if (mIsTouchScreen)
             mIsOverlay = true; // forcely
          
@@ -47,7 +47,7 @@ package viewer {
       // ...
       protected var mIsOverlay:Boolean;
       protected var mIsTouchScreen:Boolean;
-      protected var mIsPhoneDevice:Boolean;
+      //protected var mIsPhoneDevice:Boolean;
       
       // interfaces from viewer, None can be null
       protected var _OnRestart:Function;

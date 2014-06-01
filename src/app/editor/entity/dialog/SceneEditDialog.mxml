@@ -383,8 +383,19 @@
                </mx:ViewStack>
             </mx:VBox>
             <mx:VBox id="Box_RightPanel" width="0" height="100%"
-               paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
-               horizontalGap="0" verticalGap="0" borderThickness="0">
+                     paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0"
+                     horizontalGap="0" verticalGap="0" borderThickness="0">
+               <!--
+               <mx:Button id="Button_PreloaderScene" label="Preloader Scene" toggle="true" selected="false"
+                  textAlign="center" width="100%" fontWeight="normal"
+                  click="OnClickPreloaderSceneButton ();"/>
+               <mx:Button id="Button_GlobalScene" label="Global Scene" toggle="true" selected="false"
+                  textAlign="center" width="100%" fontWeight="normal"
+                  click="OnClickGlobalSceneButton ();"/>
+               <mx:Label id="Button_GeneralScenes" text="Normal Scenes"
+                  textAlign="center" width="100%" fontWeight="normal"
+                  click="OnClickGeneralScenesButton ();"/>
+               -->
                <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="2" paddingBottom="2" paddingLeft="3" paddingRight="3">
                   <mx:Button id="Button_SetSceneAsEntry" click="OnSetCurrentSceneAsEntry ();" toolTip="Set As Entry Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movetotop.png')" disabledIcon="@Embed('../../../res/action/command_movetotop-disabled.png')" />
                   <mx:Spacer width="100%" />
@@ -394,7 +405,7 @@
                   <mx:Button id="Button_CloneScene" click="OnCloneSelectedScene ();" toolTip="Clone Selected Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/command-clone-scene.png')" />
                   <mx:Button id="Button_CreateScene" click="OnCreateNewScene ();" toolTip="New Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
                </mx:HBox>
-               <mx:List id="List_Scenes" width="100%" height="100%" change="OnCurrentSceneSwitched ();"  doubleClickEnabled="true" itemDoubleClick="OnSceneListDoubleClicked (event);" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false" />
+               <mx:List id="List_Scenes" width="100%" height="100%" click="OnClickGeneralScenesButton ();" change="OnCurrentSceneSwitched ();"  doubleClickEnabled="true" itemDoubleClick="OnSceneListDoubleClicked (event);" labelField="mName" showDataTips="true" dataTipField="mDataTip" useRollOver="false" allowMultipleSelection="false" editable="false" />
             </mx:VBox>
          </mx:HBox>
       </mx:VBox>
@@ -782,6 +793,40 @@
             Box_MainDesignPanel.removeChild (ViewStack_LeftPanel);
             Button_ComponentList.selected = false;
          }
+      }
+      
+      /*
+      private function OnClickPreloaderSceneButton ():void
+      {
+         Button_PreloaderScene.setStyle( "fontWeight", "bold");
+         Button_PreloaderScene.selected = true;
+         Button_GlobalScene.setStyle( "fontWeight", "normal");
+         Button_GlobalScene.selected = false;
+         Button_GeneralScenes.setStyle( "fontWeight", "normal");
+         List_Scenes.setStyle ("selectionColor", "0xB0B0B0");
+      }
+      
+      private function OnClickGlobalSceneButton ():void
+      {
+         Button_PreloaderScene.setStyle( "fontWeight", "normal");
+         Button_PreloaderScene.selected = false;
+         Button_GlobalScene.setStyle( "fontWeight", "bold");
+         Button_GlobalScene.selected = true;
+         Button_GeneralScenes.setStyle( "fontWeight", "normal");
+         List_Scenes.setStyle ("selectionColor", "0xB0B0B0");
+      }
+      */
+      
+      private function OnClickGeneralScenesButton ():void
+      {
+      /*
+         Button_PreloaderScene.setStyle( "fontWeight", "normal");
+         Button_PreloaderScene.selected = false;
+         Button_GlobalScene.setStyle( "fontWeight", "normal");
+         Button_GlobalScene.selected = false;
+         Button_GeneralScenes.setStyle( "fontWeight", "bold");
+         List_Scenes.setStyle ("selectionColor", "0x7FCEFF");
+      */
       }
       
       private function OnClickSceneListButton ():void

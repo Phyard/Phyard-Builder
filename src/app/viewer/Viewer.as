@@ -191,6 +191,9 @@ package viewer {
          
          if (mTouchEventClass != null)
          {
+            // mMultitouchClass must not null
+            mMultitouchClass.inputMode = "touchPoint"; // mMultitouchClass.TOUCH_POINT;
+            
             addEventListener (/*mTouchEventClass.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
             addEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
             addEventListener (/*mTouchEventClass.TOUCH_END*/"touchEnd", OnTouchEnd);
@@ -432,7 +435,7 @@ package viewer {
                
                if (mMultitouchClass != null && (! mMultitouchClass.supportsTouchEvents))
                {
-                  mMultitouchClass = false;
+                  mMultitouchClass = null;
                }
             }
                
@@ -544,13 +547,14 @@ package viewer {
       
       //private var mGestureAnalyzer:GestureAnalyzer = null;
       
-      private var mGestureInfoTable:Dictionary = new Dictionary ();
-      private var mGestureInfos:Array = new Array (32);
+      private var mGestureInfoTable:Dictionary = null; //new Dictionary ();
+      private var mGestureInfos:Array = null; //new Array (32);
       private var mNumGestureInfos:int = 0;
       
       private function CreateGestureInfo (touchId:int):Object
       {
          var gestureInfo:Object = {
+                     mTouchID        : touchId,
                      mGestureAnalyzer: CreateGestureAnalyzer (),
                      mGestureSprite  : new Sprite ()
                   };
@@ -577,7 +581,7 @@ package viewer {
          //mGesturePaintLayer.alpha = 1.0;
          mGesturePaintLayer.visible = false;
          
-         if (mNumGestureInfos > 0)
+         if (mNumGestureInfos > 0 || mGestureInfoTable == null || mGestureInfos == null)
          {
             mGestureInfoTable = new Dictionary ();
             mGestureInfos = new Array (32);
@@ -609,6 +613,9 @@ package viewer {
                   gestureInfo.mGestureSprite.alpha -= deltaAlpha;
                   if (gestureInfo.mGestureSprite.alpha <= 0.0)
                   {
+                     if (mGestureInfoTable [gestureInfo.mTouchID] == gestureInfo) // should be always
+                        delete mGestureInfoTable [gestureInfo.mTouchID];
+                     
                      mGestureInfos [i] = mGestureInfos [-- mNumGestureInfos];
                      mGestureInfos [mNumGestureInfos] = null;
                      
@@ -2213,20 +2220,21 @@ package viewer {
          {
             if (mWorldBinaryData != null && mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine != null && mWorldPluginProperties.WorldFormat_WorldDefine2Xml != null)
             {
-               //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
+               // the convertion is very time consuming, so put int in OnCopySourceCode to decrease the game init time
+               ////mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
+               //
+               //mWorldBinaryData.position = 0;
+               //mWorldSourceCode = (mWorldPluginProperties.WorldFormat_WorldDefine2Xml as Function) ((mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData));
 
-               mWorldBinaryData.position = 0;
-               mWorldSourceCode = (mWorldPluginProperties.WorldFormat_WorldDefine2Xml as Function) ((mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData));
-
-               if (mWorldSourceCode != null)
-               {
+               //if (mWorldSourceCode != null)
+               //{
                   var copySourceCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Source Code", addSeperaorForSelf);
                   theContextMenu.customItems.push (copySourceCodeMenuItem);
                   copySourceCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopySourceCode);
 
                   addSeperaorBeforeVersion = true;
                   addSeperaorForSelf = false;
-               }
+               //}
             }
          }
 
@@ -2274,17 +2282,28 @@ package viewer {
 
       private function OnCopySourceCode (event:ContextMenuEvent):void
       {
-         if (mWorldSourceCode != null)
-         {
+         //if (mWorldSourceCode != null)
+         //{
             try
             {
-               System.setClipboard(mWorldSourceCode);
+               // the convertion is very time consuming, so put int here to decrease the game init time
+               //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
+               
+               System.setClipboard ("Wait a moment to produce the source code ...");
+               
+               if (mWorldSourceCode == null)
+               {
+                  mWorldBinaryData.position = 0;
+                  mWorldSourceCode = (mWorldPluginProperties.WorldFormat_WorldDefine2Xml as Function) ((mWorldPluginProperties.WorldFormat_ByteArray2WorldDefine as Function) (mWorldBinaryData));
+               }
+
+               System.setClipboard (mWorldSourceCode);
             }
             catch (error:Error)
             {
                trace (error.getStackTrace ());
             }
-         }
+         //}
       }
 
       private function OnCopyEmbedCode (event:ContextMenuEvent):void

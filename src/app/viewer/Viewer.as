@@ -779,8 +779,14 @@ package viewer {
          
          if (mWorldDesignProperties != null) // && mWorldDesignProperties.OnViewerEvent != null)
          {
-            var clonedEvent:MouseEvent = event.clone () as MouseEvent;
-            mWorldDesignProperties.OnViewerEvent (clonedEvent);
+            //var clonedEvent:MouseEvent = event.clone () as MouseEvent;
+            //mWorldDesignProperties.OnViewerEvent (clonedEvent);
+            
+            // problem: event.stageX and event.stageY are both 0 and are not writable.
+            // so pass the origial event instead.
+            // only its stageX and stageY properites are used.
+            
+            mWorldDesignProperties.OnViewerEvent (event);
          }
       }
 
@@ -1460,9 +1466,9 @@ package viewer {
                   SetMouseGestureSupported: SetMouseGestureSupported,
                   mLibCapabilities : {
                               IsAccelerometerSupported: IsAccelerometerSupported,
-                              GetAcceleration: GetAcceleration,
-                              GetScreenResolution : GetScreenResolution,
-                              GetScreenDPI : GetScreenDPI
+                              GetAcceleration         : GetAcceleration,
+                              GetScreenResolution     : GetScreenResolution,
+                              GetScreenDPI            : GetScreenDPI
                   },
                   mLibSound : {
                               LoadSoundFromBytes  : LoadSoundFromBytes, 
@@ -1473,8 +1479,8 @@ package viewer {
                               // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
                   },
                   mLibGraphics : {
-                              LoadImageFromBytes : LoadImageFromBytes,
-                              SetRenderQuality : SetRenderQuality
+                              LoadImageFromBytes: LoadImageFromBytes,
+                              SetRenderQuality  : SetRenderQuality
                   },
                   mLibApp : {
                               IsNativeApp: IsNativeApp,
@@ -1484,8 +1490,8 @@ package viewer {
                   },
                   mLibCookie : {
                               LoadCookie : LoadCookie,
-                              WriteCookie : WriteCookie,
-                              ClearCookie : ClearCookie
+                              WriteCookie: WriteCookie,
+                              ClearCookie: ClearCookie
                   },
                   mLibService : {
                               //SetMultiplePlayerInstanceInfoShown: SetMultiplePlayerInstanceInfoShown, // v2.06

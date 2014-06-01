@@ -261,30 +261,67 @@
 //   So every mouse event will not be triggered twice.
 //=============================================================
 
-   // this is not a perfect fix.
-   // todo: try to use DisplayObjectContianer.getObjectsUnderPoint and dispatchEvent instead
    public function OnViewerEvent (event:Event):void
    {
-      if (event is MouseEvent)
+      var mouseEvent:MouseEvent = event as MouseEvent;
+      if (mouseEvent == null) // only support mouse events now
+         return;
+      
+      switch (mouseEvent.type)
       {
-         var mouseEvent:MouseEvent = event as MouseEvent;
-         
-         switch (mouseEvent.type)
+         case MouseEvent.CLICK:
+            OnMouseClick (mouseEvent);
+            break;
+         case MouseEvent.MOUSE_DOWN:
+            OnMouseDown (mouseEvent);
+            break;
+         case MouseEvent.MOUSE_MOVE:
+            OnMouseMove (mouseEvent);
+            break;
+         case MouseEvent.MOUSE_UP:
+            OnMouseUp (mouseEvent);
+            break;
+      }
+      
+      // this is not a perfect fix.
+      // todo: try to use DisplayObjectContianer.getObjectsUnderPoint and dispatchEvent instead
+      // the following is also not good.
+      
+      /*
+      var stagePoint:Point = new Point (mouseEvent.stageX, mouseEvent.stageY);
+      var locaPoint:Point = StageToContentLayer (stagePoint);
+      var childrenUnderPoint:Array = mContentLayer.getObjectsUnderPoint (locaPoint);
+      if (childrenUnderPoint == null || childrenUnderPoint.length == 0)
+         return;
+      
+      var child:DisplayObject;
+      var childIndex:int;
+      var toppestChild:DisplayObject = null;
+      var toppestChildIndex:int = -1;
+      for (var i:int = childrenUnderPoint.length - 1; i >= 0; -- i)
+      {
+         child = childrenUnderPoint [i] as DisplayObject;
+         if (child is InteractiveObject)
          {
-            case MouseEvent.CLICK:
-               OnMouseClick (mouseEvent);
-               break;
-            case MouseEvent.MOUSE_DOWN:
-               OnMouseDown (mouseEvent);
-               break;
-            case MouseEvent.MOUSE_MOVE:
-               OnMouseMove (mouseEvent);
-               break;
-            case MouseEvent.MOUSE_UP:
-               OnMouseUp (mouseEvent);
-               break;
+            childIndex = mContentLayer.getChildIndex (child);
+            if (childIndex > toppestChildIndex)
+            {
+               toppestChild = child;
+            }
          }
       }
+      
+      if (toppestChild == null)
+         return;
+      
+      locaPoint = (toppestChild as DisplayObject).globalToLocal (stagePoint);
+      
+      var newMouseEvent:MouseEvent = new MouseEvent (mouseEvent.type, mouseEvent.bubbles, mouseEvent.cancelable, 
+                                                     locaPoint.x, locaPoint.y, toppestChild as InteractiveObject,
+                                                     mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
+                                                     mouseEvent.buttonDown, mouseEvent.delta);
+      toppestChild.dispatchEvent (newMouseEvent);
+      */
    }
    
    public function OnMouseClick (event:MouseEvent):void
@@ -605,7 +642,10 @@
    
    public function OnActivated (event:Event):void
    {
-      HandleEventById (CoreEventIds.ID_OnGameActivated, null);
+      if (GetBuildingStatus () > 0) // todo: may be not a perfect fix
+      {
+         HandleEventById (CoreEventIds.ID_OnGameActivated, null);
+      }
    }
    
    public function OnDeactivated (event:Event):void
@@ -616,7 +656,10 @@
       // todo: also a ClearMouseHoldInfo () ? This needs tracking the mouse position.
       
       // ...
-      HandleEventById (CoreEventIds.ID_OnGameDeactivated, null);
+      if (GetBuildingStatus () > 0) // todo: may be not a perfect fix
+      {
+         HandleEventById (CoreEventIds.ID_OnGameDeactivated, null);
+      }
    }
    
 //=============================================================

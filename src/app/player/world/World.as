@@ -5,7 +5,8 @@ package player.world {
    import flash.utils.ByteArray;
    import flash.system.Capabilities;
    import flash.utils.Dictionary;
-
+   
+   import flash.display.InteractiveObject;
    import flash.display.Sprite;
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;

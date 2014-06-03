@@ -635,6 +635,9 @@ package viewer {
       
       private function OnGestureBegin (touchId:int, eventStageX:Number, eventStageY:Number):void
       {
+         if (mGestureInfoTable == null)
+            return;
+         
          //if (mEnabledMouseGesture)
          //{
          //   mGestureAnalyzer = CreateGestureAnalyzer ();
@@ -654,6 +657,9 @@ package viewer {
       
       private function OnGesturePaint (touchId:int, eventStageX:Number, eventStageY:Number, buttomDown:Boolean):void
       {
+         if (mGestureInfoTable == null)
+            return;
+         
          var gestureInfo:Object = mGestureInfoTable [touchId];
          
          if (gestureInfo != null)
@@ -674,6 +680,9 @@ package viewer {
       
       private function OnGestureEnd (touchId:int, eventStageX:Number, eventStageY:Number):void
       {
+         if (mGestureInfoTable == null)
+            return;
+         
          var gestureInfo:Object = mGestureInfoTable [touchId];
          
          if (gestureInfo != null)
@@ -924,6 +933,8 @@ package viewer {
       //private var mFlashParams:Object;
 
       private var mWorldPluginUrl:String;
+      private var mWorldPluginFileSize:int = 0;
+      
       private var mLoadDataUrl:String;
       
       public function ParseParams ():void
@@ -946,9 +957,12 @@ package viewer {
 
                //mUniViewerUrl = mParamsFromUniViewer.mUniViewerUrl;
 
-               var stream:ByteArray = mParamsFromUniViewer.mDesignInfoStream;
-               var designRevision:int = stream.readInt ();
-               var worldPluginUrl:String = stream.readUTF ();
+               //var stream:ByteArray = mParamsFromUniViewer.mDesignInfoStream;
+               //var designRevision:int = stream.readInt ();
+               //var worldPluginUrl:String = stream.readUTF ();
+               var designRevision:int = mParamsFromUniViewer.mDesignRevision;
+               var worldPluginUrl:String = mParamsFromUniViewer.mWorldPluginFileName;
+               mWorldPluginFileSize = mParamsFromUniViewer.mWorldPluginFileSize;
                
                if (mParamsFromUniViewer.mFlashVars.author != null && mParamsFromUniViewer.mFlashVars.slot != null)
                {
@@ -1090,6 +1104,8 @@ package viewer {
          var endPercent:Number = mParamsFromUniViewer.mLoadingProgress + 0.5 * (100.0 - mParamsFromUniViewer.mLoadingProgress);
 
          mParamsFromUniViewer.SetLoadingText ("Loading ... (" + int (startPercent + (endPercent - startPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
+//trace ("111 Loading ... (" + int (startPercent + (endPercent - startPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
+//trace ("  startPercent = " + startPercent + ", endPercent = " + endPercent + ", event.bytesLoaded = " + event.bytesLoaded + ", event.bytesTotal = " + event.bytesTotal);
       }
 
       private function OnOnlineLoadDataCompleted (event:Event):void
@@ -1171,7 +1187,9 @@ package viewer {
          var startPercent:Number = mParamsFromUniViewer.mLoadingProgress + 0.5 * (100.0 - mParamsFromUniViewer.mLoadingProgress);
          var endPercent:Number = 100;
 
-         mParamsFromUniViewer.SetLoadingText ("Loading ... (" + int (startPercent + (endPercent - startPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
+         mParamsFromUniViewer.SetLoadingText ("Loading ... (" + int (startPercent + (endPercent - startPercent) * event.bytesLoaded / mWorldPluginFileSize/*event.bytesTotal*/) + "%)");
+//trace ("222 Loading ... (" + int (startPercent + (endPercent - startPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
+//trace ("  startPercent = " + startPercent + ", endPercent = " + endPercent + ", event.bytesLoaded = " + event.bytesLoaded + ", event.bytesTotal = " + event.bytesTotal);
       }
 
 //======================================================================

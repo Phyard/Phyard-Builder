@@ -29,7 +29,7 @@ package univiewer
 
    public dynamic class UniViewer extends Sprite
    {
-      private static const VersionNumber:int = 2;
+      private static const VersionNumber:int = 3;
 
       private static const StartLoadingPercent:int = 5;
       private static const StartLoadingViewerPercent:int = 5;
@@ -152,6 +152,7 @@ package univiewer
       }
 
       private var mDesignInfoStream:ByteArray;
+         private var mViewerFileSize:int = 0;
       private function OnLoadInfoComplete (event:Event):void
       {
          SetInfoText ("Loading ... (" + StartLoadingViewerPercent + "%)");
@@ -175,6 +176,8 @@ package univiewer
 
          // world.swf url and viewer swf url
          var viewerSwfUrl:String = stream.readUTF ();
+         mViewerFileSize = stream.readInt ();
+         
          if (viewerSwfUrl.indexOf ("://") < 0)
          {
             var index:int = mUniViewerUrl.indexOf ("/uniplayer.swf");
@@ -218,7 +221,10 @@ package univiewer
          var paramsFromUniViewer:Object = new Object ();
 
          paramsFromUniViewer.mUniViewerUrl = mUniViewerUrl;
-         paramsFromUniViewer.mDesignInfoStream = mDesignInfoStream;
+         //paramsFromUniViewer.mDesignInfoStream = mDesignInfoStream;
+         paramsFromUniViewer.mDesignRevision = mDesignInfoStream.readInt ();
+         paramsFromUniViewer.mWorldPluginFileName = mDesignInfoStream.readUTF ();
+         paramsFromUniViewer.mWorldPluginFileSize = mDesignInfoStream.readInt ();
          paramsFromUniViewer.mFlashVars = LoaderInfo(this.loaderInfo).parameters;
          paramsFromUniViewer.mLoadingProgress = EndLoadingViewerPercent;
          paramsFromUniViewer.SetLoadingText = SetInfoText;
@@ -234,6 +240,17 @@ package univiewer
          addChild (viewer);
 
          mViewer = viewer;
+      }
+
+      private function OnLoadViewerSwfProgress (event:ProgressEvent):void
+      {
+         SetInfoText ("Loading ... (" + int (StartLoadingViewerPercent + (EndLoadingViewerPercent - StartLoadingViewerPercent) * event.bytesLoaded / mViewerFileSize/*event.bytesTotal*/) + "%)");
+      }
+
+      private var mLoadingStage:String = " ";
+      private function OnLoadingError (event:Object):void
+      {
+         SetInfoText ("Loading" + mLoadingStage + "error!");
       }
 
       private var mViewer:Object = null;
@@ -254,21 +271,10 @@ package univiewer
          UpdateInfoTextPosition ();
       }
 
-      private function OnLoadViewerSwfProgress (event:ProgressEvent):void
-      {
-         SetInfoText ("Loading ... (" + int (StartLoadingViewerPercent + (EndLoadingViewerPercent - StartLoadingViewerPercent) * event.bytesLoaded / event.bytesTotal) + "%)");
-      }
-
-      private var mLoadingStage:String = " ";
-      private function OnLoadingError (event:Object):void
-      {
-         SetInfoText ("Loading" + mLoadingStage + "error!");
-      }
-
       private var mInfoTextField:TextField = null;
       private function SetInfoText (infoText:String):void
       {
-      //trace ("infoText = " + infoText);
+//trace ("000 infoText = " + infoText);
          if (mInfoTextField == null)
          {
             mInfoTextField = new TextField ();

@@ -18,7 +18,8 @@
          {
             // flash share object file name can't contains ","
             filename = filename.replace (/,/g, "-");
-            filename = filename.replace (/./g, "_");
+            //filename = filename.replace (/./g, "_"); // foolish!!! . means any!!!
+            //filename = filename.replace (/\./g, "_");
             
             var so:SharedObject = SharedObject.getLocal (filename);
             

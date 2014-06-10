@@ -876,22 +876,48 @@ package editor.asset {
       {
          if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
          {
+            var managerPoint:Point;
+            
             switch (keyCode)
             {
                case Keyboard.LEFT:
-                  MoveSelectedAssets (ctrlHold, -1, 0, true, false);
+                  if (shiftHold)
+                  {
+                     managerPoint = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+                     RotateSelectedAssets (ctrlHold, managerPoint.x, managerPoint.y, - 0.5 * Define.kDegrees2Radians, true, true, true, false);
+                  }
+                  else
+                     MoveSelectedAssets (ctrlHold, -1, 0, true, false);
                   
                   return true;
                case Keyboard.RIGHT:
-                  MoveSelectedAssets (ctrlHold, 1, 0, true, false);
+                  if (shiftHold)
+                  {
+                     managerPoint = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+                     RotateSelectedAssets (ctrlHold, managerPoint.x, managerPoint.y, 0.5 * Define.kDegrees2Radians, true, true, true, false);
+                  }
+                  else
+                     MoveSelectedAssets (ctrlHold, 1, 0, true, false);
                   
                   return true;
                case Keyboard.UP:
-                  MoveSelectedAssets (ctrlHold, 0, -1, true, false);
+                  if (shiftHold)
+                  {
+                     managerPoint = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+                     RotateSelectedAssets (ctrlHold, managerPoint.x, managerPoint.y, - 5.0 * Define.kDegrees2Radians, true, true, true, false);
+                  }
+                  else
+                     MoveSelectedAssets (ctrlHold, 0, -1, true, false);
                   
                   return true;
                case Keyboard.DOWN:
-                  MoveSelectedAssets (ctrlHold, 0, 1, true, false);
+                  if (shiftHold)
+                  {
+                     managerPoint = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+                     RotateSelectedAssets (ctrlHold, managerPoint.x, managerPoint.y, 5.0 * Define.kDegrees2Radians, true, true, true, false);
+                  }
+                  else
+                     MoveSelectedAssets (ctrlHold, 0, 1, true, false);
                   
                   return true;
                case 82: // key R
@@ -1723,7 +1749,7 @@ package editor.asset {
          } 
       }
       
-      public function RotateSelectedAssets (rotateBodyTexture:Boolean, centerX:Number, centerY:Number, r:Number, rotatePosition:Boolean, rotateSelf:Boolean, updateSelectionProxy:Boolean):void
+      public function RotateSelectedAssets (rotateBodyTexture:Boolean, centerX:Number, centerY:Number, r:Number, rotatePosition:Boolean, rotateSelf:Boolean, updateSelectionProxy:Boolean, createUndoPointIfUpdateSelectionProxy:Boolean = true):void
       {
          if (mAssetManager == null)
             return;
@@ -1733,7 +1759,7 @@ package editor.asset {
          UpdateInterface ();
          RepaintAllAssetLinks ();
          
-         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown))
+         if (updateSelectionProxy && (! mIsMouseZeroMoveSinceLastDown) && createUndoPointIfUpdateSelectionProxy)
          {
             CreateUndoPoint ("Rotate selection(s)");
          } 

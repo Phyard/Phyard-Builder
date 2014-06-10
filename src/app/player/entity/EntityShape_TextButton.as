@@ -3,6 +3,7 @@ package player.entity {
    
    import flash.display.Shape;
    import flash.display.Sprite;
+   import flash.text.TextField;
    import flash.display.Bitmap;
    import flash.display.SimpleButton;
    
@@ -41,15 +42,12 @@ package player.entity {
          
          mNormalSprite.addChild (mBackgroundShape);
          mNormalSprite.addChild (mBorderShape);
-         mNormalSprite.addChild (mTextBitmap);
          
          mMouseOverSprite.addChild (mBackgroundShape_MouseOver);
          mMouseOverSprite.addChild (mBorderShape_MouseOver);
-         mMouseOverSprite.addChild (mTextBitmap_MouseOver);
          
          mMouseDownSprite.addChild (mBackgroundShape_MouseDown);
          mMouseDownSprite.addChild (mBorderShape_MouseDown);
-         mMouseDownSprite.addChild (mTextBitmap_MouseDown);
          
          mSimpleButton.upState = mNormalSprite;
          mSimpleButton.hitTestState = mNormalSprite;
@@ -314,20 +312,39 @@ package player.entity {
       
       protected var mMouseOverSprite          :Sprite = new Sprite ();
       protected var mTextBitmap_MouseOver     :Bitmap = new Bitmap ();
+      protected var mTextField_MouseOver      :TextField;
       protected var mBackgroundShape_MouseOver:Shape = new Shape ();
       protected var mBorderShape_MouseOver    :Shape = new Shape ();
       
       protected var mMouseDownSprite          :Sprite = new Sprite ();
       protected var mTextBitmap_MouseDown     :Bitmap = new Bitmap ();
+      protected var mTextField_MouseDown      :TextField;
       protected var mBackgroundShape_MouseDown:Shape = new Shape ();
       protected var mBorderShape_MouseDown    :Shape = new Shape ();
       
       override protected function PreUpdateTextAppearance ():void
       {
+         if (mTextBitmap != null && mTextBitmap.parent == mNormalSprite)
+            mNormalSprite.removeChild (mTextBitmap);
+         if (mTextField != null && mTextField.parent == mNormalSprite)
+            mNormalSprite.removeChild (mTextField);
+         
+         if (mTextBitmap_MouseOver != null && mTextBitmap_MouseOver.parent == mMouseOverSprite)
+            mMouseOverSprite.removeChild (mTextBitmap_MouseOver);
+         if (mTextField_MouseOver != null && mTextField_MouseOver.parent == mMouseOverSprite)
+            mMouseOverSprite.removeChild (mTextField_MouseOver);
+         
+         if (mTextBitmap_MouseDown != null && mTextBitmap_MouseDown.parent == mMouseDownSprite)
+            mMouseDownSprite.removeChild (mTextBitmap_MouseDown);
+         if (mTextField_MouseDown != null && mTextField_MouseDown.parent == mMouseDownSprite)
+            mMouseDownSprite.removeChild (mTextField_MouseDown);
       }
       
       override protected function PostUpdateTextAppearance ():void
       {
+         var useBitmap:Boolean = ShouldUseBitmap ();
+         var useText:Boolean = ! useBitmap;
+         
          //
          var hAlign:int = mTextAlign & 0x0F;
          var vAlign:int = mTextAlign & 0xF0;
@@ -335,10 +352,32 @@ package player.entity {
          var displayHalfHeight:Number = mWorld.GetCoordinateSystem ().P2D_Length (mHalfHeight);
          var halfDisplayBorderThickness:Number = 0.5 * mWorld.GetCoordinateSystem ().P2D_Length (mBorderThickness);
          
-         AlignTextSprite (mTextBitmap, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
-         AlignTextSprite (mTextBitmap_MouseOver, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
-         AlignTextSprite (mTextBitmap_MouseDown, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         if (mTextBitmap != null)
+         {
+            AlignTextSprite (mTextBitmap, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+            if (useBitmap) mNormalSprite.addChild (mTextBitmap);
+         }
+         AlignTextSprite (mTextField, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         if (useText) mNormalSprite.addChild (mTextField);
+         
+         if (mTextBitmap_MouseOver != null)
+         {
+            AlignTextSprite (mTextBitmap_MouseOver, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+            if (useBitmap) mMouseOverSprite.addChild (mTextBitmap_MouseOver);
+         }
+         AlignTextSprite (mTextField_MouseOver, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         if (useText) mMouseOverSprite.addChild (mTextField_MouseOver);
+         
+         if (mTextBitmap_MouseDown != null)
+         {
+            AlignTextSprite (mTextBitmap_MouseDown, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+            if (useBitmap) mMouseDownSprite.addChild (mTextBitmap_MouseDown);
+         }
+         AlignTextSprite (mTextField_MouseDown, hAlign, vAlign, displayHalfWidth, displayHalfHeight, halfDisplayBorderThickness);
+         if (useText) mMouseDownSprite.addChild (mTextField_MouseDown);
+         
          mTextBitmap_MouseDown.y += 1;
+         mTextField_MouseDown.y += 1;
       }
       
       // why override it?
@@ -368,6 +407,7 @@ package player.entity {
             super.RebuildTextAppearance ();
             
             mTextBitmap_MouseOver.bitmapData = mTextBitmap.bitmapData;
+            mTextField_MouseOver = mTextField;
             //mTextBitmap_MouseOver.x = - 0.5 * mTextBitmap_MouseOver.width;
             //mTextBitmap_MouseOver.y = - 0.5 * mTextBitmap_MouseOver.height;
             
@@ -379,6 +419,7 @@ package player.entity {
             super.RebuildTextAppearance ();
             
             mTextBitmap_MouseDown.bitmapData = mTextBitmap.bitmapData;
+            mTextField_MouseDown = mTextField;
             //mTextBitmap_MouseDown.x = - 0.5 * mTextBitmap_MouseDown.width;
             //mTextBitmap_MouseDown.y = - 0.5 * mTextBitmap_MouseDown.height + 1;
          }

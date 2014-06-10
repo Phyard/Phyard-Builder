@@ -12,14 +12,24 @@
          }
       }
       
+      public static function ValidateCookieFilename (filename:String):String
+      {
+         if (filename == null)
+            return null;
+         
+         // flash share object file name can't contains ","
+         filename = filename.replace (/,/g, "-");
+         //filename = filename.replace (/./g, "_"); // foolish!!! . means any!!!
+         //filename = filename.replace (/\./g, "_");
+         
+         return filename;
+      }
+      
       public static function LoadCookie (filename:String):ByteArray
       {
          try
          {
-            // flash share object file name can't contains ","
-            filename = filename.replace (/,/g, "-");
-            //filename = filename.replace (/./g, "_"); // foolish!!! . means any!!!
-            //filename = filename.replace (/\./g, "_");
+            filename = ValidateCookieFilename (filename);
             
             var so:SharedObject = SharedObject.getLocal (filename);
             
@@ -39,9 +49,7 @@
       {
          try 
          {
-            // flash share object file name can't contains ","
-            filename = filename.replace (/,/g, "-");
-            filename = filename.replace (/./g, "_");
+            filename = ValidateCookieFilename (filename);
             
             var so:SharedObject = SharedObject.getLocal (filename);
             so.data.mSavedData = savedData;

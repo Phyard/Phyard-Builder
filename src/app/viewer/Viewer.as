@@ -1120,7 +1120,8 @@ package viewer {
 
             if (returnCode != k_ReturnCode_Successed)
             {
-               throw new Error ("Load data error");
+               var message:String = data.readUTF ();
+               throw new Error ("Load data error, mLoadDataUrl = " + mLoadDataUrl + ", returnCode = " + returnCode + ", message = " + message);
             }
 
             var designDataForPlaying:ByteArray = new ByteArray ();

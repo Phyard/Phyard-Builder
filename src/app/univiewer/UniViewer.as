@@ -36,6 +36,11 @@ package univiewer
       private static const EndLoadingViewerPercent:int = 18;
 
       public static const k_ReturnCode_Successed:int = 1;
+      
+      [Embed(source="../res/univiewer/info.template", mimeType="application/octet-stream")]
+      private var InfoFile:Class; // 1 byte for invalid
+      
+      //todo: seperate UniViewer and UniPlayer
 
    //================================================
    //
@@ -76,6 +81,10 @@ package univiewer
 
          mUniViewerUrl =  LoaderInfo(this.loaderInfo).url;
 
+         /* what is this block used for?
+         // maybe related to GetDesignPlayInfoAction, to embed design in outer websites.
+         // this should be discarded now.
+         //
          //? why not use LoaderInfo(this.loaderInfo).parameters? 
          // forget. 
          // Maybe params in url are not parsed as parameters. (in fact, Flash Player does do this. So needs a test)
@@ -108,6 +117,7 @@ package univiewer
             var worldFile:String = mUniViewerUrl.substring (index3, indexEnd);
 
             var stream:ByteArray = new ByteArray ();
+            steram.writeByte (k_ReturnCode_Successed);
             stream.writeUTF (viewerFile);
             stream.writeInt (parseInt (revisionId));
             stream.writeUTF (worldFile);
@@ -115,6 +125,15 @@ package univiewer
             SetDesignInfoStream (stream);
          }
          else
+         */
+         
+         var infoData:ByteArray = new InfoFile ();
+         
+         if (infoData != null && infoData.length > 4) // for play
+         {
+            SetDesignInfoStream (infoData);
+         }
+         else // for view
          {
             // load design info
 
@@ -159,20 +178,20 @@ package univiewer
 
          var stream:ByteArray = ByteArray ((event.target as URLLoader).data);
 
-         var returnCode:int = stream.readByte ();
-
-         if (returnCode != k_ReturnCode_Successed)
-         {
-            SetInfoText ("Loading error! code = " + returnCode);
-            return;
-         }
-
          SetDesignInfoStream (stream);
       }
 
       private function SetDesignInfoStream (stream:ByteArray):void
       {
          mDesignInfoStream = stream;
+
+         var returnCode:int = stream.readByte ();
+
+         if (returnCode != k_ReturnCode_Successed)
+         {
+            SetInfoText ("Loading error! code: " + returnCode + ", msg: " + stream.readUTF ());
+            return;
+         }
 
          // world.swf url and viewer swf url
          var viewerSwfUrl:String = stream.readUTF ();

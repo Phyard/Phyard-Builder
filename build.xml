@@ -105,6 +105,7 @@
              <include name="**/*.bin" />
              <include name="**/*.png" />
              <include name="**/*.jpg" />
+             <include name="**/*.template" />
          </fileset>
       </copy>
    </target>

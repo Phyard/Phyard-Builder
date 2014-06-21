@@ -198,15 +198,17 @@ package viewer {
             addEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
             addEventListener (/*mTouchEventClass.TOUCH_END*/"touchEnd", OnTouchEnd);
          }
+         else
+         {
+            addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+            addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
+            addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+         }
          
          // ...
          
          addEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
          addEventListener (Event.ENTER_FRAME, Update);
-         
-         addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
-         addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-         addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
          
          //mGesturePaintLayer.mouseEnabled = false;
          mGesturePaintLayer.mouseChildren = false;
@@ -238,10 +240,6 @@ package viewer {
          mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseEvent_GesturePaintLayer);
          mGesturePaintLayer.removeEventListener (MouseEvent.MOUSE_UP, OnMouseEvent_GesturePaintLayer);
          
-         removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
-         removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-         removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
-         
          removeEventListener (Event.ENTER_FRAME, Update);
          removeEventListener (Event.REMOVED_FROM_STAGE, OnRemovedFromStage);
          
@@ -254,6 +252,12 @@ package viewer {
             removeEventListener (/*mTouchEventClass.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
             removeEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
             removeEventListener (/*mTouchEventClass.TOUCH_END*/"touchEnd", OnTouchEnd);
+         }
+         else
+         {
+            removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+            removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
+            removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
          }
          
          // ...
@@ -534,9 +538,9 @@ package viewer {
          mEnabledMouseGesture = supported;
          mDrawdMouseGesture = supported && draw;
          
-         //mGesturePaintLayer.visible = mEnabledMouseGesture && mDrawdMouseGesture;
+         mGesturePaintLayer.visible = mDrawdMouseGesture; // mEnabledMouseGesture && mDrawdMouseGesture;
          
-         if (! mEnabledMouseGesture)
+         if (! mGesturePaintLayer.visible)
          {
             //mGestureAnalyzer = null;
             ClearGesturePaintLayer ();
@@ -556,13 +560,19 @@ package viewer {
          var gestureInfo:Object = {
                      mTouchID        : touchId,
                      mGestureAnalyzer: CreateGestureAnalyzer (),
-                     mGestureSprite  : new Sprite ()
+                     mGestureSprite  : null
                   };
          
-         if (mDrawdMouseGesture)
+         //if (mDrawdMouseGesture)
+         //{
+         //   mGesturePaintLayer.addChild (gestureInfo.mGestureSprite);
+         //   mGesturePaintLayer.visible = true;
+         //}
+         
+         if (mGesturePaintLayer.visible)
          {
+            gestureInfo.mGestureSprite = new Sprite ();
             mGesturePaintLayer.addChild (gestureInfo.mGestureSprite);
-            mGesturePaintLayer.visible = true;
          }
          
          mGestureInfos [mNumGestureInfos ++] = gestureInfo;
@@ -579,7 +589,7 @@ package viewer {
             mGesturePaintLayer.removeChildAt (0);
          
          //mGesturePaintLayer.alpha = 1.0;
-         mGesturePaintLayer.visible = false;
+         //mGesturePaintLayer.visible = false;
          
          if (mNumGestureInfos > 0 || mGestureInfoTable == null || mGestureInfos == null)
          {
@@ -600,37 +610,50 @@ package viewer {
          //   }
          //}
          
-         if (mGesturePaintLayer.visible)
-         {
+         //if (mGesturePaintLayer.visible)
+         //{
+            var oldNumGestures:int = mNumGestureInfos;
             var deltaAlpha:Number = 1.0 / stage.frameRate;
             var i:int = 0;
             var gestureInfo:Object;
+            var done:Boolean;
             while (i < mNumGestureInfos)
             {
                gestureInfo = mGestureInfos [i];
-               if (gestureInfo.mGestureAnalyzer == null)
+               done = gestureInfo.mGestureSprite == null;
+
+               if (! done)
                {
                   gestureInfo.mGestureSprite.alpha -= deltaAlpha;
                   if (gestureInfo.mGestureSprite.alpha <= 0.0)
                   {
-                     if (mGestureInfoTable [gestureInfo.mTouchID] == gestureInfo) // should be always
-                        delete mGestureInfoTable [gestureInfo.mTouchID];
+                     if (gestureInfo.mGestureSprite.parent != null)
+                        gestureInfo.mGestureSprite.parent.removeChild (gestureInfo.mGestureSprite);
                      
-                     mGestureInfos [i] = mGestureInfos [-- mNumGestureInfos];
-                     mGestureInfos [mNumGestureInfos] = null;
-                     
-                     continue;
+                     done = true;
                   }
+               }
+               
+               if (done)
+               {
+                  // put in OnGestureEnd now.
+                  //if (mGestureInfoTable [gestureInfo.mTouchID] == gestureInfo) // should be always
+                  //   delete mGestureInfoTable [gestureInfo.mTouchID];
+                  
+                  mGestureInfos [i] = mGestureInfos [-- mNumGestureInfos];
+                  mGestureInfos [mNumGestureInfos] = null;
+                  
+                  continue;
                }
                
                ++ i;
             }
             
-            if (mNumGestureInfos <= 0)
+            if (oldNumGestures > 0 && mNumGestureInfos <= 0)
             {
                ClearGesturePaintLayer ();
             }
-         }
+         //}
       }
       
       private function OnGestureBegin (touchId:int, eventStageX:Number, eventStageY:Number):void
@@ -647,9 +670,11 @@ package viewer {
          //   RegisterGesturePoint (eventStageX, eventStageY);
          //}
          
-         if (mEnabledMouseGesture)
+         var gestureInfo:Object = mGestureInfoTable [touchId];
+         
+         if (gestureInfo == null && mEnabledMouseGesture)
          {
-            var gestureInfo:Object = CreateGestureInfo (touchId);
+            gestureInfo = CreateGestureInfo (touchId);
             
             RegisterGesturePoint (gestureInfo, eventStageX, eventStageY);
          }
@@ -698,6 +723,9 @@ package viewer {
             }
             
             gestureInfo.mGestureAnalyzer = null;
+            
+            delete mGestureInfoTable [gestureInfo.mTouchID];
+               // deleted from hashtable, but not from mGestureInfos array yet.
          }
          //else
          //{
@@ -748,7 +776,7 @@ package viewer {
          
          //var gesturePoint:GesturePoint = mGestureAnalyzer.RegisterPoint (event.stageX / stage.scaleX, event.stageY / stage.scaleY, getTimer ());
          var gesturePoint:GesturePoint = gestureInfo.mGestureAnalyzer.RegisterPoint (eventStageX / stage.scaleX, eventStgeY / stage.scaleY, getTimer ());
-         if (gesturePoint != null)
+         if (gesturePoint != null && gestureInfo.mGestureSprite != null)
          {
             var point:Point = globalToLocal (new Point (gesturePoint.mX * stage.scaleX, gesturePoint.mY * stage.scaleY));
             if (gesturePoint.mPrevPoint == null)

@@ -484,6 +484,7 @@ package common.trigger {
 
       public static const ID_EntityShape_GetBodyTexture:int            = IdPool.CoreApiId_1140;
       public static const ID_EntityShape_SetBodyTexture:int            = IdPool.CoreApiId_1129;
+      public static const ID_EntityShape_SetBodyTextureTransform:int   = IdPool.CoreApiId_1141;
       public static const ID_EntityShape_GetFilledColor:int            = IdPool.CoreApiId_1110;
       public static const ID_EntityShape_SetFilledColor:int            = IdPool.CoreApiId_1111;
       public static const ID_EntityShape_GetFilledColorRGB:int         = IdPool.CoreApiId_1112;

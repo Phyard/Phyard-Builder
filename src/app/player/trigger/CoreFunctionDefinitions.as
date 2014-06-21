@@ -41,7 +41,7 @@ package player.trigger {
    import common.SceneDefine;
    import common.Define;
    import common.ValueAdjuster;
-   
+   import common.Transform2D;
    import common.DataFormat3;
    import common.TriggerFormatHelper2;
 
@@ -500,6 +500,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetBodyTexture,              GetBodyTexture);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetBodyTexture,              SetBodyTexture);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetBodyTextureTransform,     SetBodyTextureTransform);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetFilledColor,              GetShapeFilledColor);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetFilledColor,              SetShapeFilledColor);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetFilledColorRGB,           GetShapeFilledColorRGB);
@@ -4632,6 +4633,44 @@ package player.trigger {
          var textureModuleIndex:int = valueSource.EvaluateValueObject () as int;
          
          shape.SetBodyTextureModuleIndex (Global.sTheGlobal.ValiddateModuleIndex (textureModuleIndex));
+      }
+      
+      public static function SetBodyTextureTransform (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape_WithBodyTexture = valueSource.EvaluateValueObject () as EntityShape_WithBodyTexture;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var globalTransfrom:Boolean = Boolean (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var originX:Number = Number (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var originY:Number = Number (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var flipped:Boolean = Boolean (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var rotation:Number = Number (valueSource.EvaluateValueObject ());
+         rotation *= Define.kDegrees2Radians;
+
+         valueSource = valueSource.mNextParameter;
+         var scale:Number = Number (valueSource.EvaluateValueObject ());
+         
+         var transform:Transform2D = new Transform2D (originX, originY, scale, flipped, rotation);
+         if (globalTransfrom)
+         {
+            var shapeTransfrom:Transform2D = shape.CloneTransformForGlobalTexture ();
+            transform = Transform2D.CombineTransforms (shapeTransfrom, transform);
+         }
+         
+         shape.SetBodyTextureTransform (transform);
       }
 
       public static function GetShapeFilledColor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

@@ -83,17 +83,32 @@ package common
 //=======================================================
       
       private var m_D2P_Vector_Transform:Transform2D = null;
-      private function As_D2P_Vector_Transform ():Transform2D
+      private function As_D2P_Vector_Transform (clone:Boolean = false):Transform2D
       {
          if (m_D2P_Vector_Transform == null)
             m_D2P_Vector_Transform = new Transform2D (0, 0, mLengthScale_Display2Physics, mIsRightHand, mIsRightHand ? Math.PI : 0.0);
          
-         return m_D2P_Vector_Transform;
+         if (clone)
+            return m_D2P_Vector_Transform.Clone ();
+         else
+            return m_D2P_Vector_Transform;
       }
       
       public function As_D2P_Vector_Transform_CombineByTransform (transform:Transform2D):Transform2D
       {
          return Transform2D.CombineTransforms (transform, As_D2P_Vector_Transform ());
+      }
+      
+      private var m_P2D_Transform:Transform2D = null;
+      public function As_P2D_Transform_CombineTransform (transform:Transform2D):Transform2D
+      {
+         if (m_P2D_Transform == null)
+         {
+            m_P2D_Transform = new Transform2D (mOffsetX_Display2Physics, mOffsetY_Display2Physics, mLengthScale_Display2Physics, mIsRightHand, mIsRightHand ? Math.PI : 0.0);
+            m_P2D_Transform = m_P2D_Transform.GetInverse ();
+         }
+         
+         return Transform2D.CombineTransforms (m_P2D_Transform, transform);
       }
       
 //=======================================================

@@ -2931,6 +2931,18 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBodyTextureTransform, shape_appearance_package, "Set Shape Body Texture Transform", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
+                             new VariableDefinitionBoolean ("Is Global Transform?"),
+                             new VariableDefinitionNumber ("Texture Origin X"),
+                             new VariableDefinitionNumber ("Texture Origin Y"),
+                             new VariableDefinitionBoolean ("Is Texture Flipped?"),
+                             new VariableDefinitionNumber ("Texture Rotation (degrees)"),
+                             new VariableDefinitionNumber ("Texture Scale"),
+                     ],
+                     null
+                  );
           RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFilledColor, shape_appearance_package, "Get Shape Background Color", "@Color (#0) = Get Shape Background Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses, mGroundSelectable:false}),

@@ -37,8 +37,8 @@ package player.entity {
             if (bodyTextureDefine != null && bodyTextureDefine.mModuleIndex >= 0)
             {
                SetBodyTextureModuleIndex (bodyTextureDefine.mModuleIndex);
-               mBodyTextureTransform = new Transform2D (bodyTextureDefine.mPosX, bodyTextureDefine.mPosY, 
-                                                        bodyTextureDefine.mScale, bodyTextureDefine.mIsFlipped, bodyTextureDefine.mRotation)
+               SetBodyTextureTransform (new Transform2D (bodyTextureDefine.mPosX, bodyTextureDefine.mPosY, 
+                                                        bodyTextureDefine.mScale, bodyTextureDefine.mIsFlipped, bodyTextureDefine.mRotation));
             }
          }
       }
@@ -83,6 +83,16 @@ package player.entity {
             mBodyTextureModuleIndex = -1;
          
          // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance (); 
+      }
+      
+      public function SetBodyTextureTransform (transform:Transform2D):void
+      {
+         if (mBodyTextureModule == null)
+            return;
+         
+         mBodyTextureTransform = transform;
+         
          DelayUpdateAppearance (); 
       }
    }

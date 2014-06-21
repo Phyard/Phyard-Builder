@@ -177,6 +177,17 @@ package player.entity {
       {
          return mTransform.Clone ();
       }
+      
+      public function CloneTransformForGlobalTexture ():Transform2D
+      {
+         var transform:Transform2D = new Transform2D (mWorld.GetCoordinateSystem ().P2D_PositionX (GetPositionX ()),
+                                                      mWorld.GetCoordinateSystem ().P2D_PositionY (GetPositionY ()),
+                                                      GetScale (),
+                                                      IsFlipped (),
+                                                      mWorld.GetCoordinateSystem ().P2D_RotationRadians (GetRotation ()));
+         
+         return transform.GetInverse ();
+      }
 
       public function GetPositionX ():Number
       {

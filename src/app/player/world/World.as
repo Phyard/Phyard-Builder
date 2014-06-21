@@ -917,6 +917,9 @@ package player.world {
       {
          if (mDestroyed)
             return;
+
+         if ((! (stage.focus is TextField)) && (stage.focus != stage))
+            stage.focus = stage;
          
       //------------------------------------
       // reset calling context

@@ -287,13 +287,26 @@ package viewer {
          }
       }
       
+      // for editor, multiple player
+      
+      private var mVisible:Boolean = true;
+      
+      public function SetVisible (v:Boolean):void
+      {
+         mVisible = v;
+         
+         this.visible = mVisible;
+      }
+      
+      // for game packageer, "should update frame"
+      
       private var mActive:Boolean = true;
       
       public function SetActive (active:Boolean):void
       {
          mActive = active;
          
-         visible = mActive;
+         SetVisible (mActive);;
       }
 
 //======================================================================
@@ -915,7 +928,7 @@ package viewer {
       
       private function SetErrorMessage (errorMessage:String):void
       {           
-         this.visible = mActive; // true; // since v2.06, multiple players feature is added.
+         this.visible = mVisible; // true; // since v2.06, multiple players feature is added.
          
          if (mParamsFromUniViewer != null && mParamsFromUniViewer.SetLoadingText != null)
          {
@@ -965,8 +978,12 @@ package viewer {
       
       private var mLoadDataUrl:String;
       
+      private var mParamsParsed:Boolean = false;
+      
       public function ParseParams ():void
       {
+         mParamsParsed = true;
+         
          try
          {
             if (mParamsFromEditor != null || mParamsFromGamePackage != null)
@@ -1902,14 +1919,6 @@ package viewer {
       private function TryToSwitchScene ():Boolean
       {
          //>>>>>>>>>>>>>>>>>>>> moved from player.World.Update () from v2.03
-         if (mWorldDesignProperties.HasRestartLevelRequest ())
-         {
-            //mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
-            mSceneSwitchingStyle = mWorldDesignProperties.GetSceneSwitchingStyle ();
-            mSkin.Restart ();
-            return true;
-         }
-         
          var delayToLoadSceneIndex:int = mWorldDesignProperties.GetDelayToLoadSceneIndex ();
          if (delayToLoadSceneIndex >= 0)
          {
@@ -1918,12 +1927,23 @@ package viewer {
             return true;
          }
          
+         if (mWorldDesignProperties.HasRestartLevelRequest ())
+         {
+            //mSceneSwitchingStyle = SceneSwitchingStyle_FadingIn;
+            mSceneSwitchingStyle = mWorldDesignProperties.GetSceneSwitchingStyle ();
+            mSkin.Restart ();
+            return true;
+         }
+         
          return false;
          //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       }
 
       public function UpdateFrame (singleStepMode:Boolean = false):void
-      {  
+      {
+         if (! mActive)
+            return;
+         
          // ...
          
          UpdateGesturePaintLayer ();

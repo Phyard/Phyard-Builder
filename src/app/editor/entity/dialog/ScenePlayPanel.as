@@ -465,7 +465,7 @@ package editor.entity.dialog {
             for (i = mNumMultiplePlayers; i < num; ++ i)
             {
                designViewer = new Viewer (mViewerParamsFromEditor);
-               designViewer.SetActive (false);
+               designViewer.SetVisible (false);
                mMultiplePlayerViewers [i] = designViewer;
                addChild (designViewer);
             }
@@ -494,7 +494,7 @@ package editor.entity.dialog {
             if (mCurrentMutiplePlayerIndex >= 0)
             {
                designViewer = mMultiplePlayerViewers [mCurrentMutiplePlayerIndex] as Viewer;
-               designViewer.SetActive (false);
+               designViewer.SetVisible (false);
                //removeChild (designViewer);
             }
             
@@ -503,7 +503,7 @@ package editor.entity.dialog {
             if (mCurrentMutiplePlayerIndex >= 0)
             {
                designViewer = mMultiplePlayerViewers [mCurrentMutiplePlayerIndex] as Viewer;
-               designViewer.SetActive (true);
+               designViewer.SetVisible (true);
                //addChild (designViewer);
                designViewer.OnContainerResized ();
             }

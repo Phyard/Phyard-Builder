@@ -1702,6 +1702,10 @@ package viewer {
             
             // ...
             
+            stage.focus = stage; // avoid losing focus after restart.
+            
+            // ...
+            
             if (mParamsFromUniViewer != null && mFirstTimePlaying)
             {
                mSkin.OnDeactivate ();

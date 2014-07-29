@@ -1316,6 +1316,21 @@ trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverP
 // 
 //======================================================
    
+   // this function is to make the keys are same between game packager and uniplayer,
+   // so that mobile app players can play games with pc players. 
+   private function GetDesignPhyardKey ():String
+   {
+      if (mParamsFromContainer.mDesignKey != null)
+         return mParamsFromContainer.mDesignKey; // passed from game packager
+      
+      if (mDesignAuthorSlotRevision != null)
+      {
+         return mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID;
+      }
+      
+      return null;
+   }
+   
    // before calling this function, make sure instanceDefine is validated.
    private function MultiplePlayerInstanceDefine2ByteArray (instanceDefine:Object):ByteArray
    {
@@ -1338,9 +1353,11 @@ trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverP
       var fullGameID:String = instanceDefine.mGameID;
       if (fullGameID == null) // no possible, just for following convenience
          fullGameID = "";
-      if (mDesignAuthorSlotRevision != null)
+      var designPhyardKey:String = GetDesignPhyardKey ();
+      
+      if (designPhyardKey != null)
       {
-         fullGameID = "/" + mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID + "/" + fullGameID;
+         fullGameID = designPhyardKey + "/" + fullGameID;
       }
       
       if (fullGameID.length < MultiplePlayerDefine.MinInstanceFullGameIdLength || fullGameID.length > MultiplePlayerDefine.MaxInstanceFullGameIdLength)

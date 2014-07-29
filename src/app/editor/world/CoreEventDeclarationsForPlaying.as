@@ -314,7 +314,7 @@ package editor.world {
                     [
                         new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, "Multiple Player Instance", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Instance Server Connection Status Changed? (Reserved Now)", null, {mIsVisible: false}),
-                        new VariableDefinitionBoolean ("My Player Status Changed?"),
+                        new VariableDefinitionBoolean ("Player Status Changed?"),
                         new VariableDefinitionBoolean ("Instance Phase Changed?"),
                         new VariableDefinitionBoolean ("Instance Seats Info Changed?"),
                     ]);

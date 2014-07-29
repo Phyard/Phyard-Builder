@@ -25,13 +25,17 @@
          return filename;
       }
       
-      public static function LoadCookie (filename:String):ByteArray
+      public /*static*/ function LoadCookie (filename:String):ByteArray
       {
          try
          {
             filename = ValidateCookieFilename (filename);
             
-            var so:SharedObject = SharedObject.getLocal (filename);
+            var so:SharedObject;
+            if (mParamsFromContainer.GetCookieFile != null)
+               so = mParamsFromContainer.GetCookieFile (filename);
+            else
+               so = SharedObject.getLocal (filename);
             
             //trace ("so.data.mSavedData = " + so.data.mSavedData);
             
@@ -45,15 +49,20 @@
          return null;
       }
       
-      private static function WriteCookie (filename:String, savedData:ByteArray):void
+      private /*static*/ function WriteCookie (filename:String, savedData:ByteArray):void
       {
          try 
          {
             filename = ValidateCookieFilename (filename);
             
-            var so:SharedObject = SharedObject.getLocal (filename);
+            var so:SharedObject;
+            if (mParamsFromContainer.GetCookieFile != null)
+               so = mParamsFromContainer.GetCookieFile (filename);
+            else
+               so = SharedObject.getLocal (filename);
+            
             so.data.mSavedData = savedData;
-            so.data.mInt = 5;
+            //so.data.mInt = 5; // ? what is this?
          
             var flushResult:String = so.flush (100 * 1000); // 100k
 

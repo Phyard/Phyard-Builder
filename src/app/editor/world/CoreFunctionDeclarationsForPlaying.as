@@ -86,6 +86,8 @@ package editor.world {
              //var shape_polygon_package:CodePackage  = new CodePackage ("Polygon", entity_shape_package);
              //var shape_polyline_package:CodePackage  = new CodePackage ("Polyline", entity_shape_package);
              var shape_appearance_package:CodePackage = new CodePackage ("Appearance", entity_shape_package);
+                 //var shape_body_appearance_package:CodePackage = new CodePackage ("Body", shape_appearance_package);
+                 //var shape_border_appearance_package:CodePackage = new CodePackage ("Border", shape_appearance_package);
              var shape_physics_properties_package:CodePackage = new CodePackage ("Physics Properties", entity_shape_package);
              var shape_physics_dynamics_package:CodePackage = new CodePackage ("Physics Dynamics", entity_shape_package);
              var entity_shape_brothers_package:CodePackage = new CodePackage ("Brothers", entity_shape_package);
@@ -414,60 +416,60 @@ package editor.world {
          //            null,
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine, services_package, "Create Game Instance Define", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine, services_package, "Create Multiplayer Instance Define", null, null,
                      [
-                             new VariableDefinitionString ("Sub Game ID (most 30 chars, blank is ok)", null, {mMaxLength: 30}),
+                             new VariableDefinitionString ("Fingerprint (0-30 chars)", null, {mMaxLength: 30}),
                              new VariableDefinitionNumber ("Number Of Players", null, {mValueLists: Lists.mMultiplePlayerInstanceNumberOfPlayersList}),
                      ],
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Created Instance Define"),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Created Multiplayer Instance Define"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package, "Create Game Instance Channel Define", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package, "Create Instance Channel Define", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Mode", null, {mValueLists: Lists.mMultiplePlayerChannelModeList}),
                              new VariableDefinitionNumber ("Turn Timeout (seconds, 0: unlimited)", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxTurnTimeoutInPractice}),
                      ],
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define")
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Multiplayer Instance Channel Define")
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Game Instance Define", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Multiplayer Instance Define", null, null,
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Instance Channel Define"),
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Game Instance", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Multiplayer Instance", null, null,
          //            [
-         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
          //                    new VariableDefinitionString ("Password (max 30 chars, blank for public)", null, {mMaxLength: 30}),
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package, "Join Game Instance Randomly", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package, "Join Multiplayer Instance Randomly", null, null,
                      [
-                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
                              //new VariableDefinitionBoolean ("Create New If No Availables"),
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Game Instance By Instance ID", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Multiplayer Instance By Instance ID", null, null,
          //            [
-         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Instance Define"),
+         //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
          //                    new VariableDefinitionString ("Instance ID"),
          //                    new VariableDefinitionString ("Password (if required)"),
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitGameInstance, services_package, "Exit Current Game Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitGameInstance, services_package, "Exit Current Multiplayer Instance", null, null,
                      null,
                      null
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInMutiplayerPlayerStatus, services_package, "Am I In The Specified Multiplayer Status?", "@#0 = (My Multiplayer Status == $0)", "@#0 = (My Multiplayer Status == $0)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInMutiplayerPlayerStatus, services_package, "Am I In The Specified Player Status?", "@#0 = (My Multiplayer Status == $0)", "@#0 = (My Multiplayer Status == $0)",
                      [
                              new VariableDefinitionNumber ("The Specified Status", null, {mValueLists: Lists.mMultiplePlayerPlayerStatusList}),
                      ],
@@ -475,7 +477,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("In This Status?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInGameInstancePhase, services_package, "Is Game Instance In The Specified Phase?", "@#0 = (Game Instance Phase == $0)", "@#0 = (Game Instance Phase == $0)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInGameInstancePhase, services_package, "Is Multiplayer Instance In The Specified Phase?", "@#0 = (Game Instance Phase == $0)", "@#0 = (Game Instance Phase == $0)",
                      [
                              new VariableDefinitionNumber ("The Specified Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
                      ],
@@ -483,25 +485,25 @@ package editor.world {
                              new VariableDefinitionBoolean ("In This Phase?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceNumberOfSeats, services_package, "Get Number Of Seats In Game Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceNumberOfSeats, services_package, "Get Number Of Seats In Multiplayer Instance", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("Number Of Seats"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetMySeatIndexInGameInstance, services_package, "Get My Seat Index In Game Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetMySeatIndexInGameInstance, services_package, "Get My Seat Index In Multiplayer Instance", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("My Seat Index"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatInfo, services_package, "Get Game Instance Seat Info", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatInfo, services_package, "Get Multiplayer Instance Seat Info", null, null,
                      null,
                      [
                              new VariableDefinitionString ("Player Name"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo, services_package, "Get Game Instance Channel Seat Info", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo, services_package, "Get Multiplayer Instance Channel Seat Info", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionNumber ("Seat Index", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxNumberOfInstanceSeats - 1}),
@@ -511,7 +513,7 @@ package editor.world {
                      ]
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Channel Message", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Multiplayer Instance Channel Message", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
@@ -519,7 +521,7 @@ package editor.world {
                      null
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package, "Send Signal To Change Game Instance Phase", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package, "Send Signal To Change Multiplayer Instance Phase", null, null,
                      [
                              new VariableDefinitionNumber ("New Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
                      ],
@@ -553,7 +555,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Equals, string_package, "String == String?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_String_Equals, string_package, "String == String?", "@#0 = String: ($0 == $1)", "@#0 = String: ($0 == $1)",
                      [
                              new VariableDefinitionString ("String 1"),
                              new VariableDefinitionString ("String 2"),
@@ -714,7 +716,7 @@ package editor.world {
                              new VariableDefinitionString ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Boolean == Boolean?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Bool_EqualsBoolean, bool_package, "Boolean == Boolean?",  "@#0 = Boolean: ($0 == $1)", "@#0 = Boolean: ($0 == $1)",
                      [
                              new VariableDefinitionBoolean ("Bool 1"),
                              new VariableDefinitionBoolean ("Bool 2"),
@@ -851,7 +853,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Equals, array_package, "Array == Array?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Equals, array_package, "Array == Array?", "@#0 = Array: ($0 == $1)", "@#0 = Array: ($0 == $1)",
                      [
                               new VariableDefinitionArray ("Array 1"),
                               new VariableDefinitionArray ("Array 2"),
@@ -860,7 +862,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ExactEquals, array_package, "Array === Array?", "@#0 = ($0 === $1)", "@#0 = ($0 === $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_ExactEquals, array_package, "Array === Array?", "@#0 = Array: ($0 === $1)", "@#0 = Array: ($0 === $1)",
                      [
                               new VariableDefinitionArray ("Array 1"),
                               new VariableDefinitionArray ("Array 2"),
@@ -1284,7 +1286,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Equals, numbe_general_package, "Number == Number?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Equals, numbe_general_package, "Number == Number?", "@#0 = Number: ($0 == $1)", "@#0 = Number: ($0 == $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1714,7 +1716,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Number 2"),
                      ],
                      [
-                             new VariableDefinitionNumber ("Result 1"),
+                             new VariableDefinitionNumber ("Result"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Min, usual_number_package, "Min", "Min", null,
@@ -1723,7 +1725,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Number 2"),
                      ],
                      [
-                             new VariableDefinitionNumber ("Result 1"),
+                             new VariableDefinitionNumber ("Result"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Clamp, usual_number_package, "Clamp", "@Clamp $0 Between $1 and $2", null,
@@ -1894,7 +1896,7 @@ package editor.world {
                         new VariableDefinitionBoolean ("Null Level?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SceneEquals, world_scene_package, "Scene == Scene?", "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_SceneEquals, world_scene_package, "Scene == Scene?", "@#0 = Scene: ($0 == $1)", "@#0 = Scene: ($0 == $1)",
                      [
                         new VariableDefinitionScene ("Scene 1"),
                         new VariableDefinitionScene ("Scene 2"),
@@ -2399,7 +2401,7 @@ package editor.world {
                              new VariableDefinitionModule ("Target"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Module_Equals, world_module_package, "Module == Module?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Module_Equals, world_module_package, "Module == Module?",  "@#0 = Module: ($0 == $1)", "@#0 = Module: ($0 == $1)",
                      [
                              new VariableDefinitionModule ("Module 1"),
                              new VariableDefinitionModule ("Module 2"),
@@ -2452,7 +2454,7 @@ package editor.world {
                              new VariableDefinitionString ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CCat_Equals, ccat_package, "CCat == CCat?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CCat_Equals, ccat_package, "CCat == CCat?",  "@#0 = CCat: ($0 == $1)", "@#0 = CCat: ($0 == $1)",
                      [
                              new VariableDefinitionCollisionCategory ("CCat 1"),
                              new VariableDefinitionCollisionCategory ("CCat 2"),
@@ -2538,7 +2540,7 @@ package editor.world {
                              new VariableDefinitionString ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_Equals, entity_general_package, "Entity == Entity?",  "@#0 = ($0 == $1)", "@#0 = ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Entity_Equals, entity_general_package, "Entity == Entity?",  "@#0 = Entity: ($0 == $1)", "@#0 = Entity: ($0 == $1)",
                      [
                              new VariableDefinitionEntity ("Entity 1"),
                              new VariableDefinitionEntity ("Entity 2"),
@@ -3104,7 +3106,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic, shape_physics_properties_package, "Is Static", null, null,
                      [
-                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
                              new VariableDefinitionBoolean ("Static?"),
@@ -3112,7 +3114,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetStatic, shape_physics_properties_package, "Set Static", null, null,
                      [
-                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Static?"),
                      ],
                      null
@@ -3497,7 +3499,7 @@ package editor.world {
 
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBrothers, entity_shape_brothers_package, "Get Shape Brothers", null, null,
                      [
-                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      [
                              new VariableDefinitionArray ("Brothers (including self)"),
@@ -3534,13 +3536,13 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakupBrothers, entity_shape_brothers_package, "Breakup All Brothers", null, null,
                      [
-                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_DestroyBrothers, entity_shape_brothers_package, "Destroy Brothers Group", null, null,
                      [
-                             new VariableDefinitionEntity ("One Borther Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
                      null
                   );

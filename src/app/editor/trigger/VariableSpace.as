@@ -448,6 +448,19 @@ package editor.trigger {
          {
             //var variableDefinition:VariableDefinition = VariableDefinition.CreateCoreVariableDefinition (valueType, variableName);
             var variableDefinition:VariableDefinition = CodeLibManager.CreateVariableDefinition (scene.GetCodeLibManager (), classType, valueType, variableName);
+
+// bug!!!
+//
+// custom type: cross scenes paste code snippet, bug! variableDefinition will be null.
+// to fix: copy related custom types firstly.
+//
+//if (variableDefinition == null)
+//{
+//   trace ("classType = " + classType +", valueType = " + valueType + ", variableName = " + variableName);
+//   throw new Error ("classType = " + classType +", valueType = " + valueType + ", variableName = " + variableName);
+//   
+//}
+
             var newVi:VariableInstance = CreateVariableInstanceFromDefinition (null, variableDefinition);
             //newVi.SetValueObject (VariableDefinition.GetDefaultInitialValueByType (valueType));
             //newVi.SetValueObject (World.GetCoreClassById (valueType).GetInitialInstacneValue ());

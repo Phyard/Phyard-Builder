@@ -46,7 +46,7 @@
             <mx:HBox width="100%">
                <mx:HBox width="50%">
                   <mx:Spacer width="100%"/>
-                  <mx:RadioButton id="Radio_PresetTypes" groupName="FrequencyDetermineManner" label="Presets" click="OnUpdateComponents()"/>
+                  <mx:RadioButton id="Radio_PresetTypes" groupName="FrequencyDetermineManner" label="Presets:" click="OnUpdateComponents()"/>
                </mx:HBox>
                <mx:HBox id="PreSetOptionsPanel">
                   <mx:RadioButton groupName="PresetType" id="TypeWeak" label="Weak"/>
@@ -58,7 +58,7 @@
             <mx:HBox width="100%">
                <mx:HBox width="50%">
                   <mx:Spacer width="100%"/>
-                  <mx:RadioButton id="Radio_CustomFrequency" groupName="FrequencyDetermineManner" label="Custom Frequency (f)" click="OnUpdateComponents()"/>
+                  <mx:RadioButton id="Radio_CustomFrequency" groupName="FrequencyDetermineManner" label="Custom Frequency (f):" click="OnUpdateComponents()"/>
                </mx:HBox>
                <mx:HBox>
                   <mx:TextInput id="Text_CustomFrequency" text="" width="100"/>
@@ -69,7 +69,7 @@
             <mx:HBox width="100%">
                <mx:HBox width="50%">
                   <mx:Spacer width="100%"/>
-                  <mx:RadioButton id="Radio_CustomSpringConstant" groupName="FrequencyDetermineManner" label="Custom Spring Constant (k)" click="OnUpdateComponents()"/>
+                  <mx:RadioButton id="Radio_CustomSpringConstant" groupName="FrequencyDetermineManner" label="Custom Spring Constant (k):" click="OnUpdateComponents()"/>
                </mx:HBox>
                <mx:HBox>
                   <mx:TextInput id="Text_CustomSpringConstant" text="" width="100"/>

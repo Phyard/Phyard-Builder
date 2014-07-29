@@ -249,6 +249,7 @@ package univiewer
          paramsFromUniViewer.SetLoadingText = SetInfoText;
          paramsFromUniViewer.GetViewportSize = GetViewportSize;
          paramsFromUniViewer.mBackgroundColor = 0xDDDDA0;
+         paramsFromUniViewer.GetCookieFile = GetCookieFile;
          
          //>> websockets
          //paramsFromUniViewer.EmbedCallContainer = EmbedCallContainer;
@@ -259,6 +260,11 @@ package univiewer
          addChild (viewer);
 
          mViewer = viewer;
+      }
+      
+      private function GetCookieFile (filename:String):Object
+      {
+         return SharedObject.getLocal (filename);
       }
 
       private function OnLoadViewerSwfProgress (event:ProgressEvent):void

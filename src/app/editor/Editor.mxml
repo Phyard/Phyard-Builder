@@ -88,6 +88,8 @@
    
    import mx.managers.PopUpManager;
    
+   import mx.controls.ToolTip;
+   
    import com.tapirgames.util.DisplayObjectUtil;
    import com.tapirgames.util.UrlUtil;
    
@@ -174,6 +176,8 @@
          stage.addEventListener (MouseEvent.MOUSE_DOWN, OnMouseAction);
          stage.addEventListener (MouseEvent.MOUSE_MOVE, OnMouseAction);
          stage.addEventListener (MouseEvent.MOUSE_UP, OnMouseAction);
+         stage.addEventListener(Event.RESIZE, OnResize);
+         OnResize (null);
          
          mOriginalFPS = stage.frameRate;
          
@@ -220,6 +224,11 @@
       private function OnMouseAction (event:MouseEvent):void
       {
          EditorContext.mIsMouseButtonHold = event.buttonDown;
+      }
+      
+      private function OnResize (event:Event = null):void
+      {
+         ToolTip.maxWidth = stage.stageWidth;
       }
       
       private var mOriginalFPS:Number = 30;

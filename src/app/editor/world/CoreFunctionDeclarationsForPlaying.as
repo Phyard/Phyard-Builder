@@ -675,6 +675,7 @@ package editor.world {
                              new VariableDefinitionString ("Original String"),
                              new VariableDefinitionString ("From Substring"),
                              new VariableDefinitionString ("To Substring"),
+                             new VariableDefinitionBoolean ("Replace All Places?"),
                      ],
                      [
                              new VariableDefinitionString ("Result String"),

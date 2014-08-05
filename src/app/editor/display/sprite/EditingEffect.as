@@ -1,4 +1,3 @@
-
 package editor.display.sprite {
    
    import flash.display.Sprite;

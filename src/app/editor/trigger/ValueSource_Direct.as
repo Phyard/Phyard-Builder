@@ -44,11 +44,12 @@ package editor.trigger {
             var str:String = mValueObject as String;
             if (str != null)
             {
-               var pattern:RegExp;
-               pattern  = /\\/g;
-               str = str.replace(pattern, "\\\\");
-               pattern = /"/g;
-               str = str.replace(pattern, "\\\"");
+               // draw feet for snake
+               //var pattern:RegExp;
+               //pattern  = /\\/g;
+               //str = str.replace(pattern, "\\\\");
+               //pattern = /"/g;
+               //str = str.replace(pattern, "\\\"");
             }
             
             return "\"" + str + "\"";

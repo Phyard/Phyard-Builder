@@ -138,7 +138,7 @@ package common {
          var worldDefine:WorldDefine = new WorldDefine ();
          
          // basic
-         {
+         //{
             worldDefine.mVersion = Version.VersionNumber;
             
             //>> from v2.03
@@ -158,15 +158,16 @@ package common {
                // assert (currentScene != null)
                worldDefine.mCurrentSceneId = currentScene.GetSceneIndex ();
             }
+         //}
+         
+         // preferences
+         //>> from v2.07
+         {
+            worldDefine.mPreferences.mAppBackgroundColor = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetSurroundingBackgroundColor ();
+            worldDefine.mPreferences.mGridCellWidth = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellWidth ();
+            worldDefine.mPreferences.mGridCellHeight = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellHeight ();
          }
-         
-         // todo: preferences
-         
-         worldDefine.mPreferences.mAppBackgroundColor = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetSurroundingBackgroundColor ();
-         worldDefine.mPreferences.mGridCellWidth = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellWidth ();
-         worldDefine.mPreferences.mGridCellHeight = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellHeight ();
-         //ChangeBackgroundColor
-         //SetGridCellSize
+         //<<
 
          
          // scenes
@@ -1554,6 +1555,16 @@ package common {
                editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
             }
          }
+         
+
+         
+         // preferences
+         //>> from v2.07
+         //{
+            EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetSurroundingBackgroundColor (worldDefine.mPreferences.mAppBackgroundColor);
+            EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetGridCellSize (worldDefine.mPreferences.mGridCellWidth, worldDefine.mPreferences.mGridCellHeight);
+         //}
+         //<<
          
          // ...
          
@@ -3507,10 +3518,23 @@ package common {
             }
          }
          
-         var element:XML;
+         // preferences
+         if (worldDefine.mVersion >= 0x0207)
+         {
+            for each (var prefElement:XML in worldXml.Preferences.Preference)
+            {
+               if (prefElement.@name == "app_background_color")
+                  worldDefine.mPreferences.mAppBackgroundColor = parseInt ( (prefElement.@value).substr (2), 16);
+               else if (prefElement.@name == "scene_grid_cell_width")
+                  worldDefine.mPreferences.mGridCellWidth = parseInt (prefElement.@value);
+               else if (prefElement.@name == "scene_grid_cell_height")
+                  worldDefine.mPreferences.mGridCellHeight =  parseInt (prefElement.@value);
+            }
+         }
          
          // scenes
 
+         var element:XML;
          if (worldDefine.mVersion >= 0x0200)
          {
             for each (element in worldXml.Scenes.Scene)
@@ -4732,6 +4756,15 @@ package common {
                byteArray.writeByte (worldDefine.mShareSourceCode ? 1 : 0);
                byteArray.writeByte (worldDefine.mPermitPublishing ? 1 : 0);
             }
+         }
+         
+         // preferences
+
+         if (worldDefine.mVersion >= 0x0207)
+         {
+            byteArray.writeUnsignedInt (worldDefine.mPreferences.mAppBackgroundColor);
+            byteArray.writeShort (worldDefine.mPreferences.mGridCellWidth);
+            byteArray.writeShort (worldDefine.mPreferences.mGridCellHeight);
          }
          
          // scenes

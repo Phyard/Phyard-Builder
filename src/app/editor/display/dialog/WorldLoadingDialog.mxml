@@ -7,7 +7,7 @@
     title="Load World" width="600">
 
    <mx:HBox width="100%">
-      <mx:Label id="Label_SourceCode" text="Please paste your world XML source code in the text area:"/>
+      <mx:Label id="Label_SourceCode" click="OnClickNoteLabel ();" text="Please paste your world XML source code in the text area:"/>
       <mx:Spacer width="100%"/>
       <mx:Button id="Button_SaveLocalFile" label="Or Load It From Local Disk" click="OnClickLoadFromLocalDisk ();"/>
    </mx:HBox>
@@ -63,6 +63,14 @@
          
          private var fileReference:FileReference = null; // flash bug: DON'T use this variable as a local variable, otherwise, the complete event will not fire.
          
+         private var mLocalFilename:String = null;
+         private var mDontShowFileContent:Boolean = false;
+         
+         private function OnClickNoteLabel ():void
+         {
+            mDontShowFileContent = true;
+         }
+         
          private function OnClickLoadFromLocalDisk ():void
          {
             fileReference = new FileReference();
@@ -80,31 +88,54 @@
          {
             var fileReference:FileReference = (event.target as FileReference);
             try
-            {
-               TextArea_SourceCode.text = (fileReference.data).readUTFBytes (fileReference.data.length);
+            {  
+               mLocalFilename = fileReference.name;
+            
+               var fileContent:String = (fileReference.data).readUTFBytes (fileReference.data.length);
+               if (mDontShowFileContent)
+               {
+                  var params:Object = new Object ();
+                  
+                  params.mXmlString = fileContent;
+               
+                  ConfirmLoading (params);
+               }
+               else
+               {
+                  TextArea_SourceCode.text = fileContent;
+               }
             }
             catch (e:Error)
             {
                trace ("local loading error");
             }
+            
             fileReference.data.clear ();
-
-            EditorContext.GetSingleton ().SetRecommandDesignFilename (fileReference.name);
          }
          
          private function OnClickOkButton():void 
          {
             //PopUpManager.removePopUp(this);
             
-            var params:Object = new Object ();
-            
-           params.mXmlString = TextArea_SourceCode.text;
+            ConfirmLoading ();
+         }
+         
+         private function ConfirmLoading (params:Object = null):void
+         {
+            if (params == null)
+            {
+               params = new Object ();
+               
+               params.mXmlString = TextArea_SourceCode.text;
+            }
              
-           if (OnClose != null)
-              OnClose ();
+            if (OnClose != null)
+               OnClose ();
             
-           if (OnConfirm != null)
-              OnConfirm (params);
+            if (OnConfirm != null)
+               OnConfirm (params);
+            
+            EditorContext.GetSingleton ().SetRecommandDesignFilename (mLocalFilename);
          }
          
          private function OnClickCancelButton():void 

@@ -579,6 +579,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_String,       ""],
                         [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Boolean,      false], 
                      ],
                      [
                         [CoreClassIds.ValueType_String,       ""],

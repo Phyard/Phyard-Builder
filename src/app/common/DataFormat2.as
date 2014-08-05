@@ -791,6 +791,21 @@ package common {
             }
          }
          
+         // preferences
+
+         xml.Preferences = <Preferences />;
+         var prefElement:XML;
+            
+         if (worldDefine.mVersion >= 0x0207)
+         {
+            prefElement = IntSetting2XmlElement ("app_background_color", worldDefine.mPreferences.mAppBackgroundColor, true, "Preference");
+            xml.Preferences.appendChild (prefElement);
+            prefElement = IntSetting2XmlElement ("scene_grid_cell_width", worldDefine.mPreferences.mGridCellWidth, false, "Preference");
+            xml.Preferences.appendChild (prefElement);
+            prefElement = IntSetting2XmlElement ("scene_grid_cell_height", worldDefine.mPreferences.mGridCellHeight, false, "Preference");
+            xml.Preferences.appendChild (prefElement);
+         }
+         
          // scenes
 
          if (worldDefine.mVersion >= 0x0200)
@@ -1543,7 +1558,7 @@ package common {
          return strValue;
       }
 
-      private static function IntSetting2XmlElement (settingName:String, settingValue:int, isColor:Boolean = false):XML
+      private static function IntSetting2XmlElement (settingName:String, settingValue:int, isColor:Boolean = false,  elementName:String = null):XML
       {
          var strValue:String;
          if (isColor)
@@ -1551,15 +1566,15 @@ package common {
          else
             strValue = "" + settingValue;
 
-         return Setting2XmlElement (settingName, strValue);
+         return Setting2XmlElement (settingName, strValue, elementName);
       }
 
-      private static function BoolSetting2XmlElement (settingName:String, settingValue:Boolean):XML
+      private static function BoolSetting2XmlElement (settingName:String, settingValue:Boolean,  elementName:String = null):XML
       {
-         return Setting2XmlElement (settingName, settingValue ? "1" : "0");
+         return Setting2XmlElement (settingName, settingValue ? "1" : "0", elementName);
       }
 
-      private static function FloatSetting2XmlElement (settingName:String, settingValue:Number, isDouble:Boolean = false):XML
+      private static function FloatSetting2XmlElement (settingName:String, settingValue:Number, isDouble:Boolean = false,  elementName:String = null):XML
       {
          var strValue:String;
          if (isDouble)
@@ -1567,15 +1582,18 @@ package common {
          else
             strValue = "" + ValueAdjuster.Number2Precision (settingValue, 6)
 
-         return Setting2XmlElement (settingName, strValue);
+         return Setting2XmlElement (settingName, strValue, elementName);
       }
 
-      private static function Setting2XmlElement (settingName:String, settingValue:String):XML
+      private static function Setting2XmlElement (settingName:String, settingValue:String,  elementName:String = null):XML
       {
          if ( ! (settingValue is String) )
             settingValue = settingValue.toString ();
 
-         var element:XML = <Setting />;
+         var element:XML =  <TempName />; // new XML (); // weird as3
+         if (elementName == null) elementName = "Setting";
+         element.setName (elementName); // "Setting" | "Preference"
+            
          element.@name = settingName;
          element.@value = settingValue;
 
@@ -2130,6 +2148,15 @@ package common {
                worldDefine.mShareSourceCode = byteArray.readByte () != 0;
                worldDefine.mPermitPublishing = byteArray.readByte () != 0;
             }
+         }
+         
+         // preferences
+
+         if (worldDefine.mVersion >= 0x0207)
+         {
+            worldDefine.mPreferences.mAppBackgroundColor  = byteArray.readUnsignedInt ();
+            worldDefine.mPreferences.mGridCellWidth  = byteArray.readShort ();
+            worldDefine.mPreferences.mGridCellHeight  = byteArray.readShort ();
          }
          
          // scenes
@@ -3794,6 +3821,15 @@ package common {
             {
                worldDefine.mShareSourceCode = false;
                worldDefine.mPermitPublishing = false;
+            }
+         
+            // preferences
+   
+            if (worldDefine.mVersion < 0x0207)
+            {
+               worldDefine.mPreferences.mAppBackgroundColor  = 0xFFFFFF;;
+               worldDefine.mPreferences.mGridCellWidth  = 50;
+               worldDefine.mPreferences.mGridCellHeight  = 50;
             }
             
             // modules

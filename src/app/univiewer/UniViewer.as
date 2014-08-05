@@ -26,6 +26,7 @@ package univiewer
    import flash.ui.ContextMenuItem;
    import flash.ui.ContextMenuBuiltInItems;
    import flash.external.ExternalInterface;
+   import flash.net.SharedObject;
 
    public dynamic class UniViewer extends Sprite
    {
@@ -35,6 +36,7 @@ package univiewer
       private static const StartLoadingViewerPercent:int = 5;
       private static const EndLoadingViewerPercent:int = 18;
 
+      //public static const k_ReturnCode_UnknowError:int = 0;
       public static const k_ReturnCode_Successed:int = 1;
       
       [Embed(source="../res/univiewer/info.template", mimeType="application/octet-stream")]

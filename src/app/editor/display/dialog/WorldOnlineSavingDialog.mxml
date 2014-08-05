@@ -14,10 +14,19 @@
    </mx:HBox>
 
    <mx:HBox width="100%">
-      <mx:Spacer width="100%"/>
+      <mx:Spacer width="16%"/>
       <mx:CheckBox id="CheckBox_IsImportant" label="Is Important" click="UpdateSaveButton ()"/>
       <mx:Label text="(Comment can't be blank if revision is important)" textAlign="left" color="0x0000FF"/>
-      <mx:Spacer width="100%"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="16%"/>
+      <mx:CheckBox id="CheckBox_ShareSourceCode" label="Share Source Code"/>
+   </mx:HBox>
+
+   <mx:HBox width="100%">
+      <mx:Spacer width="16%"/>
+      <mx:CheckBox id="CheckBox_AllowPublishing" label="Allow Publishing On Other Websites"/>
    </mx:HBox>
 
   <mx:Spacer height="10"/>
@@ -47,12 +56,16 @@
          private var OnConfirm:Function = null;
          private var OnClose:Function = null;
          
+         private var mValues:Object;
          public function SetValues (values:Object):void
          {
+            mValues = values;
          }
          
          private function OnInitPanel ():void
          {
+            CheckBox_ShareSourceCode.selected = mValues != null && mValues.mShareSourceCode;
+            CheckBox_AllowPublishing.selected = mValues != null && mValues.mAllowPublishing;
          }
          
          private function OnCommentTextChanged (event:Event):void
@@ -80,6 +93,8 @@
              var params:Object = new Object ();
              params.mIsImportant = CheckBox_IsImportant.selected;
              params.mRevisionComment = Text_RevisionComment.text;
+             params.mShareSourceCode = CheckBox_ShareSourceCode.selected;
+             params.mAllowPublishing = CheckBox_AllowPublishing.selected;
              
              if (OnConfirm != null)
                OnConfirm (params);

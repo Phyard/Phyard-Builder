@@ -1318,7 +1318,13 @@ package player.trigger {
             {
                valueSource = valueSource.mNextParameter;
                var to:String = valueSource.EvaluateValueObject () as String;
-               resultString = text.replace (from, to == null ? "" : to);
+               
+               valueSource = valueSource.mNextParameter;
+               var replaceAll:Boolean = Boolean (valueSource.EvaluateValueObject ());
+               
+               var regexp:RegExp = new RegExp (from, replaceAll ? "g" : "");
+               
+               resultString = text.replace (regexp, to == null ? "" : to);
             }
             else
             {

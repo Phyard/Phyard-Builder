@@ -1011,9 +1011,10 @@ package viewer {
                
                if (mParamsFromUniViewer.mFlashVars.author != null && mParamsFromUniViewer.mFlashVars.slot != null)
                {
+                  var author:String = mParamsFromUniViewer.mFlashVars.author.replace (/\./g, " ").replace (/\-/g, " ");
                   mDesignAuthorSlotRevision = {
-                              mAuthor : mParamsFromUniViewer.mFlashVars.author.replace (".", " ").replace ("_", " "),
-                              mAuthorForURL : mParamsFromUniViewer.mFlashVars.author.replace (" ", "_"),
+                              mAuthor : author,
+                              mAuthorForURL : author.replace (/\s+/g, "_"),
                               mSlotID : parseInt (mParamsFromUniViewer.mFlashVars.slot),
                               mRevision : designRevision
                            };
@@ -1102,15 +1103,8 @@ package viewer {
 //
 //======================================================================
 
-      public static const k_ReturnCode_UnknowError:int = 0;
+      //public static const k_ReturnCode_UnknowError:int = 0;
       public static const k_ReturnCode_Successed:int = 1;
-      public static const k_ReturnCode_NotLoggedIn:int = 2;
-      public static const k_ReturnCode_SlotIdOutOfRange:int = 3;
-      public static const k_ReturnCode_DesignNotCreatedYet:int = 4;
-      public static const k_ReturnCode_DesignAlreadyRemoved:int = 5;
-      public static const k_ReturnCode_DesignCannotBeCreated:int = 6;
-      public static const k_ReturnCode_ProfileNameNotCreatedYet:int = 7;
-      public static const k_ReturnCode_NoEnoughRightsToProcess:int = 8;
 
       private function StartOnlineLoadingData ():Boolean
       {
@@ -2326,9 +2320,12 @@ package viewer {
                addSeperaorForSelf = false;
             }
 
-            var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Phyard Forum Embed Code", addSeperaorForSelf);
-            theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
-            copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
+            // now this is disabled, for
+            // for playcode, it can be copied from editor.
+            // for phyard designs, it is {@ phyard_url @}
+            //var copyForumEmbedCodeMenuItem:ContextMenuItem = new ContextMenuItem("Copy Phyard Forum Embed Code", addSeperaorForSelf);
+            //theContextMenu.customItems.push (copyForumEmbedCodeMenuItem);
+            //copyForumEmbedCodeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, OnCopyForumEmbedCode);
 
             addSeperaorBeforeVersion = true;
             addSeperaorForSelf = false;
@@ -2415,7 +2412,10 @@ package viewer {
 
             // from v1.55
 
-            var embedCode:String =
+            var embedCode:String;
+            
+            //{
+               embedCode =
                //"<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" width=\"" + width + "\" height=\"" + height + "\">"
                //  + (mWorldPlayCode == null ? "\n" : "\n  <param name=\"FlashVars\" value=\"playcode=" + mWorldPlayCode + "\"></param>\n") +
                //"  <param name=\"movie\" value=\"" + uniplayerUrl + "\"></param>"
@@ -2430,6 +2430,7 @@ package viewer {
                //  + "\n" +
                //"</object>"
                ;
+            //}
 
             try
             {

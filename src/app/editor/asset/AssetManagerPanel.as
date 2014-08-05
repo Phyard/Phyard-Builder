@@ -323,6 +323,11 @@ package editor.asset {
          return sBackgroundColor;
       }
       
+      public function SetSurroundingBackgroundColor (color:uint):void
+      {
+         sBackgroundColor = color;
+      }
+      
       protected function UpdateBackgroundAndContentMaskSprites (changeColorOnly:Boolean = false):void
       {
          if (mContentMaskSprite == null)
@@ -465,11 +470,11 @@ package editor.asset {
          var colorText:String = params.mName;
          if (colorText.length > 2 && colorText.substr (0, 2).toLowerCase() == "0x")
          {
-            sBackgroundColor = parseInt (colorText.substr (2), 16);
+            SetSurroundingBackgroundColor (parseInt (colorText.substr (2), 16));
          }
          else
          {
-            sBackgroundColor = parseInt (colorText);
+            SetSurroundingBackgroundColor (parseInt (colorText));
          }
       }
       

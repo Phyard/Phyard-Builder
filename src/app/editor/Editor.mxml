@@ -170,6 +170,11 @@
       
       private var mAppParams:Object = new Object ();
       
+      public function GetAppParams ():Object
+      {
+         return mAppParams;
+      }
+      
       private function OnAddedToStage ():void
       {  
          stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
@@ -459,7 +464,10 @@
       
       public function OnStartOnlineSaving ():void
       {
-         EditorContext.OpenSettingsDialog (WorldOnlineSavingDialog, OnlineSave);
+         var values:Object = new Object ();
+         values.mShareSourceCode = mWorld.IsShareSourceCode ();
+         values.mAllowPublishing = mWorld.IsPermitPublishing ();
+         EditorContext.OpenSettingsDialog (WorldOnlineSavingDialog, OnlineSave, values);
       }
       
       public function OnStartOfflineSaving ():void
@@ -506,16 +514,25 @@
          
          info.mShareSoureCode = mWorld.IsShareSourceCode ();
          info.mPermitPublishing = mWorld.IsPermitPublishing ();
+         info.mWorldUUID = mWorld.GetKey ();
          info.mAuthorName = mWorld.GetAuthorName ();
          info.mAuthorHomepage = mWorld.GetAuthorHomepage ();
+         if (IsOnlineEditing ())
+         {
+            if (info.mAuthorName == "");
+               info.mAuthorName = mAppParams.mAuthorName;
+            if (info.mAuthorHomepage == "")
+               info.mAuthorHomepage = "http://www.phyard.com/profile/" + mAppParams.mAuthorName.replace (/\s+/g, "_");
+         }
          
          return info;
       }
-      
+         
       public function SetWorldSettings (info:Object):void
       {
          mWorld.SetShareSourceCode (info.mShareSoureCode);
          mWorld.SetPermitPublishing (info.mPermitPublishing);
+         mWorld.SetKey (info.mWorldUUID);
          mWorld.SetAuthorName (info.mAuthorName);
          mWorld.SetAuthorHomepage (info.mAuthorHomepage);
          
@@ -570,6 +587,8 @@
          
          loader.load ( request );
          
+         if (mOnlineLoadingPopup != null)
+            mOnlineLoadingPopup.SetAutoFade (true);
          mOnlineLoadingPopup = new EffectMessagePopup ("Loading ...", EffectMessagePopup.kBgColor_Special, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ());
          mOnlineLoadingPopup.SetAutoFade (false);
          mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (mOnlineLoadingPopup);
@@ -590,7 +609,7 @@
          
          mOnlineLoadingPopup = null;
          
-         mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
       } 
       
       private function OnOnlineLoadCompleted(event:Event):void 
@@ -602,11 +621,9 @@
          
          var loader:URLLoader = URLLoader(event.target);
          
-         var returnCode:int = Define.k_ReturnCode_UnknowError;
-         
          var data:ByteArray = ByteArray (loader.data);
          
-         returnCode = data.readByte ();
+         var returnCode:int = data.readByte ();
          
          if (returnCode != Define.k_ReturnCode_Successed)
          {
@@ -621,7 +638,7 @@
             {
             }
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode + ", message = " + message, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error,  returnCode = " + returnCode + ", message = " + message, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
             return;
          }
          
@@ -646,7 +663,7 @@
          
          if (worldDefine == null)
          {  
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online loading failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online loading failed (data error)", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
             return;
          }
 
@@ -676,11 +693,11 @@
             }
             
             if (numSucceeds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
             else if (numFaileds == 0)
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) are loaded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
             else  
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) succeeded and " + numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (numSucceeds + " scene(s) succeeded and " + numFaileds + " scene(s) failed to load", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
          }
          catch (error:Error)
          {
@@ -691,7 +708,7 @@
             
             //Alert.show("Sorry, online loading error!", "Error");
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online load error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
          }
          
          mSceneEditDialog.OnWorldChanged ();
@@ -706,6 +723,9 @@
          {
             isImportant = options.mIsImportant;
             revisionComment = options.mRevisionComment.substr (0, 100);
+            
+            mWorld.SetShareSourceCode (options.mShareSourceCode);
+            mWorld.SetPermitPublishing (options.mAllowPublishing);
          }
          var designDataRevisionComment:ByteArray = new ByteArray ();
          //designDataRevisionComment.writeMultiByte (revisionComment, "utf-8"); // has bug on linux
@@ -776,6 +796,8 @@
          loader.load ( request );
          //navigateToURL ( request )
          
+         if (mOnlineSavingPopup != null)
+            mOnlineSavingPopup.SetAutoFade (true);
          mOnlineSavingPopup = new EffectMessagePopup ("Saving ... (Please don't close the editor!)", EffectMessagePopup.kBgColor_Special, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ());
          mOnlineSavingPopup.SetAutoFade (false);
          mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (mOnlineSavingPopup);
@@ -788,7 +810,7 @@
          if (mOnlineSavingPopup != null)
             mOnlineSavingPopup.SetAutoFade (true);
          
-         mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+         mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online save error", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
       } 
       
       private function OnOnlineSaveCompleted(event:Event):void 
@@ -812,13 +834,13 @@
             
             if (returnCode == Define.k_ReturnCode_Successed)
             {
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online save succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Online save succeeded", EffectMessagePopup.kBgColor_OK, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
             }
             else
             {
                //Alert.show("Some errors in saving! returnCode = " + returnCode + ", returnMessage = " + returnMessage, "Error");
                var errorMessage:String = "Online save failed,  returnCode = " + returnCode + ",  returnMessage = " + returnMessage;
-               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (errorMessage, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+               mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup (errorMessage, EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
             }
          }
          catch (error:Error)
@@ -830,7 +852,7 @@
             
             //RestoreWorld (GetWorldSnapshotManager ().GetCurrentHistoryState ());
             
-            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Error in online saving", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth ()));
+            mSceneEditDialog.GetSceneEditPanel ().PushFloatingMessage (new EffectMessagePopup ("Error in online saving", EffectMessagePopup.kBgColor_Error, 0x000000, 0.5 * mSceneEditDialog.GetSceneEditPanel ().GetPanelWidth (), true));
          }
       }
       

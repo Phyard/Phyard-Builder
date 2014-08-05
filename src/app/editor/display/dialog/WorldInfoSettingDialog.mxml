@@ -15,9 +15,10 @@
             <mx:CheckBox id="CheckBox_PermitPublishing" label="Allow Publishing on Other Websites"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
-         <mx:HBox width="100%" textAlign="center" paddingTop="10" color="0xFF0000">
-            <mx:Spacer width="100%"/>
-            <mx:Label text="(The following 2 fields are only useful when this design is not hosted on phayrd.com)"/>
+         <mx:HBox width="100%" textAlign="left">
+            <mx:Label text="World UUID:" textAlign="left" width="100"/>
+            <mx:TextInput id="Text_UUID" width="200" editable="false" />
+            <mx:Button label="Regenerate A New One" click="RegenerateNewUUID ();"/>
             <mx:Spacer width="100%"/>
          </mx:HBox>
          <mx:HBox width="100%" textAlign="left">
@@ -54,6 +55,7 @@
          import mx.managers.PopUpManager;
          import mx.controls.Menu;
 
+         import common.UUID;
          import common.Define;
 
          private var OnConfirm:Function = null;
@@ -70,6 +72,7 @@
          {
             CheckBox_ShareSourceCode.selected = mParams.mShareSoureCode;
             CheckBox_PermitPublishing.selected = mParams.mPermitPublishing;
+            Text_UUID.text = mParams.mWorldUUID;
             Text_AuthorName.text = mParams.mAuthorName;
             Text_AuthorHomePage.text = mParams.mAuthorHomepage;
          }
@@ -83,11 +86,17 @@
          {
             OnClose = onClose;
          }
+         
+         public function RegenerateNewUUID ():void
+         {
+            Text_UUID.text = UUID.BuildRandomKey ();
+         }
 
-         private function OnClickOkButton():void
+         private function OnClickOkButton ():void
          {
             mParams.mShareSoureCode = CheckBox_ShareSourceCode.selected;
             mParams.mPermitPublishing = CheckBox_PermitPublishing.selected;
+            mParams.mWorldUUID = Text_UUID.text;
             mParams.mAuthorName = Text_AuthorName.text;
             mParams.mAuthorHomepage = Text_AuthorHomePage.text;
 
@@ -100,7 +109,7 @@
                OnConfirm (mParams);
          }
 
-         private function OnClickCancelButton():void
+         private function OnClickCancelButton ():void
          {
              //PopUpManager.removePopUp(this);
 

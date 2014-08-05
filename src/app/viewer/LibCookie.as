@@ -17,7 +17,7 @@
          if (filename == null)
             return null;
          
-         // flash share object file name can't contains ","
+         // flash share object file name can't contains ",". ("." is ok)
          filename = filename.replace (/,/g, "-");
          //filename = filename.replace (/./g, "_"); // foolish!!! . means any!!!
          //filename = filename.replace (/\./g, "_");

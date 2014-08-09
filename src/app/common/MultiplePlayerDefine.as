@@ -12,7 +12,7 @@ package common {
       public static const MaxPlayerNameLength:int = 26; // player name is stored as as UTF with 2 bytes length header
       
       public static const MaxInstanceDefineDataLength:int =  2000;
-      public static const MinInstanceFullGameIdLength:int =  16;
+      public static const MinInstanceFullGameIdLength:int =  8;
       public static const MaxInstanceFullGameIdLength:int =  127;
       public static const MinDesignAuthorNameLength  :int =  3;
       public static const MaxDesignAuthorNameLength  :int =  32; // it is 16 on phyard.com now

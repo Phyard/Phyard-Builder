@@ -750,6 +750,15 @@
          
          designDataAll.writeInt (Version.VersionNumber);
          
+         //>> from v2.07
+         var worldKey:String = mWorld.GetKey ();
+         if (worldKey == null)
+            worldKey = "";
+         if (worldKey.length > 32)
+            worldKey = worldKey.substring (0, 32);
+         designDataAll.writeUTF (worldKey);
+         //<<
+         
          //>> from v1.07 (in fact, the code added in v0110 r003)
          var shareSourceCode:Boolean = mWorld.IsShareSourceCode ();
          designDataAll.writeShort (mWorld.GetEntryScene ().GetViewportWidth ()); // view width
@@ -759,7 +768,7 @@
          designDataAll.writeByte  (shareSourceCode ? 1 : 0); // share source code?
          //<<
          
-         //
+         // >> before v1.07
          
          designDataAll.writeByte (isImportant ? 1 : 0);
          

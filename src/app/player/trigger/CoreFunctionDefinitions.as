@@ -954,7 +954,7 @@ package player.trigger {
       
       public static function CreateNewGameInstanceDefine (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var gameID:String = callingContext.mWorld.GetWorldKey ();
+         var gameID:String = callingContext.mWorld.GetWorldKey () + "/" + callingContext.mWorld.GetSceneKey ();
          
          var localGameID:String = valueSource.EvaluateValueObject () as String;
          if (localGameID != null)
@@ -962,8 +962,8 @@ package player.trigger {
             localGameID = TextUtil.TrimString (localGameID);
             if (localGameID.length > 0)
             {
-               if (localGameID.length > 30)
-                  localGameID = localGameID.substring (0, 30); // if 30 is changed, 60 in Viewer.MultiplePlayer_CreateInstanceDefine should also be changed.                  
+               if (localGameID.length > 32)
+                  localGameID = localGameID.substring (0, 32); // if 30 is changed, 60 in Viewer.MultiplePlayer_CreateInstanceDefine should also be changed.                  
                
                gameID = gameID + "/" + localGameID;
             }

@@ -1008,15 +1008,21 @@ package viewer {
                var designRevision:int = mParamsFromUniViewer.mDesignRevision;
                var worldPluginUrl:String = mParamsFromUniViewer.mWorldPluginFileName;
                mWorldPluginFileSize = mParamsFromUniViewer.mWorldPluginFileSize;
+               var worldUUID:String = mParamsFromUniViewer.mWorldUUID;
+               if (worldUUID != null && worldUUID.length == 0) worldUUID = null;
+               
+               var isUniPlayer:Boolean = mParamsFromUniViewer.mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0;
                
                if (mParamsFromUniViewer.mFlashVars.author != null && mParamsFromUniViewer.mFlashVars.slot != null)
                {
                   var author:String = mParamsFromUniViewer.mFlashVars.author.replace (/\./g, " ").replace (/\-/g, " ");
                   mDesignAuthorSlotRevision = {
+                              mIsUniPlayer : isUniPlayer,
                               mAuthor : author,
                               mAuthorForURL : author.replace (/\s+/g, "_"),
                               mSlotID : parseInt (mParamsFromUniViewer.mFlashVars.slot),
-                              mRevision : designRevision
+                              mRevision : designRevision,
+                              mWorldUUID : worldUUID
                            };
                }
                
@@ -1037,15 +1043,23 @@ package viewer {
                mWorldPluginUrl = worldPluginUrl;
 
                var loadDataUrl:String;
-               if (mParamsFromUniViewer.mUniViewerUrl.indexOf ("/uniplayer.swf") >= 0)  // for play, add the return published revison id
+               if (isUniPlayer)  // for play, add the return published revison id
                {
                   loadDataUrl = mParamsFromUniViewer.mUniViewerUrl.replace (/\/uniplayer\.*swf/, "/api/design/loaddata");
-                  loadDataUrl = loadDataUrl + "&revision=" + designRevision;
+                  if (loadDataUrl.indexOf ("revision=") < 0)
+                     loadDataUrl = loadDataUrl + "&revision=" + designRevision;
+                  if (worldUUID != null && worldUUID.length > 0)
+                  {
+                     if (loadDataUrl.indexOf ("key=") < 0)
+                        loadDataUrl = loadDataUrl + "&key=" + worldUUID;
+                  }
                }
                else // for view, the revision is already caontained in mUniViewerUrl
                {
                   loadDataUrl = mParamsFromUniViewer.mUniViewerUrl.replace (/\/swfs\/univiewer.*\.swf/, "/api/design/loaddata");
-                  loadDataUrl = loadDataUrl + "&view=1"; // indication for view
+                  // assert (loadDataUrl.indexOf ("revision=") >= 0)
+                  if (loadDataUrl.indexOf ("view") < 0)
+                     loadDataUrl = loadDataUrl + "&view=1"; // indication for view
                }
 
                //var loadDataUrl:String;

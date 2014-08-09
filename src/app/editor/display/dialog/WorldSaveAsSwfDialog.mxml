@@ -2,7 +2,9 @@
 <!-- Simple custom MXML TitleWindow component.
      The TitleWindowApp application displays this component. 
      You cannot run it independently. -->
-     
+
+// This dialog is discarded.
+
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" 
     title="Export SWF Package" width="600"
     creationComplete="InitApp ();">

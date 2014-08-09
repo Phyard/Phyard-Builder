@@ -1325,7 +1325,13 @@ trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverP
       
       if (mDesignAuthorSlotRevision != null)
       {
-         return mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID;
+         var key:String = mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID;
+         
+         // half-published playing and revision viewing, append the revision into key.
+         if (mDesignAuthorSlotRevision.mIsUniPlayer == false || mDesignAuthorSlotRevision.mWorldUUID != null)
+            key = key + "/" + mDesignAuthorSlotRevision.mRevision;
+         
+         return key;
       }
       
       return null;

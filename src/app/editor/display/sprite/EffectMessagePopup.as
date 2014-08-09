@@ -37,15 +37,23 @@ package editor.display.sprite {
          var i:int;
          var effect:EffectMessagePopup;
          
-         var finalY:Number = kToppestY + kMessageBoxHeightInterval;
+         var finalY:Number = kToppestY;
          
-         for (i = len - 2; i >= 0; -- i)
+         for (i = len - 1; i >= 0; -- i)
          {
             effect = container.getChildAt (i) as EffectMessagePopup;
             if (effect.mTargetY < finalY)
             {
                effect.mTargetY += 5;
                if (effect.mTargetY > finalY)
+               {
+                  effect.mTargetY = finalY;
+               }
+            }
+            else
+            {
+               effect.mTargetY -= 5;
+               if (effect.mTargetY < finalY)
                {
                   effect.mTargetY = finalY;
                }

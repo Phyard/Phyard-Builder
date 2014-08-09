@@ -26,7 +26,6 @@ package common {
       
       //public static const k_ReturnCode_UnknowError:int = 0;
       public static const k_ReturnCode_Successed:int = 1;
-      public static const k_ReturnCode_Successed_Extended:int = 2;
             
 //===========================================================================
 // world

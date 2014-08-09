@@ -30,7 +30,7 @@ package univiewer
 
    public dynamic class UniViewer extends Sprite
    {
-      private static const VersionNumber:int = 3;
+      private static const VersionNumber:int = 5;
 
       private static const StartLoadingPercent:int = 5;
       private static const StartLoadingViewerPercent:int = 5;
@@ -89,7 +89,7 @@ package univiewer
          //
          //? why not use LoaderInfo(this.loaderInfo).parameters? 
          // forget. 
-         // Maybe params in url are not parsed as parameters. (in fact, Flash Player does do this. So needs a test)
+         // Maybe params in url are not parsed as parameters. (in fact, Flash Player does do this. So needs a test. Maybe for inexperience before.)
          const ViewerFileEquals:String = "ViewerFile=";
          const RevisionIdEquals:String = "RevisionId=";
          const WorldFileEquals:String = "WorldFile=";
@@ -100,6 +100,7 @@ package univiewer
          if (index1 >= 0 && index2 >= 0 && index3 >= 0)
          {
             // why this block? maybe useless now.
+            // [edit]: it is for old "forum embeds phyard design", now it is disgarded.
             
             var indexEnd:int;
 
@@ -135,7 +136,7 @@ package univiewer
          {
             SetDesignInfoStream (infoData);
          }
-         else // for view
+         else // for view, (or the embedded InfoFile for play is not valid)
          {
             // load design info
 
@@ -246,6 +247,8 @@ package univiewer
          paramsFromUniViewer.mDesignRevision = mDesignInfoStream.readInt ();
          paramsFromUniViewer.mWorldPluginFileName = mDesignInfoStream.readUTF ();
          paramsFromUniViewer.mWorldPluginFileSize = mDesignInfoStream.readInt ();
+         paramsFromUniViewer.mWorldUUID = mDesignInfoStream.readUTF ();
+         
          paramsFromUniViewer.mFlashVars = LoaderInfo(this.loaderInfo).parameters;
          paramsFromUniViewer.mLoadingProgress = EndLoadingViewerPercent;
          paramsFromUniViewer.SetLoadingText = SetInfoText;

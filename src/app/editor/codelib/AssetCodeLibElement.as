@@ -13,8 +13,6 @@ package editor.codelib {
    import editor.asset.Asset;
    import editor.asset.Linkable;
    
-   import editor.display.dialog.NameSettingDialog;
-   
    import editor.EditorContext;
    
    import common.Define;

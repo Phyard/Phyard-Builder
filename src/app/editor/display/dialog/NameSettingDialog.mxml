@@ -59,7 +59,7 @@
                TextInput_Name.text = mInputValues.mName;
             
             if (mInputValues.mLabel != null)
-               Label_Name.text = mInputValues.mLabel;
+               Label_Name.text = mInputValues.mLabel + ":";
             
             if (mInputValues.mTitle != null)
                this.title = mInputValues.mTitle;

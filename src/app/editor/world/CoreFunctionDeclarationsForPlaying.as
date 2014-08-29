@@ -1244,18 +1244,18 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadUTF, bytearray_package, "Read UTF String From Stream", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_ReadUTF, bytearray_package, "Read String From Stream", null, null,
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
                      ],
                      [
-                              new VariableDefinitionString ("The UTF String"),
+                              new VariableDefinitionString ("The String"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteUTF, bytearray_package, "Write UTF String Into Stream", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ByteArrayStream_WriteUTF, bytearray_package, "Write String Into Stream", null, null,
                      [
                               new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, "The Byte Array Stream"),
-                              new VariableDefinitionString ("The UTF String"),
+                              new VariableDefinitionString ("The String"),
                      ],
                      null
                   );

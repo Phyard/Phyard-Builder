@@ -5244,7 +5244,7 @@ package player.trigger {
 
          valueSource = valueSource.mNextParameter;
          var velocityY:Number = valueSource.EvaluateValueObject () as Number;
-
+         
          shape.AddLinearMomentum (velocityX - shape.GetLinearVelocityX (), velocityY - shape.GetLinearVelocityY (), true, false);
       }
 

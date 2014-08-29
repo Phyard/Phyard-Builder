@@ -53,6 +53,7 @@
                      horizontalGap="0" verticalGap="0" borderThickness="0">
                <mx:HBox id="Box_BasicToolbarForEditing" backgroundColor="0xD0D0D0" width="100%" height="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
                   <mx:Spacer width="2"/>
+                  <mx:Spacer width="100%"/>
                   <mx:Button id="Button_SceneEditMenu" toolTip="Scene Settings" click="OnClickEditSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-settings.png')" />
                   <mx:Spacer width="10"/>
                   <mx:Button id="Button_EditCCats" toolTip="Edit Collision Categories" click="OnClickEditCCatsButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-edit-ccats.png')" />
@@ -83,6 +84,7 @@
                   <mx:Spacer width="10"/>
                   <mx:Button id="Button_Undo" toolTip="Undo" click="OnClickUndoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-undo.png')" disabledIcon="@Embed('../../../res/command/command-undo-disabled.png')" />
                   <mx:Button id="Button_Redo" toolTip="Redo" click="OnClickRedoSceneButton ();" focusEnabled="false" fontSize="8" width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/command/command-redo.png')" disabledIcon="@Embed('../../../res/command/command-redo-disabled.png')" />
+                  <mx:Spacer width="100%"/>
                   <mx:Spacer width="2"/>
                </mx:HBox>
                <mx:HBox id="Box_BasicToolbarForPlaying" backgroundColor="0xD0D0D0" width="100%" height="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5" paddingTop="3" paddingBottom="3" horizontalGap="0" verticalGap="0" borderStyle="solid" borderThickness="0">
@@ -396,11 +398,13 @@
                   textAlign="center" width="100%" fontWeight="normal"
                   click="OnClickGeneralScenesButton ();"/>
                -->
-               <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="2" paddingBottom="2" paddingLeft="3" paddingRight="3">
+               <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="2" paddingBottom="2" paddingLeft="1" paddingRight="1">
                   <mx:Button id="Button_SetSceneAsEntry" click="OnSetCurrentSceneAsEntry ();" toolTip="Set As Entry Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movetotop.png')" disabledIcon="@Embed('../../../res/action/command_movetotop-disabled.png')" />
-                  <mx:Spacer width="100%" />
+                  <mx:Spacer width="2" />
                   <mx:Button id="Button_MoveUpScene" click="OnMoveUpScene ();" toolTip="Move Up" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_moveup.png')" disabledIcon="@Embed('../../../res/action/command_moveup-disabled.png')" />
                   <mx:Button id="Button_MoveDownScene" click="OnMoveDownScene ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_movedown.png')" disabledIcon="@Embed('../../../res/action/command_movedown-disabled.png')" />
+                  <mx:Spacer width="100%" />
+                  <mx:Button id="Button_DeleteScene" click="OnDeleteScene ();" toolTip="Move Down" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/action/command_delete.png')" disabledIcon="@Embed('../../../res/action/command_delete-disabled.png')" />
                   <mx:Spacer width="100%" />
                   <mx:Button id="Button_CloneScene" click="OnCloneSelectedScene ();" toolTip="Clone Selected Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/command-clone-scene.png')" />
                   <mx:Button id="Button_CreateScene" click="OnCreateNewScene ();" toolTip="New Scene" focusEnabled="false" fontSize="8" left="5" top="5" width="20" height="20" toggle="false" cornerRadius="0" icon="@Embed('../../../res/file/design-new.png')" />
@@ -442,27 +446,27 @@
    
    <mx:XML id="SceneSettingsMenuData">
       <root>
-         <menuitem label="Change Current Scene Name ..." data="change_scene_name"/>
          <menuitem label="Delete All Entities In Current Scene ..." data="clear_all"/>
          <menuitem label="Reset Current Scene ..." data="reset_scene"/>
          
          <menuitem type="separator" data=""/>
          
-         <menuitem label="General Settings ..." data="general"/>
-         <menuitem label="Simulation Settings ..." data="physics"/>
-         <menuitem label="Config Coordinate System ..." data="coordinate"/>
-         <menuitem label="Config World Appearance ..." data="appearance"/>
-         <menuitem label="Config Viewport ..." data="viewport"/>
+         <menuitem label="Change Current Scene Name ..." data="change_scene_name"/>
+         <menuitem label="General Settings For Current Scene ..." data="general"/>
+         <menuitem label="Simulation Settings For Current Scene ..." data="physics"/>
+         <menuitem label="Config Coordinate System For Current Scene ..." data="coordinate"/>
+         <menuitem label="Config World Appearance For Current Scene ..." data="appearance"/>
+         <menuitem label="Config Viewport For Current Scene ..." data="viewport"/>
          
-         <menuitem type="separator" data=""/>
+         <!--menuitem type="separator" data=""/-->
          
-         <menuitem label="Import (Merge The First Scene To Be Loaded) ..." data="import"/>
-         <menuitem label="Export Selected Entities To System Clipboard" data="export_selected_entities"/>
+         <!--menuitem label="Import (Merge The First Scene To Be Loaded) ..." data="import"/-->
+         <!--menuitem label="Export Selected Entities To System Clipboard" data="export_selected_entities"/-->
          <!--menuitem label="Export All Functions To System Clipboard" data="export_all_functions"/-->
          
-         <menuitem type="separator" data=""/>
+         <!--menuitem type="separator" data=""/-->
          
-         <menuitem id="MenuItem_DeleteScene" label="Delete Current Scene ..." data="delete_current_scene" enabled="true"/>
+         <!--menuitem id="MenuItem_DeleteScene" label="Delete Current Scene ..." data="delete_current_scene" enabled="true"/-->
       </root>
    </mx:XML>
 
@@ -645,8 +649,9 @@
             //List_Scenes.verticalScrollPosition = List_Scenes.selectedIndex * List_Scenes.rowHeight;
          }
 
-         SceneSettingsMenuData.menuitem.(@data == "delete_current_scene").@enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
-
+         //SceneSettingsMenuData.menuitem.(@data == "delete_current_scene").@enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
+         Button_DeleteScene.enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.dataProvider.length > 1;
+         
          Button_SetSceneAsEntry.enabled = world != null && List_Scenes.selectedIndex >= 1;
          Button_MoveUpScene.enabled = world != null && List_Scenes.selectedIndex >= 1;
          Button_MoveDownScene.enabled = world != null && List_Scenes.selectedIndex >= 0 && List_Scenes.selectedIndex < List_Scenes.dataProvider.length - 1;
@@ -846,9 +851,21 @@
          }
       }
       
+      private function OnDeleteScene ():void
+      {
+         EditorContext.OpenAlertDialog ("Delete Current Scene", "This action is not restorable.\nDo you really want to delete current scene?", true, OnDeleteCurrentScene);
+      }
+      
       private function OnCreateNewScene ():void
       {
-         EditorContext.OpenSettingsDialog (NameSettingDialog, ConfirmCreateNewScene, {mName: "untitled"});
+         EditorContext.OpenSettingsDialog (  NameSettingDialog, 
+                                             ConfirmCreateNewScene, 
+                                             {
+                                                mName: "untitled scene",
+                                                mLabel: "Name Of The New Scene",
+                                                mTitle: "Create New Scene"
+                                             }
+                                          );
       }
       
       private function ConfirmCreateNewScene (params:Object):editor.entity.Scene
@@ -1141,28 +1158,35 @@
          }
          else if (itemData == "delete_current_scene")
          {
-            EditorContext.OpenAlertDialog ("Delete Current Scene", "This action is not restorable.\nDo you really want to delete current scene?", true, OnDeleteCurrentScene);
+            OnDeleteScene ();
          }
          else if (itemData == "change_scene_name")
          {
             var scene:editor.entity.Scene = mCurrentSceneEditPanel.GetScene ();
             if (scene != null)
             {
-               EditorContext.OpenSettingsDialog (NameSettingDialog, ChangeCurrentSceneName, {mName: scene.GetName ()});
+               EditorContext.OpenSettingsDialog (  NameSettingDialog, 
+                                                   ChangeCurrentSceneName, 
+                                                   {
+                                                      mName: scene.GetName (),
+                                                      mLabel: "New Name Of The Current Scene",
+                                                      mTitle: "Change Scene Name"
+                                                   }
+                                                );
             }
          }
-         else if (itemData == "import")
-         {
-            EditorContext.GetEditorApp ().OnStartOfflineImporting ();
-         }
+         //else if (itemData == "import")
+         //{
+         //   EditorContext.GetEditorApp ().OnStartOfflineImporting ();
+         //}
          //else if (itemData == "import_functions")
          //{
          //   MainView.OpenImportSourceCodeDialog (true);
          //}
-         else if (itemData == "export_selected_entities")
-         {
-            EditorContext.GetEditorApp ().OnStartOfflineExporting ();
-         }
+         //else if (itemData == "export_selected_entities")
+         //{
+         //   EditorContext.GetEditorApp ().OnStartOfflineExporting ();
+         //}
          //else if (itemData == "export_all_functions")
          //{
          //   MainView.ExportSelectedsToSystemMemory ();

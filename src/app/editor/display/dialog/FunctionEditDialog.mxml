@@ -4,7 +4,9 @@
      You cannot run it independently. -->
 
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="editor.display.dialog.*"
-    title="Function Setting" width="700">
+    title="Function Setting" width="700"
+    creationComplete="OnInitPanel()"
+    >
 
    <mx:VBox label="Code Snippet" borderStyle="solid" height="100%" width="100%"
             paddingTop="5" paddingLeft="5" paddingRight="5" paddingBottom="5"
@@ -58,6 +60,7 @@
 
          private function OnInitPanel ():void
          {
+            this.title = "Function Setting: " + mParams.mFunctionName;
          }
 
          public function SetConfirmFunc (onConfirm:Function):void

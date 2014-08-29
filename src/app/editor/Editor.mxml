@@ -40,7 +40,8 @@
       <root>
          <menuitem label="Save Online ..." data="save_online" for_online="true"/>
          <menuitem label="Save Offline (xml) ..." data="save_offline"/>
-         <menuitem label="Export Current Scene To System Clipboard" data="export_current_scene"/>
+         <menuitem label="Export Current Scene To System Clipboard (xml)" data="export_current_scene"/>
+         <menuitem label="Export Current Scene (only selection part) To System Clipboard (xml)" data="export_current_scene_selections"/>
          <!--menuitem label="Save Local ..." data="save_local"/-->
          <!--menuitem label="Quick Save (Ctrl + S)" data="save_cookie"/-->
          
@@ -49,12 +50,13 @@
          <menuitem label="Load Online ..." data="load_online" for_online="true"/>
          <menuitem label="Load Offline (xml) ..." data="load_offline"/>
          <menuitem label="Import Scenes (xml) ..." data="import_scenes"/>
+         <menuitem label="Merge The First Scene To Be Loaded Into Current Scene (xml) ..." data="merge_scene"/>
          <!--menuitem label="Load Local ..." data="load_local"/-->
          <!--menuitem label="Quick Load ..." data="load_quick"/-->
          
          <menuitem type="separator" data=""/>
          
-         <menuitem label="Reset World ..." data="reset_world"/>
+         <menuitem label="Reset World (remove all scenes) ..." data="reset_world"/>
          
          <menuitem type="separator" data=""/>
          
@@ -398,6 +400,10 @@
          {
             OnImportScenes ();
          }
+         else if (itemData == "merge_scene")
+         {
+            OnStartOfflineImporting ();
+         }
          //else if (itemData == "load_local")
          //{
          //}
@@ -418,6 +424,10 @@
          {
             OnExportCurrentScene ();
          }
+         else if (itemData == "export_current_scene_selections")
+         {
+            OnStartOfflineExporting ();
+         }
          //else if (itemData == "save_local")
          //{
          //}
@@ -428,7 +438,7 @@
          
          else if (itemData == "reset_world")
          {
-            EditorContext.OpenAlertDialog ("Reset World", "Do you want to reset world?", true, NewWorld);
+            EditorContext.OpenAlertDialog ("Reset World", "All your current works will be lost. Continue?", true, NewWorld);
          }
          
          else if (itemData == "about")

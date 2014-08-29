@@ -111,6 +111,32 @@ package editor.codelib.dialog {
          }
       }
       
+      // return true to indicate handled successfully
+      override protected function OnKeyDownInternal (keyCode:int, ctrlHold:Boolean, shiftHold:Boolean):Boolean
+      {
+         var handled:Boolean = true;
+         
+         switch (keyCode)
+         {
+            case Keyboard.ESCAPE:
+               SetCurrentIntent (null);
+               break;
+            case Keyboard.SPACE:
+               OpenAssetSettingDialog ();
+               break;
+            default:
+            {
+               handled = false;
+               break;
+            }
+         }
+         
+         if (handled)
+            return true;
+         
+         return super.OnKeyDownInternal (keyCode, ctrlHold, shiftHold);
+      }
+      
 //============================================================================
 //   entity links
 //============================================================================
@@ -274,6 +300,7 @@ package editor.codelib.dialog {
             var aFunction:AssetFunction = asset as AssetFunction;
             aFunction.GetCodeSnippet ().ValidateCallings ();
             
+            values.mFunctionName = aFunction.GetName ();
             values.mCodeLibManager = mCodeLibManager;
             values.mCodeSnippetName = aFunction.GetCodeSnippetName ();
             values.mCodeSnippet  = aFunction.GetCodeSnippet ().Clone (mCodeLibManager.GetScene (), true, null);

@@ -23,8 +23,8 @@ package player.trigger
          
          if (entity == null)
             return VariableInstanceConstant.kVoidVariableInstance;
-         
-         return entity.GetCustomPropertyInstance (mSpacePackageId, mEntityPropertyId);;
+
+         return entity.GetCustomPropertyInstance (mSpacePackageId, mEntityPropertyId);
       }
    }
 }

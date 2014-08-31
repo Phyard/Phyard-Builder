@@ -446,17 +446,17 @@
    
    <mx:XML id="SceneSettingsMenuData">
       <root>
-         <menuitem label="Delete All Entities In Current Scene ..." data="clear_all"/>
-         <menuitem label="Reset Current Scene ..." data="reset_scene"/>
-         
-         <menuitem type="separator" data=""/>
-         
          <menuitem label="Change Current Scene Name ..." data="change_scene_name"/>
          <menuitem label="General Settings For Current Scene ..." data="general"/>
          <menuitem label="Simulation Settings For Current Scene ..." data="physics"/>
          <menuitem label="Config Coordinate System For Current Scene ..." data="coordinate"/>
          <menuitem label="Config World Appearance For Current Scene ..." data="appearance"/>
          <menuitem label="Config Viewport For Current Scene ..." data="viewport"/>
+         
+         <menuitem type="separator" data=""/>
+         
+         <menuitem label="Delete All Entities In Current Scene ..." data="clear_all"/>
+         <menuitem label="Reset Current Scene ..." data="reset_scene"/>
          
          <!--menuitem type="separator" data=""/-->
          

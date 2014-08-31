@@ -498,6 +498,8 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetOriginalCIType,           SetShapeOriginalCIType);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetCIType,                   GetShapeCIType);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetCIType,                   SetShapeCIType);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_IsShowBody,                IsShapeShowBody);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetShowBody,               SetShapeShowBody);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetBodyTexture,              GetBodyTexture);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetBodyTexture,              SetBodyTexture);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetBodyTextureTransform,     SetBodyTextureTransform);
@@ -4617,6 +4619,25 @@ package player.trigger {
          var ciType:int = uint (valueSource.EvaluateValueObject ());
 
          shape.SetShapeAiType (ciType);
+      }
+      
+      public static function IsShapeShowBody (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         valueTarget.AssignValueObject (shape == null ? true : shape.IsDrawBackground ());
+      }
+      
+      public static function SetShapeShowBody (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var drawBorder:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         shape.SetDrawBackground (drawBorder);
       }
       
       public static function GetBodyTexture (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

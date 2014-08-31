@@ -804,6 +804,9 @@ package player.entity {
       override protected function DelayUpdateAppearanceInternal ():void
       {
          mNeedRebuildAppearanceObjects = true;
+         
+         // fix: added in v2.07. Otherwise, setShowBody/Border APIs don't work.
+         mNeedUpdateAppearanceProperties = true;
       }
       
       // maybe "using mBitmapData.draw (this)" is better

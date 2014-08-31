@@ -26,7 +26,7 @@ package editor.entity {
       //<<
 
       protected var mIsStatic:Boolean = false;
-      public var mIsBullet:Boolean = false;
+      public var mIsBullet:Boolean = true; //false; // from v.07, default is true.
 
       //public var mDensity:Number = 1.0;
       public var mDensity:Number = Define.DefaultShapeDensity; // from v1.08

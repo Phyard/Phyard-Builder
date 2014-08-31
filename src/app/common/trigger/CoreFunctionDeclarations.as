@@ -2824,6 +2824,21 @@ package common.trigger {
                      null
                   );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsShowBody,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetShowBody,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetBodyTexture,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],

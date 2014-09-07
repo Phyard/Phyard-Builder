@@ -532,10 +532,10 @@ package common.trigger {
       //public static const ID_EntityShape_SetInertia:int                  = IdPool.CoreApiId_1133;
       public static const ID_EntityShape_GetDensity:int                  = IdPool.CoreApiId_1134;
       public static const ID_EntityShape_SetDensity:int                  = IdPool.CoreApiId_1135;
-      //public static const ID_EntityShape_GetFriction:int                 = IdPool.CoreApiId_1136;
-      //public static const ID_EntityShape_SetFriction:int                 = IdPool.CoreApiId_1137;
-      //public static const ID_EntityShape_GetRestitution:int              = IdPool.CoreApiId_1138;
-      //public static const ID_EntityShape_SetRestitution:int              = IdPool.CoreApiId_1139;
+      public static const ID_EntityShape_GetFriction:int                 = IdPool.CoreApiId_1136;
+      public static const ID_EntityShape_SetFriction:int                 = IdPool.CoreApiId_1137;
+      public static const ID_EntityShape_GetRestitution:int              = IdPool.CoreApiId_1138;
+      public static const ID_EntityShape_SetRestitution:int              = IdPool.CoreApiId_1139;
 
       public static const ID_EntityShape_SetLinearVelocity:int                          = IdPool.CoreApiId_1095;
       public static const ID_EntityShape_GetLinearVelocity:int                          = IdPool.CoreApiId_1096;

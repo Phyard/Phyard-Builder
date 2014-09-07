@@ -540,6 +540,10 @@ package player.trigger {
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetInertia,                     SetShapeInertia);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetDensity,                     GetShapeDensity);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetDensity,                     SetShapeDensity);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetFriction,                     GetShapeFriction);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetFriction,                     SetShapeFriction);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetRestitution,                     GetShapeRestitution);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetRestitution,                     SetShapeRestitution);
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetLinearVelocity,                        SetShapeLinearVelocity);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetLinearVelocity,                        GetShapeLinearVelocity);
@@ -5249,6 +5253,56 @@ package player.trigger {
          var newDensity:Number = valueSource.EvaluateValueObject () as Number;
 
          shape.ChangeDensity (newDensity); // don't call SetDensity
+      }
+
+      public static function GetShapeFriction (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         if (shape == null) // || shape.IsDestroyedAlready ())
+            valueTarget.AssignValueObject (0.0);
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetFriction ());
+         }
+      }
+
+      public static function SetShapeFriction (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         if (shape == null || shape.IsDestroyedAlready ())
+           return;
+
+         valueSource = valueSource.mNextParameter;
+         var newFriction:Number = valueSource.EvaluateValueObject () as Number;
+
+         shape.SetFriction (newFriction);
+      }
+
+      public static function GetShapeRestitution (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         if (shape == null) // || shape.IsDestroyedAlready ())
+            valueTarget.AssignValueObject (0.0);
+         else
+         {
+            valueTarget.AssignValueObject (shape.GetRestitution ());
+         }
+      }
+
+      public static function SetShapeRestitution (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+
+         if (shape == null || shape.IsDestroyedAlready ())
+           return;
+
+         valueSource = valueSource.mNextParameter;
+         var newRestitution:Number = valueSource.EvaluateValueObject () as Number;
+
+         shape.SetRestitution (newRestitution);
       }
 
       public static function SetShapeLinearVelocity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

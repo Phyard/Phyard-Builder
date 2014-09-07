@@ -76,6 +76,30 @@ package player.physics {
          mProxyBody._b2Body.SetAwake (true);
       }
       
+      public function SetFriction (friction:Number):void
+      {
+         var fixture:b2Fixture;
+         for (var i:int = 0; i < _b2Fixtures.length; ++ i)
+         {
+            fixture = _b2Fixtures [i] as b2Fixture;
+            fixture.SetFriction (friction);
+         }
+         
+         mProxyBody._b2Body.SetAwake (true);
+      }
+      
+      public function SetRestitution (restitution:Number):void
+      {
+         var fixture:b2Fixture;
+         for (var i:int = 0; i < _b2Fixtures.length; ++ i)
+         {
+            fixture = _b2Fixtures [i] as b2Fixture;
+            fixture.SetRestitution (restitution);
+         }
+         
+         mProxyBody._b2Body.SetAwake (true);
+      }
+      
       public function UpdateMass ():void
       {
          var mass:Number = 0.0;

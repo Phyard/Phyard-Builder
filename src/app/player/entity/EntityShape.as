@@ -416,6 +416,8 @@ package player.entity {
       public function SetDensity (density:Number):void
       {
          mDensity = density;
+         
+         // for API, use ChangeDensity instead
       }
       
       public function GetDensity ():Number
@@ -425,7 +427,13 @@ package player.entity {
       
       public function SetFriction (friction:Number):void
       {
-         mFriction = friction;
+         if (mFriction != friction)
+         {
+            mFriction = friction;
+            
+            if (mPhysicsShapeProxy != null)
+               mPhysicsShapeProxy.SetFriction (friction);
+         }
       }
       
       public function GetFriction ():Number
@@ -435,7 +443,13 @@ package player.entity {
       
       public function SetRestitution (restitution:Number):void
       {
-         mRestitution = restitution;
+         if (mRestitution != restitution)
+         {
+            mRestitution = restitution;
+            
+            if (mPhysicsShapeProxy != null)
+               mPhysicsShapeProxy.SetRestitution (restitution);
+         }
       }
       
       public function GetRestitution ():Number

@@ -3055,21 +3055,6 @@ package common.trigger {
                      ],
                      null
                   );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity,
-         //            [
-         //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //            ],
-         //            [
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
-         //            ]
-         //         );
-         //RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
-         //            [
-         //               [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
-         //            ],
-         //            null
-         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
@@ -3149,6 +3134,36 @@ package common.trigger {
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetFriction,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetFriction,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_GetRestitution,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShape_SetRestitution,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],

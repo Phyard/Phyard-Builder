@@ -35,9 +35,22 @@ package player.trigger
          _mDeclaration = declaration;
       }
       
+      public function SetRealClassDefinition (classDefinition:ClassDefinition):void
+      {
+         _mRealClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
+      }
+      
+      // this one may be overridden.
+      public function SetValueObject (valueObject:Object):void
+      {
+         _mValueObject = valueObject;
+      }
+      
       public function CloneForVariableInstance (forVI:VariableInstance):void
       {
-         CloneForClassInstance (forVI);
+         //CloneForClassInstance (forVI);
+         forVI._mRealClassDefinition = _mRealClassDefinition;
+         forVI._mValueObject = _mValueObject;
          
          forVI.SetDeclaration (_mDeclaration);
       }

@@ -14,6 +14,8 @@ package player.trigger
          return ci;
       }
       
+      //public static const kClassInstanceVoid:ClassInstance = CreateClassInstance (CoreClasses.kVoidClassDefinition, CoreClasses.kVoidClassDefinition.CreateDefaultInitialValue ());
+      
    //================================================
    
       // the 2 are set to public for better performance.
@@ -31,11 +33,6 @@ package player.trigger
          return _mRealClassDefinition;
       }
       
-      public function SetRealClassDefinition (classDefinition:ClassDefinition):void
-      {
-         _mRealClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
-      }
-      
       public function GetRealClassType ():int
       {
          return _mRealClassDefinition.GetClassType ();
@@ -51,14 +48,8 @@ package player.trigger
          return _mValueObject;
       }
       
-      // this one may be overridden.
-      public function SetValueObject (valueObject:Object):void
-      {
-         _mValueObject = valueObject;
-      }
-      
       // this one can't be overridden
-      internal final function _SetValueObject (valueObject:Object):void
+      public final function _SetValueObject (valueObject:Object):void
       {
          _mValueObject = valueObject;
       }
@@ -72,18 +63,32 @@ package player.trigger
          return "{class: " + _mRealClassDefinition.GetName () + ", value: " +_mRealClassDefinition.ToString ( _mValueObject) + "}";
       }
       
+      // NOTE: ClassInstance should be viewed as constant/immutable values.
+      // If this rule is broken, following APIs need modified:
+      // - CreateArray
+      // - InsertArrayElements (SpliceArrayElements)
+      // - SubArray
+      // - ConcatArrays
+      // - ...
       public function CloneClassInstance ():ClassInstance
       {
-         var newCI:ClassInstance = new ClassInstance (); 
-         CloneForClassInstance (newCI);
-         return newCI;
+         //if (_mRealClassDefinition == CoreClasses.kVoidClassDefinition)
+         //   return null;
+            
+         //var newCI:ClassInstance = new ClassInstance ();
+         ////CloneForClassInstance (newCI);
+         //newCI._mRealClassDefinition = _mRealClassDefinition;
+         //newCI._mValueObject = _mValueObject;
+         //return newCI;
+         
+         return CreateClassInstance (_mRealClassDefinition, _mValueObject);
       }
       
-      public function CloneForClassInstance (forVI:ClassInstance):void
-      {
-         forVI._mRealClassDefinition = _mRealClassDefinition;
-         forVI._mValueObject = _mValueObject;
-      }
+      //public function CloneForClassInstance (forVI:ClassInstance):void
+      //{
+      //   forVI._mRealClassDefinition = _mRealClassDefinition;
+      //   forVI._mValueObject = _mValueObject;
+      //}
       
    }
 }

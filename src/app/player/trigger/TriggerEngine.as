@@ -97,7 +97,7 @@ package player.trigger
          {
             mFreeDirectParameterListHead = returnParameter.mNextParameter as Parameter_DirectConstant;
             returnParameter.GetVariableInstance ().SetRealClassDefinition (classDefinition);
-            returnParameter.mValueObject = initialValue; // a little faster than calling AssignValueObject
+            returnParameter.mValueObject = initialValue;
             returnParameter.mNextParameter = nextParameter;
          }
          
@@ -107,7 +107,7 @@ package player.trigger
       public static function ReleaseDirectParameter_Source (parameter:Parameter_DirectConstant):void
       {
          parameter.GetVariableInstance ().SetRealClassDefinition (null);
-         parameter.mValueObject = null; // a little faster than calling AssignValueObject
+         parameter.mValueObject = null;
          parameter.mNextParameter = mFreeDirectParameterListHead;
          mFreeDirectParameterListHead = parameter;
       }

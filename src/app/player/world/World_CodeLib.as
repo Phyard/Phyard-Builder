@@ -628,13 +628,14 @@
       } 
       
       var ci:ClassInstance;
-      if (forArrayElement && value == null)
-         ci = null;
+      if (forArrayElement && (value == null))
+         ci = undefined; // null; // as array element, undefined is better than null.
       else
       {
-         ci = new ClassInstance ();
-         ci.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (type));
-         ci.SetValueObject (value);
+         //ci = new ClassInstance ();
+         //ci.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (type));
+         //ci.SetValueObject (value);
+         ci = ClassInstance.CreateClassInstance (CoreClasses.GetCoreClassDefinition (type), value);
       }
       
       return ci;

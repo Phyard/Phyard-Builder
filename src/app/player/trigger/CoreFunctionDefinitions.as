@@ -724,7 +724,9 @@ package player.trigger {
       //{
       //}
       
-      public static const kTempClassInstanceForNewInstance:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kVoidClassDefinition, null);
+      //public static const kTempClassInstanceForNewInstance:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kVoidClassDefinition, null);
+      public static const kTempClassInstanceForNewInstance:VariableInstance = new VariableInstance ();
+            // class instance is not mutable, so use a VariableInstance here.
 
       public static function CommonNewInstance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -1851,9 +1853,17 @@ package player.trigger {
          
          valueSource = valueSource.mNextParameter;
          var vi:VariableInstance = valueSource.GetVariableInstance ();
-         for (var index:int = 0; index < length; ++ index)
+         if (vi.GetRealClassDefinition () != CoreClasses.kVoidClassDefinition)
          {
-            array [index] = vi.CloneClassInstance ();
+            var ci:ClassInstance = vi.CloneClassInstance ();
+            for (var index:int = 0; index < length; ++ index)
+            {
+               array [index] = ci; //  // here, all elements uses the same ClassInstance.
+            }
+         }
+         else
+         {
+            // keep elements undefined
          }
          
          valueTarget.AssignValueObject (array);
@@ -1944,10 +1954,21 @@ package player.trigger {
             
             valueSource = valueSource.mNextParameter;
             var vi:VariableInstance = valueSource.GetVariableInstance ();
-
-            while (-- num >= 0)
+            
+            if (vi.GetRealClassDefinition () != CoreClasses.kVoidClassDefinition)
             {
-               array.splice (index, 0, vi.CloneClassInstance ()); //undefined);
+               var ci:ClassInstance = vi.CloneClassInstance ();
+               while (-- num >= 0)
+               {
+                  array.splice (index, 0, ci); // here, all elements uses the same ClassInstance.
+               }
+            }
+            else
+            {
+               while (-- num >= 0)
+               {
+                  array.splice (index, 0, undefined);
+               }
             }
          }
       }
@@ -2029,7 +2050,11 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
 
          // if index >= length, length will extend to index automtically.
-         array [index] = valueSource.GetVariableInstance ().CloneClassInstance ();
+         var vi:VariableInstance = valueSource.GetVariableInstance ();
+         if (vi.GetRealClassDefinition () != CoreClasses.kVoidClassDefinition)
+            array [index] = vi.CloneClassInstance ();
+         else
+            array [index] = undefined;
       }
       
       //public static function IndexOfArrayElement (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

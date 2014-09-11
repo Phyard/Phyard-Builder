@@ -17,7 +17,7 @@ package editor.image.vector
    {
       function OnCreating (points:Array):Point;
 
-      function CreateSprite (isSelected:Boolean = false):DisplayObject;
+      function CreateSprite (isSelected:Boolean = false, inPreview:Boolean = false):DisplayObject;
       function BuildSelectionProxy (selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void;
 
       function CreateControlPointsForAsset (asset:Asset):Array;

@@ -42,7 +42,7 @@ package editor.image {
 //   
 //=============================================================
 
-      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null, inPreview:Boolean = false):void
       {
          var moduleSize:Number = 50;
          var halfModuleSize:Number = 0.5 * moduleSize;

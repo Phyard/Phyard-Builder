@@ -748,6 +748,8 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_Array_Create,
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Object,       null],
+                        // options: support auto extending
                      ],
                      [
                         [CoreClassIds.ValueType_Array,       null],
@@ -799,6 +801,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Array,       null],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       1],
+                        [CoreClassIds.ValueType_Object,       null],
                      ],
                      null
                   );

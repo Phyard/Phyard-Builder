@@ -580,7 +580,7 @@ package editor.image {
             removeChildAt (0);
          GraphicsUtil.Clear (this);
          
-         mAssetImageModule.BuildImageModuleAppearance (this);
+         mAssetImageModule.BuildImageModuleAppearance (this, null, mAssetImageModuleInstanceManager.IsInPreviewMode ());
          
          /*
          if (IsSelected () && (! IsSequenceModuleFrame ()))

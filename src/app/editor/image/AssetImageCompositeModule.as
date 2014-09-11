@@ -171,7 +171,7 @@ package editor.image {
          return false;
       }
 
-      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null, inPreview:Boolean = false):void
       {
          var numModules:int = mModuleInstanceManager.GetNumAssets ();
          

@@ -16,6 +16,10 @@ package player.trigger
       
       //public var mClassInstance:ClassInstance; 
             // use the extend implementation instead now.
+            // sadly, but this is realy a bad change.
+            //
+            // TODO: change back to mClassInstance instead of extending.
+            // 
 
       public function VariableInstance ()
       {

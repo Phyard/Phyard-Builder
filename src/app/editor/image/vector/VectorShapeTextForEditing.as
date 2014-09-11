@@ -30,7 +30,7 @@ package editor.image.vector
          return VectorShapeRectangleForEditing.OnCreatingRectangle (this, points);
       }
       
-      public function CreateSprite (isSelected:Boolean = false):DisplayObject
+      public function CreateSprite (isSelected:Boolean = false, inPreview:Boolean = false):DisplayObject
       {
          var container:Sprite = new Sprite ();
          

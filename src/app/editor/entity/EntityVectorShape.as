@@ -55,10 +55,10 @@ package editor.entity {
          mVectorShape = vectorShape;
       }
 
-      override public function GetVisibleAlphaForEditing ():Number
-      {
-         return 0.39 + GetTransparency () * 0.01 * 0.40;
-      }
+      //override public function GetVisibleAlphaForEditing ():Number
+      //{
+      //   return 0.39 + GetTransparency () * 0.01 * 0.40;
+      //}
 
       override public function GetTypeName ():String
       {
@@ -110,7 +110,7 @@ package editor.entity {
          var shapeSprite:DisplayObject = (mVectorShape as VectorShapeForEditing).CreateSprite (IsSelected ());
          addChild (shapeSprite);
          
-         SetVisibleForEditing (mVisibleForEditing); //  recal alpha
+         SetVisibleForEditing (mVisibleForEditing); //  re-cal alpha
          
          /*
          if (IsSelected ())

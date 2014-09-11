@@ -177,7 +177,7 @@ package editor.image {
 //=============================================================
 //   
 //=============================================================
-      
+      /*
       // will not saved in file
       protected var mShowAllSequences:Boolean = false;
       
@@ -189,6 +189,30 @@ package editor.image {
       public function SetShowAllSequences (showAllSequences:Boolean):void
       {
          mShowAllSequences = showAllSequences;
+      }
+      */
+      
+//=============================================================
+//   
+//=============================================================
+      
+      private var mInPreviewMode:Boolean = false;
+      
+      public function IsInPreviewMode ():Boolean
+      {
+         return mInPreviewMode;
+      }
+      
+      public function SetInPreviewMode (preview:Boolean):void
+      {
+         mInPreviewMode = preview;
+         
+         var numModuleInstances:int = GetNumAssets ();
+         for (var instanceId:int = 0; instanceId < numModuleInstances; ++ instanceId)
+         {
+            var moduleInstance:AssetImageModuleInstance = GetAssetByAppearanceId (instanceId) as AssetImageModuleInstance;
+            moduleInstance.UpdateAppearance ();
+         }
       }
       
 //=============================================================
@@ -205,17 +229,17 @@ package editor.image {
          }
       }
       
-      private function UpdateSelectedModuleInstanceAppearances ():void
-      {
-         var moduleInstances:Array = GetSelectedAssets ();
-         var moduleInstance:AssetImageModuleInstance;
-         var count:int = moduleInstances.length;
-         for (var i:int = 0; i < count; ++ i)
-         {
-            moduleInstance = moduleInstances [i] as AssetImageModuleInstance;
-            moduleInstance.UpdateAppearance ();
-         }
-      }
+      //private function UpdateSelectedModuleInstanceAppearances ():void
+      //{
+      //   var moduleInstances:Array = GetSelectedAssets ();
+      //   var moduleInstance:AssetImageModuleInstance;
+      //   var count:int = moduleInstances.length;
+      //   for (var i:int = 0; i < count; ++ i)
+      //   {
+      //      moduleInstance = moduleInstances [i] as AssetImageModuleInstance;
+      //      moduleInstance.UpdateAppearance ();
+      //   }
+      //}
       
 //=============================================================
 //   context menu

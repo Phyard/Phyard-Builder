@@ -101,7 +101,7 @@ package editor.image.vector
          return new Point (centerX, centerY);
       }
 
-      public function CreateSprite (isSelected:Boolean = false):DisplayObject
+      public function CreateSprite (isSelected:Boolean = false, inPreview:Boolean = false):DisplayObject
       {
          var filledColor:uint = GetBodyColor ();
          var borderColor:uint = GetBorderColor ();
@@ -139,6 +139,8 @@ package editor.image.vector
                                               bitmapModule == null ? null : bitmapModule.GetBitmapData (),
                                               bitmapTransform == null ? null : bitmapTransform.ToMatrix ());
 
+            polygonSprite.alpha = inPreview ? 1.0 : 0.39 + GetBodyAlpha () * 0.40;
+            
             if (isSelected || (! mPhysicsBuildable))
             {
                var contianer:Sprite = new Sprite ();

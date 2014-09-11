@@ -49,7 +49,7 @@ package editor.image.vector
          return OnCreatingRectangle (this, points);
       }
 
-      public static function CreateRectangleSprite (rectangle:VectorShapeRectangle, isSelected:Boolean, bodyTextureModule:AssetImageBitmapModule = null, bodyTextureTransform:Transform2D = null):DisplayObject
+      public static function CreateRectangleSprite (rectangle:VectorShapeRectangle, isSelected:Boolean, bodyTextureModule:AssetImageBitmapModule = null, bodyTextureTransform:Transform2D = null, inPreview:Boolean = false):DisplayObject
       {
          var filledColor:uint = rectangle.GetBodyColor ();
          var borderColor:uint = rectangle.GetBorderColor ();
@@ -86,6 +86,8 @@ package editor.image.vector
                                         bodyTextureModule == null ? null : bodyTextureModule.GetBitmapData (),
                                         bodyTextureTransform == null ? null : bodyTextureTransform.ToMatrix ());
 
+         rectSprite.alpha = inPreview ? 1.0 : 0.39 + rectangle.GetBodyAlpha () * 0.40;
+         
          if (isSelected)
          {
             var blueShape:Shape = new Shape ();
@@ -107,9 +109,9 @@ package editor.image.vector
          }
       }
 
-      public function CreateSprite (isSelected:Boolean = false):DisplayObject
+      public function CreateSprite (isSelected:Boolean = false, inPreview:Boolean = false):DisplayObject
       {
-         return CreateRectangleSprite (this, isSelected, GetBodyTextureModule () as AssetImageBitmapModule, GetBodyTextureTransform ());
+         return CreateRectangleSprite (this, isSelected, GetBodyTextureModule () as AssetImageBitmapModule, GetBodyTextureTransform (), inPreview);
       }
 
       public static function BuildRectangleSelectionProxy (rectangle:VectorShapeRectangle, selectionProxy:SelectionProxy, transform:Transform2D, visualScale:Number = 1.0):void

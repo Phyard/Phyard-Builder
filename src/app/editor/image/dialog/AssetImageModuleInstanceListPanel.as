@@ -170,6 +170,11 @@ package editor.image.dialog {
             mAssetImageModuleInstanceManagerForListing.GetAssetImageCompositeModule ().GetModuleInstanceManager ().SetSelectedAssets (mSelectedInstancesBeforePreviewing);
             mAssetImageCompositeModuleEditPanelPeer.SetShowScaleRotateFlipHandlers (mIsTransformRingVisibleBeforePreviewing);
          }
+         
+         if (mAssetImageCompositeModuleEditPanelPeer == null)
+            return;
+         
+         mAssetImageCompositeModuleEditPanelPeer.SetInPreviewMode (preview);
       }
       
       override protected function UpdateInternal (dt:Number):void
@@ -181,9 +186,13 @@ package editor.image.dialog {
          {
             if (mCurrentFrameStep >= mCurrentFrameDuration)
             {
+               var oldFrameId:int = mCurrentFrame;
                if (++ mCurrentFrame >= mNumFrames)
                {
                   mCurrentFrame = 0;
+                  
+                  if (mCurrentFrame == oldFrameId)
+                     return;
                }
                
                OnPreviewFrameChanged ();

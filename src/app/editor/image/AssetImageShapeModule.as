@@ -72,9 +72,9 @@ package editor.image {
 //   
 //=============================================================
 
-      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null, inPreview:Boolean = false):void
       {
-         var shapeSprite:DisplayObject = mVectorShape.CreateSprite ();
+         var shapeSprite:DisplayObject = mVectorShape.CreateSprite (false, inPreview);
          
          if (transform != null )
             transform.TransformUntransformedDisplayObject (shapeSprite);

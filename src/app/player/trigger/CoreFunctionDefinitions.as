@@ -1848,6 +1848,14 @@ package player.trigger {
             length = 0;
 
          var array:Array = new Array (length);
+         
+         valueSource = valueSource.mNextParameter;
+         var vi:VariableInstance = valueSource.GetVariableInstance ();
+         for (var index:int = 0; index < length; ++ index)
+         {
+            array [index] = vi.CloneClassInstance ();
+         }
+         
          valueTarget.AssignValueObject (array);
       }
 
@@ -1933,10 +1941,13 @@ package player.trigger {
                index = 0;
             if (index > array.length)
                index = array.length;
+            
+            valueSource = valueSource.mNextParameter;
+            var vi:VariableInstance = valueSource.GetVariableInstance ();
 
             while (-- num >= 0)
             {
-               array.splice (index, 0, null); //undefined);
+               array.splice (index, 0, vi.CloneClassInstance ()); //undefined);
             }
          }
       }

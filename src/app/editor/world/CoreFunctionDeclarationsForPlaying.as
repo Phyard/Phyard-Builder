@@ -892,6 +892,7 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_Create, array_package, "Create Array", null, null,
                      [
                               new VariableDefinitionNumber ("Initial Length"),
+                              new VariableDefinitionObject ("Initial Element Value"),
                      ],
                      [
                               new VariableDefinitionArray ("Created Array"),
@@ -934,15 +935,16 @@ package editor.world {
                      [
                               new VariableDefinitionArray ("The Array"),
                               new VariableDefinitionNumber ("From Index"),
-                              new VariableDefinitionNumber ("Number Elements"),
+                              new VariableDefinitionNumber ("Number Of Elements To Remove"),
                      ],
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Array_InsertElements, array_package, "Insert Array Elements", null, null,
                      [
                               new VariableDefinitionArray ("The Array"),
-                              new VariableDefinitionNumber ("Index"),
-                              new VariableDefinitionNumber ("Number Elements"),
+                              new VariableDefinitionNumber ("At Index"),
+                              new VariableDefinitionNumber ("Number Of Elements To Insert"),
+                              new VariableDefinitionObject ("Initial New Element Value"),
                      ],
                      null
                   );

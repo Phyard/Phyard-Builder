@@ -138,7 +138,7 @@ package editor.image {
 //   
 //=============================================================
 
-      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
+      override public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null, inPreview:Boolean = false):void
       {
          if (mAssetImageModule == null)
             return;

@@ -103,6 +103,18 @@ package editor.image.dialog {
 //
 //=====================================================================
       
+      public function SetInPreviewMode (preview:Boolean):void
+      {
+         if (mAssetImageModuleInstanceManager != null)
+         {
+            mAssetImageModuleInstanceManager.SetInPreviewMode (preview);
+         }
+      }
+      
+//=====================================================================
+//
+//=====================================================================
+      
       private var mManagerCameraCenter:Point = new Point (0, 0);
       
       override protected function OnResize (event:Event):void 

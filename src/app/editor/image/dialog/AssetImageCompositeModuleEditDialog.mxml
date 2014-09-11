@@ -291,7 +291,7 @@
                boxInstanceList = Box_InstanceList_H;
                
                CheckBoxSamePhysicsProxyForAllFrames.visible = false;
-               ButtonStartPreview.visible = false;
+               //ButtonStartPreview.visible = false;
             }
 
             //...

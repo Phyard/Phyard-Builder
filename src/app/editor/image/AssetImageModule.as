@@ -104,7 +104,7 @@ package editor.image {
          return false;
       }
       
-      public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null):void
+      public function BuildImageModuleAppearance (container:Sprite, transform:Transform2D = null, inPreview:Boolean = false):void
       {
          // to override
       }

@@ -44,7 +44,7 @@ package editor.image.vector
          return new Point (posX, posY);
       }
 
-      public function CreateSprite (isSelected:Boolean = false):DisplayObject
+      public function CreateSprite (isSelected:Boolean = false, inPreview:Boolean = false):DisplayObject
       {
          var filledColor:uint = GetBodyColor ();
          var borderColor:uint = GetBorderColor ();
@@ -65,9 +65,11 @@ package editor.image.vector
 
          var circleSprite:Shape = new Shape ();
          GraphicsUtil.ClearAndDrawCircle (circleSprite, 0, 0, visualRadius, borderColor,
-                                                            borderThickness, drawBg, filledColor, 
-                                                            bitmapModule == null ? null : bitmapModule.GetBitmapData (),
-                                                            bitmapTransform == null ? null : bitmapTransform.ToMatrix ());
+                                          borderThickness, drawBg, filledColor, 
+                                          bitmapModule == null ? null : bitmapModule.GetBitmapData (),
+                                          bitmapTransform == null ? null : bitmapTransform.ToMatrix ());
+
+         circleSprite.alpha = inPreview ? 1.0 : 0.39 + GetBodyAlpha () * 0.40;
 
          if (isSelected)
          {

@@ -140,6 +140,8 @@ package player.entity {
       public function SetCornerEclipseWidth (ellipseWidth:Number):void
       {
          mCornerEclipseWidth = Math.abs (ellipseWidth);
+         
+         DelayUpdateAppearance ();
       }
 
       public function GetCornerEclipseHeight ():Number
@@ -150,6 +152,8 @@ package player.entity {
       public function SetCornerEclipseHeight (ellipseHeight:Number):void
       {
          mCornerEclipseHeight = Math.abs (ellipseHeight);
+         
+         DelayUpdateAppearance ();
       }
       
       public function IsRoundCorner ():Boolean
@@ -160,6 +164,8 @@ package player.entity {
       public function SetRoundCorner (roundCorner:Boolean):void
       {
          mIsRoundCorner = roundCorner;
+         
+         DelayUpdateAppearance ();
       }
       
 //=============================================================

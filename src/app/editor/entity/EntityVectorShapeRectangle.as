@@ -165,6 +165,23 @@ package editor.entity {
       {
          return mVectorShapeRectangle.IsRoundCorner ();
       }
+
+//====================================================================
+//   clone
+//====================================================================
+      
+      override public function EnlargeSelf (s:Number/*, intentionDone:Boolean = true*/):void
+      {  
+         if (s < 0)
+            s = -s;
+         
+         if (s > 0)
+         {
+            SetHalfWidth (s * GetHalfWidth ());
+            SetHalfHeight (s * GetHalfHeight ());
+            UpdateAppearance ();
+         }
+      }
       
 //====================================================================
 //   clone

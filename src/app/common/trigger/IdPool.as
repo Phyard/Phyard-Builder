@@ -637,7 +637,11 @@ package common.trigger {
       public static const CoreApiId_1585:int = 1585; // entity.shape.module.button
       public static const CoreApiId_1586:int = 1586; // entity.shape.text
       public static const CoreApiId_1587:int = 1587; // entity.shape.text
-
+      public static const CoreApiId_1588:int = 1588; // entity.shape.rectangle
+      public static const CoreApiId_1589:int = 1589; // entity.shape.rectangle
+      
+      
+      
       public static const CoreApiId_1989:int = 1989; // joint
       public static const CoreApiId_1990:int = 1990; // joint
       public static const CoreApiId_1991:int = 1991; // joint

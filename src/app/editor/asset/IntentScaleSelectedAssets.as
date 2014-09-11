@@ -7,17 +7,17 @@ package editor.asset {
       protected var mCenterY:Number;
       protected var mScalePosition:Boolean;
       protected var mScaleSelf:Boolean;
-      
+      protected var mIsEnlarge:Boolean;
       protected var mScaleBodyTexture:Boolean;
       
-      public function IntentScaleSelectedAssets (assetManagerPanel:AssetManagerPanel, scaleBodyTexture:Boolean, centerX:Number, centerY:Number, scalePosition:Boolean, scaleSelf:Boolean)
+      public function IntentScaleSelectedAssets (assetManagerPanel:AssetManagerPanel, isEnlarge:Boolean, scaleBodyTexture:Boolean, centerX:Number, centerY:Number, scalePosition:Boolean, scaleSelf:Boolean)
       {
          mAssetManagerPanel = assetManagerPanel;
          mCenterX = centerX;
          mCenterY = centerY;
          mScalePosition = scalePosition;
          mScaleSelf = scaleSelf;
-         
+         mIsEnlarge = isEnlarge;
          mScaleBodyTexture = scaleBodyTexture;
       }
       
@@ -46,7 +46,7 @@ package editor.asset {
          {
             mLastX = mCurrentX;
             mLastY = mCurrentY;
-            mAssetManagerPanel.ScaleSelectedAssets (mScaleBodyTexture, mCenterX, mCenterY, currentLength / lastLength, mScalePosition, mScaleSelf, false);
+            mAssetManagerPanel.ScaleSelectedAssets (mIsEnlarge, mScaleBodyTexture, mCenterX, mCenterY, currentLength / lastLength, mScalePosition, mScaleSelf, false);
             
             mAssetManagerPanel.RepositionScaleRotateFlipHandlers (currentLength / startLength, 0.0);
          }
@@ -56,7 +56,7 @@ package editor.asset {
       
       override protected function TerminateInternal (passively:Boolean):void
       {
-         mAssetManagerPanel.ScaleSelectedAssets (mScaleBodyTexture, mCenterX, mCenterY, 1.0, mScalePosition, mScaleSelf, true);
+         mAssetManagerPanel.ScaleSelectedAssets (mIsEnlarge, mScaleBodyTexture, mCenterX, mCenterY, 1.0, mScalePosition, mScaleSelf, true);
          
          mAssetManagerPanel.RepositionScaleRotateFlipHandlers (1.0, 0.0);
          

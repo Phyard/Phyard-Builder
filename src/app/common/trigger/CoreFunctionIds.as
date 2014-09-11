@@ -636,6 +636,8 @@ package common.trigger {
 
       public static const ID_EntityShapeRectangle_GetSize:int                   = IdPool.CoreApiId_1556;
       public static const ID_EntityShapeRectangle_SetSize:int                   = IdPool.CoreApiId_1557;
+      public static const ID_EntityShapeRectangle_SetRoundCornerEclipseSize:int             = IdPool.CoreApiId_1588;
+      public static const ID_EntityShapeRectangle_SetRoundCornerEnabled:int                 = IdPool.CoreApiId_1589;
 
    // game / entity / shape / poly
 

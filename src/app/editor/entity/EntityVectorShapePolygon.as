@@ -128,6 +128,44 @@ package editor.entity {
 //====================================================================
 //   clone
 //====================================================================
+      
+      public static function ScalePoints (points:Array, s:Number):void
+      {
+         if (points == null)
+            return;
+         
+         var index:int = points.length;
+         while (index > 0)
+         {
+            index = index - 1;
+            
+            var point:Point = points [index] as Point;
+            if (point != null)
+            {
+               point.x *= s;
+               point.y *= s;
+            }
+         }
+      }
+      
+      override public function EnlargeSelf (s:Number/*, intentionDone:Boolean = true*/):void
+      {  
+         if (s < 0)
+            s = -s;
+         
+         if (s > 0)
+         {
+            var points:Array = GetLocalVertexPoints ();
+            ScalePoints (points, s);
+            SetLocalVertexPoints (points);
+            
+            UpdateAppearance ();
+         }
+      }
+
+//====================================================================
+//   clone
+//====================================================================
 
       override protected function CreateCloneShell ():Entity
       {

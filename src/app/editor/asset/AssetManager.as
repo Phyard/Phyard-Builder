@@ -914,7 +914,7 @@ package editor.asset {
          }
       }
       
-      public function ScaleSelectedAssets (scaleBodyTexture:Boolean, updateSelectionProxy:Boolean, s:Number, scaleSelf:Boolean, scalePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
+      public function ScaleSelectedAssets (isEnlarge:Boolean, scaleBodyTexture:Boolean, updateSelectionProxy:Boolean, s:Number, scaleSelf:Boolean, scalePosition:Boolean = false, centerX:Number = NaN, centerY:Number = NaN):void
       {
          var assetArray:Array = GetSelectedAssets ();
          
@@ -926,20 +926,28 @@ package editor.asset {
          {
             asset = assetArray [i] as Asset;
             
-            if (scalePosition)
+            if (isEnlarge)
             {
-               if (scaleBodyTexture)
-                  asset.ScaleBodyTexturePosition (centerX, centerY, s/*, updateSelectionProxyWhenScalePosition*/);
-               else
-                  asset.ScalePosition (centerX, centerY, s/*, updateSelectionProxyWhenScalePosition*/);
+               asset.ScalePosition (centerX, centerY, s/*, updateSelectionProxyWhenScalePosition*/);
+               asset.EnlargeSelf (s/*, updateSelectionProxy*/);
             }
-            
-            if (scaleSelf)
+            else
             {
-               if (scaleBodyTexture)
-                  asset.ScaleBodyTextureSelf (s/*, updateSelectionProxy*/);
-               else
-                  asset.ScaleSelf (s/*, updateSelectionProxy*/);
+               if (scalePosition)
+               {
+                  if (scaleBodyTexture)
+                     asset.ScaleBodyTexturePosition (centerX, centerY, s/*, updateSelectionProxyWhenScalePosition*/);
+                  else
+                     asset.ScalePosition (centerX, centerY, s/*, updateSelectionProxyWhenScalePosition*/);
+               }
+               
+               if (scaleSelf)
+               {
+                  if (scaleBodyTexture)
+                     asset.ScaleBodyTextureSelf (s/*, updateSelectionProxy*/);
+                  else
+                     asset.ScaleSelf (s/*, updateSelectionProxy*/);
+               }
             }
             
             if (updateSelectionProxy)

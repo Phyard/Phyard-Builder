@@ -624,6 +624,8 @@ package player.trigger {
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShapeRectangle_GetSize,            GetShapeRectangleSize);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShapeRectangle_SetSize,            SetShapeRectangleSize);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEnabled,               SetShapeRectangleRoundCornerEnabled);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEclipseSize,           SetShapeRectangleRoundCornerEclipseSize);
 
       // game / entity / shape / poly shapes
 
@@ -6548,6 +6550,34 @@ package player.trigger {
          var height:Number = valueSource.EvaluateValueObject () as Number;
 
          EntityShape.ChangeRectangleSize (rect, width, height);
+      }
+      
+      public static function SetShapeRectangleRoundCornerEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
+         if (rect == null || rect.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var enabled:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         rect.SetRoundCorner (enabled);
+      }
+      
+      public static function SetShapeRectangleRoundCornerEclipseSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
+         if (rect == null || rect.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var eclipseWidth:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var eclipseHeight:Number = valueSource.EvaluateValueObject () as Number;
+   
+         rect.SetCornerEclipseWidth (eclipseWidth);
+         rect.SetCornerEclipseHeight (eclipseHeight);
       }
 
    //*******************************************************************

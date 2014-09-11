@@ -536,6 +536,11 @@ package editor.asset {
          */
       }
       
+      public function EnlargeSelf (s:Number/*, intentionDone:Boolean = true*/):void
+      {  
+         ScaleSelfTo (GetScale () * s/*, intentionDone*/);
+      }
+      
       public function FlipPosition (planeX:Number/*, intentionDone:Boolean = true*/):void
       {
          SetPosition (planeX + planeX - GetPositionX (), GetPositionY ());

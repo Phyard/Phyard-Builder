@@ -3724,6 +3724,21 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEnabled,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEclipseSize,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                     ],
+                     null
+                  );
 
       // game / entity / shape / poly
 

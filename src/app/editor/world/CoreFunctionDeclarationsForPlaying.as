@@ -3803,7 +3803,7 @@ package editor.world {
                              new VariableDefinitionNumber ("The Radius"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeCircle_SetRadius, shape_geometry_package, "Set Circle Radius", "@#0 = Set Radius of Circle $0", "SetCircleRadius",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeCircle_SetRadius, shape_geometry_package, "Set Circle Radius", null, null,
                      [
                              new VariableDefinitionEntity ("The Circle", null, {mValidClasses: Filters.sCircleShapeEntityClasses}),
                              new VariableDefinitionNumber ("New Radius"),
@@ -3822,11 +3822,26 @@ package editor.world {
                              new VariableDefinitionNumber ("Height"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetSize, shape_geometry_package, "Set Rectangle Size", "@(#0, #1) = Set Size of Retangle $0", "SetRectangleSize",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetSize, shape_geometry_package, "Set Rectangle Size", null, null,
                      [
                              new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
                              new VariableDefinitionNumber ("New Width"),
                              new VariableDefinitionNumber ("new Height"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEnabled, shape_geometry_package, "Set Rectangle Round Corner Enabled", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
+                             new VariableDefinitionBoolean ("Enable Round Color?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEclipseSize, shape_geometry_package, "Set Rectangle Round Corner Eclipse Size", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Round Corner Eclipse Width (px)"),
+                             new VariableDefinitionNumber ("Round Corner Eclipse Height (px)"),
                      ],
                      null
                   );

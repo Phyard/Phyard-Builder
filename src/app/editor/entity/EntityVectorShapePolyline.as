@@ -164,6 +164,25 @@ package editor.entity {
       }
 
 //====================================================================
+//   clone
+//====================================================================
+      
+      override public function EnlargeSelf (s:Number/*, intentionDone:Boolean = true*/):void
+      {  
+         if (s < 0)
+            s = -s;
+         
+         if (s > 0)
+         {
+            var points:Array = GetLocalVertexPoints ();
+            EntityVectorShapePolygon.ScalePoints (points, s);
+            SetLocalVertexPoints (points);
+            
+            UpdateAppearance ();
+         }
+      }
+
+//====================================================================
 //   appearacne and selection proxy
 //====================================================================
       

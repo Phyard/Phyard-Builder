@@ -148,6 +148,22 @@ package editor.entity {
 //====================================================================
 //   clone
 //====================================================================
+      
+      override public function EnlargeSelf (s:Number/*, intentionDone:Boolean = true*/):void
+      {  
+         if (s < 0)
+            s = -s;
+         
+         if (s > 0)
+         {
+            SetRadius (s * GetRadius ());
+            UpdateAppearance ();
+         }
+      }
+
+//====================================================================
+//   clone
+//====================================================================
 
       override protected function CreateCloneShell ():Entity
       {

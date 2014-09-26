@@ -28,6 +28,9 @@ package com.tapirgames.util {
       // return can hit or not.
       public function Hit (timer:int):Boolean
       {
+         if (mMaxAllowedHits <= 0)
+            return true;
+         
          var headTimer:int = mHitsTimer [mHeadCursor];
          var tailTimer:int;
          while (mTailCursor != mHeadCursor)

@@ -362,8 +362,12 @@ package player.trigger {
       public static function CCat2String (valueObject:Object, className:String, extraInfos:Object):String
       {
          var ccat:CollisionCategory = valueObject as CollisionCategory; // not null for sure
-            
-         return className + "#" + ccat.GetIndexInEditor ();
+         
+         var prefix:String = className + "#";
+         if (ccat.GetCategoryIndex () == ccat.GetCategoryIndexInEditor ())
+            return prefix + ccat.GetCategoryIndex ();
+         else
+            return prefix + ccat.GetCategoryIndex () + "(" + ccat.GetCategoryIndexInEditor () + ")";
       }
       
       public static function Array2String (valueObject:Object, className:String, extraInfos:Object):String
@@ -658,8 +662,14 @@ package player.trigger {
                //var ccatIndex:int = valueObject as int; // before v2.05. bug: null -> 0
                //var ccatIndex:int = valueObject == null ? Define.CCatId_Hidden : (valueObject as int); // 2.05
                var ccatIndex:int = valueObject == null ? Define.CCatId_None : (valueObject as int); // since v2.06
-               if (ccatIndex >= 0 && extraInfos != null)
+
+               //if (ccatIndex >= 0 && extraInfos != null) // bug: for cloning, extraInfos != null, but extraInfos.mBeinningCCatIndex == undefined
+                                                           // N + extraInfos.mBeinningCCatIndex => 0
+               if (ccatIndex >= 0 && extraInfos != null && extraInfos.mBeinningCCatIndex != undefined)
+               {
                   ccatIndex += extraInfos.mBeinningCCatIndex;
+               }
+               
                return playerWorld.GetCollisionCategoryById (ccatIndex);
             }
             case CoreClassIds.ValueType_Module:

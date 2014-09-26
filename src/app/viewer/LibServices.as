@@ -50,7 +50,8 @@
 
    private var mJoinInstanceFrequencyStat:FrequencyStat = new FrequencyStat (3, 60000); // most 3 times in one minute
    
-   private var mClientMessagesFrequencyStat:FrequencyStat = new FrequencyStat (20, 60000); // most 20 times in one minute
+   //private var mClientMessagesFrequencyStat:FrequencyStat = new FrequencyStat (20, 60000); // most 20 times in one minute
+   private var mClientMessagesFrequencyStat:FrequencyStat = new FrequencyStat (0, 60000); // 0 means not limits
    
    private function UpdateMultiplePlayer ():void
    {

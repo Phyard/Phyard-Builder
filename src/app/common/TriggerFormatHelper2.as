@@ -1059,7 +1059,7 @@ package common {
             if (ccat != null)
             {
                if (tryToReSceneDependentVariables)
-                  return CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_CollisionCategory, ccat.GetIndexInEditor ());
+                  return CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_CollisionCategory, ccat.GetCategoryIndex ());
                else
                   return null;
             }

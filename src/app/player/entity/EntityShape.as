@@ -25,6 +25,10 @@ package player.entity {
    import player.trigger.CoreClasses;
    import player.trigger.ClassDefinition;
    
+   import common.trigger.CoreEventIds;
+   import common.trigger.CoreClassIds;
+   import common.trigger.ClassTypeDefine;
+   
    import common.DataFormat2;
    import common.CoordinateSystem;
    import common.Transform2D;
@@ -32,7 +36,6 @@ package player.entity {
    import common.Version;
    import common.WorldDefine;
    import common.SceneDefine;
-   import common.trigger.CoreEventIds;
    
    // The shape class includes many types. Generally, if a entity has position and rotation and can be glued with other entities, then the entity can be viewed as a shape.
    // Yes, certainly, for many special shapes, many memeber properties are meaningless.
@@ -86,13 +89,26 @@ package player.entity {
          if (createStageId == 0)
          {
             // > from 1.02
-            var catId:int;
-            if (entityDefine.mCollisionCategoryIndex != undefined)
-               catId = entityDefine.mCollisionCategoryIndex;
-            else
+            //var catId:int;
+            //if (entityDefine.mCollisionCategoryIndex != undefined)
+            //   catId = entityDefine.mCollisionCategoryIndex;
+            //else
+            //   catId = Define.CCatId_Hidden;
+            //
+            //SetCollisionCategoryById (catId);
+           
+            var catId:int = entityDefine.mCollisionCategoryIndex;
+            if (entityDefine.mCollisionCategoryIndex == undefined)
                catId = Define.CCatId_Hidden;
             
-            SetCollisionCategoryById (catId);
+            SetCollisionCategory (CoreClasses..ValidateInitialDirectValueObject_Define2Object (
+                                          mWorld, 
+                                          ClassTypeDefine.ClassType_Core, 
+                                          CoreClassIds.ValueType_CollisionCategory,
+                                          catId,
+                                          extraInfos
+                                       ) as CollisionCategory
+                                 );
             //<<
             
             //>>from v1.07
@@ -188,7 +204,7 @@ package player.entity {
          super.ToEntityDefine (entityDefine);
          
          // > from 1.02
-         entityDefine.mCollisionCategoryIndex = GetCollisionCategory ().GetIndexInEditor ();
+         entityDefine.mCollisionCategoryIndex = GetCollisionCategory ().GetCategoryIndex ();
          //<<
          
          //>>from v1.07
@@ -251,17 +267,22 @@ package player.entity {
       
       public function SetCollisionCategoryById (ccatId:int):void
       {
-         mCollisionCategory = mWorld.GetCollisionCategoryById (ccatId);
-         if (mCollisionCategory == null)
+         var ccat:CollisionCategory = mWorld.GetCollisionCategoryById (ccatId);
+         if (ccat == null)
             SetCollisionCategoryById (Define.CCatId_Hidden);
+         else
+            SetCollisionCategory (ccat);
       }
       
       public function SetCollisionCategory (ccat:CollisionCategory):void
       {
          if (ccat == null)
+         {
             SetCollisionCategoryById (Define.CCatId_Hidden);
-         else
-            mCollisionCategory = ccat;
+            return;
+         }
+         
+         mCollisionCategory = ccat;
          
          if (mPhysicsProxy != null)
          {

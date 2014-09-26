@@ -1698,6 +1698,8 @@ package player.world {
       // the first is the hidden category
       public function CreateCollisionCategories (collisionCategoryDefines:Array, collisionCategoryFriendLinkDefines:Array, isMerging:Boolean = false):void
       {
+         var baseIndex:int = 0;
+
          var ccat:CollisionCategory;
 
          if (collisionCategoryDefines == null)
@@ -1710,7 +1712,7 @@ package player.world {
          else
          {
             var catArrayIndex:int;
-            var baseIndex:int;
+            
             if (isMerging)
             {
                baseIndex = mCollisionCategories.length;
@@ -1732,8 +1734,9 @@ package player.world {
                catArrayIndex = catId + baseIndex;
 
                ccat = new CollisionCategory ();
-               ccat.mCategoryIndex = catId;
+               ccat.mCategoryIndexInEditor = catId;
                ccat.mArrayIndex = catArrayIndex;
+               ccat.mCategoryIndex = catArrayIndex - 1;
                ccat.SetTableLength (mCollisionCategories.length);
                mCollisionCategories [catArrayIndex] = ccat;
 
@@ -1745,6 +1748,7 @@ package player.world {
          if (! isMerging)
          {
             ccat = new CollisionCategory ();
+            ccat.mCategoryIndexInEditor = -1;
             ccat.mCategoryIndex = -1;
             ccat.mArrayIndex = 0;
             ccat.SetTableLength (mCollisionCategories.length);
@@ -1753,42 +1757,55 @@ package player.world {
          }
 
          // friends
-         if (collisionCategoryFriendLinkDefines != null)
+         if (collisionCategoryDefines != null && collisionCategoryFriendLinkDefines != null)
          {
             var link_def:Object;
             for (var linkId:int = 0; linkId < collisionCategoryFriendLinkDefines.length; ++ linkId)
             {
                link_def =  collisionCategoryFriendLinkDefines [linkId];
-               BreakOrCreateCollisionCategoryFriendLinkByIds (link_def.mCollisionCategory1Index, link_def.mCollisionCategory2Index, false);
+               if (link_def.mCollisionCategory1Index < 0 || link_def.mCollisionCategory2Index < 0)
+                  continue;
+               
+               var arrayIndex1:int = link_def.mCollisionCategory1Index + baseIndex;
+               var arrayIndex2:int = link_def.mCollisionCategory2Index + baseIndex;
+               
+               if (arrayIndex1 >= mCollisionCategories.length)
+                  continue;
+               if (arrayIndex2 >= mCollisionCategories.length)
+                  continue;
+               
+               var category1:CollisionCategory = mCollisionCategories [arrayIndex1] as CollisionCategory;
+               var category2:CollisionCategory = mCollisionCategories [arrayIndex2] as CollisionCategory;
+               BreakOrCreateCollisionCategoryFriendLink (category1, category2, false);
             }
          }
       }
 
-      public function BreakOrCreateCollisionCategoryFriendLinkByIds (category1Index:int, category2Index:int, isBreak:Boolean):void
-      {
-         ++ category1Index;
-         if (category1Index < 0 || category1Index >= mCollisionCategories.length)
-            return;
-
-         ++ category2Index;
-         if (category2Index < 0 || category2Index >= mCollisionCategories.length)
-            return;
-
-         var changed1:Boolean = (mCollisionCategories [category1Index] as CollisionCategory).mEnemyTable [category2Index] != isBreak;
-         if (changed1)
-            (mCollisionCategories [category1Index] as CollisionCategory).mEnemyTable [category2Index] = isBreak;
-
-         var changed2:Boolean = false;
-         if (category2Index != category1Index)
-         {
-            changed2 = (mCollisionCategories [category2Index] as CollisionCategory).mEnemyTable [category1Index] != isBreak;
-            if (changed2)
-               (mCollisionCategories [category2Index] as CollisionCategory).mEnemyTable [category1Index] = isBreak;
-         }
-
-         if (changed1 || changed2)
-            mPhysicsEngine.FlagForFilteringForAllContacts ();
-      }
+      //public function BreakOrCreateCollisionCategoryFriendLinkByIds (category1Index:int, category2Index:int, isBreak:Boolean):void
+      //{
+         //++ category1Index; // now already is array index
+         //if (category1Index < 0 || category1Index >= mCollisionCategories.length)
+         //   return;
+         //
+         //++ category2Index; // now already is array index
+         //if (category2Index < 0 || category2Index >= mCollisionCategories.length)
+         //   return;
+         //
+         //var changed1:Boolean = (mCollisionCategories [category1Index] as CollisionCategory).mEnemyTable [category2Index] != isBreak;
+         //if (changed1)
+         //   (mCollisionCategories [category1Index] as CollisionCategory).mEnemyTable [category2Index] = isBreak;
+         //
+         //var changed2:Boolean = false;
+         //if (category2Index != category1Index)
+         //{
+         //   changed2 = (mCollisionCategories [category2Index] as CollisionCategory).mEnemyTable [category1Index] != isBreak;
+         //   if (changed2)
+         //      (mCollisionCategories [category2Index] as CollisionCategory).mEnemyTable [category1Index] = isBreak;
+         //}
+         //
+         //if (changed1 || changed2)
+         //   mPhysicsEngine.FlagForFilteringForAllContacts ();
+      //}
 
       public function BreakOrCreateCollisionCategoryFriendLink (category1:CollisionCategory, category2:CollisionCategory, isBreak:Boolean):void
       {
@@ -1821,11 +1838,15 @@ package player.world {
 
       public function GetCollisionCategoryById (ccatId:int):CollisionCategory
       {
-         var ccatIndex:int = ccatId + 1
+         var ccatIndex:int = ccatId + 1;
          if (ccatIndex < 0 || ccatIndex >= mCollisionCategories.length)
+         {
             return mCollisionCategories [0] // the hidden category
+         }
          else
+         {
             return mCollisionCategories [ccatIndex];
+         }
       }
 
       private function ShouldTwoShapeCollide (phyShape1:PhysicsProxyShape, phyShape2:PhysicsProxyShape):Boolean

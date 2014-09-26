@@ -1846,12 +1846,6 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_MergeLevel, world_scene_package, "Merge Scene Into The Current One", null, null,
-                     [
-                        new VariableDefinitionScene ("Scene To Merge"),
-                     ],
-                     null
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_GetLevelByIdOffset, world_scene_package, "Get Scene By Index Offset", null, null,
                      [
                         new VariableDefinitionNumber ("Index Offset"),
@@ -1917,6 +1911,12 @@ package editor.world {
                      ]
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_MergeLevel, world_level_package, "Merge Scene Into Current Level", null, null,
+                     [
+                        new VariableDefinitionScene ("Scene To Merge"),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_RestartLevel, world_level_package, "Restart Level", null, null,
                      [
                         new VariableDefinitionNumber ("Scene Switching Style", null, {mValueLists: Lists.mSceneSwitchingStyleList}),

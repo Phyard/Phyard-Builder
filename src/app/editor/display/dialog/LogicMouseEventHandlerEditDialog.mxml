@@ -24,16 +24,22 @@
             <mx:Spacer width="100%"/>
             <mx:VBox>
                <mx:RadioButton groupName="EventType" id="RadioButton_Click" value="Click" label="Mouse Click" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_Down" value="Down" label="Mouse Down" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_Up" value="Up" label="Mouse Up" />
                <mx:RadioButton groupName="EventType" id="RadioButton_Move" value="Move" label="Mouse Move" />
                <mx:RadioButton groupName="EventType" id="RadioButton_Enter" value="Enter" label="Mouse Enter" />
-               <mx:RadioButton groupName="EventType" id="RadioButton_Out" value="Out" label="Mouse Out" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_PhysicsDown" value="Down" label="Mouse Down (on Physics Shapes)" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_PhysicsUp" value="Up" label="Mouse Up (on Physics Shapes)" />
             </mx:VBox>
             <mx:Spacer width="20"/>
             <mx:VBox>
-               <mx:RadioButton groupName="EventType" id="RadioButton_Down" value="Down" label="Mouse Down" />
-               <mx:RadioButton groupName="EventType" id="RadioButton_Up" value="Up" label="Mouse Up" />
-               <mx:RadioButton groupName="EventType" id="RadioButton_PhysicsDown" value="Down" label="Mouse Down (on Physics Shapes)" />
-               <mx:RadioButton groupName="EventType" id="RadioButton_PhysicsUp" value="Up" label="Mouse Up (on Physics Shapes)" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_RightClick" value="Click" label="Mouse Right Click" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_RightDown" value="Down" label="Mouse Right Down" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_RightUp" value="Up" label="Mouse Right Up" />
+               <mx:Label text="" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_Out" value="Out" label="Mouse Out" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_PhysicsRightDown" value="Down" label="Mouse Right Down (on Physics Shapes)" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_PhysicsRightUp" value="Up" label="Mouse Right Up (on Physics Shapes)" />
             </mx:VBox>
             <mx:Spacer width="100%"/>
          </mx:HBox>
@@ -111,15 +117,29 @@
                case CoreEventIds.ID_OnPhysicsShapeMouseDown:
                   RadioButton_PhysicsDown.selected = true;
                   break;
+               case CoreEventIds.ID_OnPhysicsShapeMouseRightDown:
+                  RadioButton_PhysicsRightDown.selected = true;
+                  break;
                case CoreEventIds.ID_OnPhysicsShapeMouseUp:
                   RadioButton_PhysicsUp.selected = true;
+                  break;
+               case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
+                  RadioButton_PhysicsRightUp.selected = true;
                   break;
                case CoreEventIds.ID_OnWorldMouseDown:
                case CoreEventIds.ID_OnEntityMouseDown:
                   RadioButton_Down.selected = true;
                   break;
+               case CoreEventIds.ID_OnWorldMouseRightDown:
+               case CoreEventIds.ID_OnEntityMouseRightDown:
+                  RadioButton_RightDown.selected = true;
+                  break;
                case CoreEventIds.ID_OnWorldMouseUp:
                case CoreEventIds.ID_OnEntityMouseUp:
+                  RadioButton_Up.selected = true;
+                  break;
+               case CoreEventIds.ID_OnWorldMouseRightUp:
+               case CoreEventIds.ID_OnEntityMouseRightUp:
                   RadioButton_Up.selected = true;
                   break;
                case CoreEventIds.ID_OnWorldMouseMove:
@@ -132,6 +152,10 @@
                case CoreEventIds.ID_OnEntityMouseOut:
                   RadioButton_Out.selected = true;
                   break;
+               case CoreEventIds.ID_OnWorldMouseRightClick:
+               case CoreEventIds.ID_OnEntityMouseRightClick:
+                  RadioButton_RightClick.selected = true;
+                  break;
                case CoreEventIds.ID_OnWorldMouseClick:
                case CoreEventIds.ID_OnEntityMouseClick:
                default:
@@ -143,6 +167,8 @@
             {
                RadioButton_PhysicsDown.parent.removeChild (RadioButton_PhysicsDown);
                RadioButton_PhysicsUp.parent.removeChild (RadioButton_PhysicsUp);
+               RadioButton_PhysicsRightDown.parent.removeChild (RadioButton_PhysicsRightDown);
+               RadioButton_PhysicsRightUp.parent.removeChild (RadioButton_PhysicsRightUp);
                RadioButton_Enter.parent.removeChild (RadioButton_Enter);
                RadioButton_Out.parent.removeChild (RadioButton_Out);
             }
@@ -173,6 +199,12 @@
                {
                   if (RadioButton_Down.selected)
                      mParams.mEventId = CoreEventIds.ID_OnWorldMouseDown;
+                  else if (RadioButton_RightDown.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnWorldMouseRightDown;
+                  else if (RadioButton_RightUp.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnWorldMouseRightUp;
+                  else if (RadioButton_RightClick.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnWorldMouseRightClick;
                   else if (RadioButton_Up.selected)
                      mParams.mEventId = CoreEventIds.ID_OnWorldMouseUp;
                   else if (RadioButton_Move.selected)
@@ -186,6 +218,16 @@
                      mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseDown;
                   else if (RadioButton_PhysicsUp.selected)
                      mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseUp;
+                  if (RadioButton_PhysicsRightDown.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseRightDown;
+                  else if (RadioButton_PhysicsRightUp.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseRightUp;
+                  else if (RadioButton_RightClick.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnEntityMouseRightClick;
+                  else if (RadioButton_RightDown.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnEntityMouseRightDown;
+                  else if (RadioButton_RightUp.selected)
+                     mParams.mEventId = CoreEventIds.ID_OnEntityMouseRightUp;
                   else if (RadioButton_Down.selected)
                      mParams.mEventId = CoreEventIds.ID_OnEntityMouseDown;
                   else if (RadioButton_Up.selected)

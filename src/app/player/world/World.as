@@ -180,6 +180,7 @@ package player.world {
          mInitialSpeedX = worldDefine.mSettings.mInitialSpeedX;
          mPreferredFPS = worldDefine.mSettings.mPreferredFPS;
          mPauseOnFocusLost = worldDefine.mSettings.mPauseOnFocusLost;
+         mSupportMoreMouseEvents = true; //worldDefine.mSupportMoreMouseEvents; // v2.07+
          
          mPhysicsSimulationEnabled = worldDefine.mSettings.mPhysicsSimulationEnabled;
          mPhysicsSimulationQuality = worldDefine.mSettings.mPhysicsSimulationQuality;
@@ -703,7 +704,8 @@ package player.world {
       private var mInitialSpeedX:int;
             
       private var mPreferredFPS:Number;
-      private var mPauseOnFocusLost:Boolean;      
+      private var mPauseOnFocusLost:Boolean;    
+      private var mSupportMoreMouseEvents:Boolean = false;
       
       public function GetInitialSpeedX ():int
       {
@@ -723,6 +725,11 @@ package player.world {
       public function IsPauseOnFocusLost ():Boolean
       {
          return mPauseOnFocusLost;
+      }
+      
+      public function IsSupportMoreMouseEvents ():Boolean
+      {
+         return mSupportMoreMouseEvents;
       }
 
 //=============================================================
@@ -746,6 +753,12 @@ package player.world {
             return;
 
          mInitialized = true;
+         
+      //------------------------------------
+      // ...
+      //------------------------------------
+         
+         AddMoreMouseEventHandlers ();
          
       //------------------------------------
       // reset calling context

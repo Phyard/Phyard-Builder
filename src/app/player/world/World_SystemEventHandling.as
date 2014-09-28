@@ -193,19 +193,53 @@
 //   
 //=============================================================
 
+   private var mIsMoreEventHandlersAdded:Boolean = false;
+   private function AddMoreMouseEventHandlers ():void
+   {
+      if (mIsMoreEventHandlersAdded)
+         return;
+      
+      addEventListener (/*MouseEvent.RIGHT_CLICK*/"rightClick", OnMouseRightClick);
+      addEventListener (/*MouseEvent.RIGHT_DOWN*/"rightMouseDown", OnMouseRightDown);
+      addEventListener (/*MouseEvent.RIGHT_UP*/"rightMouseUp", OnMouseRightUp);
+      
+      //addEventListener (MouseEvent.RELEASE_OUTSIDE, OnMouseReleaseOutside);
+      
+      mIsMoreEventHandlersAdded = true;
+   }
+   
+   private function RemoveMoreMouseEventHandlers ():void
+   {
+      if (mIsMoreEventHandlersAdded)
+      {
+         removeEventListener (/*MouseEvent.RIGHT_CLICK*/"rightClick", OnMouseRightClick);
+         removeEventListener (/*MouseEvent.RIGHT_DOWN*/"rightMouseDown", OnMouseRightDown);
+         removeEventListener (/*MouseEvent.RIGHT_UP*/"rightMouseUp", OnMouseRightUp);
+         
+         //removeEventListener (MouseEvent.RELEASE_OUTSIDE, OnMouseReleaseOutside);
+         
+         mIsMoreEventHandlersAdded = false;
+      }
+   }
+   
    private function OnAddedToStage (event:Event):void 
    {
       addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
       
-      addEventListener (MouseEvent.CLICK, OnMouseClick);
-      addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+      addEventListener (MouseEvent.CLICK, OnMouseLeftClick);
+      addEventListener (MouseEvent.MOUSE_DOWN, OnMouseLeftDown);
       addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-      addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+      addEventListener (MouseEvent.MOUSE_UP, OnMouseLeftUp);
       //addEventListener (MouseEvent.MOUSE_OVER, OnOtherMouseEvents);
       //addEventListener (MouseEvent.MOUSE_OUT, OnOtherMouseEvents);
       //addEventListener (MouseEvent.ROLL_OVER, OnOtherMouseEvents);
       //addEventListener (MouseEvent.ROLL_OUT, OnOtherMouseEvents);
       //addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
+      
+      if (IsSupportMoreMouseEvents ())
+      {
+         AddMoreMouseEventHandlers ();
+      }
       
       // !!! don't forget to register corresponding event on Viewer.mGesgureSprite
       
@@ -234,15 +268,20 @@
       removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       removeEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
       
-      removeEventListener (MouseEvent.CLICK, OnMouseClick);
-      removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
+      removeEventListener (MouseEvent.CLICK, OnMouseLeftClick);
+      removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseLeftDown);
       removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-      removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+      removeEventListener (MouseEvent.MOUSE_UP, OnMouseLeftUp);
       //removeEventListener (MouseEvent.MOUSE_OVER, OnMouseOver);
       //removeEventListener (MouseEvent.MOUSE_OUT, OnMouseOut);
       //removeEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
       //removeEventListener (MouseEvent.ROLL_OVER, OnRollOver);
       //removeEventListener (MouseEvent.ROLL_OUT, OnRollOut);
+      
+      if (IsSupportMoreMouseEvents ())
+      {
+         RemoveMoreMouseEventHandlers ();
+      }
       
       // !!! don't forget to unregister corresponding event on Viewer.mGesgureSprite
       
@@ -270,16 +309,16 @@
       switch (mouseEvent.type)
       {
          case MouseEvent.CLICK:
-            OnMouseClick (mouseEvent);
+            OnMouseLeftClick (mouseEvent);
             break;
          case MouseEvent.MOUSE_DOWN:
-            OnMouseDown (mouseEvent);
+            OnMouseLeftDown (mouseEvent);
             break;
          case MouseEvent.MOUSE_MOVE:
             OnMouseMove (mouseEvent);
             break;
          case MouseEvent.MOUSE_UP:
-            OnMouseUp (mouseEvent);
+            OnMouseLeftUp (mouseEvent);
             break;
       }
       
@@ -324,14 +363,44 @@
       */
    }
    
-   public function OnMouseClick (event:MouseEvent):void
+   public function OnMouseLeftClick (event:MouseEvent):void
+   {
+      OnMouseClick (event, true);
+   }
+   
+   public function OnMouseRightClick (event:MouseEvent):void
+   {
+      OnMouseClick (event, false);
+   }
+   
+   public function OnMouseLeftDown (event:MouseEvent):void
+   {
+      OnMouseDown (event, true);
+   }
+   
+   public function OnMouseRightDown (event:MouseEvent):void
+   {
+      OnMouseDown (event, false);
+   }
+   
+   public function OnMouseLeftUp (event:MouseEvent):void
+   {
+      OnMouseUp (event, true);
+   }
+   
+   public function OnMouseRightUp (event:MouseEvent):void
+   {
+      OnMouseUp (event, false);
+   }
+   
+   public function OnMouseClick (event:MouseEvent, isLeft:Boolean):void
    {
       UpdateMousePositionAndHoldInfo (event);
       
       if (IsInteractiveEnabledNow ())
       {
          // ...
-         RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseClick]);
+         RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseClick : CoreEventIds.ID_OnWorldMouseRightClick]);
       }
       
       if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
@@ -343,44 +412,59 @@
    private var _KeyboardDownEvent:KeyboardEvent = new KeyboardEvent (KeyboardEvent.KEY_DOWN);
    private var _KeyboardUpEvent:KeyboardEvent = new KeyboardEvent (KeyboardEvent.KEY_UP);
    
-   public function OnMouseDown (event:MouseEvent):void
+   public function OnMouseDown (event:MouseEvent, isLeft:Boolean):void
    {
       // moved to update ()
       //if ((stage.focus is TextField) && (! (event.target is TextField)) && (stage.focus != stage))
       //   stage.focus = stage;
-
+      
+      var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;
+      
       // sometimes, user release mouse out of world, ...
-      if (IsKeyHold (KeyCodes.LeftMouseButton))
+      if (IsKeyHold (mouseButtonKeyCode))
       {
-         OnMouseUp (event);
+         if (isLeft)
+         {
+            OnMouseLeftUp (event);
+         }
+         else
+         {
+            OnMouseRightUp (event);
+         }
       }
       
       // ...
-      SetCurrentMode (new ModeMoveWorldScene (this));
-      
-      if (mCurrentMode != null)
-         mCurrentMode.OnMouseDown (event.stageX, event.stageY);
+      if (isLeft)
+      {
+         SetCurrentMode (new ModeMoveWorldScene (this));
+         
+         if (mCurrentMode != null)
+            mCurrentMode.OnMouseDown (event.stageX, event.stageY);
+      }
       
       UpdateMousePositionAndHoldInfo (event);
       
-      KeyPressed (KeyCodes.LeftMouseButton, 0);
+      KeyPressed (mouseButtonKeyCode, 0);
       
       if (IsInteractiveEnabledNow ())
       {
          // as a key
-         _KeyboardDownEvent.keyCode = KeyCodes.LeftMouseButton;
+         _KeyboardDownEvent.keyCode = mouseButtonKeyCode;
          _KeyboardDownEvent.charCode = 0;
          _KeyboardDownEvent.ctrlKey = event.ctrlKey;
          _KeyboardDownEvent.shiftKey = event.shiftKey;
          _KeyboardDownEvent.altKey = event.altKey;
          //HandleKeyEventByKeyCode (_KeyboardDownEvent, true);
-         RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardDownEvent, mKeyDownEventHandlerLists);
+         RegisterKeyboardEvent (mouseButtonKeyCode, _KeyboardDownEvent, mKeyDownEventHandlerLists);
          
          // ...
-         RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseDown]);
+         RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseDown : CoreEventIds.ID_OnWorldMouseRightDown]);
          
          // ...
-         if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
+         if ((isLeft && mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
+               ||
+            ((! isLeft) && mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseRightDown] != null)
+            )
          {
             //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
             var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
@@ -389,11 +473,22 @@
             
             var shape:EntityShape;
             var num:int = shapeArray.length;
-            for (var i:int = 0; i < num; ++ i)
+            var i:int;
+            if (isLeft)
             {
-               shape = shapeArray [i] as EntityShape;
-               
-               shape.OnPhysicsShapeMouseDown (event);
+               for (i = 0; i < num; ++ i)
+               {
+                  shape = shapeArray [i] as EntityShape;
+                  shape.OnPhysicsShapeMouseDown (event);
+               }
+            }
+            else
+            {
+               for (i = 0; i < num; ++ i)
+               {
+                  shape = shapeArray [i] as EntityShape;
+                  shape.OnPhysicsShapeMouseRightDown (event);
+               }
             }
          }
       }
@@ -404,32 +499,37 @@
       }
    }
    
-   public function OnMouseUp (event:MouseEvent):void
+   public function OnMouseUp (event:MouseEvent, isLeft:Boolean):void
    {
       // ...
-      if (mCurrentMode != null)
-         mCurrentMode.OnMouseUp (event.stageX, event.stageY);
+      if (isLeft)
+      {
+         if (mCurrentMode != null)
+            mCurrentMode.OnMouseUp (event.stageX, event.stageY);
+      }
       
       UpdateMousePositionAndHoldInfo (event);
       
-      if (IsKeyHold (KeyCodes.LeftMouseButton))
+      var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;
+      
+      if (IsKeyHold (mouseButtonKeyCode))
       {
          // moved to bottom
-         //KeyReleased (KeyCodes.LeftMouseButton);
+         //KeyReleased (mouseButtonKeyCode);
          
          if (IsInteractiveEnabledNow ())
          {
             // as a key
-            _KeyboardUpEvent.keyCode = KeyCodes.LeftMouseButton;
+            _KeyboardUpEvent.keyCode = mouseButtonKeyCode;
             _KeyboardUpEvent.charCode = 0;
             _KeyboardUpEvent.ctrlKey = event.ctrlKey;
             _KeyboardUpEvent.shiftKey = event.shiftKey;
             _KeyboardUpEvent.altKey = event.altKey;
             //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
-            RegisterKeyboardEvent (KeyCodes.LeftMouseButton, _KeyboardUpEvent, mKeyUpEventHandlerLists);
+            RegisterKeyboardEvent (mouseButtonKeyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
             
             // ...
-            RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseUp]);
+            RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseUp : CoreEventIds.ID_OnWorldMouseRightUp]);
             
             // ...
             //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
@@ -437,23 +537,37 @@
             var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
             var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
             
-            if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null)
+            if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null
+                  ||
+                mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseRightUp] != null
+               )
             {
                var shape:EntityShape;
                var num:int = shapeArray.length;
-               for (var i:int = 0; i < num; ++ i)
+               var i:int;
+               if (isLeft)
                {
-                  shape = shapeArray [i] as EntityShape;
-                  
-                  shape.OnPhysicsShapeMousUp (event);
+                  for (i = 0; i < num; ++ i)
+                  {
+                     shape = shapeArray [i] as EntityShape;
+                     shape.OnPhysicsShapeMouseUp (event);
+                  }
+               }
+               else
+               {
+                     shape = shapeArray [i] as EntityShape;
+                     shape.OnPhysicsShapeMouseRightUp (event);
                }
             }
             
-            //RemoveBombsAndRemovableShapes (shapeArray);
-            RegisterCachedSystemEvent ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
+            if (isLeft)
+            {
+               //RemoveBombsAndRemovableShapes (shapeArray);
+               RegisterCachedSystemEvent ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
+            }
          }
          
-         KeyReleased (KeyCodes.LeftMouseButton, 0);
+         KeyReleased (mouseButtonKeyCode, 0);
       }
       
       if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
@@ -481,6 +595,10 @@
          event.stopPropagation ();
       }
    }
+   
+   //public function OnMouseReleaseOutside (event:MouseEvent):void
+   //{
+   //}
    
    public function OnOtherMouseEvents (event:MouseEvent):void
    {

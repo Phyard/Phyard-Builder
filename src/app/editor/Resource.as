@@ -117,6 +117,13 @@ package editor {
       
       // mouse
       
+      [Embed("../res/create/event_on_world_mouse_right_clicked.png")]
+      public static const IconOnWorldMouseRightClickedEvent:Class;
+      [Embed("../res/create/event_on_world_mouse_right_down.png")]
+      public static const IconOnWorldMouseRightDownEvent:Class;
+      [Embed("../res/create/event_on_world_mouse_right_up.png")]
+      public static const IconOnWorldMouseRightUpEvent:Class;
+      
       [Embed("../res/create/event_on_world_mouse_clicked.png")]
       public static const IconOnWorldMouseClickedEvent:Class;
       [Embed("../res/create/event_on_world_mouse_move.png")]
@@ -126,10 +133,22 @@ package editor {
       [Embed("../res/create/event_on_world_mouse_up.png")]
       public static const IconOnWorldMouseUpEvent:Class;
       
+      [Embed("../res/create/event_on_physics_shape_mouse_right_down.png")]
+      public static const IconOnPhysicsEntityMouseRightDownEvent:Class;
+      [Embed("../res/create/event_on_physics_shape_mouse_right_up.png")]
+      public static const IconOnPhysicsEntityMouseRightUpEvent:Class;
+      
       [Embed("../res/create/event_on_physics_shape_mouse_down.png")]
       public static const IconOnPhysicsEntityMouseDownEvent:Class;
       [Embed("../res/create/event_on_physics_shape_mouse_up.png")]
       public static const IconOnPhysicsEntityMouseUpEvent:Class;
+      
+      [Embed("../res/create/event_on_shape_mouse_right_clicked.png")]
+      public static const IconOnEntityMouseRightClickedEvent:Class;
+      [Embed("../res/create/event_on_shape_mouse_right_down.png")]
+      public static const IconOnEntityMouseRightDownEvent:Class;
+      [Embed("../res/create/event_on_shape_mouse_right_up.png")]
+      public static const IconOnEntityMouseRightUpEvent:Class;
       
       [Embed("../res/create/event_on_shape_mouse_clicked.png")]
       public static const IconOnEntityMouseClickedEvent:Class;
@@ -213,10 +232,20 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnWorldKeyUp  ] = IconOnKeyUpEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldKeyHold] = IconOnKeyHoldEvent;
             
+            sEventId2IconClass [CoreEventIds.ID_OnWorldMouseRightClick] = IconOnWorldMouseRightClickedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldMouseRightDown ] = IconOnWorldMouseRightDownEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldMouseRightUp   ] = IconOnWorldMouseRightUpEvent;
+            
             sEventId2IconClass [CoreEventIds.ID_OnWorldMouseClick] = IconOnWorldMouseClickedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldMouseDown ] = IconOnWorldMouseDownEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldMouseUp   ] = IconOnWorldMouseUpEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldMouseMove ] = IconOnWorldMouseMoveEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseRightDown] = IconOnPhysicsEntityMouseRightDownEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseRightUp  ] = IconOnPhysicsEntityMouseRightUpEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseRightClick     ] = IconOnEntityMouseRightClickedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseRightDown      ] = IconOnEntityMouseRightDownEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityMouseRightUp        ] = IconOnEntityMouseRightUpEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseDown] = IconOnPhysicsEntityMouseDownEvent;
             sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseUp  ] = IconOnPhysicsEntityMouseUpEvent;

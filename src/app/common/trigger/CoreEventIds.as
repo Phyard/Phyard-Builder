@@ -42,9 +42,6 @@ package common.trigger {
 
       public static const ID_OnEntityTimer:int = IdPool.EventId_80;
 
-      public static const ID_OnShapeMouseDown:int = IdPool.EventId_90;
-      public static const ID_OnShapeMouseUp:int = IdPool.EventId_91;
-
    // entity / shape / module
 
       public static const ID_OnSequencedModuleLoopToEnd:int = IdPool.EventId_100;
@@ -68,6 +65,12 @@ package common.trigger {
       public static const ID_OnEntityPairTimer:int = IdPool.EventId_150;
 
    // mouse event (entity)
+      
+      public static const ID_OnPhysicsShapeMouseRightDown:int = IdPool.EventId_195;
+      public static const ID_OnPhysicsShapeMouseRightUp:int = IdPool.EventId_196;
+      public static const ID_OnEntityMouseRightClick:int = IdPool.EventId_197;
+      public static const ID_OnEntityMouseRightDown:int = IdPool.EventId_198;
+      public static const ID_OnEntityMouseRightUp:int = IdPool.EventId_199;
 
       public static const ID_OnPhysicsShapeMouseDown:int = IdPool.EventId_200;
       public static const ID_OnPhysicsShapeMouseUp:int = IdPool.EventId_201;
@@ -78,6 +81,7 @@ package common.trigger {
       public static const ID_OnEntityMouseEnter:int = IdPool.EventId_206; // mouse_over with mouseChildren == false
       public static const ID_OnEntityMouseOut:int = IdPool.EventId_207;
 
+
       public static const MaxEntityMouseEventId:int = ID_OnEntityMouseOut;
 
    // mouse event (world)
@@ -86,8 +90,12 @@ package common.trigger {
       public static const ID_OnWorldMouseDown:int = IdPool.EventId_211;
       public static const ID_OnWorldMouseUp:int = IdPool.EventId_212;
       public static const ID_OnWorldMouseMove:int = IdPool.EventId_213;
+   
+      public static const ID_OnWorldMouseRightClick:int = IdPool.EventId_214;
+      public static const ID_OnWorldMouseRightDown:int = IdPool.EventId_215;
+      public static const ID_OnWorldMouseRightUp:int = IdPool.EventId_216;
 
-      public static const MaxWorldMouseEventId:int = ID_OnWorldMouseMove;
+      public static const MaxWorldMouseEventId:int = ID_OnWorldMouseRightUp;
 
    // keyboard event
 

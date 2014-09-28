@@ -473,14 +473,22 @@ package editor.entity.dialog {
             case CoreEventIds.ID_OnEntityPairTimer:
                handler = mScene.CreateEntityEventHandler_TimerWithPrePostHandling (eventId, null, true);
                break;
+            case CoreEventIds.ID_OnPhysicsShapeMouseRightDown:
+            case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
             case CoreEventIds.ID_OnPhysicsShapeMouseDown:
             case CoreEventIds.ID_OnPhysicsShapeMouseUp:
             case CoreEventIds.ID_OnEntityMouseClick:
+            case CoreEventIds.ID_OnPhysicsShapeMouseRightDown:
+            case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
+            case CoreEventIds.ID_OnEntityMouseRightClick:
             case CoreEventIds.ID_OnEntityMouseDown:
             case CoreEventIds.ID_OnEntityMouseUp:
             case CoreEventIds.ID_OnEntityMouseMove:
             case CoreEventIds.ID_OnEntityMouseEnter:
             case CoreEventIds.ID_OnEntityMouseOut:
+            case CoreEventIds.ID_OnWorldMouseRightClick:
+            case CoreEventIds.ID_OnWorldMouseRightDown:
+            case CoreEventIds.ID_OnWorldMouseRightUp:
             case CoreEventIds.ID_OnWorldMouseClick:
             case CoreEventIds.ID_OnWorldMouseDown:
             case CoreEventIds.ID_OnWorldMouseUp:

@@ -151,6 +151,26 @@ package editor.world {
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
                     ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnPhysicsShapeMouseRightDown, "OnPhysicsShapeMouseRightDown", "Right presss mouse on a physics shape",
+                    [
+                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnPhysicsShapeMouseRightUp, "OnPhysicsShapeMouseRightUp", "Right release mouse on a physics shape",
+                    [
+                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
          RegisterEventDeclaration (CoreEventIds.ID_OnEntityMouseClick, "OnShapeMouseClick", "Click mouse on an entity",
                     [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -177,6 +197,36 @@ package editor.world {
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityMouseRightClick, "OnShapeMouseRightClick", "Right click mouse on an entity",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityMouseRightDown, "OnShapeMouseRightDown", "Right press mouse on an entity",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down")
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityMouseRightUp, "OnShapeMouseRightUp", "Right release mouse on an entity",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -222,10 +272,40 @@ package editor.world {
 
       // ...
 
-         RegisterEventDeclaration (CoreEventIds.ID_OnWorldMouseClick, "OnWorldMouseClick", "When world is clicked",
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldMouseRightClick, "OnWorldMouseRightClick", "When world is right mouse clicked",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"), 
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldMouseRightDown, "OnWorldMouseRightDown", "Right press mouse in world",
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldMouseRightUp, "OnWorldMouseRightUp", "Right release mouse in world",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Ctrl Down"),
+                        new VariableDefinitionBoolean ("Is Shift Down"),
+                        new VariableDefinitionBoolean ("Is Alt Down"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldMouseClick, "OnWorldMouseClick", "When world is clicked",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"), 
                         new VariableDefinitionBoolean ("Is Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),

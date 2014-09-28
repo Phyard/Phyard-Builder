@@ -135,6 +135,27 @@ package common.trigger {
 
      // ...
 
+         RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseRightDown,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseRightUp,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseDown,
                     [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
@@ -185,6 +206,36 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,      false],
                         [CoreClassIds.ValueType_Boolean,      false],
                     ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseRightClick,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseRightDown,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseRightUp,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityMouseMove,
                     [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
@@ -223,6 +274,37 @@ package common.trigger {
                     ]);
 
      // ...
+     
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseRightClick,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseRightDown,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseRightUp,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
 
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseClick,
                     [

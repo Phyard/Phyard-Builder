@@ -2421,6 +2421,9 @@ package common {
                      case CoreEventIds.ID_OnWorldMouseClick:
                      case CoreEventIds.ID_OnWorldMouseDown:
                      case CoreEventIds.ID_OnWorldMouseUp:
+                     case CoreEventIds.ID_OnWorldMouseRightClick:
+                     case CoreEventIds.ID_OnWorldMouseRightDown:
+                     case CoreEventIds.ID_OnWorldMouseRightUp:
                      case CoreEventIds.ID_OnWorldMouseMove:
                         entity = logic = scene.CreateEntityEventHandler_Mouse (entityDefine.mEventId);
                         break;

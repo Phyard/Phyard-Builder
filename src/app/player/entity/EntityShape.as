@@ -701,9 +701,14 @@ package player.entity {
       
       private var mPhyicsShapeMouseDownEventHandlerList:ListElement_EventHandler = null;
       private var mPhyicsShapeMouseUpEventHandlerList:ListElement_EventHandler = null;
+      private var mPhyicsShapeMouseRightDownEventHandlerList:ListElement_EventHandler = null;
+      private var mPhyicsShapeMouseRightUpEventHandlerList:ListElement_EventHandler = null;
       private var mMouseClickEventHandlerList:ListElement_EventHandler = null;
       private var mMouseDownEventHandlerList:ListElement_EventHandler = null;
       private var mMouseUpEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseRightClickEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseRightDownEventHandlerList:ListElement_EventHandler = null;
+      private var mMouseRightUpEventHandlerList:ListElement_EventHandler = null;
       private var mMouseMoveEventHandlerList:ListElement_EventHandler = null;
       private var mMouseEnterEventHandlerList:ListElement_EventHandler = null;
       private var mMouseOutEventHandlerList:ListElement_EventHandler = null;
@@ -720,6 +725,12 @@ package player.entity {
             case CoreEventIds.ID_OnPhysicsShapeMouseUp:
                mPhyicsShapeMouseUpEventHandlerList = RegisterEventHandlerToList (mPhyicsShapeMouseUpEventHandlerList, eventHandler);
                break;
+            case CoreEventIds.ID_OnPhysicsShapeMouseRightDown:
+               mPhyicsShapeMouseRightDownEventHandlerList = RegisterEventHandlerToList (mPhyicsShapeMouseRightDownEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
+               mPhyicsShapeMouseRightUpEventHandlerList = RegisterEventHandlerToList (mPhyicsShapeMouseRightUpEventHandlerList, eventHandler);
+               break;
             case CoreEventIds.ID_OnEntityMouseClick:
                mMouseClickEventHandlerList = RegisterEventHandlerToList (mMouseClickEventHandlerList, eventHandler);
                break;
@@ -728,6 +739,15 @@ package player.entity {
                break;
             case CoreEventIds.ID_OnEntityMouseUp:
                mMouseUpEventHandlerList = RegisterEventHandlerToList (mMouseUpEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseRightClick:
+               mMouseRightClickEventHandlerList = RegisterEventHandlerToList (mMouseRightClickEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseRightDown:
+               mMouseRightDownEventHandlerList = RegisterEventHandlerToList (mMouseRightDownEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityMouseRightUp:
+               mMouseRightUpEventHandlerList = RegisterEventHandlerToList (mMouseRightUpEventHandlerList, eventHandler);
                break;
             case CoreEventIds.ID_OnEntityMouseMove:
                mMouseMoveEventHandlerList = RegisterEventHandlerToList (mMouseMoveEventHandlerList, eventHandler);
@@ -750,9 +770,19 @@ package player.entity {
          HandleMouseEvent (event, mPhyicsShapeMouseDownEventHandlerList, false);
       }
       
-      public function OnPhysicsShapeMousUp (event:MouseEvent):void
+      public function OnPhysicsShapeMouseUp (event:MouseEvent):void
       {
          HandleMouseEvent (event, mPhyicsShapeMouseUpEventHandlerList, false);
+      }
+      
+      public function OnPhysicsShapeMouseRightDown (event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mPhyicsShapeMouseRightDownEventHandlerList, false);
+      }
+      
+      public function OnPhysicsShapeMouseRightUp (event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mPhyicsShapeMouseRightUpEventHandlerList, false);
       }
       
    // for all shape, called by flex framework
@@ -770,6 +800,21 @@ package player.entity {
       protected function OnMouseUp(event:MouseEvent):void
       {
          HandleMouseEvent (event, mMouseUpEventHandlerList);
+      }
+      
+      protected function OnMouseRightClick (event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseRightClickEventHandlerList);
+      }
+      
+      protected function OnMouseRightDown(event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseRightDownEventHandlerList);
+      }
+      
+      protected function OnMouseRightUp(event:MouseEvent):void
+      {
+         HandleMouseEvent (event, mMouseRightUpEventHandlerList);
       }
       
       protected function OnMouseMove(event:MouseEvent):void
@@ -815,6 +860,21 @@ package player.entity {
       protected function GetMouseUpListener ():Function
       {
          return mMouseUpEventHandlerList == null ? null : OnMouseUp;
+      }
+      
+      protected function GetMouseRightClickListener ():Function
+      {
+         return mMouseClickEventHandlerList == null ? null : OnMouseRightClick;
+      }
+      
+      protected function GetMouseRightDownListener ():Function
+      {
+         return mMouseDownEventHandlerList == null ? null : OnMouseRightDown;
+      }
+      
+      protected function GetMouseRightUpListener ():Function
+      {
+         return mMouseUpEventHandlerList == null ? null : OnMouseRightUp;
       }
       
       protected function GetMouseMoveListener ():Function
@@ -878,6 +938,16 @@ package player.entity {
             mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
          if  (GetMouseOutListener () != null)
             mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
+         
+         if (mWorld.IsSupportMoreMouseEvents ())
+         {
+            if (GetMouseRightClickListener () != null)
+               mAppearanceObjectsContainer.addEventListener (/*MouseEvent.RIGHT_CLICK*/"rightClick", GetMouseRightClickListener ());
+            if (GetMouseRightDownListener () != null)
+               mAppearanceObjectsContainer.addEventListener (/*MouseEvent.RIGHT_DOWN*/"rightMouseDown", GetMouseRightDownListener ());
+            if (GetMouseRightUpListener () != null)
+               mAppearanceObjectsContainer.addEventListener (/*MouseEvent.RIGHT_UP*/"rightMouseUp", GetMouseRightUpListener ());
+         }
       }
       
       // call this function after calling mBody.OnPhysicsShapeListChanged () so that mBody.mPosition is the centroid of mBody.

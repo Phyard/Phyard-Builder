@@ -34,9 +34,6 @@ package common.trigger {
 
       public static const EventId_80:int = 80;
 
-      public static const EventId_90:int = 90;
-      public static const EventId_91:int = 91;
-
       public static const EventId_100:int = 100;
 
       public static const EventId_111:int = 111;
@@ -58,7 +55,12 @@ package common.trigger {
       public static const EventId_189:int = 189;
       
       public static const EventId_190:int = 190;
-
+      
+      public static const EventId_195:int = 195;
+      public static const EventId_196:int = 196;
+      public static const EventId_197:int = 197;
+      public static const EventId_198:int = 198;
+      public static const EventId_199:int = 199;
       public static const EventId_200:int = 200;
       public static const EventId_201:int = 201;
       public static const EventId_202:int = 202;
@@ -67,12 +69,15 @@ package common.trigger {
       public static const EventId_205:int = 205;
       public static const EventId_206:int = 206;
       public static const EventId_207:int = 207;
-
+      
       public static const EventId_210:int = 210;
       public static const EventId_211:int = 211;
       public static const EventId_212:int = 212;
       public static const EventId_213:int = 213;
-
+      public static const EventId_214:int = 214;
+      public static const EventId_215:int = 215;
+      public static const EventId_216:int = 216;
+      
       public static const EventId_220:int = 220;
       public static const EventId_221:int = 221;
       public static const EventId_222:int = 222;

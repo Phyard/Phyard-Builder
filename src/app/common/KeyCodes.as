@@ -58,21 +58,22 @@ package common {
       public static const SquareBracketRight:int = 221; // ;
       public static const Quote:int = 222; // ;
       
-     
-      // mouse
-      public static const LeftMouseButton:int = 256;
       
       // virtual any key
       public static const VirtualAnyKeys:int = 257;
+     
+      // mouse
+      public static const LeftMouseButton:int = 256;
+      public static const RightMouseButton:int = 258;
       
       // virtual ctrl and shift
-      //public static const ControlLeft:int = 258;
-      //public static const ControlRight:int = 259;
-      //public static const ShiftLeft:int = 260;
-      //public static const ShiftRight:int = 261;
+      //public static const ControlLeft:int = 260;
+      //public static const ControlRight:int = 260;
+      //public static const ShiftLeft:int = 262;
+      //public static const ShiftRight:int = 263;
       
       //
-      public static const kNumKeys:int = 262;
+      public static const kNumKeys:int = 265;
       
       //
       private static var sAnyKeyCodes:Array = null;
@@ -131,6 +132,11 @@ package common {
             if (selectedKeys.indexOf (LeftMouseButton) >= 0)
             {
                returnKeyCodes.push (LeftMouseButton);
+            }
+            
+            if (selectedKeys.indexOf (RightMouseButton) >= 0)
+            {
+               returnKeyCodes.push (RightMouseButton);
             }
          }
          

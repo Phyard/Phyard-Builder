@@ -4,7 +4,7 @@ package editor.trigger {
    import mx.controls.ComboBox;
    
    import editor.world.World;
-   import editor.world.CoreClasses;
+   import editor.world.CoreClassesHub;
    import editor.entity.Scene;
    import editor.entity.Entity;
    import editor.entity.Scene;
@@ -42,7 +42,7 @@ package editor.trigger {
       
       override public function GetDefaultDirectValueSource ():ValueSource_Direct
       {
-         return new ValueSource_Direct (CoreClasses.sVoidClass);
+         return new ValueSource_Direct (CoreClassesHub.sVoidClass);
       }
       
       override public function CreateControlForDirectValueSource (scene:Scene, valueSourceDirect:ValueSource_Direct, isForPureCustomFunction:Boolean):UIComponent

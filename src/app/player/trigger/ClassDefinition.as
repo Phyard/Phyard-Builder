@@ -4,7 +4,7 @@ package player.trigger
    
    public class ClassDefinition
    {
-      // these static values are defined in CoreClasses.as,
+      // these static values are defined in CoreClassesHub.as,
       // no errors in compiling.
       // but flash player reports runtime errors.
       // so move them here.

@@ -171,7 +171,7 @@ package player.trigger
             // before v2.05
             //vi.SetValueObject (inputParamList.EvaluateValueObject ());
             // since v2.05
-            CoreClasses.AssignValue (inputParamList.GetVariableInstance (), vi);
+            CoreClassesHub.AssignValue (inputParamList.GetVariableInstance (), vi);
             
             vi = vi.mNextVariableInstanceInSpace;
             inputParamList = inputParamList.mNextParameter;
@@ -188,7 +188,7 @@ package player.trigger
             // before v2.05
             //outputParamList.AssignValueObject (vi.GetValueObject ());
             // since v2.05
-            CoreClasses.AssignValue (vi, outputParamList.GetVariableInstance ());
+            CoreClassesHub.AssignValue (vi, outputParamList.GetVariableInstance ());
             
             vi = vi.mNextVariableInstanceInSpace;
             outputParamList = outputParamList.mNextParameter;

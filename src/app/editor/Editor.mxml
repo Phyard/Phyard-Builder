@@ -529,7 +529,7 @@
          info.mAuthorHomepage = mWorld.GetAuthorHomepage ();
          if (IsOnlineEditing ())
          {
-            if (info.mAuthorName == "");
+            if (info.mAuthorName == null || info.mAuthorName.length == 0)
                info.mAuthorName = mAppParams.mAuthorName;
             if (info.mAuthorHomepage == "")
                info.mAuthorHomepage = "http://www.phyard.com/profile/" + mAppParams.mAuthorName.replace (/\s+/g, "_");

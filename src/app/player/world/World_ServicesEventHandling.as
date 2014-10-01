@@ -7,11 +7,11 @@
    {
       if (mIsGameInstanceInfoChangedInLastStep)
       {
-         var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstanceSeatsInfoChanged, null);
-         var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstancePhaseChanged, valueSource4);
-         var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsPlayerStatusChanged, valueSource3);
-         var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, mIsGameInstanceServerConnectionStatusChanged, valueSource2);
-         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kMultiplePlayerInstanceClassDefinition, null, valueSource1);
+         var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, mIsGameInstanceSeatsInfoChanged, null);
+         var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, mIsGameInstancePhaseChanged, valueSource4);
+         var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, mIsPlayerStatusChanged, valueSource3);
+         var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, mIsGameInstanceServerConnectionStatusChanged, valueSource2);
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kMultiplePlayerInstanceClassDefinition, null, valueSource1);
          
          // ...
          
@@ -66,10 +66,10 @@
          }
          case "OnChannelSeatMessage":
          {
-            var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kByteArrayClassDefinition, params.mMessageData, null);
-            var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, params.mSeatIndex, valueSource3);
-            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, params.mChannelIndex, valueSource2);
-            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kMultiplePlayerInstanceClassDefinition, null, valueSource1);
+            var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kByteArrayClassDefinition, params.mMessageData, null);
+            var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, params.mSeatIndex, valueSource3);
+            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, params.mChannelIndex, valueSource2);
+            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kMultiplePlayerInstanceClassDefinition, null, valueSource1);
             
             RegisterCachedSystemEvent ([CachedEventType_General, mEventHandlersByTypes [CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage], valueSource0]);
             

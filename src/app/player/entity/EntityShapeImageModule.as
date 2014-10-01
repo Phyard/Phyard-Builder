@@ -12,7 +12,7 @@ package player.entity {
    import player.module.Module;
    import player.module.ModuleInstance;
    
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    
    import player.trigger.entity.EntityEventHandler;
    import player.trigger.Parameter_DirectConstant;
@@ -73,8 +73,8 @@ package player.entity {
          
          if (mLoopToEndEventHandler != null)
          {
-            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kModuleClassDefinition, module, null);
-            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, this, valueSource1);
+            var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kModuleClassDefinition, module, null);
+            var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, this, valueSource1);
             
             mWorld.IncStepStage ();
             mLoopToEndEventHandler.HandleEvent (valueSource0);

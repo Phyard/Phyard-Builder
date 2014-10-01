@@ -13,11 +13,11 @@ package player.trigger
          mId = customId;
          mName = name;
          
-         mToNumberFunc = CoreClasses.Object2Number;
-         mToBooleanFunc = CoreClasses.Object2Boolean;
-         mToStringFunc = CoreClasses.Object2String;
-         mIsNullFunc = CoreClasses.IsNullObjectValue;
-         mGetNullFunc = CoreClasses.GetNullObjectValue;
+         mToNumberFunc = CoreClassesHub.Object2Number;
+         mToBooleanFunc = CoreClassesHub.Object2Boolean;
+         mToStringFunc = CoreClassesHub.Object2String;
+         mIsNullFunc = CoreClassesHub.IsNullObjectValue;
+         mGetNullFunc = CoreClassesHub.GetNullObjectValue;
          
          mValueConvertOrder = ClassDefinition.ValueConvertOrder_Others;
       }

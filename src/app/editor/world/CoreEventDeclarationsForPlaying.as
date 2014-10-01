@@ -133,7 +133,7 @@ package editor.world {
 
          RegisterEventDeclaration (CoreEventIds.ID_OnPhysicsShapeMouseDown, "OnPhysicsShapeMouseDown", "Presss mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -143,7 +143,7 @@ package editor.world {
                     ]);
          RegisterEventDeclaration (CoreEventIds.ID_OnPhysicsShapeMouseUp, "OnPhysicsShapeMouseUp", "Release mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down"),
@@ -153,7 +153,7 @@ package editor.world {
                     ]);
          RegisterEventDeclaration (CoreEventIds.ID_OnPhysicsShapeMouseRightDown, "OnPhysicsShapeMouseRightDown", "Right presss mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
@@ -163,7 +163,7 @@ package editor.world {
                     ]);
          RegisterEventDeclaration (CoreEventIds.ID_OnPhysicsShapeMouseRightUp, "OnPhysicsShapeMouseRightUp", "Right release mouse on a physics shape",
                     [
-                        new VariableDefinitionEntity ("The Physics Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
                         new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),

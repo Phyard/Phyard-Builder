@@ -10,7 +10,7 @@ package common {
    import player.world.CollisionCategory;
    
    import player.trigger.ClassDefinition;
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
       
    import player.trigger.FunctionDefinition;
    import player.trigger.FunctionDefinition_Core;
@@ -97,14 +97,14 @@ package common {
                variableInstance = variableSpace.GetVariableByIndex (i);
                
                classId = functionDeclaration.GetInputParamValueType (i);
-               classDefinition = CoreClasses.GetCoreClassDefinition (classId);
+               classDefinition = CoreClassesHub.GetCoreClassDefinition (classId);
                
                if (firstTime)
                {
                   ////variableInstance.SetIndex (i);
                   ////variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
                   ////variableInstance.SetValueType (functionDeclaration.GetInputParamValueType (i));
-                  //variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+                  //variableInstance.SetShellClassDefinition (CoreClassesHub.GetCoreClassDefinition (classId));
                   
                   varDeclaration = new VariableDeclaration (classDefinition);
                   varDeclaration.SetIndex (i);
@@ -122,7 +122,7 @@ package common {
                //   variableInstance.SetValueObject (null);
                //else
                //{
-                  variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetInputParamDefaultValue (i)));
+                  variableInstance.SetValueObject (CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetInputParamDefaultValue (i)));
                //}
             }
          }
@@ -137,14 +137,14 @@ package common {
                variableInstance = variableSpace.GetVariableByIndex (i);
                
                classId = functionDeclaration.GetOutputParamValueType (i);
-               classDefinition = CoreClasses.GetCoreClassDefinition (classId);
+               classDefinition = CoreClassesHub.GetCoreClassDefinition (classId);
                
                if (firstTime)
                {
                   ////variableInstance.SetIndex (i);
                   ////variableInstance.SetClassType (ClassTypeDefine.ClassType_Core);
                   ////variableInstance.SetValueType (functionDeclaration.GetOutputParamValueType (i));
-                  //variableInstance.SetShellClassDefinition (CoreClasses.GetCoreClassDefinition (classId));
+                  //variableInstance.SetShellClassDefinition (CoreClassesHub.GetCoreClassDefinition (classId));
                   
                   varDeclaration = new VariableDeclaration (classDefinition);
                   varDeclaration.SetIndex (i);
@@ -162,7 +162,7 @@ package common {
                //   variableInstance.SetValueObject (null);
                //else
                //{
-                  variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetOutputParamDefaultValue (i)));
+                  variableInstance.SetValueObject (CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, classId, functionDeclaration.GetOutputParamDefaultValue (i)));
                //}
             }
          }
@@ -662,7 +662,7 @@ package common {
 
             value_source = new Parameter_DirectConstant (
                                     Global.sTheGlobal.GetClassDefinition (playerWorld, classType, valueType),
-                                    CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos)
+                                    CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, direct_source_define.mValueObject, extraInfos)
                                  ); 
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
@@ -776,7 +776,7 @@ package common {
             // before v2.05, 2 <- null + null 
             //value_source = new Parameter_DirectConstant (
             //                     Global.GetClassDefinition (classType, valueType),
-            //                     CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos)
+            //                     CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, classType, valueType, defaultDirectValue, extraInfos)
             //                  );
             
             // since v2.05, 0 <- null + null
@@ -985,7 +985,7 @@ package common {
                
                valueType += customClassIdShiftOffset;
             }
-            var classDefinition:ClassDefinition = CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Class, {mClassType : variableDefine.mClassType, mValueType : valueType}) as ClassDefinition;
+            var classDefinition:ClassDefinition = CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Class, {mClassType : variableDefine.mClassType, mValueType : valueType}) as ClassDefinition;
             //variableInstance.SetShellClassDefinition (classDefinition);
             
             var varDeclaration:VariableDeclaration = new VariableDeclaration (classDefinition);
@@ -998,8 +998,8 @@ package common {
             variableInstance.SetRealClassDefinition (classDefinition);
             //if (playerWorld != null)
             //{
-               //variableInstance.SetValueObject (CoreClasses.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
-               variableInstance.SetValueObject (CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, variableInstance.GetRealClassType (), variableInstance.GetRealValueType (), variableDefine.mValueObject));
+               //variableInstance.SetValueObject (CoreClassesHub.ValidateDirectValueObject_Define2Object (playerWorld, direct_source_define.mValueType, direct_source_define.mValueObject));
+               variableInstance.SetValueObject (CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, variableInstance.GetRealClassType (), variableInstance.GetRealValueType (), variableDefine.mValueObject));
             //}
             
             if (useIdMappingTable)
@@ -1048,7 +1048,7 @@ package common {
             if (entity != null)
             {
                if (tryToReSceneDependentVariables)
-                  return CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
+                  return CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_Entity, entity.GetCreationId ());
                else
                   return null;
             }
@@ -1059,7 +1059,7 @@ package common {
             if (ccat != null)
             {
                if (tryToReSceneDependentVariables)
-                  return CoreClasses.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_CollisionCategory, ccat.GetCategoryIndex ());
+                  return CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (playerWorld, ClassTypeDefine.ClassType_Core, CoreClassIds.ValueType_CollisionCategory, ccat.GetCategoryIndex ());
                else
                   return null;
             }
@@ -1203,7 +1203,7 @@ package common {
 
          if (source_type == ValueSourceTypeDefine.ValueSource_Direct)
          {
-            valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, numberDetail));
+            valueSourceDefine = new ValueSourceDefine_Direct (/*valueType, */CoreClassesHub.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, numberDetail));
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
@@ -1346,11 +1346,11 @@ package common {
             valueType = binFile.readShort ();
             //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
             //                                                valueType,
-            //                                                supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
+            //                                                supportInitalValues ? CoreClassesHub.LoadDirectValueObjectFromBinFile (binFile, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType)
             //                                                );
             variableDefine.mClassType = classType;
             variableDefine.mValueType = valueType;
-            variableDefine.mValueObject = supportInitalValues ? CoreClasses.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
+            variableDefine.mValueObject = supportInitalValues ? CoreClassesHub.LoadDirectValueObjectFromBinFile (binFile, classType, valueType, CoreClassIds.NumberTypeDetailBit_Double) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
             
             //variableSpaceDefine.mVariableDefines [i] = variableDefine; // v1.52 only
             variableDefines.push (variableDefine);
@@ -1507,7 +1507,7 @@ package common {
             
             try
             {
-               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (classType, valueType, direct_source_define.mValueObject);
+               var directValue:Object = CoreClassesHub.ValidateDirectValueObject_Define2Xml (classType, valueType, direct_source_define.mValueObject);
                if (directValue != null)// now, for Array and custom classes.
                {
                   elementValueSource.@direct_value = directValue;
@@ -1651,8 +1651,8 @@ package common {
             
             if (supportInitalValues)
             {
-               //var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (variableDefine.mDirectValueSourceDefine.mValueType, variableDefine.mDirectValueSourceDefine.mValueObject);
-               var directValue:Object = CoreClasses.ValidateDirectValueObject_Define2Xml (variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject);
+               //var directValue:Object = CoreClassesHub.ValidateDirectValueObject_Define2Xml (variableDefine.mDirectValueSourceDefine.mValueType, variableDefine.mDirectValueSourceDefine.mValueObject);
+               var directValue:Object = CoreClassesHub.ValidateDirectValueObject_Define2Xml (variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject);
                if (directValue != null)
                {
                   element.@initial_value = directValue;

@@ -20,7 +20,7 @@ package editor.world {
 
    import common.Define;
 
-   public class CoreClasses
+   public class CoreClassesHub
    {
       public static var sVoidClass:ClassDefinition_Core = null;
       public static var mCoreClasses:Array = new Array (CoreClassIds.NumCoreClasses);

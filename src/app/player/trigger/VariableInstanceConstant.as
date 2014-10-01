@@ -6,7 +6,7 @@ package player.trigger
    public class VariableInstanceConstant extends VariableInstance
    {
       // void target or null source.
-      public static const kVoidVariableInstance:VariableInstanceConstant = new VariableInstanceConstant (new VariableDeclaration (), CoreClasses.kVoidClassDefinition, CoreClasses.kVoidClassDefinition.CreateDefaultInitialValue ());
+      public static const kVoidVariableInstance:VariableInstanceConstant = new VariableInstanceConstant (new VariableDeclaration (), CoreClassesHub.kVoidClassDefinition, CoreClassesHub.kVoidClassDefinition.CreateDefaultInitialValue ());
             // mxmlc is weak: if this variable is put in super class VariableInstance, then compiling error.
       
    //=====================================

@@ -7,17 +7,35 @@
     title="World General Settings" width="600" creationComplete="OnInitPanel()">
 
     <mx:HBox width="100%" borderStyle="solid" borderThickness="1" paddingTop="10" paddingBottom="10" horizontalAlign="center">
-       <mx:Grid id="Grid_Settings">
-          <mx:GridRow>
-             <mx:GridItem>
-               <mx:CheckBox id="CheckBox_CiRulesEnabled" label="Enable C.I. Rules"/>
-               <mx:Spacer width="76"/>
-             </mx:GridItem>
-             <mx:GridItem>
+       <mx:Spacer width="100%" />
+       
+       <mx:VBox>
+          <mx:HBox>
+               <mx:Label text="Color Infection Related:" />
+          </mx:HBox>
+          <mx:HBox>
+               <mx:Spacer width="28" />
+               <mx:CheckBox id="CheckBox_CiRulesEnabled" label="Enable C.I. Rules" />
+          </mx:HBox>
+          <mx:HBox id="Box_RemovePinksOnMouseDown" visible="false">
+               <mx:Spacer width="28" />
+               <mx:CheckBox id="CheckBox_RemovePinksOnMouseDown" label="Remove Pinks On Mouse Down (unchecked for mouse up)"/>
+          </mx:HBox>
+          <mx:Spacer height="7" />
+          <mx:HBox>
+               <mx:Label text="Others:" />
+          </mx:HBox>
+          <mx:HBox>
+               <mx:Spacer width="28" />
                <mx:CheckBox id="CheckBox_PauseOnFocusLost" label="Pause Game When Focus Is Lost"/>
-             </mx:GridItem>
-          </mx:GridRow>
-       </mx:Grid>
+          </mx:HBox>
+          <mx:HBox>
+               <mx:Spacer width="28" />
+               <mx:CheckBox id="CheckBox_SupportMoreMouseEvents" label="Support Right Mouse Events"/>
+          </mx:HBox>
+       </mx:VBox>
+       
+       <mx:Spacer width="100%" />
     </mx:HBox>
 
    <mx:Spacer height="5"/>
@@ -56,8 +74,12 @@
 
          private function OnInitPanel ():void
          {
+            Box_RemovePinksOnMouseDown.parent.removeChild (Box_RemovePinksOnMouseDown);
+            
             CheckBox_PauseOnFocusLost.selected = mParams.mIsPauseOnFocusLost;
             CheckBox_CiRulesEnabled.selected = mParams.mIsCiRulesEnabled;
+            CheckBox_RemovePinksOnMouseDown.selected = mParams.mRemovePinksOnMouseDown;
+            CheckBox_SupportMoreMouseEvents.selected = mParams.mSupportMoreMouseEvents;
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -74,6 +96,8 @@
          {  
             mParams.mIsPauseOnFocusLost = CheckBox_PauseOnFocusLost.selected;
             mParams.mIsCiRulesEnabled = CheckBox_CiRulesEnabled.selected;
+            mParams.mRemovePinksOnMouseDown = CheckBox_RemovePinksOnMouseDown.selected;
+            mParams.mSupportMoreMouseEvents = CheckBox_SupportMoreMouseEvents.selected;
 
             //PopUpManager.removePopUp(this);
 

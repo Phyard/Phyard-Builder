@@ -58,7 +58,7 @@ package common {
 
    import player.trigger.data.ListElement_EventHandler;
    
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    import player.trigger.ClassDefinition_Custom;
    import player.trigger.FunctionDefinition_Custom;
 
@@ -1123,6 +1123,14 @@ package common {
             element = IntSetting2XmlElement ("physics_simulation_quality", sceneDefine.mSettings.mPhysicsSimulationQuality, true);
             xml.Settings.appendChild (element);
             element = BoolSetting2XmlElement ("physics_simulation_check_toi", sceneDefine.mSettings.mCheckTimeOfImpact);
+            xml.Settings.appendChild (element);
+         }
+
+         if (worldDefine.mVersion >= 0x0208)
+         {
+            element = BoolSetting2XmlElement ("support_all_mouse_events", sceneDefine.mSettings.mSupportMoreMouseEvents);
+            xml.Settings.appendChild (element);
+            element = BoolSetting2XmlElement ("remove_pinks_on_mouse_down", sceneDefine.mSettings.mRemovePinksOnMouseDown);
             xml.Settings.appendChild (element);
          }
 
@@ -2383,8 +2391,13 @@ package common {
                sceneDefine.mSettings.mCoordinatesOriginX = byteArray.readDouble ();
                sceneDefine.mSettings.mCoordinatesOriginY = byteArray.readDouble ();
                sceneDefine.mSettings.mCoordinatesScale = byteArray.readDouble ();
-
-               sceneDefine.mSettings.mIsCiRulesEnabled = byteArray.readByte () != 0;
+               
+               var ciRulesFlag:int = byteArray.readByte ();
+               sceneDefine.mSettings.mIsCiRulesEnabled = ((ciRulesFlag & 0x01) != 0);
+               if (worldDefine.mVersion >= 0x0208)
+               {
+                  sceneDefine.mSettings.mRemovePinksOnMouseDown = ((ciRulesFlag & 0x02) != 0);
+               }
             }
 
             if (worldDefine.mVersion >= 0x0155)
@@ -2397,7 +2410,13 @@ package common {
             {
                sceneDefine.mSettings.mInitialSpeedX = byteArray.readByte ();
                sceneDefine.mSettings.mPreferredFPS = byteArray.readFloat ();
-               sceneDefine.mSettings.mPauseOnFocusLost = byteArray.readByte () != 0;
+               
+               var generalSeetingFlag:int = byteArray.readByte ();
+               sceneDefine.mSettings.mPauseOnFocusLost = ((generalSeetingFlag & 0x01) != 0);
+               if (worldDefine.mVersion >= 0x0208)
+               {
+                  sceneDefine.mSettings.mSupportMoreMouseEvents = ((generalSeetingFlag & 0x02) != 0);
+               }
                
                sceneDefine.mSettings.mPhysicsSimulationEnabled = byteArray.readByte () != 0;
                sceneDefine.mSettings.mPhysicsSimulationStepTimeLength = byteArray.readFloat ();
@@ -3953,6 +3972,12 @@ package common {
                sceneDefine.mSettings.mPhysicsSimulationStepTimeLength = (1.0 / 30) * 0.5;
                sceneDefine.mSettings.mPhysicsSimulationQuality = 0x0803;
                sceneDefine.mSettings.mCheckTimeOfImpact = true;
+            }
+            
+            if (worldDefine.mVersion < 0x0208)
+            {
+               sceneDefine.mSettings.mSupportMoreMouseEvents = false;
+               sceneDefine.mSettings.mRemovePinksOnMouseDown = false;
             }
    
             // collision category

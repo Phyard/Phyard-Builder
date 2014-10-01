@@ -16,7 +16,7 @@ package player.trigger {
 
    import common.Define;
 
-   public class CoreClasses
+   public class CoreClassesHub
    {
       public static const kVoidClassDefinition:ClassDefinition_Core = new ClassDefinition_Core (CoreClassDeclarations.GetCoreClassDeclarationById (CoreClassIds.ValueType_Void));
       public static const kObjectClassDefinition:ClassDefinition_Core = new ClassDefinition_Core (CoreClassDeclarations.GetCoreClassDeclarationById (CoreClassIds.ValueType_Object));
@@ -528,24 +528,24 @@ package player.trigger {
                }
                else // not convertable
                {
-                  //targetVi._mRealClassDefinition = CoreClasses.kVoidClassDefinition; // targetShellClass
+                  //targetVi._mRealClassDefinition = CoreClassesHub.kVoidClassDefinition; // targetShellClass
                   //targetVi._mValueObject = null; // targetShellClass.mGetNullValue (); // bug, constant will be chagned.
-                  targetVi.Assign (CoreClasses.kVoidClassDefinition, null);
+                  targetVi.Assign (CoreClassesHub.kVoidClassDefinition, null);
                }
             }
             else if (targetShellClass.mValueConvertOrder == ClassDefinition.ValueConvertOrder_Others)
             {
                // source must be primitive, which is not convertable to non-primitive (except Object class).
                
-               if (targetShellClass == CoreClasses.kObjectClassDefinition)
+               if (targetShellClass == CoreClassesHub.kObjectClassDefinition)
                {
                   targetVi.Assign (sourceClass, sourceCi._mValueObject);
                }
                else
                {
-                  //targetVi._mRealClassDefinition = CoreClasses.kVoidClassDefinition; // targetShellClass
+                  //targetVi._mRealClassDefinition = CoreClassesHub.kVoidClassDefinition; // targetShellClass
                   //targetVi._mValueObject = null; // targetShellClass.mGetNullValue (); // bug, constant will be chagned.
-                  targetVi.Assign (CoreClasses.kVoidClassDefinition, null);
+                  targetVi.Assign (CoreClassesHub.kVoidClassDefinition, null);
                }
             }
             else // target must be primitive. Primitive classes are final classes (have no sub classes).

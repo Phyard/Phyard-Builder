@@ -22,7 +22,7 @@ package player.entity {
    import player.trigger.data.ListElement_EntityShape;
    
    import player.trigger.ClassInstance;
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    import player.trigger.ClassDefinition;
    
    import common.trigger.CoreEventIds;
@@ -101,7 +101,7 @@ package player.entity {
             if (entityDefine.mCollisionCategoryIndex == undefined)
                catId = Define.CCatId_Hidden;
             
-            SetCollisionCategory (CoreClasses..ValidateInitialDirectValueObject_Define2Object (
+            SetCollisionCategory (CoreClassesHub..ValidateInitialDirectValueObject_Define2Object (
                                           mWorld, 
                                           ClassTypeDefine.ClassType_Core, 
                                           CoreClassIds.ValueType_CollisionCategory,
@@ -864,17 +864,17 @@ package player.entity {
       
       protected function GetMouseRightClickListener ():Function
       {
-         return mMouseClickEventHandlerList == null ? null : OnMouseRightClick;
+         return mMouseRightClickEventHandlerList == null ? null : OnMouseRightClick;
       }
       
       protected function GetMouseRightDownListener ():Function
       {
-         return mMouseDownEventHandlerList == null ? null : OnMouseRightDown;
+         return mMouseRightDownEventHandlerList == null ? null : OnMouseRightDown;
       }
       
       protected function GetMouseRightUpListener ():Function
       {
-         return mMouseUpEventHandlerList == null ? null : OnMouseRightUp;
+         return mMouseRightUpEventHandlerList == null ? null : OnMouseRightUp;
       }
       
       protected function GetMouseMoveListener ():Function
@@ -1558,7 +1558,7 @@ package player.entity {
                   if (hashtable [anotherAnchor.mShape] == null)
                   {
                      hashtable [anotherAnchor.mShape] = 1;
-                     shapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, anotherAnchor.mShape));
+                     shapes.push (ClassInstance.CreateClassInstance (CoreClassesHub.kEntityClassDefinition, anotherAnchor.mShape));
                   }
                }
             }
@@ -1624,7 +1624,7 @@ package player.entity {
          while (listElement != null)
          {
             if (shapes.indexOf (listElement.mEntityShape) < 0) // may be not efficient
-               shapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, listElement.mEntityShape));
+               shapes.push (ClassInstance.CreateClassInstance (CoreClassesHub.kEntityClassDefinition, listElement.mEntityShape));
             
             listElement = listElement.mNextListElement;
          }

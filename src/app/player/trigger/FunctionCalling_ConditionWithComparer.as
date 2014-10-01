@@ -20,7 +20,7 @@ package player.trigger
          // before v2.05
          //if ((mInputValueSourceList.EvaluateValueObject () as Boolean) == (mInputValueSourceList.mNextParameter.EvaluateValueObject () as Boolean))
          // since v2.05
-         if (CoreClasses.CompareEquals (mInputValueSourceList.GetVariableInstance (), mInputValueSourceList.mNextParameter.GetVariableInstance ()))
+         if (CoreClassesHub.CompareEquals (mInputValueSourceList.GetVariableInstance (), mInputValueSourceList.mNextParameter.GetVariableInstance ()))
          {
             mNextFunctionCalling = mNextFunctionCalling_True;
          }

@@ -14,14 +14,14 @@ package player.trigger
          return ci;
       }
       
-      //public static const kClassInstanceVoid:ClassInstance = CreateClassInstance (CoreClasses.kVoidClassDefinition, CoreClasses.kVoidClassDefinition.CreateDefaultInitialValue ());
+      //public static const kClassInstanceVoid:ClassInstance = CreateClassInstance (CoreClassesHub.kVoidClassDefinition, CoreClassesHub.kVoidClassDefinition.CreateDefaultInitialValue ());
       
    //================================================
    
       // the 2 are set to public for better performance.
       // their values can only be changed in CommonAssgin API.
       // (mValueObject can also be changed in SetValueObject for old APIs)
-      internal var _mRealClassDefinition:ClassDefinition = CoreClasses.kVoidClassDefinition; // must inited with this value, for kVoidVariableInstance.
+      internal var _mRealClassDefinition:ClassDefinition = CoreClassesHub.kVoidClassDefinition; // must inited with this value, for kVoidVariableInstance.
       internal var _mValueObject:Object = null; // undefined;  // must inited with this value, for kVoidVariableInstance.
       
       public function ClassInstance ()
@@ -72,7 +72,7 @@ package player.trigger
       // - ...
       public function CloneClassInstance ():ClassInstance
       {
-         //if (_mRealClassDefinition == CoreClasses.kVoidClassDefinition)
+         //if (_mRealClassDefinition == CoreClassesHub.kVoidClassDefinition)
          //   return null;
             
          //var newCI:ClassInstance = new ClassInstance ();

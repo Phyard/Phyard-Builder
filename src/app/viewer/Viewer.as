@@ -203,6 +203,8 @@ package viewer {
             addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
             addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
             addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+            
+            TryToRegisterToggleInfoShowingKey ();
          }
          
          // ...
@@ -258,6 +260,8 @@ package viewer {
             removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
             removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
             removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+            
+            TryToUnregisterToggleInfoShowingKey ();
          }
          
          // ...
@@ -327,7 +331,7 @@ package viewer {
       {
          mIsAppDeactivated = true;
          
-         if (mStateId == StateId_Playing && mWorldDesignProperties != null && (mWorldDesignProperties.GetPauseOnFocusLost () as Boolean))
+         if (mStateId == StateId_Playing && mWorldDesignProperties != null && (mWorldDesignProperties.IsPauseOnFocusLost () as Boolean))
          {
             if (mSkin != null) mSkin.OnDeactivate ();
          }
@@ -1298,7 +1302,8 @@ package viewer {
          if (mWorldDesignProperties.mInitialSoundEnabled == undefined)            mWorldDesignProperties.mInitialSoundEnabled = true;
          if (mWorldDesignProperties.SetSoundEnabled == undefined)                 mWorldDesignProperties.SetSoundEnabled = DummyCallback;
          if (mWorldDesignProperties.GetPreferredFPS == undefined)                 mWorldDesignProperties.GetPreferredFPS = DummyCallback_GetFps;
-         if (mWorldDesignProperties.GetPauseOnFocusLost == undefined)             mWorldDesignProperties.GetPauseOnFocusLost = DummyCallback_ReturnFalse;
+         if (mWorldDesignProperties.IsPauseOnFocusLost == undefined)              mWorldDesignProperties.IsPauseOnFocusLost = mWorldDesignProperties.GetPauseOnFocusLost; // for a typo bug
+         if (mWorldDesignProperties.IsPauseOnFocusLost == undefined)              mWorldDesignProperties.IsPauseOnFocusLost = DummyCallback_ReturnFalse;
          if (mWorldDesignProperties.RegisterGestureEvent == undefined)            mWorldDesignProperties.RegisterGestureEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerEvent == undefined)                   mWorldDesignProperties.OnViewerEvent = DummyCallback;
          if (mWorldDesignProperties.OnViewerDestroyed == undefined)               mWorldDesignProperties.OnViewerDestroyed = DummyCallback;
@@ -1308,6 +1313,7 @@ package viewer {
          if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
          if (mWorldDesignProperties.OnMultiplePlayerServerMessage == undefined)   mWorldDesignProperties.OnMultiplePlayerServerMessage = DummyCallback;
+         if (mWorldDesignProperties.SupportMoreMouseEvents == undefined)          mWorldDesignProperties.IsPauseOnFocusLost = DummyCallback_ReturnFalse;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -2282,8 +2288,46 @@ package viewer {
 //
 //======================================================================
 
+      private function OnTryToCopySourceCode (event:MouseEvent):void
+      {
+         if (event.ctrlKey && event.shiftKey)
+         {
+            OnCopySourceCode ();
+         }
+      }
+      
+      private var mIsToggleInfoShowingKeyREgisted:Boolean = false;
+       
+      private function TryToRegisterToggleInfoShowingKey ():Boolean
+      {
+         if (mWorldDesignProperties != null && mWorldDesignProperties.SupportMoreMouseEvents () as Boolean)
+         {
+            if (! mIsToggleInfoShowingKeyREgisted)
+            {
+               addEventListener (/*MouseEvent.RIGHT_CLICK*/"rightClick", OnTryToCopySourceCode);
+               mIsToggleInfoShowingKeyREgisted = true;
+            }
+            
+            return true;
+         }
+         
+         return false;
+      }
+      
+      private function TryToUnregisterToggleInfoShowingKey ():void
+      {
+         if (mIsToggleInfoShowingKeyREgisted)
+         {
+            removeEventListener (/*MouseEvent.RIGHT_CLICK*/"rightClick", OnTryToCopySourceCode);
+            mIsToggleInfoShowingKeyREgisted = false;
+         }
+      }
+
       private function BuildContextMenu ():void
       {
+         if (TryToRegisterToggleInfoShowingKey ())
+            return;
+         
          if (! mBuildContextMenu)
             return;
 
@@ -2368,11 +2412,11 @@ package viewer {
          contextMenu = theContextMenu;
       }
 
-      private function OnCopySourceCode (event:ContextMenuEvent):void
+      private function OnCopySourceCode (event:ContextMenuEvent = null):void
       {
-         //if (mWorldSourceCode != null)
-         //{
-            try
+         try
+         {
+            if (mWorldDesignProperties != null && mWorldDesignProperties.mIsShareSourceCode)
             {
                // the convertion is very time consuming, so put int here to decrease the game init time
                //mWorldSourceCode = DataFormat2.WorldDefine2Xml (DataFormat2.HexString2WorldDefine (mWorldPlayCode));
@@ -2387,11 +2431,16 @@ package viewer {
 
                System.setClipboard (mWorldSourceCode);
             }
-            catch (error:Error)
+            else
             {
-               trace (error.getStackTrace ());
+               System.setClipboard ("Not available");
             }
-         //}
+         }
+         catch (error:Error)
+         {
+            trace (error.getStackTrace ());
+            System.setClipboard ("error!");
+         }
       }
 
       private function OnCopyEmbedCode (event:ContextMenuEvent):void

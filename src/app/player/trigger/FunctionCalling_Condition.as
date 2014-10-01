@@ -47,7 +47,7 @@ package player.trigger
          // before v2.05
          //if (mInputValueSourceList.EvaluateValueObject () as Boolean)
          // since v2.05
-         if (CoreClasses.ToBoolean (mInputValueSourceList.GetVariableInstance ()))
+         if (CoreClassesHub.ToBoolean (mInputValueSourceList.GetVariableInstance ()))
          {
             mNextFunctionCalling = mNextFunctionCalling_True;
          }

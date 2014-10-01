@@ -41,7 +41,7 @@ package editor.codelib {
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;
    
-   import editor.world.CoreClasses;
+   import editor.world.CoreClassesHub;
 
    import editor.asset.Asset;
    import editor.asset.Linkable;
@@ -75,7 +75,7 @@ package editor.codelib {
          
          mouseChildren = false;
          
-         mCustomClass = new ClassDefinition_Custom (GetName (), CoreClasses.ValidateValueObject_ArrayAndCustomObject);
+         mCustomClass = new ClassDefinition_Custom (GetName (), CoreClassesHub.ValidateValueObject_ArrayAndCustomObject);
       }
       
       override public function Destroy ():void

@@ -23,7 +23,7 @@ package player.trigger {
    //import player.trigger.FunctionDefinition_Core;
    //import player.trigger.Parameter;
    //import player.trigger.Parameter_DirectConstant;
-   //import player.trigger.CoreClasses;
+   //import player.trigger.CoreClassesHub;
    //import player.trigger.ClassInstance;
 
    import com.tapirgames.util.RandomNumberGenerator;
@@ -726,7 +726,7 @@ package player.trigger {
       //{
       //}
       
-      //public static const kTempClassInstanceForNewInstance:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kVoidClassDefinition, null);
+      //public static const kTempClassInstanceForNewInstance:ClassInstance = ClassInstance.CreateClassInstance (CoreClassesHub.kVoidClassDefinition, null);
       public static const kTempClassInstanceForNewInstance:VariableInstance = new VariableInstance ();
             // class instance is not mutable, so use a VariableInstance here.
 
@@ -734,21 +734,21 @@ package player.trigger {
       {
          var aClass:ClassDefinition = valueSource.EvaluateValueObject () as ClassDefinition;
          if (aClass == null)
-            aClass = CoreClasses.kVoidClassDefinition;
+            aClass = CoreClassesHub.kVoidClassDefinition;
          
          kTempClassInstanceForNewInstance.SetRealClassDefinition (aClass);
          kTempClassInstanceForNewInstance._SetValueObject (aClass.CreateDefaultInitialValue ());
          
-         CoreClasses.AssignValue (kTempClassInstanceForNewInstance, valueTarget.GetVariableInstance ());
+         CoreClassesHub.AssignValue (kTempClassInstanceForNewInstance, valueTarget.GetVariableInstance ());
       }
 
-      public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClasses.kBooleanClassDefinition, false);
+      public static const kTempClassInstanceForComparing:ClassInstance = ClassInstance.CreateClassInstance (CoreClassesHub.kBooleanClassDefinition, false);
 
       public static function CommonEquals (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         kTempClassInstanceForComparing._SetValueObject (CoreClasses.CompareEquals (valueSource.GetVariableInstance (), valueSource.mNextParameter.GetVariableInstance ()));
+         kTempClassInstanceForComparing._SetValueObject (CoreClassesHub.CompareEquals (valueSource.GetVariableInstance (), valueSource.mNextParameter.GetVariableInstance ()));
          
-         CoreClasses.AssignValue (kTempClassInstanceForComparing, valueTarget.GetVariableInstance ());
+         CoreClassesHub.AssignValue (kTempClassInstanceForComparing, valueTarget.GetVariableInstance ());
       }
       
    //*******************************************************************
@@ -1132,7 +1132,7 @@ package player.trigger {
       public static function AssignString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var value:String = valueSource.EvaluateValueObject () as String;
-         var value:String = CoreClasses.ToString (valueSource.GetVariableInstance ());
+         var value:String = CoreClassesHub.ToString (valueSource.GetVariableInstance ());
 
          valueTarget.AssignValueObject (value);
       }
@@ -1140,15 +1140,15 @@ package player.trigger {
       public static function ConditionAssignString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
-         var condtion:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condtion:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          //var string1:String = valueSource.EvaluateValueObject () as String;
-         var string1:String = CoreClasses.ToString (valueSource.GetVariableInstance ());
+         var string1:String = CoreClassesHub.ToString (valueSource.GetVariableInstance ());
 
          valueSource = valueSource.mNextParameter;
          //var string2:String = valueSource.EvaluateValueObject () as String;
-         var string2:String = CoreClasses.ToString (valueSource.GetVariableInstance ());
+         var string2:String = CoreClassesHub.ToString (valueSource.GetVariableInstance ());
 
          valueTarget.AssignValueObject (condtion ? string1 : string2);
       }
@@ -1183,9 +1183,9 @@ package player.trigger {
          //valueTarget.AssignValueObject (value1 + value2);
          
          valueTarget.AssignValueObject (
-                                 CoreClasses.ToString (valueSource.GetVariableInstance ())
+                                 CoreClassesHub.ToString (valueSource.GetVariableInstance ())
                                  +
-                                 CoreClasses.ToString (valueSource.mNextParameter.GetVariableInstance ())
+                                 CoreClassesHub.ToString (valueSource.mNextParameter.GetVariableInstance ())
                               );
       }
 
@@ -1302,7 +1302,7 @@ package player.trigger {
                if (texts != null)
                {
                   substrings = texts.concat ();
-                  CoreClasses.CovertArrayElementsToClassInstances (substrings, CoreClasses.kStringClassDefinition);
+                  CoreClassesHub.CovertArrayElementsToClassInstances (substrings, CoreClassesHub.kStringClassDefinition);
                }
             }
          }
@@ -1368,7 +1368,7 @@ package player.trigger {
          var value:Number = Number (valueSource.EvaluateValueObject ());
 
          //valueTarget.AssignValueObject (value.toString (10));
-         valueTarget.AssignValueObject (CoreClasses.Number2String (value));
+         valueTarget.AssignValueObject (CoreClassesHub.Number2String (value));
       }
 
       //public static function NumberToExponentialString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -1458,7 +1458,7 @@ package player.trigger {
          var value:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
          //valueTarget.AssignValueObject (String (value));
-         valueTarget.AssignValueObject (CoreClasses.Boolean2String (value));
+         valueTarget.AssignValueObject (CoreClassesHub.Boolean2String (value));
       }
 
       public static function EntityToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -1468,10 +1468,10 @@ package player.trigger {
          //if (entity == null)
          //   valueTarget.AssignValueObject ("null");
          //else
-         //   valueTarget.AssignValueObject (CoreClasses.Entity2String (entity));
+         //   valueTarget.AssignValueObject (CoreClassesHub.Entity2String (entity));
          
          // since v2.05. A little non-compatible: old "null" vs new null.
-         valueTarget.AssignValueObject (CoreClasses.kEntityClassDefinition.ToString (entity));
+         valueTarget.AssignValueObject (CoreClassesHub.kEntityClassDefinition.ToString (entity));
       }
 
       public static function CollisionCategoryToString (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -1481,10 +1481,10 @@ package player.trigger {
          //if (ccat == null)
          //   valueTarget.AssignValueObject ("null");
          //else
-         //   valueTarget.AssignValueObject (CoreClasses.CCat2String (ccat));
+         //   valueTarget.AssignValueObject (CoreClassesHub.CCat2String (ccat));
          
          // since v2.05. A little non-compatible: old "null" vs new null.
-         valueTarget.AssignValueObject (CoreClasses.kCCatClassDefinition.ToString (ccat));
+         valueTarget.AssignValueObject (CoreClassesHub.kCCatClassDefinition.ToString (ccat));
       }
 
    //************************************************
@@ -1494,7 +1494,7 @@ package player.trigger {
       public static function AssignBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var value:Boolean = valueSource.EvaluateValueObject () as Boolean;
-         var value:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ());
+         var value:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ());
 
          valueTarget.AssignValueObject (value);
       }
@@ -1502,15 +1502,15 @@ package player.trigger {
       public static function ConditionAssignBoolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
-         var condtion:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ());
+         var condtion:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ());
 
          valueSource = valueSource.mNextParameter;
          //var bool1:Boolean = valueSource.EvaluateValueObject () as Boolean;
-         var bool1:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ());
+         var bool1:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ());
 
          valueSource = valueSource.mNextParameter;
          //var bool2:Boolean = valueSource.EvaluateValueObject () as Boolean;
-         var bool2:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ());
+         var bool2:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ());
 
          valueTarget.AssignValueObject (condtion ? bool1 : bool2);
       }
@@ -1625,13 +1625,13 @@ package player.trigger {
       }
       
       // for both Array type, compare each elements individually.
-      // for other cases, use CoreClasses.CompareEqualsExactly
+      // for other cases, use CoreClassesHub.CompareEqualsExactly
 
       private static function CompareByEachArrayElement (ci_1:ClassInstance, ci_2:ClassInstance, numRegisteredArrays:int = 0, registerdArrays:Dictionary = null, registedComparePairs:Dictionary = null):Boolean
       {
          if (ci_1._mRealClassDefinition == ci_2._mRealClassDefinition)
          {
-            if (ci_1._mRealClassDefinition == CoreClasses.kArrayClassDefinition)
+            if (ci_1._mRealClassDefinition == CoreClassesHub.kArrayClassDefinition)
             {
                var values1:Array = ci_1._mValueObject as Array;
                var values2:Array = ci_2._mValueObject as Array;
@@ -1662,8 +1662,8 @@ package player.trigger {
                var count:int = values1.length;
                for (var i:int = 0; i < count; ++ i)
                {
-                  var ci_element1:ClassInstance = CoreClasses.GetArrayElement (values1, i) as ClassInstance;
-                  var ci_element2:ClassInstance = CoreClasses.GetArrayElement (values2, i) as ClassInstance;
+                  var ci_element1:ClassInstance = CoreClassesHub.GetArrayElement (values1, i) as ClassInstance;
+                  var ci_element2:ClassInstance = CoreClassesHub.GetArrayElement (values2, i) as ClassInstance;
                   
                   return CompareByEachArrayElement (ci_element1, ci_element2, numRegisteredArrays, registerdArrays, registedComparePairs);
                }
@@ -1735,7 +1735,7 @@ package player.trigger {
          //   valueTarget.AssignValueObject (ConvertArrayToString (values));
          
          // since v2.05. A little non-compatible: old "null" vs new null.
-         valueTarget.AssignValueObject (CoreClasses.kArrayClassDefinition.ToString (values));
+         valueTarget.AssignValueObject (CoreClassesHub.kArrayClassDefinition.ToString (values));
       }
 
       public static function LargerThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -1813,7 +1813,7 @@ package player.trigger {
       public static function ConditionAssignArray (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
-         var condition:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condition:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          var array1:Array = valueSource.EvaluateValueObject () as Array;
@@ -1855,7 +1855,7 @@ package player.trigger {
          
          valueSource = valueSource.mNextParameter;
          var vi:VariableInstance = valueSource.GetVariableInstance ();
-         if (vi.GetRealClassDefinition () != CoreClasses.kVoidClassDefinition)
+         if (vi.GetRealClassDefinition () != CoreClassesHub.kVoidClassDefinition)
          {
             var ci:ClassInstance = vi.CloneClassInstance ();
             for (var index:int = 0; index < length; ++ index)
@@ -1957,7 +1957,7 @@ package player.trigger {
             valueSource = valueSource.mNextParameter;
             var vi:VariableInstance = valueSource.GetVariableInstance ();
             
-            if (vi.GetRealClassDefinition () != CoreClasses.kVoidClassDefinition)
+            if (vi.GetRealClassDefinition () != CoreClassesHub.kVoidClassDefinition)
             {
                var ci:ClassInstance = vi.CloneClassInstance ();
                while (-- num >= 0)
@@ -2021,7 +2021,7 @@ package player.trigger {
          if (index2 < 0 || index2 > array.length)
             return;
          
-         // no needs to use CoreClasses.GetArrayElement
+         // no needs to use CoreClassesHub.GetArrayElement
          var temp:Object = array [index1];
          array [index1] = array [index2];
          array [index2] = temp;
@@ -2053,7 +2053,7 @@ package player.trigger {
 
          // if index >= length, length will extend to index automtically.
          var vi:VariableInstance = valueSource.GetVariableInstance ();
-         if (vi.GetRealClassDefinition () != CoreClasses.kVoidClassDefinition)
+         if (vi.GetRealClassDefinition () != CoreClassesHub.kVoidClassDefinition)
             array [index] = vi.CloneClassInstance ();
          else
             array [index] = undefined;
@@ -2084,7 +2084,7 @@ package player.trigger {
       //              http://www.josha.me/2009/06/17/prototype-and-as3/
       //              http://help.adobe.com/en_US/ActionScript/3.0_ProgrammingAS3/WS5b3ccc516d4fbf351e63e3d118a9b90204-7f3f.html
       //              http://help.adobe.com/en_US/ActionScript/3.0_ProgrammingAS3/WS5b3ccc516d4fbf351e63e3d118a9b90204-7f3f.html#WS5b3ccc516d4fbf351e63e3d118a9b90204-7fa3
-      // - int.prototype.mClassDefinition = CoreClasses.GetClassDefintion (id_int);
+      // - int.prototype.mClassDefinition = CoreClassesHub.GetClassDefintion (id_int);
       //     ...
       //     var aInt:int;
       //     trace (aInt.mClassDefinition):
@@ -2129,16 +2129,16 @@ package player.trigger {
             //if (sourceCi == null)
             //   break;
             // since v2.05
-            var sourceCi:ClassInstance = CoreClasses.GetArrayElement (array, index) as ClassInstance; // not null for sure
+            var sourceCi:ClassInstance = CoreClassesHub.GetArrayElement (array, index) as ClassInstance; // not null for sure
             
-            CoreClasses.AssignValue (sourceCi, valueTarget.GetVariableInstance ());
+            CoreClassesHub.AssignValue (sourceCi, valueTarget.GetVariableInstance ());
 
             return;
          }
          while (false);
 
          // for invalid params
-         CoreClasses.AssignValue (VariableInstanceConstant.kVoidVariableInstance, valueTarget.GetVariableInstance ());
+         CoreClassesHub.AssignValue (VariableInstanceConstant.kVoidVariableInstance, valueTarget.GetVariableInstance ());
       }
 
       //private static function SetArrayElementWithSpecfiedClass (valueSource:Parameter, valueTarget:Parameter, specfiedClass:Class):void
@@ -2634,7 +2634,7 @@ package player.trigger {
       public static function ConditionAssignNumber (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var contionResult:Boolean = valueSource.EvaluateValueObject () as Boolean;
-         var condition:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condition:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          var trueValue:Number = valueSource.EvaluateValueObject () as Number;
@@ -3254,7 +3254,7 @@ package player.trigger {
          //else
          //   valueTarget.AssignValueObject ("scene#" + levelIndex + "[" + sceneDefine.mName + "]");
          
-         valueTarget.AssignValueObject (CoreClasses.kSceneClassDefinition.ToString (levelIndex));
+         valueTarget.AssignValueObject (CoreClassesHub.kSceneClassDefinition.ToString (levelIndex));
       }
       
       public static function WriteSaveData (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -3925,7 +3925,7 @@ package player.trigger {
       public static function ConditionAssignCollisionCategory (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var condtion:Boolean = Boolean (valueSource.EvaluateValueObject ());
-         var condtion:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condtion:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          var cat1:CollisionCategory = valueSource.EvaluateValueObject () as CollisionCategory;
@@ -3993,7 +3993,7 @@ package player.trigger {
       public static function ConditionAssignEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          //var condition:Boolean = Boolean (valueSource.EvaluateValueObject ());
-         var condition:Boolean = CoreClasses.ToBoolean (valueSource.GetVariableInstance ())
+         var condition:Boolean = CoreClassesHub.ToBoolean (valueSource.GetVariableInstance ())
 
          valueSource = valueSource.mNextParameter;
          var entity1:Entity = valueSource.EvaluateValueObject () as Entity;
@@ -5675,7 +5675,7 @@ package player.trigger {
          var pointY:Number = valueSource.EvaluateValueObject () as Number;
          
          var shapes:Array = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetPhysicsEngine ().GetShapesAtPoint (pointX, pointY);
-         CoreClasses.CovertArrayElementsToClassInstances (shapes, CoreClasses.kEntityClassDefinition);
+         CoreClassesHub.CovertArrayElementsToClassInstances (shapes, CoreClassesHub.kEntityClassDefinition);
          
          valueTarget.AssignValueObject (shapes);
       }
@@ -6224,7 +6224,7 @@ package player.trigger {
 
          //valueSource = valueSource.mNextParameter;
          //var text:String = valueSource.EvaluateValueObject () as String;
-         var text:String = CoreClasses.ToString (valueSource.mNextParameter.GetVariableInstance ());
+         var text:String = CoreClassesHub.ToString (valueSource.mNextParameter.GetVariableInstance ());
 
          entity_text.SetText (text);
       }
@@ -6237,7 +6237,7 @@ package player.trigger {
 
          //valueSource = valueSource.mNextParameter;
          //var text:String = valueSource.EvaluateValueObject () as String;
-         var text:String = CoreClasses.ToString (valueSource.mNextParameter.GetVariableInstance ());
+         var text:String = CoreClassesHub.ToString (valueSource.mNextParameter.GetVariableInstance ());
 
          entity_text.SetText (entity_text.GetText () + text);
       }
@@ -6716,7 +6716,7 @@ package player.trigger {
          
          var positions:Array = polyShape.GetVertexPositions (false);
          if (positions != null)
-            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.kNumberClassDefinition)
+            CoreClassesHub.CovertArrayElementsToClassInstances (positions, CoreClassesHub.kNumberClassDefinition)
 
          valueTarget.AssignValueObject (positions);
       }
@@ -6732,7 +6732,7 @@ package player.trigger {
          var positions:Array = valueSource.EvaluateValueObject () as Array;
          
          if (positions != null)
-            positions = CoreClasses.CovertClassInstancesToArrayElements (positions, true);
+            positions = CoreClassesHub.CovertClassInstancesToArrayElements (positions, true);
          
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, false);
       }
@@ -6749,7 +6749,7 @@ package player.trigger {
          
          var positions:Array = polyShape.GetVertexPositions (true);
          if (positions != null)
-            CoreClasses.CovertArrayElementsToClassInstances (positions, CoreClasses.kNumberClassDefinition)
+            CoreClassesHub.CovertArrayElementsToClassInstances (positions, CoreClassesHub.kNumberClassDefinition)
 
          valueTarget.AssignValueObject (positions);
       }
@@ -6765,7 +6765,7 @@ package player.trigger {
          var positions:Array = valueSource.EvaluateValueObject () as Array;
          
          if (positions != null)
-            positions = CoreClasses.CovertClassInstancesToArrayElements (positions, true);
+            positions = CoreClassesHub.CovertClassInstancesToArrayElements (positions, true);
 
          EntityShape.ModifyPolyShapeVertexPositions (polyShape, positions, true);
       }

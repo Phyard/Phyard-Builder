@@ -7,7 +7,7 @@ package player.trigger.entity
    
    import player.entity.Entity;
    
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;
@@ -69,7 +69,7 @@ package player.trigger.entity
       {
          //var outputValueTarget:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter (false, null);
          mValueTarget.mValueObject = false;
-         var inputValueSource:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity, null);
+         var inputValueSource:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClassesHub.kEntityClassDefinition, entity, null);
          
          // if (mFilterDefinition != null) // should not be null
          mFilterDefinition.DoCall (mWorld.GetFunctionCallingContext (), inputValueSource, mValueTarget); // outputValueTarget);
@@ -89,8 +89,8 @@ package player.trigger.entity
       {
          //var outputValueTarget:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter (false, null);
          mValueTarget.mValueObject = false;
-         var inputValueSource1:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity2, null);
-         var inputValueSource0:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClasses.kEntityClassDefinition, entity1, inputValueSource1);
+         var inputValueSource1:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClassesHub.kEntityClassDefinition, entity2, null);
+         var inputValueSource0:Parameter_DirectConstant = TriggerEngine.ApplyNewDirectParameter_Source (CoreClassesHub.kEntityClassDefinition, entity1, inputValueSource1);
          
          // if (mFilterDefinition != null) // should not be null
          mFilterDefinition.DoCall (mWorld.GetFunctionCallingContext (), inputValueSource0, mValueTarget); //outputValueTarget);

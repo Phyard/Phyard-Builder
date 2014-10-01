@@ -278,6 +278,11 @@ package editor.entity {
       private var mPauseOnFocusLost:Boolean = false;
       //<<
       
+      //>>2.08
+      private var mRemovePinksOnMouseDown:Boolean = true;
+      private var mSupportMoreMouseEvents:Boolean = false;
+      //<<
+      
       //>>v2.00
       private var mName:String = "";
       //<<
@@ -724,6 +729,26 @@ package editor.entity {
       public function SetPauseOnFocusLost (pauseOnFocusLost:Boolean):void
       {
          mPauseOnFocusLost = pauseOnFocusLost;
+      }
+      
+      public function IsRemovePinksOnMouseDown ():Boolean
+      {
+         return mRemovePinksOnMouseDown;
+      }
+      
+      public function SetRemovePinksOnMouseDown (removePinksOnMouseDown:Boolean):void
+      {
+         mRemovePinksOnMouseDown = removePinksOnMouseDown;
+      }
+      
+      public function IsSupportMoreMouseEvents ():Boolean
+      {
+         return mSupportMoreMouseEvents;
+      }
+      
+      public function SetSupportMoreMouseEvents (supportMoreMouseEvents:Boolean):void
+      {
+         mSupportMoreMouseEvents = supportMoreMouseEvents;
       }
       
 //=================================================================================

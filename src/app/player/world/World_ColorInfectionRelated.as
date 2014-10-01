@@ -4,15 +4,22 @@
 //=======================================================================
 
 protected var mIsCiRulesEnabled:Boolean = true;
+protected var mRemovePinksOnMouseDown:Boolean = true;
 
 public function IsCiRulesEnabled ():Boolean
 {
    return mIsCiRulesEnabled;
 }
-
-public function SetCiRulesEnabled (enabled:Boolean):void
+      
+public function IsRemovePinksOnMouseDown ():Boolean
 {
-   mIsCiRulesEnabled = enabled;
+   return mRemovePinksOnMouseDown;
+}
+
+public function SetCiRulesSettings (ciRulesEnabled:Boolean, removePinksOnMouseDown:Boolean):void
+{
+   mIsCiRulesEnabled = ciRulesEnabled;
+   mRemovePinksOnMouseDown = removePinksOnMouseDown;
 }
 
 //=======================================================================

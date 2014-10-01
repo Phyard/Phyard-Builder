@@ -13,7 +13,7 @@ package player.world
    import player.trigger.ClassInstance;
    import player.trigger.VariableInstance;
    import player.trigger.VariableDeclaration;
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    import player.trigger.ClassDefinition;
    import player.trigger.ClassDefinition_Core;
    import player.trigger.ClassDefinition_Custom;
@@ -206,7 +206,7 @@ package player.world
          CoreEventDeclarations.Initialize ();
          
          //
-         CoreClasses.InitCoreClassDefinitions ();
+         CoreClassesHub.InitCoreClassDefinitions ();
          UpdateCoreClassDefaultInitialValues (); // this one can be put into above InitCoreClassDefinitions now.
                                                  // before, it may depend on a world instance (for hidden ccat).
          
@@ -260,12 +260,12 @@ package player.world
          // no needs to call this now 
          //Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x80000000 is ok 
          //
-         //mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Boolean));
-         //mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_String));
-         //mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Number));
-         //mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Entity));
-         //mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory));
-         //mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null, CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Array));
+         //mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Boolean));
+         //mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_String));
+         //mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Number));
+         //mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Entity));
+         //mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory));
+         //mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Array));
          //
          //if (! dontReloadGlobalAssets)
          //{
@@ -353,11 +353,11 @@ package player.world
             if (aClass != null)
                return aClass;
             
-            return CoreClasses.GetCoreClassDefinition (CoreClassIds.ValueType_Void);
+            return CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Void);
          }
          else // if (classType == ClassTypeDefine.ClassType_Core)
          {
-            return CoreClasses.GetCoreClassDefinition (classId);
+            return CoreClassesHub.GetCoreClassDefinition (classId);
          }
       }
       
@@ -366,10 +366,10 @@ package player.world
          for (var classId:int = 0; classId < CoreClassIds.NumCoreClasses; ++ classId)
          {
             var coreDecl:ClassDeclaration = CoreClassDeclarations.GetCoreClassDeclarationById (classId);
-            var classDef:ClassDefinition_Core = CoreClasses.GetCoreClassDefinition (classId);
+            var classDef:ClassDefinition_Core = CoreClassesHub.GetCoreClassDefinition (classId);
             if (classDef.GetID () == classId)
             {
-               classDef.SetDefaultInitialValue (CoreClasses.ValidateInitialDirectValueObject_Define2Object (/*Global.GetCurrentWorld ()*/null, ClassTypeDefine.ClassType_Core, classId, coreDecl.GetDefaultDirectDefineValue ()));
+               classDef.SetDefaultInitialValue (CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (/*Global.GetCurrentWorld ()*/null, ClassTypeDefine.ClassType_Core, classId, coreDecl.GetDefaultDirectDefineValue ()));
             }
          }
       }

@@ -13,7 +13,7 @@ package player.trigger
       
       override public function Call (callingContext:FunctionCallingContext):void
       {
-         CoreClasses.AssignValue (mInputValueSourceList.GetVariableInstance (), mReturnValueTargetList.GetVariableInstance ());
+         CoreClassesHub.AssignValue (mInputValueSourceList.GetVariableInstance (), mReturnValueTargetList.GetVariableInstance ());
       }
    }
 }

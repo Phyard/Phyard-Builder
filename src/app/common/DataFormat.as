@@ -430,6 +430,11 @@ package common {
             sceneDefine.mSettings.mPhysicsSimulationQuality = scene.GetPhysicsSimulationQuality ();
             sceneDefine.mSettings.mCheckTimeOfImpact = scene.IsCheckTimeOfImpact ();
             //<<
+            
+            //>>from v2.08
+            sceneDefine.mSettings.mSupportMoreMouseEvents = scene.IsSupportMoreMouseEvents ();
+            sceneDefine.mSettings.mRemovePinksOnMouseDown = scene.IsRemovePinksOnMouseDown ();
+            //<<
          }
          
          var numEntities:int = scene.GetNumAssets ();
@@ -2210,6 +2215,11 @@ package common {
                scene.SetPhysicsSimulationQuality (sceneDefine.mSettings.mPhysicsSimulationQuality);
                scene.SetCheckTimeOfImpact (sceneDefine.mSettings.mCheckTimeOfImpact);
                //<<
+               
+               //>>from v2.08
+               scene.SetSupportMoreMouseEvents (sceneDefine.mSettings.mSupportMoreMouseEvents);
+               scene.SetRemovePinksOnMouseDown (sceneDefine.mSettings.mRemovePinksOnMouseDown);
+               //<<
             }
          }
          
@@ -2410,6 +2420,11 @@ package common {
                      case CoreEventIds.ID_OnMouseGesture:
                         entity = logic = scene.CreateEntityEventHandler_MouseGesture (entityDefine.mEventId);
                         break;
+                     case CoreEventIds.ID_OnPhysicsShapeMouseRightDown:
+                     case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
+                     case CoreEventIds.ID_OnEntityMouseRightClick:
+                     case CoreEventIds.ID_OnEntityMouseRightDown:
+                     case CoreEventIds.ID_OnEntityMouseRightUp:
                      case CoreEventIds.ID_OnPhysicsShapeMouseDown:
                      case CoreEventIds.ID_OnPhysicsShapeMouseUp:
                      case CoreEventIds.ID_OnEntityMouseClick:
@@ -3816,6 +3831,13 @@ package common {
                   sceneDefine.mSettings.mCheckTimeOfImpact = parseInt (element.@value) != 0;
                //<<
                
+               //>>from v2.08
+               else if (element.@name == "support_all_mouse_events")
+                  sceneDefine.mSettings.mSupportMoreMouseEvents = parseInt (element.@value) != 0;
+               else if (element.@name == "remove_pinks_on_mouse_down")
+                  sceneDefine.mSettings.mRemovePinksOnMouseDown = parseInt (element.@value) != 0;
+               //<<
+               
                else
                   trace ("Unkown setting: " + element.@name);
             }
@@ -4983,7 +5005,13 @@ package common {
                byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesOriginY);
                byteArray.writeDouble (sceneDefine.mSettings.mCoordinatesScale);
                
-               byteArray.writeByte (sceneDefine.mSettings.mIsCiRulesEnabled ? 1 : 0);
+               var ciRulesFlag:int = 0;
+               if (sceneDefine.mSettings.mIsCiRulesEnabled) ciRulesFlag |= 0x01;
+               if (worldDefine.mVersion >= 0x0208)
+               {
+                  if (sceneDefine.mSettings.mRemovePinksOnMouseDown) ciRulesFlag |= 0x02;
+               }
+               byteArray.writeByte (ciRulesFlag);
             }
             
             if (worldDefine.mVersion >= 0x0155)
@@ -4996,7 +5024,14 @@ package common {
             {
                byteArray.writeByte (sceneDefine.mSettings.mInitialSpeedX);
                byteArray.writeFloat (sceneDefine.mSettings.mPreferredFPS);
-               byteArray.writeByte (sceneDefine.mSettings.mPauseOnFocusLost ? 1 : 0);
+               
+               var generalSeetingFlag:int = 0;
+               if (sceneDefine.mSettings.mPauseOnFocusLost) generalSeetingFlag |= 0x01;
+               if (worldDefine.mVersion >= 0x0208)
+               {
+                  if (sceneDefine.mSettings.mSupportMoreMouseEvents) generalSeetingFlag |= 0x02;
+               }
+               byteArray.writeByte (generalSeetingFlag);
                
                byteArray.writeByte (sceneDefine.mSettings.mPhysicsSimulationEnabled ? 1 : 0);
                byteArray.writeFloat (sceneDefine.mSettings.mPhysicsSimulationStepTimeLength);

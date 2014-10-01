@@ -107,6 +107,9 @@ package common.trigger {
 
       public static const ID_OnMouseGesture:int = IdPool.EventId_190;
       
+      // note: about multiple touch events, it is best to blend it into the current mouse and gesture events.
+      //       by adding a mouse id parameter.
+      
    // system back
       
       public static const ID_OnSystemBack:int = IdPool.EventId_189;

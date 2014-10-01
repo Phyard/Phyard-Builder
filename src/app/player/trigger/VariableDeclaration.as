@@ -16,7 +16,7 @@ package player.trigger
       
       public function VariableDeclaration (classDef:ClassDefinition = null)
       {
-         _mShellClassDefinition = classDef != null ? classDef : CoreClasses.kVoidClassDefinition;
+         _mShellClassDefinition = classDef != null ? classDef : CoreClassesHub.kVoidClassDefinition;
       }
       
       public function SetIndex (index:int):void
@@ -52,7 +52,7 @@ package player.trigger
       // forbit changing this value now.
       //public function SetShellClassDefinition (classDefinition:ClassDefinition):void
       //{
-      //   _mShellClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
+      //   _mShellClassDefinition = classDefinition == null ? CoreClassesHub.kVoidClassDefinition : classDefinition;
       //}
       
       //public function SetClassType (type:int):void

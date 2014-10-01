@@ -461,36 +461,8 @@
          RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseDown : CoreEventIds.ID_OnWorldMouseRightDown]);
          
          // ...
-         if ((isLeft && mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseDown] != null)
-               ||
-            ((! isLeft) && mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseRightDown] != null)
-            )
-         {
-            //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
-            var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
-            var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
-            var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
             
-            var shape:EntityShape;
-            var num:int = shapeArray.length;
-            var i:int;
-            if (isLeft)
-            {
-               for (i = 0; i < num; ++ i)
-               {
-                  shape = shapeArray [i] as EntityShape;
-                  shape.OnPhysicsShapeMouseDown (event);
-               }
-            }
-            else
-            {
-               for (i = 0; i < num; ++ i)
-               {
-                  shape = shapeArray [i] as EntityShape;
-                  shape.OnPhysicsShapeMouseRightDown (event);
-               }
-            }
-         }
+         HandlePhysicsShapeMouseEvents (event, true, isLeft);
       }
       
       if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
@@ -532,39 +504,8 @@
             RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseUp : CoreEventIds.ID_OnWorldMouseRightUp]);
             
             // ...
-            //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
-            var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
-            var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
-            var shapeArray:Array = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
             
-            if (mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseUp] != null
-                  ||
-                mEventHandlersByTypes [CoreEventIds.ID_OnPhysicsShapeMouseRightUp] != null
-               )
-            {
-               var shape:EntityShape;
-               var num:int = shapeArray.length;
-               var i:int;
-               if (isLeft)
-               {
-                  for (i = 0; i < num; ++ i)
-                  {
-                     shape = shapeArray [i] as EntityShape;
-                     shape.OnPhysicsShapeMouseUp (event);
-                  }
-               }
-               else
-               {
-                     shape = shapeArray [i] as EntityShape;
-                     shape.OnPhysicsShapeMouseRightUp (event);
-               }
-            }
-            
-            if (isLeft)
-            {
-               //RemoveBombsAndRemovableShapes (shapeArray);
-               RegisterCachedSystemEvent ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
-            }
+            HandlePhysicsShapeMouseEvents (event, false, isLeft);
          }
          
          KeyReleased (mouseButtonKeyCode, 0);
@@ -573,6 +514,91 @@
       if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
       {
          event.stopPropagation ();
+      }
+   }
+   
+   private function HandlePhysicsShapeMouseEvents (event:MouseEvent, isMouseDown:Boolean, isLeft:Boolean):void
+   {
+      var tryToRemovePinks:Boolean = (isMouseDown == IsRemovePinksOnMouseDown ());
+      var leftMouseEventId :int = isMouseDown ? CoreEventIds.ID_OnPhysicsShapeMouseDown      : CoreEventIds.ID_OnPhysicsShapeMouseUp;
+      var rightMouseEventId:int = isMouseDown ? CoreEventIds.ID_OnPhysicsShapeMouseRightDown : CoreEventIds.ID_OnPhysicsShapeMouseRightUp;
+      
+      var shapeArray:Array = null;
+      
+      while (tryToRemovePinks
+              ||
+            mEventHandlersByTypes [leftMouseEventId] != null
+              ||
+            mEventHandlersByTypes [rightMouseEventId] != null
+           )
+      {
+         // ...
+         //var worldDisplayPoint:Point = globalToLocal (new Point (event.stageX, event.stageY));
+         var worldDisplayPoint:Point = StageToContentLayer (new Point (event.stageX, event.stageY));
+         var physicsPoint:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+         shapeArray = mPhysicsEngine.GetShapesAtPoint (physicsPoint.x, physicsPoint.y);
+         if (shapeArray.length == 0)
+         {
+            shapeArray = null;
+            break;
+         }
+         
+         // ...
+         var shape:EntityShape;
+         var num:int = shapeArray.length;
+         var i:int;
+         if (isLeft)
+         {
+            if (mEventHandlersByTypes [leftMouseEventId] == null)
+               break;
+            
+            if (isMouseDown)
+            {
+               for (i = 0; i < num; ++ i)
+               {
+                  shape = shapeArray [i] as EntityShape;
+                  shape.OnPhysicsShapeMouseDown (event);
+               }
+            }
+            else
+            {
+               for (i = 0; i < num; ++ i)
+               {
+                  shape = shapeArray [i] as EntityShape;
+                  shape.OnPhysicsShapeMouseUp (event);
+               }
+            }
+         }
+         else
+         {
+            if (mEventHandlersByTypes [rightMouseEventId] == null)
+               break;
+            
+            if (isMouseDown)
+            {
+               for (i = 0; i < num; ++ i)
+               {
+                  shape = shapeArray [i] as EntityShape;
+                  shape.OnPhysicsShapeMouseRightDown (event);
+               }
+            }
+            else
+            {
+               for (i = 0; i < num; ++ i)
+               {
+                  shape = shapeArray [i] as EntityShape;
+                  shape.OnPhysicsShapeMouseRightUp (event);
+               }
+            }
+         }
+         
+         break;
+      }
+      
+      if (tryToRemovePinks && shapeArray != null)
+      {
+         //RemoveBombsAndRemovableShapes (shapeArray);
+         RegisterCachedSystemEvent ([CachedEventType_RemoveBombsAndRemovableShapes, shapeArray]);
       }
    }
    
@@ -623,13 +649,13 @@
       if (handlerList == null)
          return;
       
-      var valueSource7:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, null); // is overlapped by some entities
-      var valueSource6:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, valueSource7); // alt down
-      var valueSource5:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, valueSource6); // shift down
-      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, valueSource5); // ctrl down
-      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, valueSource4); // button down
-      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource3); // world physics y
-      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2); // world physics x
+      var valueSource7:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, null); // is overlapped by some entities
+      var valueSource6:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, valueSource7); // alt down
+      var valueSource5:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, valueSource6); // shift down
+      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, valueSource5); // ctrl down
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, valueSource4); // button down
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource3); // world physics y
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource2); // world physics x
       
       valueSource1.mValueObject = GetCurrentMouseX ();
       valueSource2.mValueObject = GetCurrentMouseY ();
@@ -645,7 +671,7 @@
       }
       else
       {
-         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, valueSource1); // entity
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, null, valueSource1); // entity
          valueSource0.mValueObject = shape;
          RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
       }
@@ -737,11 +763,11 @@
       if (handlerList == null)
          return;
       
-      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, null);
-      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, valueSource4);
-      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kBooleanClassDefinition, false, valueSource3);
-      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource2);
-      var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, valueSource1);
+      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, null);
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, valueSource4);
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, valueSource3);
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource2);
+      var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource1);
       
       valueSource0.mValueObject = exactKeyCode;
       valueSource1.mValueObject = event.charCode;

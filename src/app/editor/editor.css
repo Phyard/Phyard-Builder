@@ -1,17 +1,19 @@
-Application {
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+mx|Application {
    modalTransparency:0.3;
    modalTransparencyBlur:2;
    modalTransparencyColor:#DDDDDD;
    modalTransparencyDuration:100;
 }
 
-Container {
+mx|Container {
    color:#000000;;
    fontWeight:normal;
    fontSize:10px;
 }
 
-TitleWindow {
+mx|TitleWindow {
    borderThicknessLeft:8px;
    borderThicknessRight:8px;
    borderThicknessTop:1px;

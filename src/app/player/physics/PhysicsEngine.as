@@ -26,7 +26,7 @@ package player.physics {
    import player.entity.EntityShape;
    
    import player.trigger.ClassInstance;
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    import player.trigger.ClassDefinition;
    
    import common.physics.Box2D.b2WorldPool;
@@ -385,13 +385,13 @@ package player.physics {
          {
             if (intersection.mIsIncoming)
             {
-               return [ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, intersection.mUserData as EntityShape), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mPoint.x), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mPoint.y), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mNormal.x), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mNormal.y), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mFraction), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, segmentLength * intersection.mFraction)
+               return [ClassInstance.CreateClassInstance (CoreClassesHub.kEntityClassDefinition, intersection.mUserData as EntityShape), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mPoint.x), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mPoint.y), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mNormal.x), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mNormal.y), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mFraction), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, segmentLength * intersection.mFraction)
                       ];
             }
          }
@@ -410,13 +410,13 @@ package player.physics {
          {
             if (! intersection.mIsIncoming)
             {
-               return [ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, intersection.mUserData as EntityShape), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mPoint.x), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mPoint.y), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mNormal.x), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mNormal.y), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, intersection.mFraction), 
-                       ClassInstance.CreateClassInstance (CoreClasses.kNumberClassDefinition, segmentLength * intersection.mFraction)
+               return [ClassInstance.CreateClassInstance (CoreClassesHub.kEntityClassDefinition, intersection.mUserData as EntityShape), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mPoint.x), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mPoint.y), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mNormal.x), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mNormal.y), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, intersection.mFraction), 
+                       ClassInstance.CreateClassInstance (CoreClassesHub.kNumberClassDefinition, segmentLength * intersection.mFraction)
                       ];
             }
          }
@@ -451,7 +451,7 @@ package player.physics {
                {
                   if (includingHalfIntersecteds)
                   {
-                     intersectedShapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, shape));
+                     intersectedShapes.push (ClassInstance.CreateClassInstance (CoreClassesHub.kEntityClassDefinition, shape));
                      shape.mTempData = 2;
                   }
                   else
@@ -466,7 +466,7 @@ package player.physics {
                {
                   if (includingHalfIntersecteds || shapeTempData > 0)
                   {
-                     intersectedShapes.push (ClassInstance.CreateClassInstance (CoreClasses.kEntityClassDefinition, shape));
+                     intersectedShapes.push (ClassInstance.CreateClassInstance (CoreClassesHub.kEntityClassDefinition, shape));
                      shape.mTempData = 2;
                   }
                }

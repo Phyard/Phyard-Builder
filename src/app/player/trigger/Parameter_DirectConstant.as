@@ -12,13 +12,13 @@ package player.trigger
       public function Parameter_DirectConstant (classDefinition:ClassDefinition, valueObject:Object, next:Parameter = null)
       {
          ////super (valueObject, next);
-         //super (new VariableInstanceConstant (new VariableDeclaration (CoreClasses.kObjectClassDefinition)), next);
-         ////mVariableInstance.SetDeclaration (new VariableDeclaration (CoreClasses.kObjectClassDefinition));
+         //super (new VariableInstanceConstant (new VariableDeclaration (CoreClassesHub.kObjectClassDefinition)), next);
+         ////mVariableInstance.SetDeclaration (new VariableDeclaration (CoreClassesHub.kObjectClassDefinition));
          //mVariableInstance.SetRealClassDefinition (classDefinition);
          //
          //mValueObject = valueObject;
          
-         super (new VariableInstanceConstant (new VariableDeclaration (CoreClasses.kObjectClassDefinition), classDefinition, valueObject), next);
+         super (new VariableInstanceConstant (new VariableDeclaration (CoreClassesHub.kObjectClassDefinition), classDefinition, valueObject), next);
       }
       
       //>>>>>>> this function is important for calling in constructor. !!!

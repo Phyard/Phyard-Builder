@@ -4,7 +4,7 @@ package player.trigger.entity
 
    import player.entity.Entity;
    
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    
    import player.trigger.TriggerEngine;
    import player.trigger.FunctionDefinition_Custom;   
@@ -208,9 +208,9 @@ package player.trigger.entity
          return false;
       }
       
-      private var mTimerEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, null);
-      private var mTimerEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kEntityClassDefinition, null, mTimerEventHandlerValueSource2);
-      private var mTimerEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClasses.kNumberClassDefinition, 0, mTimerEventHandlerValueSource1);
+      private var mTimerEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, null, null);
+      private var mTimerEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, null, mTimerEventHandlerValueSource2);
+      private var mTimerEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, mTimerEventHandlerValueSource1);
       private var mTimerEventHandlerValueSourceList:Parameter = mTimerEventHandlerValueSource0;
       
       public function HandleWorldTimerEvent ():void

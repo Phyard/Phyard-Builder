@@ -304,7 +304,7 @@
             newClassId = numOldClasses + classId;
             customClass = /*Global*/this.GetCustomClassDefinition (newClassId);
             
-            customClass.SetParentClasses ([CoreClasses.kObjectClassDefinition]);
+            customClass.SetParentClasses ([CoreClassesHub.kObjectClassDefinition]);
             
             classDefine = classDefines [classId] as ClassDefine;
             customClass.SetPropertyVariableSpaceTemplate (TriggerFormatHelper2.VariableDefines2VariableSpace (/*mCurrentWorld*/playerWorld, classDefine.mPropertyVariableDefines, null, numOldClasses));
@@ -450,7 +450,7 @@
             }
             else
             {
-               if (! CoreClasses.kArrayClassDefinition.mIsNullFunc (valuesArray))
+               if (! CoreClassesHub.kArrayClassDefinition.mIsNullFunc (valuesArray))
                {
                   alreadySavedArrayLookupTable [valuesArray] = true;
                }
@@ -489,7 +489,7 @@
                      
                      // since v2.05
                      
-                     var arrayElement:ClassInstance = CoreClasses.GetArrayElement (valuesArray, i);
+                     var arrayElement:ClassInstance = CoreClassesHub.GetArrayElement (valuesArray, i);
                      
                      WriteTypeAndValue (binData, arrayElement.GetRealClassType (), arrayElement.GetRealValueType (), arrayElement.GetValueObject (), alreadySavedArrayLookupTable);
                   }
@@ -564,7 +564,7 @@
                //variableInstance.SetValueObject (savedVariable.mClassInstance.mValueObject);
                var classInstance:ClassInstance = savedVariable.mClassInstance as ClassInstance;
                //variableInstance.Assign (classInstance.GetRealClassDefinition (), classInstance.GetValueObject ());
-               CoreClasses.AssignValue (classInstance, variableInstance);
+               CoreClassesHub.AssignValue (classInstance, variableInstance);
             //}
          } // for
       }
@@ -633,9 +633,9 @@
       else
       {
          //ci = new ClassInstance ();
-         //ci.SetRealClassDefinition (CoreClasses.GetCoreClassDefinition (type));
+         //ci.SetRealClassDefinition (CoreClassesHub.GetCoreClassDefinition (type));
          //ci.SetValueObject (value);
-         ci = ClassInstance.CreateClassInstance (CoreClasses.GetCoreClassDefinition (type), value);
+         ci = ClassInstance.CreateClassInstance (CoreClassesHub.GetCoreClassDefinition (type), value);
       }
       
       return ci;

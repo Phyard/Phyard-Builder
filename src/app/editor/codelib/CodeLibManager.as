@@ -24,7 +24,7 @@ package editor.codelib {
    import flash.events.ContextMenuEvent;
    
    import editor.world.World;
-   import editor.world.CoreClasses;
+   import editor.world.CoreClassesHub;
    import editor.world.CoreFunctionDeclarationsForPlaying;
    
    import editor.asset.Asset; 
@@ -654,21 +654,21 @@ package editor.codelib {
       
       private static function BuildCoreClassesDataProvider ():void
       {
-         var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
+         var coreClassPackage:CodePackage = CoreClassesHub.GetCoreClassPackage ();
          
          sCoreClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, false, false);
       }
       
       private static function BuildSceneIndependentClassesDataProvider ():void
       {
-         var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
+         var coreClassPackage:CodePackage = CoreClassesHub.GetCoreClassPackage ();
          
          sSceneIndependentClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, true, false);
       }
       
       private static function BuildGameSaveClassesDataProvider ():void
       {
-         var coreClassPackage:CodePackage = CoreClasses.GetCoreClassPackage ();
+         var coreClassPackage:CodePackage = CoreClassesHub.GetCoreClassPackage ();
          
          sGameSaveClassesDataProvider = ConvertCodePackageToXML (coreClassPackage, null, null, false, true, true);
          

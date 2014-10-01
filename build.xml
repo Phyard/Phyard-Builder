@@ -21,6 +21,10 @@
    <property name="player-width" value="600" />
    <property name="player-height" value="620" />
 
+   <!--property name="target-player" value="10.0.0" /-->
+   <property name="target-player" value="11.2.0" />
+   <property name="swf-version" value="15" /><!-- for 11.2.0 player, min swf version is 15 -->
+
    <property name="dir.src"        value="${basedir}/src" />
    <property name="dir.external"        value="${basedir}/external" />
    <property name="dir.third-party"        value="${basedir}/third-party" />
@@ -166,10 +170,13 @@
          <arg line="-default-background-color 0xFFFFFF"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
-         <!--
-         <arg line="-target-player=10.0.0" />
-         -->
-         <arg line="--target-player=11.2.0" />
+
+         <arg line="-target-player=${target-player}" />
+         <arg line="-swf-version=${swf-version}" />
+         <arg line="-static-link-runtime-shared-libraries=true" /> <!-- not "Required RSLs" -->
+         <arg line="-theme=${dir.flexsdk}/frameworks/themes/Halo/halo.swc" />
+         <arg line="-library-path=${dir.flexsdk}/frameworks/libs/mx" />
+
          <arg line="-use-network" />
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <arg line="-default-size ${--width} ${--height}" />
@@ -245,14 +252,20 @@
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
-         <arg line="--target-player=10.0.0" />
+
+         <arg line="-target-player=${target-player}" />
+         <arg line="-swf-version=${swf-version}" />
+         <arg line="-static-link-runtime-shared-libraries=true" /> <!-- not "Required RSLs" -->
+
          <arg line="-use-network" />
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <arg line="-default-size ${--width} ${--height}" />
          <arg line="-source-path=${dir.build.src}" />
          <arg line="-locale=en_US" />
+         <!--
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         -->
 
          <arg line="unieditor/UniEditor.as" />
       </exec>
@@ -312,14 +325,20 @@
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
-         <arg line="--target-player=10.0.0" />
+
+         <arg line="-target-player=${target-player}" />
+         <arg line="-swf-version=${swf-version}" />
+         <arg line="-static-link-runtime-shared-libraries=true" /> <!-- not "Required RSLs" -->
+
          <arg line="-use-network" />
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-default-size ${##width} ${##height}" /-->
          <arg line="-source-path=${dir.build.src}" />
          <arg line="-locale=en_US" />
+         <!--
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         -->
 
          <arg line="univiewer/UniViewer.as" />
       </exec>
@@ -385,14 +404,20 @@
          <arg line="-default-background-color 0xDDDDA0"/>
          <arg line="-default-frame-rate 30"/>
          <arg line="-optimize=true" />
-         <arg line="--target-player=10.0.0" />
+
+         <arg line="-target-player=${target-player}" />
+         <arg line="-swf-version=${swf-version}" />
+         <arg line="-static-link-runtime-shared-libraries=true" /> <!-- not "Required RSLs" -->
+
          <arg line="-use-network" />
          <!-- two continious - is not allowed in comments, so use ## instead -->
          <!--arg line="-default-size ${##width} ${##height}" /-->
          <arg line="-source-path=${dir.build.src}" />
          <arg line="-locale=en_US" />
+         <!--
          <arg line="-library-path=${dir.flexsdk}/frameworks/locale/en_US" />
          <arg line="-library-path=${dir.flexsdk}/frameworks/libs" />
+         -->
 
          <arg line="Main.as" />
       </exec>
@@ -503,7 +528,11 @@
          <arg line="-include-classes=Main" />
          <arg line="-output=${dir.output}-library-${library-name}/${library-name}_unsecure.swc"/>
          <arg line="-optimize=true" />
-         <arg line="--target-player=10.0.0" />
+
+         <arg line="-target-player=${target-player}" />
+         <arg line="-swf-version=${swf-version}" />
+         <arg line="-static-link-runtime-shared-libraries=true" /> <!-- not "Required RSLs" -->
+
          <arg line="-use-network" />
          <arg line="-locale=en_US" />
       </exec>

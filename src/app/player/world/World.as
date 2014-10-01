@@ -56,7 +56,7 @@ package player.world {
    import player.trigger.data.ListElement_EventHandler;
    import player.trigger.data.ListElement_EntitySelector;
    
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    import player.trigger.ClassDefinition;
    import player.trigger.ClassDefinition_Custom;
    import player.trigger.ClassInstance;
@@ -180,7 +180,7 @@ package player.world {
          mInitialSpeedX = worldDefine.mSettings.mInitialSpeedX;
          mPreferredFPS = worldDefine.mSettings.mPreferredFPS;
          mPauseOnFocusLost = worldDefine.mSettings.mPauseOnFocusLost;
-         mSupportMoreMouseEvents = true; //worldDefine.mSupportMoreMouseEvents; // v2.07+
+         mSupportMoreMouseEvents = worldDefine.mSettings.mSupportMoreMouseEvents;
          
          mPhysicsSimulationEnabled = worldDefine.mSettings.mPhysicsSimulationEnabled;
          mPhysicsSimulationQuality = worldDefine.mSettings.mPhysicsSimulationQuality;
@@ -246,7 +246,7 @@ package player.world {
 
       // ...
 
-         SetCiRulesEnabled (worldDefine.mSettings.mIsCiRulesEnabled);
+         SetCiRulesSettings (worldDefine.mSettings.mIsCiRulesEnabled, worldDefine.mSettings.mRemovePinksOnMouseDown);
 
       // ...
 
@@ -758,7 +758,10 @@ package player.world {
       // ...
       //------------------------------------
          
-         AddMoreMouseEventHandlers ();
+         if (IsSupportMoreMouseEvents ())
+         {
+            AddMoreMouseEventHandlers ();
+         }
          
       //------------------------------------
       // reset calling context

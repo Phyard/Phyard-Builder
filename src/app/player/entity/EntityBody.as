@@ -7,7 +7,7 @@ package player.entity {
    import player.physics.PhysicsProxyShape;
    
    import player.trigger.ClassInstance;
-   import player.trigger.CoreClasses;
+   import player.trigger.CoreClassesHub;
    import player.trigger.ClassDefinition;
    
    import common.Define;

@@ -4,7 +4,7 @@ package common {
    import flash.utils.ByteArray;
    
    import editor.world.World;
-   import editor.world.CoreClasses;
+   import editor.world.CoreClassesHub;
    import editor.entity.Scene;
    import editor.entity.Entity;
    //import editor.entity.EntityCollisionCategory;
@@ -200,7 +200,7 @@ package common {
             
             try
             {
-               value_source_define = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.ValidateDirectValueObject_Object2Define (scene, classType, valueType, direct_source.GetValueObject ()));
+               value_source_define = new ValueSourceDefine_Direct (/*valueType, */CoreClassesHub.ValidateDirectValueObject_Object2Define (scene, classType, valueType, direct_source.GetValueObject ()));
             }
             catch (err:Error)
             {
@@ -305,10 +305,10 @@ package common {
             if (variablesHaveKey)
                variableDefine.mKey = variableInstance.GetKey ();
             variableDefine.mName = variableInstance.GetName ();
-            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), CoreClasses.ValidateDirectValueObject_Object2Define (scene, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (variableInstance.GetValueType ())));
+            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (variableInstance.GetValueType (), CoreClassesHub.ValidateDirectValueObject_Object2Define (scene, variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (variableInstance.GetValueType ())));
             variableDefine.mClassType = variableInstance.GetClassType (); // since v2.05
             variableDefine.mValueType = variableInstance.GetValueType ();
-            variableDefine.mValueObject = CoreClasses.ValidateDirectValueObject_Object2Define (scene, variableInstance.GetClassType (), variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (variableInstance.GetValueType ()));
+            variableDefine.mValueObject = CoreClassesHub.ValidateDirectValueObject_Object2Define (scene, variableInstance.GetClassType (), variableInstance.GetValueType (), supportInitalValues ? variableInstance.GetValueObject () : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (variableInstance.GetValueType ()));
             
             //spaceDefine.mVariableDefines [variableId] = variableDefine; // 1.52 only
             
@@ -456,7 +456,7 @@ package common {
             
             try
             {
-               value_source = new ValueSource_Direct (CoreClasses.ValidateDirectValueObject_Define2Object (scene, classType, valueType, direct_source_define.mValueObject));
+               value_source = new ValueSource_Direct (CoreClassesHub.ValidateDirectValueObject_Define2Object (scene, classType, valueType, direct_source_define.mValueObject));
             }
             catch (err:Error)
             {
@@ -731,7 +731,7 @@ package common {
       {
          //var directValueSourceDefine:ValueSourceDefine_Direct = variableDefine.mDirectValueSourceDefine;
          
-         var valueObject:Object = supportInitalValue ? CoreClasses.ValidateDirectValueObject_Define2Object (scene, variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject) : null;
+         var valueObject:Object = supportInitalValue ? CoreClassesHub.ValidateDirectValueObject_Define2Object (scene, variableDefine.mClassType, variableDefine.mValueType, variableDefine.mValueObject) : null;
          
          var variableDefinition:VariableDefinition;
          if (variableDefine.mClassType == ClassTypeDefine.ClassType_Custom)
@@ -788,13 +788,13 @@ package common {
             variableDefine.mName = "Old " + registerVariableInstance.GetCodeStringAsRegisterVariable ();
             //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (
             //                           registerVariableInstance.GetValueType (), 
-            //                           CoreClasses.ValidateDirectValueObject_Object2Define (
+            //                           CoreClassesHub.ValidateDirectValueObject_Object2Define (
             //                                 scene, registerVariableInstance.GetValueType (), 
             //                                 CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (registerVariableInstance.GetValueType ())
             //                           )
             //                        );
             variableDefine.mValueType = registerVariableInstance.GetValueType ();
-            variableDefine.mValueObject = CoreClasses.ValidateDirectValueObject_Object2Define (
+            variableDefine.mValueObject = CoreClassesHub.ValidateDirectValueObject_Object2Define (
                                              scene,
                                              ClassTypeDefine.ClassType_Core, // only core part of core types have register space.
                                              registerVariableInstance.GetValueType (), 
@@ -920,7 +920,7 @@ package common {
             var direct_source_define:ValueSourceDefine_Direct = valueSourceDefine as ValueSourceDefine_Direct;
             var value_object:Object = direct_source_define.mValueObject;
             
-            CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, classType, valueType, numberDetail, direct_source_define.mValueObject);
+            CoreClassesHub.WriteDirectValueObjectIntoBinFile (binFile, classType, valueType, numberDetail, direct_source_define.mValueObject);
          }
          else if (source_type == ValueSourceTypeDefine.ValueSource_Variable || source_type == ValueSourceTypeDefine.ValueSource_ObjectProperty)
          {
@@ -1028,8 +1028,8 @@ package common {
             
             if (supportInitalValues)
             {
-               //CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double, variableDefine.mDirectValueSourceDefine.mValueObject);
-               CoreClasses.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mClassType, variableDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double, variableDefine.mValueObject);
+               //CoreClassesHub.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mDirectValueSourceDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double, variableDefine.mDirectValueSourceDefine.mValueObject);
+               CoreClassesHub.WriteDirectValueObjectIntoBinFile (binFile, variableDefine.mClassType, variableDefine.mValueType, CoreClassIds.NumberTypeDetailBit_Double, variableDefine.mValueObject);
             }
          }
       }
@@ -1191,7 +1191,7 @@ package common {
          {
             try
             {
-               value_source_define = new ValueSourceDefine_Direct (/*valueType, */CoreClasses.ValidateDirectValueObject_Xml2Define (classType, valueType, valueSourceElement.@direct_value));
+               value_source_define = new ValueSourceDefine_Direct (/*valueType, */CoreClassesHub.ValidateDirectValueObject_Xml2Define (classType, valueType, valueSourceElement.@direct_value));
             }
             catch (err:Error)
             {
@@ -1318,10 +1318,10 @@ package common {
             if (variablesHaveKey)
                variableDefine.mKey = element.@key;
             variableDefine.mName = element.@name;
-            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (valueType, supportInitalValues ? CoreClasses.ValidateDirectValueObject_Xml2Define (valueType, element.@initial_value) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType));
+            //variableDefine.mDirectValueSourceDefine = new ValueSourceDefine_Direct (valueType, supportInitalValues ? CoreClassesHub.ValidateDirectValueObject_Xml2Define (valueType, element.@initial_value) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType));
             variableDefine.mClassType = classType;
             variableDefine.mValueType = valueType;
-            variableDefine.mValueObject = supportInitalValues ? CoreClasses.ValidateDirectValueObject_Xml2Define (classType, valueType, element.@initial_value) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
+            variableDefine.mValueObject = supportInitalValues ? CoreClassesHub.ValidateDirectValueObject_Xml2Define (classType, valueType, element.@initial_value) : CoreClassDeclarations.GetCoreClassDefaultDirectDefineValue (valueType);
 
             //variableSpaceDefine.mVariableDefines.push (variableDefine); v1.52 only
             outputVariableDefines.push (variableDefine);

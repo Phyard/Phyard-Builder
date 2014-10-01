@@ -140,7 +140,7 @@
                   break;
                case CoreEventIds.ID_OnWorldMouseRightUp:
                case CoreEventIds.ID_OnEntityMouseRightUp:
-                  RadioButton_Up.selected = true;
+                  RadioButton_RightUp.selected = true;
                   break;
                case CoreEventIds.ID_OnWorldMouseMove:
                case CoreEventIds.ID_OnEntityMouseMove:

@@ -37,7 +37,7 @@ package player.trigger
       
       public function SetRealClassDefinition (classDefinition:ClassDefinition):void
       {
-         _mRealClassDefinition = classDefinition == null ? CoreClasses.kVoidClassDefinition : classDefinition;
+         _mRealClassDefinition = classDefinition == null ? CoreClassesHub.kVoidClassDefinition : classDefinition;
       }
       
       // this one may be overridden.

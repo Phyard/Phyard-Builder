@@ -888,6 +888,8 @@ package editor.entity.dialog {
          
          info.mIsPauseOnFocusLost = mScene.IsPauseOnFocusLost ();
          info.mIsCiRulesEnabled = mScene.IsCiRulesEnabled ();
+         info.mRemovePinksOnMouseDown = mScene.IsRemovePinksOnMouseDown ();
+         info.mSupportMoreMouseEvents = mScene.IsSupportMoreMouseEvents ();
          
          EditorContext.OpenSettingsDialog (WorldLevelRulesSettingDialog, SetLevelRulesInfo, info);
       }
@@ -896,6 +898,8 @@ package editor.entity.dialog {
       {  
          mScene.SetPauseOnFocusLost (info.mIsPauseOnFocusLost);
          mScene.SetCiRulesEnabled (info.mIsCiRulesEnabled);
+         mScene.SetRemovePinksOnMouseDown (info.mRemovePinksOnMouseDown);
+         mScene.SetSupportMoreMouseEvents (info.mSupportMoreMouseEvents);
          
          CreateUndoPoint ("World rules are changed");
       }

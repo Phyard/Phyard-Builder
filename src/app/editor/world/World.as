@@ -589,7 +589,7 @@ package editor.world {
       
       public static function GetCoreClassById (classId:int):ClassDefinition_Core
       {
-         return CoreClasses.GetCoreClassById (classId);
+         return CoreClassesHub.GetCoreClassById (classId);
       }
       
 //=================================================================================

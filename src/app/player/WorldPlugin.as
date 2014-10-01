@@ -118,6 +118,8 @@ package player
                   
                   OnMultiplePlayerEvent : world.OnMultiplePlayerEvent, // from v2.06
                   
+                  SupportMoreMouseEvents : world.IsSupportMoreMouseEvents, // from v2.08
+                  
                   "" : null
                };
             case "SetUiParams":

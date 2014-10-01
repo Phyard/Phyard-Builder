@@ -8,7 +8,7 @@ package player.trigger
    {
       public static function CreateCoreClassDirectMutable (coreClassId:int, initValue:Object, next:Parameter = null):Parameter_DirectMutable
       {
-         var classDef:ClassDefinition = CoreClasses.GetCoreClassDefinition (coreClassId);
+         var classDef:ClassDefinition = CoreClassesHub.GetCoreClassDefinition (coreClassId);
          return new Parameter_DirectMutable (new VariableDeclaration (classDef), classDef, initValue, next);
       }
       

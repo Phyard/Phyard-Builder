@@ -65,7 +65,7 @@ package viewer {
    import com.tapirgames.gesture.GesturePoint;
    import com.tapirgames.gesture.GestureSegment;
    
-   import com.tapirgames.util.ResourceLoader;
+   import com.tapirgames.resloader.ResourceLoader;
 
    import common.DataFormat3;
    import common.ViewerDefine;
@@ -1313,7 +1313,7 @@ package viewer {
          if (mWorldDesignProperties.GetSceneSwitchingStyle == undefined)          mWorldDesignProperties.GetSceneSwitchingStyle = DummyGetSceneSwitchingStyle;
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
          if (mWorldDesignProperties.OnMultiplePlayerServerMessage == undefined)   mWorldDesignProperties.OnMultiplePlayerServerMessage = DummyCallback;
-         if (mWorldDesignProperties.SupportMoreMouseEvents == undefined)          mWorldDesignProperties.IsPauseOnFocusLost = DummyCallback_ReturnFalse;
+         if (mWorldDesignProperties.SupportMoreMouseEvents == undefined)          mWorldDesignProperties.SupportMoreMouseEvents = DummyCallback_ReturnFalse;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);

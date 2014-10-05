@@ -501,12 +501,21 @@ package player.trigger {
 // they represent the spirit of piapia lang.
 //==============================================================
       
+      // Void should be viewed as Object, so that it is the parent class of any other classes.
+      // otherwise, a Void source will always replace the ClassInstance in the target VariableInstance.
+      // For the old APIs, for performance, AssignValueObject is called instead of the common AssignValue.
+      // So if Void is viewed as the child class of any other classes, then big problem.
+      // For example, the GetArrayElement API, if the input array or the corresponding element is null, 
+      // then the ClassInstacne of the target VarialbeInstacne will be repalced with Void.
+      // This is not good.
+      // The target ClassIntance type should keep unchanged but the value is set to corresponding NULL value.
+      
       // if value classes are different, auto convert source to target
       public static function AssignValue (sourceCi:ClassInstance, targetVi:VariableInstance):void
       {
          if (sourceCi._mRealClassDefinition == targetVi._mRealClassDefinition) // the most common case
          {
-            //targetVi._mValueObject = sourceCi._mValueObject; // bug, constant will be chagned.
+            //targetVi._mValueObject = sourceCi._mValueObject; // bug, constants will be chagned.
             targetVi.SetValueObject (sourceCi._mValueObject);
          }
          else
@@ -528,9 +537,13 @@ package player.trigger {
                }
                else // not convertable
                {
-                  //targetVi._mRealClassDefinition = CoreClassesHub.kVoidClassDefinition; // targetShellClass
-                  //targetVi._mValueObject = null; // targetShellClass.mGetNullValue (); // bug, constant will be chagned.
-                  targetVi.Assign (CoreClassesHub.kVoidClassDefinition, null);
+                  // //targetVi._mRealClassDefinition = CoreClassesHub.kVoidClassDefinition; // targetShellClass
+                  // //targetVi._mValueObject = null; // targetShellClass.mGetNullValue (); // bug, constant will be chagned.
+                  // 
+                  // targetVi.Assign (CoreClassesHub.kVoidClassDefinition, null); // also not good, see the comments before this fuction.
+                  
+                                                                                  // best to keep the target real type unchanged.
+                  targetVi.SetValueObject (targetVi._mRealClassDefinition.mGetNullFunc ()); // targetVi.Assign (targetVi._mRealClassDefinition, targetVi._mRealClassDefinition.mGetNullValue ());
                }
             }
             else if (targetShellClass.mValueConvertOrder == ClassDefinition.ValueConvertOrder_Others)
@@ -543,9 +556,13 @@ package player.trigger {
                }
                else
                {
-                  //targetVi._mRealClassDefinition = CoreClassesHub.kVoidClassDefinition; // targetShellClass
-                  //targetVi._mValueObject = null; // targetShellClass.mGetNullValue (); // bug, constant will be chagned.
-                  targetVi.Assign (CoreClassesHub.kVoidClassDefinition, null);
+                  // //targetVi._mRealClassDefinition = CoreClassesHub.kVoidClassDefinition; // targetShellClass
+                  // //targetVi._mValueObject = null; // targetShellClass.mGetNullValue (); // bug, constants will be changed.
+                  // 
+                  // targetVi.Assign (CoreClassesHub.kVoidClassDefinition, null); // also not good, see the comments before this fuction.
+                  
+                                                                                  // best to keep the target real type unchanged.
+                  targetVi.SetValueObject (targetVi._mRealClassDefinition.mGetNullFunc ()); // targetVi.Assign (targetVi._mRealClassDefinition, targetVi._mRealClassDefinition.mGetNullValue ());
                }
             }
             else // target must be primitive. Primitive classes are final classes (have no sub classes).

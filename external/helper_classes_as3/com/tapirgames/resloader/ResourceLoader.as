@@ -1,4 +1,4 @@
-package com.tapirgames.util
+package com.tapirgames.resloader
 {
    import flash.display.Bitmap;
    import flash.media.Sound;

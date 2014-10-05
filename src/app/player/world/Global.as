@@ -28,9 +28,6 @@ package player.world
    
    import player.sound.Sound;
    
-   //import com.tapirgames.util.RandomNumberGenerator;
-   //import com.tapirgames.util.MersenneTwisterRNG;
-   
    import common.trigger.ValueSpaceTypeDefine;
 
    import common.trigger.ClassTypeDefine;

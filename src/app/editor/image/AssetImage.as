@@ -27,7 +27,7 @@ package editor.image {
    import flash.events.ContextMenuEvent;
    
    import com.tapirgames.util.GraphicsUtil;
-   import com.tapirgames.util.ResourceLoader;
+   import com.tapirgames.resloader.ResourceLoader;
    
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;

@@ -1305,7 +1305,7 @@ package common {
                   //}
                   //
                   //Text Shape 最好还是不从Rectangle继承下来。以后可以选择多种气泡背景，Rectangle只是其中之一。
-                  //原点可以选在网格9个位置
+                  //原点可以选在网格9个位置 
                }
                
                //>> from v1.60
@@ -1559,17 +1559,15 @@ package common {
                editorWorld.SetShareSourceCode (worldDefine.mShareSourceCode);
                editorWorld.SetPermitPublishing (worldDefine.mPermitPublishing);
             }
+         
+            // preferences
+            //>> from v2.07
+            //{
+               EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetSurroundingBackgroundColor (worldDefine.mPreferences.mAppBackgroundColor);
+               EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetGridCellSize (worldDefine.mPreferences.mGridCellWidth, worldDefine.mPreferences.mGridCellHeight);
+            //}
+            //<<
          }
-         
-
-         
-         // preferences
-         //>> from v2.07
-         //{
-            EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetSurroundingBackgroundColor (worldDefine.mPreferences.mAppBackgroundColor);
-            EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetGridCellSize (worldDefine.mPreferences.mGridCellWidth, worldDefine.mPreferences.mGridCellHeight);
-         //}
-         //<<
          
          // ...
          

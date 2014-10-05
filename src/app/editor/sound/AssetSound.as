@@ -32,11 +32,11 @@ package editor.sound {
    import flash.events.ContextMenuEvent;
    
    import com.tapirgames.util.GraphicsUtil;
-   import com.tapirgames.util.ResourceLoader;
+   import com.tapirgames.resloader.ResourceLoader;
    import com.tapirgames.display.TextFieldEx;
    import com.tapirgames.display.TextButton;
    
-   import com.tapirgames.util.MPEGFrame;
+   import com.tapirgames.resloader.MPEGFrame;
    
    import editor.selection.SelectionProxy;
    import editor.selection.SelectionProxyRectangle;

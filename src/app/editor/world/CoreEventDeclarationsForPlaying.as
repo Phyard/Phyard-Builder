@@ -136,7 +136,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -146,7 +146,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -156,7 +156,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -166,7 +166,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -176,7 +176,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -186,7 +186,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -196,7 +196,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -206,7 +206,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -216,7 +216,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -226,7 +226,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -236,7 +236,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -246,7 +246,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -256,7 +256,7 @@ package editor.world {
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down")
@@ -276,7 +276,7 @@ package editor.world {
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"), 
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down"),
@@ -286,7 +286,7 @@ package editor.world {
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down"),
@@ -296,7 +296,7 @@ package editor.world {
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down", null, {mIsVisible: false}),
+                        new VariableDefinitionBoolean ("Is Left Button Down", null, {mIsVisible: false}),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down"),
@@ -306,7 +306,7 @@ package editor.world {
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"), 
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down"),
@@ -316,7 +316,7 @@ package editor.world {
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down"),
@@ -326,7 +326,7 @@ package editor.world {
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down"),
@@ -336,7 +336,7 @@ package editor.world {
                     [
                         new VariableDefinitionNumber ("World X"),
                         new VariableDefinitionNumber ("World Y"),
-                        new VariableDefinitionBoolean ("Is Button Down"),
+                        new VariableDefinitionBoolean ("Is Left Button Down"),
                         new VariableDefinitionBoolean ("Is Ctrl Down"),
                         new VariableDefinitionBoolean ("Is Shift Down"),
                         new VariableDefinitionBoolean ("Is Alt Down"),

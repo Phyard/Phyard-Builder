@@ -26,7 +26,7 @@ package player.trigger {
    //import player.trigger.CoreClassesHub;
    //import player.trigger.ClassInstance;
 
-   import com.tapirgames.util.RandomNumberGenerator;
+   import com.tapirgames.random.RandomNumberGenerator;
    import com.tapirgames.util.TextUtil;
 
    import common.trigger.CoreFunctionIds;

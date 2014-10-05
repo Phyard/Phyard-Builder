@@ -1,0 +1,1 @@
+mxmlc -output=resource_seed.swf Template.as

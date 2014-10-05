@@ -24,8 +24,8 @@ package player.world {
 
    import flash.ui.Mouse;
    
-   import com.tapirgames.util.RandomNumberGenerator;
-   import com.tapirgames.util.MersenneTwisterRNG;
+   import com.tapirgames.random.RandomNumberGenerator;
+   import com.tapirgames.random.MersenneTwisterRNG;
    import com.tapirgames.util.TextUtil;
 
    import player.physics.PhysicsEngine;

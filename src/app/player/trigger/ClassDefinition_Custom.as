@@ -10,6 +10,8 @@ package player.trigger
       
       public function ClassDefinition_Custom (customId:int, name:String)
       {
+         super ();
+         
          mId = customId;
          mName = name;
          

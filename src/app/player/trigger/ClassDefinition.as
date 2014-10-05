@@ -111,6 +111,11 @@ package player.trigger
       public var mIsNullFunc:Function;
       public var mGetNullFunc:Function;
       
+      //public function GetNullValue ():Object
+      //{
+      //   return mGetNullFunc ();
+      //}
+      
       public function ToNumber (valueObject:Object):Number
       {
          return mToNumberFunc (valueObject);
@@ -124,7 +129,7 @@ package player.trigger
       private var mClassNameForToString:String = null;
       public function ToString (valueObject:Object, extraInfos:Object = null):String 
       {
-         if (mIsNullFunc == null) // primitive
+         if (mIsNullFunc == null) // primitive (edit: not for primitives, this is also not null for sure)
          {
             return mToStringFunc (valueObject);
          }

@@ -477,21 +477,21 @@ package editor.entity.dialog {
             case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
             case CoreEventIds.ID_OnPhysicsShapeMouseDown:
             case CoreEventIds.ID_OnPhysicsShapeMouseUp:
-            case CoreEventIds.ID_OnEntityMouseClick:
-            case CoreEventIds.ID_OnPhysicsShapeMouseRightDown:
-            case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
             case CoreEventIds.ID_OnEntityMouseRightClick:
+            case CoreEventIds.ID_OnEntityMouseRightDown:
+            case CoreEventIds.ID_OnEntityMouseRightUp:
             case CoreEventIds.ID_OnEntityMouseDown:
             case CoreEventIds.ID_OnEntityMouseUp:
+            case CoreEventIds.ID_OnEntityMouseClick:
             case CoreEventIds.ID_OnEntityMouseMove:
             case CoreEventIds.ID_OnEntityMouseEnter:
             case CoreEventIds.ID_OnEntityMouseOut:
-            case CoreEventIds.ID_OnWorldMouseRightClick:
-            case CoreEventIds.ID_OnWorldMouseRightDown:
-            case CoreEventIds.ID_OnWorldMouseRightUp:
             case CoreEventIds.ID_OnWorldMouseClick:
             case CoreEventIds.ID_OnWorldMouseDown:
             case CoreEventIds.ID_OnWorldMouseUp:
+            case CoreEventIds.ID_OnWorldMouseRightClick:
+            case CoreEventIds.ID_OnWorldMouseRightDown:
+            case CoreEventIds.ID_OnWorldMouseRightUp:
             case CoreEventIds.ID_OnWorldMouseMove:
                handler = mScene.CreateEntityEventHandler_Mouse (eventId, null, true);
                break;
@@ -1778,7 +1778,7 @@ package editor.entity.dialog {
                
                if (params.mEventId != event_handler.GetEventId ())
                {
-                  event_handler.ChangeToIsomorphicEventId (params.mEventId );
+                  event_handler.ChangeToIsomorphicEventId (params.mEventId);
                }
             }
             else if (entity is EntityBasicCondition)

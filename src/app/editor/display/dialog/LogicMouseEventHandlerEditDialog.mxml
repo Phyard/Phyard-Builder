@@ -159,8 +159,10 @@
                case CoreEventIds.ID_OnWorldMouseClick:
                case CoreEventIds.ID_OnEntityMouseClick:
                default:
+               {
                   RadioButton_Click.selected = true;
                   break;
+               }
             }
 
             if (mIsWorldEvent)
@@ -218,7 +220,7 @@
                      mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseDown;
                   else if (RadioButton_PhysicsUp.selected)
                      mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseUp;
-                  if (RadioButton_PhysicsRightDown.selected)
+                  else if (RadioButton_PhysicsRightDown.selected)
                      mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseRightDown;
                   else if (RadioButton_PhysicsRightUp.selected)
                      mParams.mEventId = CoreEventIds.ID_OnPhysicsShapeMouseRightUp;
@@ -239,7 +241,9 @@
                   else if (RadioButton_Out.selected)
                      mParams.mEventId = CoreEventIds. ID_OnEntityMouseOut;
                   else //if (RadioButton_Click.selected)
+                  {
                      mParams.mEventId = CoreEventIds.ID_OnEntityMouseClick;
+                  }
                }
             }
 

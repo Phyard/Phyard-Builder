@@ -101,7 +101,7 @@ package player.entity {
             if (entityDefine.mCollisionCategoryIndex == undefined)
                catId = Define.CCatId_Hidden;
             
-            SetCollisionCategory (CoreClassesHub..ValidateInitialDirectValueObject_Define2Object (
+            SetCollisionCategory (CoreClassesHub.ValidateInitialDirectValueObject_Define2Object (
                                           mWorld, 
                                           ClassTypeDefine.ClassType_Core, 
                                           CoreClassIds.ValueType_CollisionCategory,
@@ -183,6 +183,13 @@ package player.entity {
                SetRotationFixed (entityDefine.mIsRotationFixed);
             //<<
             
+            //>> runtime, not in editor
+            if (entityDefine.mCareAboutPreSolveCollidingEvent != undefined)
+               SetCareAboutPreSolveCollidingEvent (entityDefine.mCareAboutPostSolveCollidingEvent);
+            if (entityDefine.mCareAboutPostSolveCollidingEvent != undefined)
+               SetCareAboutPostSolveCollidingEvent (entityDefine.mCareAboutPostSolveCollidingEvent);
+            //<<
+            
             if (Define.IsBreakableShape (mAiType) && mAlpha > 0.8)
             {
                SetAlpha (0.8);
@@ -253,6 +260,11 @@ package player.entity {
          
          entityDefine.mIsSleepingAllowed = IsSleepingAllowed ();
          entityDefine.mIsRotationFixed = IsRotationFixed ();
+         //<<
+         
+         //>> runtime, not in editor
+         entityDefine.mCareAboutPreSolveCollidingEvent = IsCareAboutPreSolveCollidingEvent ();
+         entityDefine.mCareAboutPostSolveCollidingEvent = IsCareAboutPostSolveCollidingEvent ();
          //<<
          
          return null;
@@ -693,6 +705,56 @@ package player.entity {
       public function IsRotationFixed ():Boolean
       {
          return mRotationFixed;
+      }
+      
+   // not defined in editor, just used in runtime.      
+      
+      private var mCareAboutPreSolveCollidingEvent:Boolean = false;
+      public function IsCareAboutPreSolveCollidingEvent ():Boolean
+      {
+         return mCareAboutPreSolveCollidingEvent;
+      }
+      public function SetCareAboutPreSolveCollidingEvent (care:Boolean):void
+      {
+         mCareAboutPreSolveCollidingEvent = care;
+      }
+      
+      private var mCareAboutPostSolveCollidingEvent:Boolean = false;
+      public function IsCareAboutPostSolveCollidingEvent ():Boolean
+      {
+         return mCareAboutPostSolveCollidingEvent;
+      }
+      public function SetCareAboutPostSolveCollidingEvent (care:Boolean):void
+      {
+         mCareAboutPostSolveCollidingEvent = care;
+      }
+      
+      public function IsCareAboutEvent (eventId:int):Boolean
+      {
+         switch (eventId)
+         {
+            case CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting:
+               return mCareAboutPreSolveCollidingEvent;
+            case CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting:
+               return mCareAboutPostSolveCollidingEvent;
+            default:
+               break;
+         }
+         
+         return false;
+      }
+      
+      public function SetCareAboutEvent (eventId:int, care:Boolean):void
+      {
+         switch (eventId)
+         {
+            case CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting:
+               SetCareAboutPreSolveCollidingEvent (care);
+            case CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting:
+               SetCareAboutPostSolveCollidingEvent (care);
+            default:
+               break;
+         }
       }
       
 //=============================================================

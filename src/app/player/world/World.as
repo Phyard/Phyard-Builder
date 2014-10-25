@@ -1633,7 +1633,9 @@ package player.world {
          mPhysicsEngine.SetSimulationQuality (mPhysicsSimulationQuality);
 
          mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
-         mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished);
+         mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished, 
+                                                               HandlePreOrPostSolveCollidingEvent, HandlePreOrPostSolveCollidingEvent, 
+                                                               GetPreSolveCollidingEventHandler, GetPostSolveCollidingEventHandler);
 
          mLastStepGravityAccelerationX = mCurrentGravityAccelerationX;
          mLastStepGravityAccelerationY = mCurrentGravityAccelerationY;
@@ -1684,6 +1686,12 @@ package player.world {
    //===============================
    // update physics
    //===============================
+      
+      private var mIsStepping:Boolean = false;
+      public function IsStepping ():Boolean
+      {
+         return mIsStepping;
+      }
 
       private function UpdatePhysics (dt:Number):void
       {
@@ -1692,7 +1700,9 @@ package player.world {
          mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX + mGlobalForceX, mCurrentGravityAccelerationY + mGlobalForceY, false);
          ClearGlobalForces ();
 
+         mIsStepping = true;
          mPhysicsEngine.Update (dt);
+         mIsStepping = false;
 
       // sycronize with physics, should before HandleShapeContactEvents
 

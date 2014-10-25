@@ -265,6 +265,14 @@ package editor.entity.dialog {
             case 78: // N
                SnapSelectedEnttiesToGrid ();
                break;
+            case 79: // O
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting), OnPutCreating, OnCreatingCancelled));
+               break;
+            case 80: // P
+               if (ctrlHold && shiftHold)
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting), OnPutCreating, OnCreatingCancelled));
+               break;
             /*
             case 66: // B
                if (ctrlHold && shiftHold)
@@ -2408,6 +2416,8 @@ package editor.entity.dialog {
             
                polyline.UpdateAppearance ();
                polyline.UpdateSelectionProxy ();
+               
+               //polyline.UpdateControlPoints (true);
             }
          }
          

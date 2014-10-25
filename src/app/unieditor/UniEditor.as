@@ -110,9 +110,13 @@ trace ("realEditorSwfUrl = " + realEditorSwfUrl);
          
          //
          var theContextMenu:ContextMenu = new ContextMenu ();
+         if (theContextMenu == null) // may be still not one some devices
+            return;
+         
          theContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
          defaultItems.print = true;
+         
          contextMenu = theContextMenu;
       }
       

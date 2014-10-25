@@ -190,7 +190,7 @@ package Box2D.Dynamics.Contacts
 
 		public var m_manifold:b2Manifold//  = new b2Manifold (); // now use manifold pool to optimize
 
-		public var m_toiCount:int
+		public var m_toiCount:int;
 		public var m_toi:Number;
 	//};
 

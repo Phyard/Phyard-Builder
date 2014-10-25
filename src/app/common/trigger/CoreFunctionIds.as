@@ -216,7 +216,9 @@ package common.trigger {
       public static const ID_Number_SwapValues:int                  = IdPool.CoreApiId_299; //
       public static const ID_Number_Equals:int                      = IdPool.CoreApiId_180; //
       public static const ID_Number_LargerThan:int                  = IdPool.CoreApiId_210; //
-      public static const ID_Number_LessThan:int                    = IdPool.CoreApiId_211; //
+      public static const ID_Number_NotLessThan:int                  = IdPool.CoreApiId_208; // v2.08
+      public static const ID_Number_SmallerThan:int                 = IdPool.CoreApiId_211; //
+      public static const ID_Number_NotMoreThan:int                  = IdPool.CoreApiId_209; // v2.08
       public static const ID_Number_IsNaN:int                       = IdPool.CoreApiId_303; //
       public static const ID_Number_IsInfinity :int                   = IdPool.CoreApiId_304; //
 
@@ -295,6 +297,8 @@ package common.trigger {
 
       public static const Id_Math_LinearInterpolation:int                  = IdPool.CoreApiId_530; //
       public static const Id_Math_LinearInterpolationColor:int             = IdPool.CoreApiId_531; //
+      //public static const Id_Math_XxPlusYy:int                  = IdPool.CoreApiId_520; //
+      //public static const Id_Math_XxMinusYy:int                 = IdPool.CoreApiId_521; //
 
 
    // game / design
@@ -508,9 +512,11 @@ package common.trigger {
 
       public static const ID_EntityShape_IsPhysicsEnabled:int          = IdPool.CoreApiId_1150;
       //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1151;
+      //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1154;
       public static const ID_EntityShape_GetCollisionCategory:int      = IdPool.CoreApiId_1152;
       public static const ID_EntityShape_SetCollisionCategory:int      = IdPool.CoreApiId_1153;
-      //public static const ID_EntityShape_SetPhysicsEnabled:int       = IdPool.CoreApiId_1154;
+      public static const ID_EntityShape_IsCareAboutShapeEvent:int     = IdPool.CoreApiId_1167; // v2.08
+      public static const ID_EntityShape_SetCareAboutShapeEvent:int    = IdPool.CoreApiId_1168; // v2.08
       public static const ID_EntityShape_IsSensor:int                  = IdPool.CoreApiId_1157;
       public static const ID_EntityShape_SetAsSensor:int               = IdPool.CoreApiId_1158;
       public static const ID_EntityShape_IsStatic:int                  = IdPool.CoreApiId_1155; // from v1.54, old IsStatic

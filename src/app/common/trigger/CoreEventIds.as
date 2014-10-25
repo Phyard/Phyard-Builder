@@ -61,6 +61,9 @@ package common.trigger {
       public static const ID_OnTwoPhysicsShapesBeginContacting:int = IdPool.EventId_131;
       public static const ID_OnTwoPhysicsShapesKeepContacting:int = IdPool.EventId_132;
       public static const ID_OnTwoPhysicsShapesEndContacting:int = IdPool.EventId_133;
+      
+      public static const ID_OnTwoPhysicsShapesPreSolveContacting:int = IdPool.EventId_138; //
+      public static const ID_OnTwoPhysicsShapesPostSolveContacting:int = IdPool.EventId_139; // if this is changed (should not), the ones in CoreFunctionDeclarations should also be chagned.
 
       public static const ID_OnEntityPairTimer:int = IdPool.EventId_150;
 

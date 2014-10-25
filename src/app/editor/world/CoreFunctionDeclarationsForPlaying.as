@@ -45,14 +45,14 @@ package editor.world {
          var code_flow_package:CodePackage = new CodePackage ("Code Flow Control", sGlobalCodePackage);
          var bool_package:CodePackage   = new CodePackage ("Boolean", sGlobalCodePackage);
          var number_package:CodePackage   = new CodePackage ("Number", sGlobalCodePackage);
-            var numbe_general_package:CodePackage         = new CodePackage ("General", number_package);
+            var number_general_package:CodePackage         = new CodePackage ("General", number_package);
             var convert_package:CodePackage            = new CodePackage ("Conversion", number_package);
             //var to_string_package:CodePackage      = new CodePackage ("To/From String", number_package);
             var bitwise_package:CodePackage            = new CodePackage ("Bit-wise", number_package);
             var usual_number_package:CodePackage         = new CodePackage ("Usual", number_package);
-            var interpolation_package:CodePackage      = new CodePackage ("Interpolation", number_package);
             var trigonometry_package:CodePackage = new CodePackage ("Trigonometry", number_package);
             var random_package:CodePackage             = new CodePackage ("Random", number_package);
+            var more_number_package:CodePackage      = new CodePackage ("More", number_package);
          var string_package:CodePackage = new CodePackage ("String", sGlobalCodePackage);
          var array_package:CodePackage   = new CodePackage ("Array", sGlobalCodePackage);
             var array_element_package:CodePackage   = array_package; // new CodePackage ("Element", array_package);
@@ -88,7 +88,8 @@ package editor.world {
              var shape_appearance_package:CodePackage = new CodePackage ("Appearance", entity_shape_package);
                  var shape_body_appearance_package:CodePackage = new CodePackage ("Body", shape_appearance_package);
                  var shape_border_appearance_package:CodePackage = new CodePackage ("Border", shape_appearance_package);
-             var shape_physics_properties_package:CodePackage = new CodePackage ("Physics Properties", entity_shape_package);
+             var shape_physics_properties_package_1:CodePackage = new CodePackage ("Physics Properties 1", entity_shape_package);
+             var shape_physics_properties_package_2:CodePackage = new CodePackage ("Physics Properties 2", entity_shape_package);
              var shape_physics_dynamics_package:CodePackage = new CodePackage ("Physics Dynamics", entity_shape_package);
              var entity_shape_brothers_package:CodePackage = new CodePackage ("Brothers", entity_shape_package);
              var entity_shape_connections_package:CodePackage = new CodePackage ("Connections", entity_shape_package);
@@ -1264,7 +1265,7 @@ package editor.world {
          
        // math basic ops
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Assign, numbe_general_package, "= (Number Assign)", "@#0 = $0", "@#0 = $0",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Assign, number_general_package, "= (Number Assign)", "@#0 = $0", "@#0 = $0",
                      [
                              new VariableDefinitionNumber ("Source"),
                      ],
@@ -1272,7 +1273,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Target"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ConditionAssign, numbe_general_package, "=? (Condition Assign)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_ConditionAssign, number_general_package, "=? (Condition Assign)", "@#0 = ($0 is true) ? $1 : $2", "@#0 = ($0 is true) ? $1 : $2",
                      [
                              new VariableDefinitionBoolean ("Condition Result", null, {mAllowVariablesOfOtherClasses: true}),
                              new VariableDefinitionNumber ("True Source"),
@@ -1282,14 +1283,14 @@ package editor.world {
                              new VariableDefinitionNumber ("Target"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_SwapValues, numbe_general_package, "Swap Number Values", "@$0 <-> $1", "SwapNumberValues",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_SwapValues, number_general_package, "Swap Number Values", "@$0 <-> $1", "SwapNumberValues",
                      [
                              new VariableDefinitionNumber ("Number 1 (reference)", null),
                              new VariableDefinitionNumber ("Number 2 (reference)", null),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Equals, numbe_general_package, "Number == Number?", "@#0 = Number: ($0 == $1)", "@#0 = Number: ($0 == $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Equals, number_general_package, "Number == Number?", "@#0 = Number: ($0 == $1)", "@#0 = Number: ($0 == $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1298,7 +1299,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_LargerThan, numbe_general_package, "Number > Number?", "@#0 = ($0 > $1)", "@#0 = ($0 > $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_LargerThan, number_general_package, "Number > Number?", "@#0 = ($0 > $1)", "@#0 = ($0 > $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1307,7 +1308,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_LessThan, numbe_general_package, "Number < Number?", "@#0 = ($0 < $1)", "@#0 = ($0 < $1)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_NotLessThan, number_general_package, "Number >= Number?", "@#0 = ($0 >= $1)", "@#0 = ($0 >= $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1316,7 +1317,25 @@ package editor.world {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_IsNaN, numbe_general_package, "Is Not a Number?", null, "IsNaN",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_SmallerThan, number_general_package, "Number < Number?", "@#0 = ($0 < $1)", "@#0 = ($0 < $1)",
+                     [
+                             new VariableDefinitionNumber ("Number 1"),
+                             new VariableDefinitionNumber ("Number 2"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_NotMoreThan, number_general_package, "Number <= Number?", "@#0 = ($0 <= $1)", "@#0 = ($0 <= $1)",
+                     [
+                             new VariableDefinitionNumber ("Number 1"),
+                             new VariableDefinitionNumber ("Number 2"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_IsNaN, number_general_package, "Is Not a Number?", null, "IsNaN",
                      [
                              new VariableDefinitionNumber ("The Number"),
                      ],
@@ -1324,7 +1343,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_IsInfinity, numbe_general_package, "Is Infinity Number?", null, "IsInfinity",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_IsInfinity, number_general_package, "Is Infinity Number?", null, "IsInfinity",
                      [
                              new VariableDefinitionNumber ("The Number"),
                      ],
@@ -1332,7 +1351,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Negative, numbe_general_package, "- x (Negative)", "@#0 = (- $0)", "@#0 = (- $0)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Negative, number_general_package, "- x (Negative)", "@#0 = (- $0)", "@#0 = (- $0)",
                      [
                              new VariableDefinitionNumber ("Number"),
                      ],
@@ -1340,7 +1359,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Inverse, numbe_general_package, "1.0 / x (Inverse)", "@#0 = (1.0 / $0)", "@#0 = (1.0 / $0)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Inverse, number_general_package, "1.0 / x (Inverse)", "@#0 = (1.0 / $0)", "@#0 = (1.0 / $0)",
                      [
                              new VariableDefinitionNumber ("Number"),
                      ],
@@ -1348,7 +1367,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Add, numbe_general_package, "x + y", "@#0 = $0 + $1", "@#0 = $0 + $1",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Add, number_general_package, "x + y", "@#0 = $0 + $1", "@#0 = $0 + $1",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1357,7 +1376,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Subtract, numbe_general_package, "x - y", "@#0 = $0 - $1", "@#0 = $0 - $1",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Subtract, number_general_package, "x - y", "@#0 = $0 - $1", "@#0 = $0 - $1",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1366,7 +1385,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Multiply, numbe_general_package, "x * y (Multiply)", "@#0 = $0 * $1", "@#0 = $0 * $1",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Multiply, number_general_package, "x * y (Multiply)", "@#0 = $0 * $1", "@#0 = $0 * $1",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1375,7 +1394,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Divide, numbe_general_package, "x / y (Divide)", "@#0 = $0 / $1", "@#0 = $0 / $1",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Divide, number_general_package, "x / y (Divide)", "@#0 = $0 / $1", "@#0 = $0 / $1",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1384,7 +1403,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Modulo, numbe_general_package, "x % y (Modulo)", "@#0 = $0 % $1", "@#0 = $0 % $1",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Modulo, number_general_package, "x % y (Modulo)", "@#0 = $0 % $1", "@#0 = $0 % $1",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),
@@ -1731,16 +1750,6 @@ package editor.world {
                              new VariableDefinitionNumber ("Result"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Clamp, usual_number_package, "Clamp", "@Clamp $0 Between $1 and $2", null,
-                     [
-                             new VariableDefinitionNumber ("Number to Clamp"),
-                             new VariableDefinitionNumber ("Lower Limit"),
-                             new VariableDefinitionNumber ("Upper Limit"),
-                     ],
-                     [
-                             new VariableDefinitionNumber ("Result"),
-                     ]
-                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Sqrt, usual_number_package, "Sqrt", "Sqrt", null,
                      [
                              new VariableDefinitionNumber ("Number"),
@@ -1799,7 +1808,20 @@ package editor.world {
                      ]
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation, interpolation_package, "Linear Interpolation", null, null,
+      // math / more
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Clamp, more_number_package, "Clamp", "@Clamp $0 Between $1 and $2", null,
+                     [
+                             new VariableDefinitionNumber ("Number to Clamp"),
+                             new VariableDefinitionNumber ("Value Boundary 1"),
+                             new VariableDefinitionNumber ("Value Boundary 2"),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Result"),
+                     ]
+                  );
+
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolation, more_number_package, "Linear Interpolation", null, null,
                      [
                              new VariableDefinitionNumber ("Number x1"),
                              new VariableDefinitionNumber ("Number x2"),
@@ -1809,7 +1831,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Result (x1 * t + (1.0 - t) * x2)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor, interpolation_package, "Color Linear Interpolation", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.Id_Math_LinearInterpolationColor, more_number_package, "Color Linear Interpolation", null, null,
                      [
                              new VariableDefinitionNumber ("Color c1", null, {mIsColorValue: true}),
                              new VariableDefinitionNumber ("Color c2", null, {mIsColorValue: true}),
@@ -1819,6 +1841,25 @@ package editor.world {
                              new VariableDefinitionNumber ("Result (c1 * t + (1.0 - t) * c2)", null, {mIsColorValue: true}),
                      ]
                   );
+                  
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.Id_Math_XxPlusYy, more_number_package, "AxA + BxB", "@#0 = $0 * $0 + $1 * $1", "@#0 = $0 * $0 + $1 * $1",
+         //            [
+         //                    new VariableDefinitionNumber ("A"),
+         //                    new VariableDefinitionNumber ("B"),
+         //            ],
+         //            [
+         //                    new VariableDefinitionNumber ("AxA + BxB"),
+         //            ]
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.Id_Math_XxMinusYy, more_number_package, "AxA - BxB", "@#0 = $0 * $0 - $1 * $1", "@#0 = $0 * $0 - $1 * $1",
+         //            [
+         //                    new VariableDefinitionNumber ("A"),
+         //                    new VariableDefinitionNumber ("B"),
+         //            ],
+         //            [
+         //                    new VariableDefinitionNumber ("AxA - BxB"),
+         //            ]
+         //         );
 
       // game / design
                   
@@ -3076,10 +3117,6 @@ package editor.world {
                      ],
                      null
                   );
-                  
-                  //border thickness
-                  //body visible
-                  
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCacheAsBitmap, shape_appearance_package, "Cache Shape As Bitmap", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -3088,7 +3125,7 @@ package editor.world {
                      null
                   );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled, shape_physics_properties_package, "Is Physics Enabled Shape", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsPhysicsEnabled, shape_physics_properties_package_1, "Is Physics Enabled Shape", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sSimpleVectorShapeEntityClasses}),
                      ],
@@ -3096,22 +3133,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("Physics Enabled?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, shape_physics_properties_package, "Get Collision Category", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionCollisionCategory ("Collision Category (ccat)"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory, shape_physics_properties_package, "Set Collision Category", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                             new VariableDefinitionCollisionCategory ("Collision Category (ccat)"),
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor, shape_physics_properties_package, "Is Sensor", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSensor, shape_physics_properties_package_1, "Is Sensor", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -3119,14 +3141,14 @@ package editor.world {
                              new VariableDefinitionBoolean ("Is Sensor?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_properties_package, "Set Sensor", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetAsSensor, shape_physics_properties_package_1, "Set Sensor", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Sensor?"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic, shape_physics_properties_package, "Is Static", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsStatic, shape_physics_properties_package_1, "Is Static", null, null,
                      [
                              new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -3134,20 +3156,14 @@ package editor.world {
                              new VariableDefinitionBoolean ("Static?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetStatic, shape_physics_properties_package, "Set Static", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetStatic, shape_physics_properties_package_1, "Set Static", null, null,
                      [
                              new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Static?"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Connections", null, null,
-                     [
-                        new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsRotationFixed, shape_physics_properties_package, "Is Rotation Fixed", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsRotationFixed, shape_physics_properties_package_1, "Is Rotation Fixed", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -3155,14 +3171,14 @@ package editor.world {
                              new VariableDefinitionBoolean ("Rotation Fixed?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetRotationFixed, shape_physics_properties_package, "Set Rotation Fixed", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetRotationFixed, shape_physics_properties_package_1, "Set Rotation Fixed", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Rotation Fixed?"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping, shape_physics_properties_package, "Is Sleeping", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsSleeping, shape_physics_properties_package_1, "Is Sleeping", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -3170,15 +3186,77 @@ package editor.world {
                              new VariableDefinitionBoolean ("Is Sleeping?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping, shape_physics_properties_package, "Set Sleeping", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetSleeping, shape_physics_properties_package_1, "Set Sleeping", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Sleeping?"),
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFriction, shape_physics_properties_package_1, "Get Friction", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("The Friction"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFriction, shape_physics_properties_package_1, "Set Friction", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("The Friction"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetRestitution, shape_physics_properties_package_1, "Get Restitution", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("The Restitution"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetRestitution, shape_physics_properties_package_1, "Set Restitution", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("The Restitution"),
+                     ],
+                     null
+                  );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetLocalCentroid, shape_physics_properties_package, "Get Local Centroid", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCollisionCategory, shape_physics_properties_package_2, "Get Collision Category", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     [
+                             new VariableDefinitionCollisionCategory ("Collision Category (ccat)"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCollisionCategory, shape_physics_properties_package_2, "Set Collision Category", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionCollisionCategory ("Collision Category (ccat)"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_IsCareAboutShapeEvent, shape_physics_properties_package_2, "Is Caring About Event?", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Event ID", null, {mValueLists: Lists.mShapeCaringAboutEventIdList}),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Care About?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCareAboutShapeEvent, shape_physics_properties_package_2, "Set Caring About Event", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionNumber ("Event ID", null, {mValueLists: Lists.mShapeCaringAboutEventIdList}),
+                             new VariableDefinitionBoolean ("Care About?"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetLocalCentroid, shape_physics_properties_package_2, "Get Local Centroid", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -3187,7 +3265,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Local Centroid Y"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetWorldCentroid, shape_physics_properties_package, "Get World Centroid", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetWorldCentroid, shape_physics_properties_package_2, "Get World Centroid", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Centroid of Brothers?"),
@@ -3197,7 +3275,7 @@ package editor.world {
                              new VariableDefinitionNumber ("World Centroid Y"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetMass, shape_physics_properties_package, "Get Mass", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetMass, shape_physics_properties_package_2, "Get Mass", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Mass of Brothers?"),
@@ -3206,7 +3284,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Mass"),
                      ]
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetMass, shape_physics_properties_package, "Set Mass", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetMass, shape_physics_properties_package_2, "Set Mass", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
          //                    new VariableDefinitionNumber ("Mass"),
@@ -3214,7 +3292,7 @@ package editor.world {
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia, shape_physics_properties_package, "Get Moment Of Inertia", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetInertia, shape_physics_properties_package_2, "Get Moment Of Inertia", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("MOI of Brothers?"),
@@ -3223,7 +3301,7 @@ package editor.world {
                              new VariableDefinitionNumber ("Moment Of Inertia"),
                      ]
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetInertia, shape_physics_properties_package, "Set Moment Of Inertia", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetInertia, shape_physics_properties_package_2, "Set Moment Of Inertia", null, null,
          //            [
          //                    new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
          //                    new VariableDefinitionNumber ("Moment Of Inertia"),
@@ -3231,7 +3309,7 @@ package editor.world {
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, shape_physics_properties_package, "Get Density", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetDensity, shape_physics_properties_package_2, "Get Density", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                      ],
@@ -3239,40 +3317,10 @@ package editor.world {
                              new VariableDefinitionNumber ("The Density"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, shape_physics_properties_package, "Set Density", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetDensity, shape_physics_properties_package_2, "Set Density", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionNumber ("The Density"),
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetFriction, shape_physics_properties_package, "Get Friction", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionNumber ("The Friction"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetFriction, shape_physics_properties_package, "Set Friction", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                             new VariableDefinitionNumber ("The Friction"),
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetRestitution, shape_physics_properties_package, "Get Restitution", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                     ],
-                     [
-                             new VariableDefinitionNumber ("The Restitution"),
-                     ]
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetRestitution, shape_physics_properties_package, "Set Restitution", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
-                             new VariableDefinitionNumber ("The Restitution"),
                      ],
                      null
                   );
@@ -3599,6 +3647,12 @@ package editor.world {
                      null
                   );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_BreakAllJoints, entity_shape_connections_package, "Breakup All Connections", null, null,
+                     [
+                        new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                     ],
+                     null
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetAllSisters, entity_shape_connections_package, "Get All Connected Shapes", null, null,
                      [
                              new VariableDefinitionEntity ("The Input Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),

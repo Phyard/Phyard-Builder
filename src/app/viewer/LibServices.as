@@ -98,7 +98,9 @@
    private static const kUseRealServersForcely                :Boolean = Capabilities.isDebugger; // true; // for editor mode only
    private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.6.132:1618/api/design/instance";
    private static const kGetInstanceServerInfoURL             :String  = "http://128.199.226.247:1618/api/design/instance";
+                                                                      // "http://mpserver.phyard.com:1618/api/design/instance";
                                                                       // "http://www.phyard.com/api/design/instance";
+                                                                      // http://mpserver.phyard.com/api/design/instance
    
    private var mIsGettingInstanceServerInfo:Boolean = false;
    

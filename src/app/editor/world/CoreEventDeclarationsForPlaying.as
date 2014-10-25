@@ -122,6 +122,33 @@ package editor.world {
                        new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
                        new VariableDefinitionNumber ("Steps")
                     ]);
+                    
+         RegisterEventDeclaration (CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting, "OnPreSolveTwoPhysicsShapesColldiing", "When to solve colliding of 2 physics shapes",
+                    [
+                       new VariableDefinitionEntity ("Physics Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                       new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                       new VariableDefinitionNumber ("Number Of Points In This Contact"),
+                       new VariableDefinitionNumber ("Index Of This Contact Point"),
+                       new VariableDefinitionNumber ("Point X"),
+                       new VariableDefinitionNumber ("Point Y"),
+                       new VariableDefinitionNumber ("Normal X"),
+                       new VariableDefinitionNumber ("Normal Y"),
+                       //new VariableDefinitionNumber ("Depth"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting, "OnPostSolveTwoPhysicsShapesColldiing", "When solved colliding of 2 physics shapes",
+                    [
+                       new VariableDefinitionEntity ("Physics Shape 1", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                       new VariableDefinitionEntity ("Physics Shape 2", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                       new VariableDefinitionNumber ("Number Of Points In This Contact"),
+                       new VariableDefinitionNumber ("Index Of This Contact Point"),
+                       new VariableDefinitionNumber ("Point X"),
+                       new VariableDefinitionNumber ("Point Y"),
+                       new VariableDefinitionNumber ("Normal X"),
+                       new VariableDefinitionNumber ("Normal Y"),
+                       new VariableDefinitionNumber ("Normal Pulse"),
+                       new VariableDefinitionNumber ("Tangent Pulse")
+                    ]);
+                    
          RegisterEventDeclaration (CoreEventIds.ID_OnEntityPairTimer, "OnEntityPairTimer", "OnEntityPairTimer",
                     [
                         new VariableDefinitionNumber ("Calling Times"),

@@ -101,6 +101,11 @@ package editor {
       [Embed("../res/create/event_on_shape_stop_contacting.png")]
       public static const IconOnShapeStopContactingEvent:Class;
       
+      [Embed("../res/create/event_on_shape_pre_solve_colliding.png")]
+      public static const IconOnTwoPhysicsShapesPreSolveContacting:Class;
+      [Embed("../res/create/event_on_shape_post_solve_colliding.png")]
+      public static const IconOnTwoPhysicsShapesPostSolveContacting:Class;
+      
       // module loop to end
       
       [Embed("../res/create/event_on_module_loop_to_end.png")]
@@ -227,6 +232,9 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting] = IconOnShapeStartContactingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting ] = IconOnShapeKeepContactingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesEndContacting  ] = IconOnShapeStopContactingEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting ] = IconOnTwoPhysicsShapesPreSolveContacting;
+            sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting] = IconOnTwoPhysicsShapesPostSolveContacting;
             
             sEventId2IconClass [CoreEventIds.ID_OnWorldKeyDown] = IconOnKeyDownEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldKeyUp  ] = IconOnKeyUpEvent;

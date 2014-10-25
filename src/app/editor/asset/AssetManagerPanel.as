@@ -411,10 +411,12 @@ package editor.asset {
       final private function BuildContextMenu ():void
       {
          var theContextMenu:ContextMenu = new ContextMenu ();
+         if (theContextMenu == null) // may be still not one some devices
+            return;
+         
          theContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
          defaultItems.print = true;
-         contextMenu = theContextMenu;
          
          // need flash 10
          //theContextMenu.clipboardMenu = true;
@@ -436,6 +438,8 @@ package editor.asset {
             
             theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
          }
+         
+         contextMenu = theContextMenu;
       }
       
       private var mChangeBackgroundColorMenuItem:ContextMenuItem = null;
@@ -618,6 +622,7 @@ package editor.asset {
       protected var mIsMouseZeroMoveSinceLastDown:Boolean = false;
       protected var mIsCtrlDownOnMouseDown:Boolean = false;
       protected var mIsShiftDownOnMouseDown:Boolean = false;
+      protected var mIsAltDownOnMouseDown:Boolean = false;
       
       public function IsMouseZeroMoveSinceLastDown ():Boolean
       {
@@ -644,6 +649,7 @@ package editor.asset {
          mIsMouseZeroMoveSinceLastDown = true;
          mIsCtrlDownOnMouseDown = event.ctrlKey;
          mIsShiftDownOnMouseDown = event.shiftKey;
+         mIsAltDownOnMouseDown = event.altKey;
          
          if (mCurrentIntent != null)
          {
@@ -707,7 +713,7 @@ package editor.asset {
                {
                   RepositionScaleRotateFlipHandlersContainer ();
                   centerPoint = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-                  SetCurrentIntent (new IntentRotateSelectedAssets (this, false/*mIsCtrlDownOnMouseDown*/, centerPoint.x, centerPoint.y, true, true));
+                  SetCurrentIntent (new IntentRotateSelectedAssets (this, mIsAltDownOnMouseDown/* && mIsShiftDownOnMouseDown*/, centerPoint.x, centerPoint.y, true, true));
                   mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
                   return;
                }
@@ -718,14 +724,14 @@ package editor.asset {
                {
                   RepositionScaleRotateFlipHandlersContainer ();
                   centerPoint = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-                  SetCurrentIntent (new IntentScaleSelectedAssets (this, true, false, centerPoint.x, centerPoint.y, true, true));
+                  SetCurrentIntent (new IntentScaleSelectedAssets (this, ! mIsAltDownOnMouseDown, mIsAltDownOnMouseDown/* && mIsCtrlDownOnMouseDown*/, centerPoint.x, centerPoint.y, true, true));
                   mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
                   return;
                }
             }
             else if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
             {
-               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, true));
+               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsAltDownOnMouseDown, true));
                
                mCurrentIntent.OnMouseDown (managerX, managerY);
                return;
@@ -759,7 +765,7 @@ package editor.asset {
          if (PointSelectAsset (managerX, managerY, selectableObjects.concat ()))
          {
             if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Smooth)
-               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsCtrlDownOnMouseDown, false));
+               SetCurrentIntent (new IntentMoveSelectedAssets (this, mIsAltDownOnMouseDown, false));
             else if (GetMoveSelectedAssetsStyle () == kMoveSelectedAssetsStyle_Delayed)
                SetCurrentIntent (new IntentMoveSelectedAssetsDelayed (this));
             else
@@ -1440,7 +1446,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, true));
+         SetCurrentIntent (new IntentRotateSelectedAssets (this, event.altKey || event.shiftKey, managerPoint.x, managerPoint.y, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
@@ -1450,7 +1456,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, false, true));
+         SetCurrentIntent (new IntentRotateSelectedAssets (this, event.altKey || event.shiftKey, managerPoint.x, managerPoint.y, false, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
@@ -1460,7 +1466,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         SetCurrentIntent (new IntentRotateSelectedAssets (this, event.ctrlKey, managerPoint.x, managerPoint.y, true, false));
+         SetCurrentIntent (new IntentRotateSelectedAssets (this, event.altKey || event.shiftKey, managerPoint.x, managerPoint.y, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
@@ -1470,7 +1476,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         SetCurrentIntent (new IntentScaleSelectedAssets (this, false, event.ctrlKey, managerPoint.x, managerPoint.y, true, true));
+         SetCurrentIntent (new IntentScaleSelectedAssets (this, false, event.altKey || event.ctrlKey, managerPoint.x, managerPoint.y, true, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
@@ -1480,7 +1486,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         SetCurrentIntent (new IntentScaleSelectedAssets (this, false, event.ctrlKey, managerPoint.x, managerPoint.y, false, true));
+         SetCurrentIntent (new IntentScaleSelectedAssets (this, false, event.altKey || event.ctrlKey, managerPoint.x, managerPoint.y, false, true));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       
@@ -1490,7 +1496,7 @@ package editor.asset {
             return;
          
          var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
-         SetCurrentIntent (new IntentScaleSelectedAssets (this, false, event.ctrlKey, managerPoint.x, managerPoint.y, true, false));
+         SetCurrentIntent (new IntentScaleSelectedAssets (this, false, event.altKey || event.ctrlKey, managerPoint.x, managerPoint.y, true, false));
          mCurrentIntent.OnMouseDown (mAssetManager.mouseX, mAssetManager.mouseY);
       }
       

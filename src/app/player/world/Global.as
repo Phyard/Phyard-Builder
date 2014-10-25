@@ -314,7 +314,8 @@ package player.world
          }
          
          var levelIndex:Object = mSceneLookupTableByKey [key];
-         return levelIndex == undefined ? -1 : int (levelIndex);
+         //return levelIndex == undefined ? -1 : int (levelIndex);
+         return levelIndex == null ? -1 : int (levelIndex);
       }
       
       public /*static*/ function GetNumScenes ():int
@@ -646,15 +647,16 @@ package player.world
       {
          if (mSounds == null)
          {
-            var soundId:int;
-            
             mSounds = new Array (soundDefines.length);
             
+            var soundId:int;
+            var soundDefine:Object;
+            var sound:Sound;
             for (soundId = 0; soundId < soundDefines.length; ++ soundId)
             {
-               var soundDefine:Object = soundDefines [soundId];
+               soundDefine = soundDefines [soundId];
                
-               var sound:Sound = new Sound ();
+               sound = new Sound ();
                mSounds [soundId] = sound;
                
                sound.SetId (soundId);
@@ -668,8 +670,8 @@ package player.world
             
             for (soundId = 0; soundId < soundDefines.length; ++ soundId)
             {
-               var soundDefine:Object = soundDefines [soundId];
-               var sound:Sound = mSounds [soundId] as Sound;
+               soundDefine = soundDefines [soundId];
+               sound = mSounds [soundId] as Sound;
                
                sound.SetFileDataAndLoad (soundDefine.mFileData, OnLoadSoundDone, OnLoadSoundError);
             }

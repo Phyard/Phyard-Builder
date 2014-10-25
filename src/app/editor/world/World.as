@@ -607,8 +607,8 @@ package editor.world {
          CoreFunctionDeclarations.Initialize ();
          CoreEventDeclarations.Initialize ();
          
+         CoreEventDeclarationsForPlaying.Initialize (); // must before the following one
          CoreFunctionDeclarationsForPlaying.Initialize ();
-         CoreEventDeclarationsForPlaying.Initialize ();
          
          // ...
          mFunctionDeclarationsInited = true;

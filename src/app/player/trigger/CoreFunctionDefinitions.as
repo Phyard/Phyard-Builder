@@ -163,9 +163,6 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Bool_IsTrue,                IsTrue);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Bool_IsFalse,               IsFalse);
 
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_LargerThan,            LargerThan);
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_LessThan,              LessThan);
-
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Bool_And,               BoolAnd);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Bool_Or,                BoolOr);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Bool_Not,               BoolNot);
@@ -249,6 +246,12 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_ToStringByRadix,      NumberToStringByRadix);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_ParseFloat,           ParseFloat);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_ParseInteger,         ParseInteger);
+         
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_LargerThan,            LargerThan);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_SmallerThan,           SmallerThan);
+
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_NotLessThan,            NotLessThan);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_NotMoreThan,            NotMoreThan);
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_Negative,                   NegativeNumber);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_Add,                        AddTwoNumbers);
@@ -307,6 +310,8 @@ package player.trigger {
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_LinearInterpolation,               LinearInterpolation);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_XxPlusYy,           XxPlusYy);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_XxMinusYy,          XxMinusYy);
 
       // game / design
 
@@ -523,6 +528,8 @@ package player.trigger {
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetPhysicsEnabled,         SetShapePhysicsEnabled);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_GetCollisionCategory,        GetShapeCollisionCategory);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetCollisionCategory,        SetShapeCollisionCategory);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_IsCareAboutShapeEvent,        IsCareAboutShapeEvent);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetCareAboutShapeEvent,       SetCareAboutShapeEvent);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_IsSensor,                    IsSensorShape);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_SetAsSensor,                 SetShapeAsSensor);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityShape_IsStatic,                    IsStatic);
@@ -1738,30 +1745,6 @@ package player.trigger {
          valueTarget.AssignValueObject (CoreClassesHub.kArrayClassDefinition.ToString (values));
       }
 
-      public static function LargerThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var value1:Number = valueSource.EvaluateValueObject () as Number;
-
-         valueSource = valueSource.mNextParameter;
-         var value2:Number = valueSource.EvaluateValueObject () as Number;
-
-         var dv:Number = value1 - value2;
-
-         valueTarget.AssignValueObject (dv >= Number.MIN_VALUE);
-      }
-
-      public static function LessThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
-      {
-         var value1:Number = valueSource.EvaluateValueObject () as Number;
-
-         valueSource = valueSource.mNextParameter;
-         var value2:Number = valueSource.EvaluateValueObject () as Number;
-
-         var dv:Number = value1 - value2;
-
-         valueTarget.AssignValueObject (dv <= - Number.MIN_VALUE);
-      }
-
       public static function BoolAnd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value1:Boolean = valueSource.EvaluateValueObject () as Boolean;
@@ -2658,6 +2641,50 @@ package player.trigger {
          valueSource.AssignValueObject (number1);
       }
 
+      public static function LargerThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
+
+         var dv:Number = value1 - value2;
+
+         valueTarget.AssignValueObject (dv >= Number.MIN_VALUE);
+      }
+
+      public static function SmallerThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
+
+         var dv:Number = value1 - value2;
+
+         valueTarget.AssignValueObject (dv <= - Number.MIN_VALUE);
+      }
+
+      public static function NotLessThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueTarget.AssignValueObject (value1 >= value2);
+      }
+
+      public static function NotMoreThan (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueTarget.AssignValueObject (value1 <= value2);
+      }
+
       public static function IsNaN (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
          var value:Number = valueSource.EvaluateValueObject () as Number;
@@ -2688,6 +2715,26 @@ package player.trigger {
 
          valueTarget.AssignValueObject (value1 + value2);
       }
+
+      //public static function XxPlusYy (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var value1:Number = valueSource.EvaluateValueObject () as Number;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var value2:Number = valueSource.EvaluateValueObject () as Number;
+      //
+      //   valueTarget.AssignValueObject (value1 * value1 + value2 * value2);
+      //}
+
+      //public static function XxMinusYy (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var value1:Number = valueSource.EvaluateValueObject () as Number;
+      //
+      //   valueSource = valueSource.mNextParameter;
+      //   var value2:Number = valueSource.EvaluateValueObject () as Number;
+      //
+      //   valueTarget.AssignValueObject (value1 * value1 - value2 * value2);
+      //}
 
       public static function SubtractTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3170,6 +3217,9 @@ package player.trigger {
       
       public static function MergeLevelIntoTheCurrentOne (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var levelIndex:int = int (valueSource.EvaluateValueObject ());
          if (Global.sTheGlobal.IsInvalidScene (levelIndex))
             return;
@@ -3774,6 +3824,12 @@ package player.trigger {
 
       public static function CreateExplosion (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+         {
+            valueTarget.AssignValueObject (0);
+            return;
+         }
+         
          var worldX:Number = Number (valueSource.EvaluateValueObject ());
 
          valueSource = valueSource.mNextParameter;
@@ -4464,6 +4520,9 @@ package player.trigger {
 
       public static function DestroyEntity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var entity:Entity = valueSource.EvaluateValueObject () as Entity;
          if (entity == null)
             return;
@@ -4514,6 +4573,12 @@ package player.trigger {
 
       public static function CloneShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+         {
+            valueTarget.AssignValueObject (null);
+            return;
+         }
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
          {
@@ -5053,6 +5118,35 @@ package player.trigger {
          //   return;
 
          shape.SetCollisionCategory (ccat);
+      }
+
+      public static function IsCareAboutShapeEvent (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         
+         valueSource = valueSource.mNextParameter;
+         var eventId:int = int (valueSource.EvaluateValueObject ());
+
+         var care:Boolean = shape == null ? false : shape.IsCareAboutEvent (eventId);
+         valueTarget.AssignValueObject (care);
+      }
+
+      public static function SetCareAboutShapeEvent (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
+         if (shape == null)
+            return;
+
+         if (shape.IsDestroyedAlready ())
+            return;
+         
+         valueSource = valueSource.mNextParameter;
+         var eventId:int = int (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var care:Boolean = valueSource.EvaluateValueObject () as Boolean;
+
+         shape.SetCareAboutEvent (eventId, care);
       }
 
       public static function IsSensorShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
@@ -5734,6 +5828,9 @@ package player.trigger {
 
       public static function TeleportShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5764,6 +5861,9 @@ package player.trigger {
 
       public static function TeleportShape_Offsets (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5794,6 +5894,9 @@ package player.trigger {
 
       public static function TranslateShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5821,6 +5924,9 @@ package player.trigger {
 
       public static function TranslateShapeTo (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5848,6 +5954,9 @@ package player.trigger {
 
       public static function RotateShapeAroundWorldPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5881,6 +5990,9 @@ package player.trigger {
 
       public static function RotateShapeToAroundWorldPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5914,6 +6026,9 @@ package player.trigger {
 
       public static function FlipShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5943,6 +6058,9 @@ package player.trigger {
 
       public static function FlipShapeByWorldLinePoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -5979,6 +6097,9 @@ package player.trigger {
 
       public static function ScaleShapeWithFixedPoint (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -6049,6 +6170,9 @@ package player.trigger {
 
       public static function DetachShape (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -6058,7 +6182,10 @@ package player.trigger {
       }
 
 	  public static function AttachTwoShapes (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
-      {
+     {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
             return;
@@ -6076,7 +6203,10 @@ package player.trigger {
       }
 
 	  public static function DetachShapeThenAttachWithAnother (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
-      {
+     {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape1:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape1 == null || shape1.IsDestroyedAlready ())
             return;
@@ -6094,6 +6224,9 @@ package player.trigger {
 
       public static function BreakupShapeBrothers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
             return;
@@ -6116,6 +6249,9 @@ package player.trigger {
 
      public static function BreakShapeJoints (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
      {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null)
             return;
@@ -6450,6 +6586,9 @@ package player.trigger {
       
       public static function SetShapeBorderThickness (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShape = valueSource.EvaluateValueObject () as EntityShape;
          if (shape == null || shape.IsDestroyedAlready ())
             return;
@@ -6475,6 +6614,9 @@ package player.trigger {
 
       public static function SetCurveThickness (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var shape:EntityShapePolyline = valueSource.EvaluateValueObject () as EntityShapePolyline;
          if (shape == null || shape.IsDestroyedAlready ())
             return;
@@ -6504,6 +6646,9 @@ package player.trigger {
 
       public static function SetShapeCircleRadius (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var circle:EntityShapeCircle = valueSource.EvaluateValueObject () as EntityShapeCircle;
          if (circle == null || circle.IsDestroyedAlready ())
             return;
@@ -6539,6 +6684,9 @@ package player.trigger {
 
       public static function SetShapeRectangleSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          if (rect == null || rect.IsDestroyedAlready ())
             return;
@@ -6554,6 +6702,9 @@ package player.trigger {
       
       public static function SetShapeRectangleRoundCornerEnabled (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          if (rect == null || rect.IsDestroyedAlready ())
             return;
@@ -6566,6 +6717,9 @@ package player.trigger {
       
       public static function SetShapeRectangleRoundCornerEclipseSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var rect:EntityShapeRectangle = valueSource.EvaluateValueObject () as EntityShapeRectangle;
          if (rect == null || rect.IsDestroyedAlready ())
             return;
@@ -6723,6 +6877,9 @@ package player.trigger {
 
       public static function SetVertexLocalPositions (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
          if (polyShape == null || polyShape.IsDestroyedAlready ())
@@ -6756,6 +6913,9 @@ package player.trigger {
 
       public static function SetVertexWorldPositions (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var polyShape:EntityShapePolyShape = valueSource.EvaluateValueObject () as EntityShapePolyShape;
 
          if (polyShape == null || polyShape.IsDestroyedAlready ())
@@ -6790,6 +6950,9 @@ package player.trigger {
 
       public static function ChangeShapeModule (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var moduleShape:EntityShapeImageModule = valueSource.EvaluateValueObject () as EntityShapeImageModule;
 
          if (moduleShape == null || moduleShape.IsDestroyedAlready ())
@@ -6823,6 +6986,9 @@ package player.trigger {
 
       public static function ChangeShapeModuleButton_OverState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
 
          if (buttonModuleShape == null || buttonModuleShape.IsDestroyedAlready ())
@@ -6851,6 +7017,9 @@ package player.trigger {
 
       public static function ChangeShapeModuleButton_DownState (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
+         if (callingContext.mWorld.IsStepping ())
+            return;
+         
          var buttonModuleShape:EntityShapeImageModuleButton = valueSource.EvaluateValueObject () as EntityShapeImageModuleButton;
 
          if (buttonModuleShape == null || buttonModuleShape.IsDestroyedAlready ())

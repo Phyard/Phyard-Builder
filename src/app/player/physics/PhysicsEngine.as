@@ -81,9 +81,27 @@ package player.physics {
          mContactFilter.SetFilterFunctions (shouldCollide);
       }
       
-      public function SetShapeContactEventHandlingFunctions (contactBeginFunc:Function, contactEndFunc:Function):void
+      public function SetShapeContactEventHandlingFunctions (contactBeginFunc:Function, contactEndFunc:Function, 
+                                                             preSolveCollidingFunc:Function, postSolveCollidingFunc:Function, 
+                                                             callbackGetHandlePreSolveCollidingEventData:Function, callbackGetHandlePostSolveCollidingEventData:Function):void
       {
-         mContactListener.SetHandlingFunctions (contactBeginFunc, contactEndFunc);
+         if(contactBeginFunc != null)
+            mContactListener._OnShapeContactStarted = contactBeginFunc;
+         else
+            mContactListener._OnShapeContactStarted = mContactListener.OnBegin_Default;
+         
+         if (contactEndFunc != null)
+            mContactListener._OnShapeContactFinished = contactEndFunc;
+         else
+            mContactListener._OnShapeContactFinished = mContactListener.OnEnd_Default;
+         
+         //if(preSolveCollidingFunc != null)
+            mContactListener._OnShapeCollidePreSolve = preSolveCollidingFunc;
+         mContactListener._GetHandlePreSolveCollidingEventData = callbackGetHandlePreSolveCollidingEventData;
+         
+         //if (postSolveCollidingFunc != null)
+            mContactListener._OnShapeCollidePostSolved = postSolveCollidingFunc;
+         mContactListener._GetHandlePostSolveCollidingEventData = callbackGetHandlePostSolveCollidingEventData;
       }
       
       public static function CreateCustomJoint (def:b2JointDef, allocator:b2BlockAllocator = null):b2Joint

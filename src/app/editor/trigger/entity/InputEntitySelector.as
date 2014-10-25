@@ -233,13 +233,12 @@ package editor.trigger.entity {
          if (! SupportContextMenu ())
             return;
          
-         contextMenu = new ContextMenu ();
-         
-         if (contextMenu == null) // may be still null on some devices
+         var theContextMenu:ContextMenu = new ContextMenu ();
+         if (theContextMenu == null) // may be still null on some devices
             return;
          
-         contextMenu.hideBuiltInItems ();
-         var defaultItems:ContextMenuBuiltInItems = contextMenu.builtInItems;
+         theContextMenu.hideBuiltInItems ();
+         var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
          defaultItems.print = false;
          
          var clearText:String = GetClearMenuText ();
@@ -248,7 +247,7 @@ package editor.trigger.entity {
          {
             mContextMenuItem_Clear = new ContextMenuItem (clearText, false);
             
-            contextMenu.customItems.push (mContextMenuItem_Clear);
+            theContextMenu.customItems.push (mContextMenuItem_Clear);
             mContextMenuItem_Clear.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          }
          
@@ -258,9 +257,11 @@ package editor.trigger.entity {
          {
             mContextMenuItem_AppendSelecteds = new ContextMenuItem (appendText, false);
             
-            contextMenu.customItems.push (mContextMenuItem_AppendSelecteds);
+            theContextMenu.customItems.push (mContextMenuItem_AppendSelecteds);
             mContextMenuItem_AppendSelecteds.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnContextMenuEvent);
          }
+         
+         contextMenu = theContextMenu;
       }
       
       private function OnContextMenuEvent (event:ContextMenuEvent):void

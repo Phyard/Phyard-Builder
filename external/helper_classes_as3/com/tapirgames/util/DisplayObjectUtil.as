@@ -29,17 +29,17 @@ package com.tapirgames.util {
          {
             sprite.contextMenu = new ContextMenu ();
             
-            if (sprite.contextMenu != null) // may be null on some devices
-               sprite.contextMenu.hideBuiltInItems ();
+            if (sprite.contextMenu is ContextMenu) // may be null or NativeMenu on some devices
+               (sprite.contextMenu as ContextMenu).hideBuiltInItems ();
          }
          
          var menuItem:ContextMenuItem = new ContextMenuItem(caption, addSeperator);
          if (selectedListener != null)
             menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
-         if (sprite.contextMenu != null) // may be null on some devices
+         if (sprite.contextMenu is ContextMenu) // may be null or NativeMenu on some devices
          {
-            if (sprite.contextMenu.customItems != null)
-               sprite.contextMenu.customItems.push (menuItem);
+            if ((sprite.contextMenu as ContextMenu).customItems != null)
+               (sprite.contextMenu as ContextMenu).customItems.push (menuItem);
          }
          
          return menuItem;

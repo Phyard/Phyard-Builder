@@ -4,6 +4,7 @@ package editor.world {
    
    import com.tapirgames.util.TextUtil;
    
+   import common.trigger.CoreEventIds;
    import common.trigger.CoreClassIds;
    import common.trigger.ValueDefine;
    
@@ -234,6 +235,20 @@ package editor.world {
             {label:"Waiting", data:MultiplePlayerDefine.InstancePhase_Waiting},
             {label:"Playing", data:MultiplePlayerDefine.InstancePhase_Playing},
          ];
+      
+       public static var _mShapeCaringAboutEventIdList:Array = null;
+       public static function get mShapeCaringAboutEventIdList ():Array
+       {
+         if (_mShapeCaringAboutEventIdList == null)
+         {
+            _mShapeCaringAboutEventIdList = new Array (3);
+            
+            _mShapeCaringAboutEventIdList [0] = {label:"Invalid", data:-1};
+            _mShapeCaringAboutEventIdList [1] = {label:CoreEventDeclarationsForPlaying.GetEventDeclarationById (CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting).GetName (), data:CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting};
+            _mShapeCaringAboutEventIdList [2] = {label:CoreEventDeclarationsForPlaying.GetEventDeclarationById (CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting).GetName (), data:CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting};
+         }
          
+         return _mShapeCaringAboutEventIdList;
+      }
    }
 }

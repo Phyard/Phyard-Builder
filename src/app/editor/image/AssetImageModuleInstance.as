@@ -254,9 +254,9 @@ package editor.image {
          }
       }
       
-      override public function OnTransformIntentDone ():void
+      override public function OnTransformIntentDone (forceREbuildControlPoints:Boolean = false):void
       {
-         super.OnTransformIntentDone ();
+         super.OnTransformIntentDone (forceREbuildControlPoints);
          
          NotifyModifiedForReferers ();
       }

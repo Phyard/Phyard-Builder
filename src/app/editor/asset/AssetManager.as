@@ -952,7 +952,7 @@ package editor.asset {
             
             if (updateSelectionProxy)
             {
-               asset.OnTransformIntentDone ();
+               asset.OnTransformIntentDone (isEnlarge); // for enlarge, need rebuild control point here.
             }
          }
          

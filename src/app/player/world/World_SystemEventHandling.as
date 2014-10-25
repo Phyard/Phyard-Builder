@@ -418,24 +418,17 @@
       //if ((stage.focus is TextField) && (! (event.target is TextField)) && (stage.focus != stage))
       //   stage.focus = stage;
       
-      var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;
-      
-      // sometimes, user release mouse out of world, ...
-      if (IsKeyHold (mouseButtonKeyCode))
-      {
-         if (isLeft)
-         {
-            OnMouseLeftUp (event);
-         }
-         else
-         {
-            OnMouseRightUp (event);
-         }
-      }
-      
       // ...
+      
+      // todo: add scene option: support moving scene with mouse.
       if (isLeft)
       {
+         if (mCurrentMode != null)
+         {
+            mCurrentMode.OnMouseUp (event.stageX, event.stageY);
+            mCurrentMode = null;
+         }
+         
          SetCurrentMode (new ModeMoveWorldScene (this));
          
          if (mCurrentMode != null)
@@ -444,10 +437,27 @@
       
       UpdateMousePositionAndHoldInfo (event);
       
-      KeyPressed (mouseButtonKeyCode, 0);
+      // ...
       
       if (IsInteractiveEnabledNow ())
       {
+         var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;
+         
+         // sometimes, user release mouse out of world, ...
+         if (IsKeyHold (mouseButtonKeyCode))
+         {
+            if (isLeft)
+            {
+               OnMouseLeftUp (event);
+            }
+            else
+            {
+               OnMouseRightUp (event);
+            }
+         }
+         
+         KeyPressed (mouseButtonKeyCode, 0);
+         
          // as a key
          _KeyboardDownEvent.keyCode = mouseButtonKeyCode;
          _KeyboardDownEvent.charCode = 0;
@@ -477,20 +487,32 @@
       if (isLeft)
       {
          if (mCurrentMode != null)
+         {
             mCurrentMode.OnMouseUp (event.stageX, event.stageY);
+            mCurrentMode = null;
+         }
       }
       
       UpdateMousePositionAndHoldInfo (event);
       
-      var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;
+      // ...
       
-      if (IsKeyHold (mouseButtonKeyCode))
+      // unlike mouseDown, this "if" is commented off here.
+      //if (IsInteractiveEnabledNow ())
       {
-         // moved to bottom
-         //KeyReleased (mouseButtonKeyCode);
+         var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;
          
-         if (IsInteractiveEnabledNow ())
+         if (IsKeyHold (mouseButtonKeyCode))
          {
+            // moved to bottom
+            //KeyReleased (mouseButtonKeyCode, 0);
+            
+            // moved from bottom again.
+            KeyReleased (mouseButtonKeyCode, 0);
+            
+            // since v2.08, moved from below to here. For symmetry.
+            RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseUp : CoreEventIds.ID_OnWorldMouseRightUp]);
+            
             // as a key
             _KeyboardUpEvent.keyCode = mouseButtonKeyCode;
             _KeyboardUpEvent.charCode = 0;
@@ -500,15 +522,16 @@
             //HandleKeyEventByKeyCode (_KeyboardUpEvent, false);
             RegisterKeyboardEvent (mouseButtonKeyCode, _KeyboardUpEvent, mKeyUpEventHandlerLists);
             
-            // ...
-            RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseUp : CoreEventIds.ID_OnWorldMouseRightUp]);
+            // since v2.08,  moved above to handle before the simulated key event.
+            //RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseUp : CoreEventIds.ID_OnWorldMouseRightUp]);
             
             // ...
             
             HandlePhysicsShapeMouseEvents (event, false, isLeft);
+            
+            // since v2.08, move to above again, for IsKeyHold (mosueButton) should return false in KeyUp and MouseRelease event handler.
+            // KeyReleased (mouseButtonKeyCode, 0);
          }
-         
-         KeyReleased (mouseButtonKeyCode, 0);
       }
       
       if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
@@ -686,13 +709,17 @@
       // event handling can't be run simutaniously with PhysicsEngine.Step ().
       // in flash, this is not a problem. Be careful when porting to other platforms.
       
-      var exactKeyCode:int = GetExactKeyCode (event);
-      
-      if (IsKeyHold (exactKeyCode))
-         return;
-      
       if (IsInteractiveEnabledNow ())
       {
+         var exactKeyCode:int = GetExactKeyCode (event);
+         
+         // now ignore it if the general key is already hold.
+         // "release it then rehold it" is another implementation, 
+         // this is adopted for mouse buttons but not for general keys now.
+         
+         if (IsKeyHold (exactKeyCode))
+            return;
+         
          KeyPressed (exactKeyCode, event.charCode);
          RegisterKeyboardEvent (exactKeyCode, event, mKeyDownEventHandlerLists);
          //HandleKeyEventByKeyCode (event, true);
@@ -706,14 +733,14 @@
       // event handling can't be run simutaniously with PhysicsEngine.Step ().
       // in flash, this is not a problem. Be careful when porting to other platforms.
       
-      var exactKeyCode:int = GetExactKeyCode (event);
-      
-      if (! IsKeyHold (exactKeyCode))
-         return;
-      
-      // commented off, because it seems not a good idea to ...
+      // unlike keyDown, this "if" is commented off here.
       // if (IsInteractiveEnabledNow ())
       {
+         var exactKeyCode:int = GetExactKeyCode (event);
+         
+         if (! IsKeyHold (exactKeyCode))
+            return;
+         
          //HandleKeyEventByKeyCode (event, false);
          RegisterKeyboardEvent (exactKeyCode, event, mKeyUpEventHandlerLists);
          KeyReleased (exactKeyCode, event.charCode);

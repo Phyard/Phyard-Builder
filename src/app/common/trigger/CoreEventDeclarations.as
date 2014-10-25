@@ -126,6 +126,32 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                         [CoreClassIds.ValueType_Number,       0],
                     ]);
+                    
+         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       1],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       1],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                    ]);
+                    
          RegisterEventDeclatation (CoreEventIds.ID_OnEntityPairTimer,
                     [
                         [CoreClassIds.ValueType_Number,       0],

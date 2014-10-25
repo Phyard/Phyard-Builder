@@ -205,7 +205,8 @@
       
       // mouse
       
-      mIsMouseButtonDown = false; // the status may be different with that one in mKeyHoldListHead. Remove this variable later?
+      // commented off since v2.08
+      // mIsMouseButtonDown = false; // the status may be different with IsKeyHold (KeyCodes.LeftMouseButton);
       
       // keyboard
       
@@ -218,7 +219,18 @@
       
       while (keyCode >= 0)
       {
-         if (keyCode != KeyCodes.LeftMouseButton)
+         if (fireKeyReleasedEvents && (keyCode == KeyCodes.LeftMouseButton || keyCode == KeyCodes.RightMouseButton))
+         {
+            // why to mouse buttons are excluded here?
+            // For now mouse buttons are only simulated as keys, but also still reported as mouse events.
+            // Either excluding them or not excluding them are both not ideal solutions.
+            // Excluding is a little better, for not-excluding will make some mouse-release event reporting missed.
+            // If not-excluding is adopted, there should be two events fired:
+            // 1. KeyUp event. 
+            // 2. MouseUp event, which need the mouse position. Although we can get it with (this.mouseX, this.mouseY),
+            //    but it may be not user wants and create weird behaviours.
+         }
+         else
          {
             info = mKeyHoldInfo [keyCode];
             
@@ -235,6 +247,7 @@
             var nextKeyCode:int = info [KeyHoldInfo_Next];
             
             info [KeyHoldInfo_IsHold] = false;
+            info [KeyHoldInfo_CharCode] = 0;
             info [KeyHoldInfo_Ticks ] = 0;
             info [KeyHoldInfo_Next  ] = -1;
             info [KeyHoldInfo_Prev  ] = -1;

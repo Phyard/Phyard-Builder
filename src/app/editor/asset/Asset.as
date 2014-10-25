@@ -408,10 +408,10 @@ package editor.asset {
 //   move / rotate / scale / flip
 //====================================================================
       
-      public function OnTransformIntentDone ():void
+      public function OnTransformIntentDone (forceREbuildControlPoints:Boolean = false):void
       {
          UpdateSelectionProxy ();
-         UpdateControlPoints ();
+         UpdateControlPoints (forceREbuildControlPoints);
       }
       
       final public function Move (offsetX:Number, offsetY:Number/*, intentionDone:Boolean = true*/):void
@@ -904,10 +904,12 @@ package editor.asset {
       final private function BuildContextMenu ():void
       {
          var theContextMenu:ContextMenu = new ContextMenu ();
+         if (theContextMenu == null) // may be still not one some devices
+            return;
+         
          theContextMenu.hideBuiltInItems ();
          var defaultItems:ContextMenuBuiltInItems = theContextMenu.builtInItems;
          defaultItems.print = true;
-         contextMenu = theContextMenu;
          
          if (theContextMenu.customItems != null) // may be null on some deviecs
          {
@@ -915,6 +917,8 @@ package editor.asset {
             
             theContextMenu.customItems.push (EditorContext.GetAboutContextMenuItem ());
          }
+         
+         contextMenu = theContextMenu;
       }
       
       protected function BuildContextMenuInternal (customMenuItemsStack:Array):void

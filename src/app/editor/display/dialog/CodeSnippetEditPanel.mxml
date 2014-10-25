@@ -1194,8 +1194,8 @@
             {
                sprite.contextMenu = new ContextMenu ();
                
-               if (sprite.contextMenu != null) // may be null on some devices
-                  sprite.contextMenu.hideBuiltInItems ();
+               if (sprite.contextMenu is ContextMenu) // may be null or NativeMenu on some devices
+                  (sprite.contextMenu as ContextMenu).hideBuiltInItems ();
             }
 
             var menuItem:ContextMenuItem = new ContextMenuItem(caption, addSaperator);
@@ -1203,8 +1203,8 @@
             if (selectedListener != null)
                menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, selectedListener);
                
-            if (sprite.contextMenu != null) // may be null on some devices
-               sprite.contextMenu.customItems.push (menuItem);
+            if (sprite.contextMenu is ContextMenu) // may be null or NativeMenu on some devices
+               (sprite.contextMenu as ContextMenu).customItems.push (menuItem);
          }
 
          private function ClearCustomContextMenus (sprite:InteractiveObject, alsoSetNull:Boolean):void
@@ -1231,12 +1231,12 @@
             {
                sprite.contextMenu = new ContextMenu ();
                
-               if (sprite.contextMenu != null) // may be null on some devices
-                  sprite.contextMenu.hideBuiltInItems ();
+               if (sprite.contextMenu is ContextMenu) // may be null or NativeMenu on some devices
+                  (sprite.contextMenu as ContextMenu).hideBuiltInItems ();
             }
-            else
+            else if (sprite.contextMenu is ContextMenu)
             {
-               sprite.contextMenu.customItems.splice (0, sprite.contextMenu.customItems.length);
+               (sprite.contextMenu as ContextMenu).customItems.splice (0, (sprite.contextMenu as ContextMenu).customItems.length);
             }
 
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();
@@ -1976,13 +1976,13 @@
             {
                sprite.contextMenu = new ContextMenu ();
                
-               if (sprite.contextMenu != null) // may be null on some devices
-                  sprite.contextMenu.hideBuiltInItems ();
+               if (sprite.contextMenu is ContextMenu) // may be null or NativeMenu on some devices
+                  (sprite.contextMenu as ContextMenu).hideBuiltInItems ();
             }
-            else
+            else if (sprite.contextMenu is ContextMenu)
             {
-               if (sprite.contextMenu.customItems != null)
-                  sprite.contextMenu.customItems.splice (0, sprite.contextMenu.customItems.length);
+               if ((sprite.contextMenu as ContextMenu).customItems != null)
+                  (sprite.contextMenu as ContextMenu).customItems.splice (0, (sprite.contextMenu as ContextMenu).customItems.length);
             }
 
             var ownerFuncDefinition:FunctionDefinition = mCodeSnippet.GetOwnerFunctionDefinition ();

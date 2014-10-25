@@ -4,16 +4,10 @@
    <condition property="file.local.properties" value="local.properties.Windows" else="local.properties.Linux">
       <os family="windows" />
    </condition>
-   
    <property file="${basedir}/${file.local.properties}" />
-   <!-- if above file is not available, do nothing, so set default values -->
-   <condition property="Path.FlexSDK" value="D:/sdks/flex_sdk_3.5.0">
-      <not>  
-         <isset property="Path.FlexSDK"/>
-      </not>
-   </condition>
 
    <property name="dir.flexsdk"        value="${Path.FlexSDK}" />
+   <property name="dir.airsdk"        value="${Path.AirSDK}" />
 
    <property name="editor-width" value="958" />
    <property name="editor-height" value="678" />
@@ -44,51 +38,24 @@
    <property name="dir.output.unieditor"        value="${dir.output}-unieditor" />
    <property name="dir.output.univiewer"        value="${dir.output}-univiewer" />
    
-   <!-- -DForAir=true -->
-   <condition property="program.as3compiler.nosuffix" value="${dir.flexsdk}/bin/amxmlc" else="${dir.flexsdk}/bin/mxmlc">
-      <isset property="ForAir"/>
-   </condition>
-   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}">
-      <not>
-         <os family="windows" />
-      </not>
-   </condition>
-   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}.bat">
-      <and>
-         <isset property="ForAir"/>
-         <os family="windows" />
-      </and>
-   </condition>
-   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}.exe">
-      <and>
-         <not>
-            <isset property="ForAir"/>
-         </not>
-         <os family="windows" />
-      </and>
+   <property name="program.as3compiler.nosuffix"        value="${dir.flexsdk}/bin/mxmlc" />
+   <condition property="program.as3compiler" value="${program.as3compiler.nosuffix}.exe" else="${program.as3compiler.nosuffix}">
+      <os family="windows" />
    </condition>
 
-   <condition property="program.compcompiler.nosuffix" value="${dir.flexsdk}/bin/acompc" else="${dir.flexsdk}/bin/compc">
-      <isset property="ForAir"/>
+   <property name="program.air.as3compiler.nosuffix"        value="${dir.airsdk}/bin/amxmlc" />
+   <condition property="program.air.as3compiler" value="${program.air.as3compiler.nosuffix}.bat" else="${program.air.as3compiler.nosuffix}">
+      <os family="windows" />
    </condition>
-   <condition property="program.compcompiler" value="${program.compcompiler.nosuffix}">
-      <not>
-         <os family="windows" />
-      </not>
+   
+   <property name="program.compcompiler.nosuffix"        value="${dir.flexsdk}/bin/compc" />
+   <condition property="program.compcompiler" value="${program.compcompiler.nosuffix}.exe" else="${program.compcompiler.nosuffix}">
+      <os family="windows" />
    </condition>
-   <condition property="program.compcompiler" value="${program.compcompiler.nosuffix}.bat">
-      <and>
-         <isset property="ForAir"/>
-         <os family="windows" />
-      </and>
-   </condition>
-   <condition property="program.compcompiler" value="${program.compcompiler.nosuffix}.exe">
-      <and>
-         <not>
-            <isset property="ForAir"/>
-         </not>
-         <os family="windows" />
-      </and>
+   
+   <property name="program.air.compcompiler.nosuffix"        value="${dir.airsdk}/bin/acompc" />
+   <condition property="program.air.compcompiler" value="${program.air.compcompiler.nosuffix}.bat" else="${program.air.compcompiler.nosuffix}">
+      <os family="windows" />
    </condition>
 
    <target name="cleanup">
@@ -134,16 +101,12 @@
 
    <!-- ============================================= all =========================================================== -->
 
-   <target name="--move-swf">
-      <copy file="${--from-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}" overwrite="true" />
-   </target>
-
    <target name="--release-swf">
       <mkdir dir="${--to-directory}" />
       <delete file="${--to-directory}/${--from-swf}" quiet="true" />
       <delete file="${--to-directory}/${--to-swf}" quiet="true" />
       
-      <antcall target="--move-swf" />
+      <copy file="${--from-directory}/${--from-swf}" tofile="${--to-directory}/${--to-swf}" overwrite="true" />
    </target>
 
    <!-- ============================================= editor =========================================================== -->
@@ -220,12 +183,6 @@
          <param name="--from-swf" value="editor_unsecure.swf" />
          <param name="--to-directory" value="${dir.release}" />
          <param name="--to-swf" value="editor.swf" />
-         <param name="--wrap" value="3" />
-         <param name="--controlflow" value="0" />
-         <param name="--optimize" value="off" />
-         <param name="--slr" value="on" />
-         <param name="--rename" value="off" />
-         <param name="--safe" value="on" />
       </antcall>
    </target>
 
@@ -293,12 +250,6 @@
          <param name="--from-swf" value="unieditor_unsecure.swf" />
          <param name="--to-directory" value="${dir.release}" />
          <param name="--to-swf" value="unieditor.swf" />
-         <param name="--wrap" value="0" />
-         <param name="--controlflow" value="0" />
-         <param name="--optimize" value="off" />
-         <param name="--slr" value="off" />
-         <param name="--rename" value="off" />
-         <param name="--safe" value="off" />
       </antcall>
    </target>
 
@@ -366,12 +317,6 @@
          <param name="--from-swf" value="univiewer_unsecure.swf" />
          <param name="--to-directory" value="${dir.release}" />
          <param name="--to-swf" value="univiewer.swf" />
-         <param name="--wrap" value="0" />
-         <param name="--controlflow" value="0" />
-         <param name="--optimize" value="off" />
-         <param name="--slr" value="off" />
-         <param name="--rename" value="off" />
-         <param name="--safe" value="off" />
       </antcall>
    </target>
 
@@ -447,12 +392,6 @@
          <param name="--from-swf" value="${plugin-name}_unsecure.swf" />
          <param name="--to-directory" value="${dir.release}" />
          <param name="--to-swf" value="${plugin-name}.swf" />
-         <param name="--wrap" value="0" />
-         <param name="--controlflow" value="0" />
-         <param name="--optimize" value="off" />
-         <param name="--slr" value="off" />
-         <param name="--rename" value="off" />
-         <param name="--safe" value="off" />
       </antcall>
    </target>
 
@@ -522,7 +461,7 @@
          <istrue value="${--debug}"/>
       </condition>
 
-      <exec dir="${dir.build.src}" executable="${program.compcompiler}">
+      <exec dir="${dir.build.src}" executable="${program.air.compcompiler}">
          <arg line="-debug=${--debug}"/>
          <arg line="-source-path=${dir.build.src}" />
          <arg line="-include-classes=Main" />
@@ -531,10 +470,14 @@
 
          <arg line="-target-player=${target-player}" />
          <arg line="-swf-version=${swf-version}" />
-         <arg line="-static-link-runtime-shared-libraries=true" /> <!-- not "Required RSLs" -->
 
-         <arg line="-use-network" />
+         <!-- not "Required RSLs" -->
+         <!--
+         <arg line="-static-link-runtime-shared-libraries=true" /> 
+         
          <arg line="-locale=en_US" />
+         -->
+         <arg line="-use-network" />
       </exec>
    </target>
 
@@ -556,12 +499,6 @@
          <param name="--from-swf" value="${library-name}_unsecure.swc" />
          <param name="--to-directory" value="${dir.release}" />
          <param name="--to-swf" value="/${library-name}.swc" />
-         <param name="--wrap" value="0" />
-         <param name="--controlflow" value="0" />
-         <param name="--optimize" value="off" />
-         <param name="--slr" value="off" />
-         <param name="--rename" value="off" />
-         <param name="--safe" value="off" />
       </antcall>
    </target>
 

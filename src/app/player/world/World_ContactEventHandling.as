@@ -530,3 +530,49 @@ private function FindEventHandlerForEntityPair (eventId:int, shape1:EntityShape,
    
    return return_handlers;
 }
+
+// The following four function is used as callback for _ContactListener
+
+private function GetPreSolveCollidingEventHandler (shapeProxy1:PhysicsProxyShape, shapeProxy2:PhysicsProxyShape):ListElement_EventHandler
+{
+   if (shapeProxy1.GetEntityShape ().IsCareAboutPreSolveCollidingEvent () || shapeProxy2.GetEntityShape ().IsCareAboutPreSolveCollidingEvent ())
+      return FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting, shapeProxy1.GetEntityShape (), shapeProxy2.GetEntityShape (), true);
+   
+   return null;
+}
+
+private function GetPostSolveCollidingEventHandler (shapeProxy1:PhysicsProxyShape, shapeProxy2:PhysicsProxyShape):ListElement_EventHandler
+{
+   if (shapeProxy1.GetEntityShape ().IsCareAboutPostSolveCollidingEvent () || shapeProxy2.GetEntityShape ().IsCareAboutPostSolveCollidingEvent ())
+      return FindEventHandlerForEntityPair (CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting, shapeProxy1.GetEntityShape (), shapeProxy2.GetEntityShape (), true);
+   
+   return null;
+}
+
+// for performance, these paramters are put into _ContactListener.
+/*
+private var mColldingSolveEventHandlerValueSource9:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, null);
+private var mColldingSolveEventHandlerValueSource8:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, mColldingSolveEventHandlerValueSource9);
+private var mColldingSolveEventHandlerValueSource7:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, mColldingSolveEventHandlerValueSource8);
+private var mColldingSolveEventHandlerValueSource6:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, mColldingSolveEventHandlerValueSource7);
+private var mColldingSolveEventHandlerValueSource5:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, mColldingSolveEventHandlerValueSource6);
+private var mColldingSolveEventHandlerValueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, mColldingSolveEventHandlerValueSource5);
+private var mColldingSolveEventHandlerValueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, mColldingSolveEventHandlerValueSource4);
+private var mColldingSolveEventHandlerValueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition,    0, mColldingSolveEventHandlerValueSource3);
+private var mColldingSolveEventHandlerValueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, null, mColldingSolveEventHandlerValueSource2);
+private var mColldingSolveEventHandlerValueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, null, mColldingSolveEventHandlerValueSource1);
+private var mContactEventHandlerValueSourceList:Parameter = mColldingSolveEventHandlerValueSource0;
+*/
+
+private function HandlePreOrPostSolveCollidingEvent (handlerData:Object, valueSourceList:Parameter):void
+{
+   var handler_list_element:ListElement_EventHandler = handlerData as ListElement_EventHandler;
+   
+   IncStepStage ();
+   while (handler_list_element != null)
+   {
+      handler_list_element.mEventHandler.HandleEvent (valueSourceList);
+      
+      handler_list_element = handler_list_element.mNextListElement;
+   }
+}

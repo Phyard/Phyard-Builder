@@ -105,6 +105,12 @@ package player.entity {
          return "Entity#" + mCreationId;
       }
 
+      // for dev debug
+      public function toString ():String
+      {
+         return "Entity#" + mCreationId + "/" + mAppearanceId + ":(" + GetPositionX () + "," + GetPositionY () + ")";
+      }
+
 //=============================================================
 //
 //=============================================================

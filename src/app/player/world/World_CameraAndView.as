@@ -27,8 +27,9 @@
    private var mPlayBarColor:uint = 0x606060;
    private var mPreferredViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
    private var mPreferredViewportHeight:int = ViewerDefine.DefaultPlayerHeight;
-   private var mRealViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
-   private var mRealViewportHeight:int = ViewerDefine.DefaultPlayerHeight;
+   private var mRealViewportWidth:Number = ViewerDefine.DefaultPlayerWidth;
+   private var mRealViewportHeight:Number = ViewerDefine.DefaultPlayerHeight;
+   private var mStageScale:Number = 1.0;
    
    private var mCameraRotatingEnabled:Boolean = false;
    
@@ -71,6 +72,16 @@
       //mCameraCenterY
    
       mBackgroundNeedRepaint = true;
+   }
+   
+   public function GetStageScale ():Number
+   {
+      return mStageScale;
+   }
+   
+   public function SetStageScale (ss:Number):void
+   {
+      mStageScale = ss;
    }
    
    //=====================================================================================

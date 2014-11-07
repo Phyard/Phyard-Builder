@@ -1631,12 +1631,7 @@ package player.world {
          mPhysicsEngine = new PhysicsEngine (mCoordinateSystem.GetScale (), mPhysicsSimulationEnabled, mCheckTimeOfImpact, mAutoSleepingEnabled);
 
          mPhysicsEngine.SetSimulationQuality (mPhysicsSimulationQuality);
-
-         mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
-         mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished, 
-                                                               HandlePreOrPostSolveCollidingEvent, HandlePreOrPostSolveCollidingEvent, 
-                                                               GetPreSolveCollidingEventHandler, GetPostSolveCollidingEventHandler);
-
+         
          mLastStepGravityAccelerationX = mCurrentGravityAccelerationX;
          mLastStepGravityAccelerationY = mCurrentGravityAccelerationY;
          mPhysicsEngine.SetGravityByVector (mCurrentGravityAccelerationX, mCurrentGravityAccelerationY, true);
@@ -1648,6 +1643,15 @@ package player.world {
 
       private function InitPhysics ():void
       {
+         var list_pre :ListElement_EventHandler = mEventHandlersByTypes [CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting];
+         var list_post:ListElement_EventHandler = mEventHandlersByTypes [CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting];
+         
+         mPhysicsEngine.SetShapeCollideFilterFunctions (ShouldTwoShapeCollide);
+         mPhysicsEngine.SetShapeContactEventHandlingFunctions (OnShapeContactStarted, OnShapeContactFinished, 
+                                                               list_pre == null ? null : HandlePreOrPostSolveCollidingEvent, 
+                                                               list_post == null ? null : HandlePreOrPostSolveCollidingEvent, 
+                                                               GetPreSolveCollidingEventHandler, GetPostSolveCollidingEventHandler);
+
       // clear contact info
          mNumContactInfos = 0;
          mShapeContactInfoHashtable = new Dictionary ();

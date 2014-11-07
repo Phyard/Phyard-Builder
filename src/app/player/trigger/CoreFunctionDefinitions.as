@@ -312,6 +312,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_LinearInterpolationColor,          LinearInterpolationColor);
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_XxPlusYy,           XxPlusYy);
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_XxMinusYy,          XxMinusYy);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.Id_Math_GetPointDistance,          GetPointDistance);
 
       // game / design
 
@@ -386,6 +387,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetViewportSize,                           GetViewportSize);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetStageScale,                             GetStageScale);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
@@ -2735,6 +2737,24 @@ package player.trigger {
       //
       //   valueTarget.AssignValueObject (value1 * value1 - value2 * value2);
       //}
+      
+      public static function GetPointDistance (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var x1:Number = valueSource.EvaluateValueObject () as Number;
+      
+         valueSource = valueSource.mNextParameter;
+         var y1:Number = valueSource.EvaluateValueObject () as Number;
+      
+         valueSource = valueSource.mNextParameter;
+         var x2:Number = valueSource.EvaluateValueObject () as Number;
+      
+         valueSource = valueSource.mNextParameter;
+         var y2:Number = valueSource.EvaluateValueObject () as Number;
+         
+         var dx:Number = x2 - x1;
+         var dy:Number = y2 - y1;
+         valueTarget.AssignValueObject (Math.sqrt (dx * dx + dy * dy));
+      }
 
       public static function SubtractTwoNumbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -3646,6 +3666,11 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportHeight ());
+      }
+      
+      public static function GetStageScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetStageScale ());
       }
 
       public static function SetCurrentCamera (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

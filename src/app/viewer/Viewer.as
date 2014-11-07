@@ -125,9 +125,11 @@ package viewer {
          private var mPreferredViewportWidth:int;
          private var mPreferredViewportHeight:int;
 
-      private var mIsPlaying:Boolean = false;
-      private var mPlayingSpeedX:int = 2;
+      //private var mIsPlaying:Boolean = false;
+      //private var mPlayingSpeedX:int = 2;
 
+      private var mPlayerWorldLayerScale:Number = 1.0;
+      
       private var mPlayerWorldZoomScale:Number = 1.0;
       private var mPlayerWorldZoomScaleChangedSpeed:Number = 0.0;
 
@@ -1285,7 +1287,6 @@ package viewer {
          if (mWorldDesignProperties.SetZoomScale == undefined)                    mWorldDesignProperties.SetZoomScale = DummyCallback;
          if (mWorldDesignProperties.GetViewportWidth == undefined)                mWorldDesignProperties.GetViewportWidth = DummyCallback_ViewSize;
          if (mWorldDesignProperties.GetViewportHeight == undefined)               mWorldDesignProperties.GetViewportHeight = DummyCallback_ViewSize;
-         if (mWorldDesignProperties.SetRealViewportSize == undefined)             mWorldDesignProperties.SetRealViewportSize = DummyCallback;
          if (mWorldDesignProperties.GetViewerUiFlags == undefined)                mWorldDesignProperties.GetViewerUiFlags = DummyCallback_UiFlags;
          if (mWorldDesignProperties.GetPlayBarColor == undefined)                 mWorldDesignProperties.GetPlayBarColor = DummyCallback_PlayBarColor;
          if (mWorldDesignProperties.GetBackgroundColor == undefined)              mWorldDesignProperties.GetBackgroundColor = DummyGetBackgroundColor;
@@ -1314,6 +1315,8 @@ package viewer {
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
          if (mWorldDesignProperties.OnMultiplePlayerServerMessage == undefined)   mWorldDesignProperties.OnMultiplePlayerServerMessage = DummyCallback;
          if (mWorldDesignProperties.SupportMoreMouseEvents == undefined)          mWorldDesignProperties.SupportMoreMouseEvents = DummyCallback_ReturnFalse;
+         if (mWorldDesignProperties.SetStageScale == undefined)                   mWorldDesignProperties.SetStageScale = DummyCallback;
+         
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -2214,21 +2217,24 @@ package viewer {
                
                if (widthRatio < heightRatio)
                {
-                  mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
+                  
+                  mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale = widthRatio;
                   mWorldLayer.x = 0.0;
                   mWorldLayer.y = mAdaptiveViewportSize ? 0.0 : 0.5 * Number (contentRegion.height - mPreferredViewportHeight * widthRatio);
                }
                else if (widthRatio > heightRatio)
                {
-                  mWorldLayer.scaleX = mWorldLayer.scaleY = heightRatio;
+                  mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale = heightRatio;
                   mWorldLayer.x = mAdaptiveViewportSize ? 0.0 : 0.5 * Number (contentRegion.width - mPreferredViewportWidth * heightRatio);
                   mWorldLayer.y = 0.0;
                }
                else
                {
                   mWorldLayer.x = mWorldLayer.y = 0.0;
-                  mWorldLayer.scaleX = mWorldLayer.scaleY = widthRatio;
+                  mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale = widthRatio;
                }
+               
+               mWorldDesignProperties.SetStageScale (mPlayerWorldLayerScale);
                
                // position and rebuild viewport mask shape
                

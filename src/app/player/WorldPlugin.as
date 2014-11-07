@@ -120,6 +120,8 @@ package player
                   
                   SupportMoreMouseEvents : world.IsSupportMoreMouseEvents, // from v2.08
                   
+                  SetStageScale : world.SetStageScale,           // from v2.08
+                  
                   "" : null
                };
             case "SetUiParams":

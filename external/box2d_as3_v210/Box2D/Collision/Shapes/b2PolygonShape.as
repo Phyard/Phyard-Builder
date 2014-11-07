@@ -95,6 +95,7 @@ package Box2D.Collision.Shapes
 
 		public function b2PolygonShape()
 		{
+
 			for (var i:int = 0; i < b2Settings.b2_maxPolygonVertices; ++ i)
 			{
 				m_vertices [i] = new b2Vec2 ();

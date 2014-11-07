@@ -299,6 +299,7 @@ package common.trigger {
       public static const Id_Math_LinearInterpolationColor:int             = IdPool.CoreApiId_531; //
       //public static const Id_Math_XxPlusYy:int                  = IdPool.CoreApiId_520; //
       //public static const Id_Math_XxMinusYy:int                 = IdPool.CoreApiId_521; //
+      public static const Id_Math_GetPointDistance:int                 = IdPool.CoreApiId_522; // v2.08
 
 
    // game / design
@@ -376,6 +377,7 @@ package common.trigger {
       public static const ID_World_GetIntersectionSegmentsWithLineSegment:int        = IdPool.CoreApiId_733;
 
       public static const ID_World_GetViewportSize:int                               = IdPool.CoreApiId_716; // from v2.03
+      public static const ID_World_GetStageScale:int                                 = IdPool.CoreApiId_728; // from v2.08
       public static const ID_World_SetCurrentCamera:int                              = IdPool.CoreApiId_717;
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;
       public static const ID_World_GetCameraRotationByDegrees:int                    = IdPool.CoreApiId_718;

@@ -1860,6 +1860,17 @@ package editor.world {
          //                    new VariableDefinitionNumber ("AxA - BxB"),
          //            ]
          //         );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.Id_Math_GetPointDistance, more_number_package, "Get Point Distance", null, null,
+                     [
+                             new VariableDefinitionNumber ("Point 1 X"),
+                             new VariableDefinitionNumber ("Point 1 Y"),
+                             new VariableDefinitionNumber ("Point 2 X"),
+                             new VariableDefinitionNumber ("Point 2 Y"),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("Distance"),
+                     ]
+                  );
 
       // game / design
                   
@@ -2262,6 +2273,12 @@ package editor.world {
                      [
                              new VariableDefinitionNumber ("Width"),
                              new VariableDefinitionNumber ("Height"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetStageScale, world_camera_package, "Get Level Stage Scale Ratio", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Stage Scale"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera, world_camera_package, "Set Current Camera", null, null,

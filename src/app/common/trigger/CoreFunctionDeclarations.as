@@ -416,7 +416,6 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       null],
                      ]
                   );
-                  
          RegisterCoreDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage,
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
@@ -424,13 +423,120 @@ package common.trigger {
                      ],
                      null
                   );
-                  
          RegisterCoreDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase,
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       60], //MultiplePlayerDefine.InstancePhase_Idling],
                      ],
                      null
                   );
+                  
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_SetGlobalOptions,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Boolean,       false],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0/*AdvertisementDefine.Gender_Unknown*/],
+                     ],
+                     null
+                  );
+                  
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_DestroyAllAds,
+         //            null,
+         //            null
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_HideAllAds,
+         //            null,
+         //            null
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_ShowAllAds,
+         //            null,
+         //            null
+         //         );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_IsAdProviderAvailable,
+         //            [
+         //               [CoreClassIds.ValueType_String,       ""],
+         //            ],
+         //            [
+         //               [CoreClassIds.ValueType_Boolean,       false],
+         //            ]
+         //         );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_CreateAd,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0/*AdvertisementDefine.BannerType_Default*/],
+                        [CoreClassIds.ValueType_String,       ""],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_DestroyAd,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_CheckAdValidity,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_PrepareAd,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_IsAdReady,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_SetAdPosition,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_GetAdBoundsInPixels,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_IsAdVisible,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_ShowAd,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Advertisement_HideAd,
+                     [
+                        [CoreClassIds.ValueType_Advertisement,       null],
+                     ],
+                     null
+                  );
+                  
 
       // string
 

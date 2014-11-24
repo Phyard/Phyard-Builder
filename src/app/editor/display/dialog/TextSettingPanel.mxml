@@ -51,7 +51,7 @@
    
          import com.tapirgames.util.TextUtil;
          
-         import editor.util.DataUtil;
+         import editor.world.DataUtil;
          import editor.world.Lists;
 
          import common.Define;

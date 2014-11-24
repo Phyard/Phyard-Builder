@@ -158,18 +158,16 @@ package editor.trigger {
                return new VariableDefinitionArray (variableName);
             case CoreClassIds.ValueType_ByteArray:
                return new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, variableName);
-            case CoreClassIds.ValueType_ByteArrayStream:
-               return new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArrayStream, variableName);
-            case CoreClassIds.ValueType_MultiplePlayerInstance:
-               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstance, variableName);
-            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
-               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, variableName);
-            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
-               return new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, variableName);
             case CoreClassIds.ValueType_Class:
                return new VariableDefinitionClass (variableName);
             case CoreClassIds.ValueType_Object:
                return new VariableDefinitionObject (variableName);
+            case CoreClassIds.ValueType_ByteArrayStream:
+            case CoreClassIds.ValueType_MultiplePlayerInstance:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
+            case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+            case CoreClassIds.ValueType_Advertisement:
+               return new VariableDefinitionOthers (valueType, variableName);
             default:
             {
                //if (Capabilities.isDebugger)

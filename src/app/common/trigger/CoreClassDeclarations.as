@@ -96,6 +96,11 @@ package common.trigger {
                                    null,
                                    true);
                                    
+         RegisterClassDeclatation (CoreClassIds.ValueType_Advertisement, 
+                                   "Advertisement", // Class Name
+                                   null,
+                                   true);
+                                   
          RegisterClassDeclatation (CoreClassIds.ValueType_Class, 
                                    "Class", // Class Name
                                    {mClassType : ClassTypeDefine.ClassType_Core, mValueType : CoreClassIds.ValueType_Void},

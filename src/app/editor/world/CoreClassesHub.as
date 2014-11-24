@@ -151,6 +151,13 @@ package editor.world {
                             ValidateValueObject_ArrayAndCustomObject
                          ).SetSceneDataDependent (false);
                          
+         RegisterCoreClass (sCoreCodePackage,
+                           CoreClassIds.ValueType_Advertisement,
+                            "anAdvertisement",
+                            null,
+                            ValidateValueObject_ArrayAndCustomObject
+                         ).SetSceneDataDependent (false);
+                         
          RegisterCoreClass (null, //sCoreCodePackage,
                             CoreClassIds.ValueType_Class, 
                             "aClass",
@@ -414,6 +421,7 @@ package editor.world {
             case CoreClassIds.ValueType_MultiplePlayerInstance:
             case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
             case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+            case CoreClassIds.ValueType_Advertisement:
                return null;
             case CoreClassIds.ValueType_Class:
                var aClass:ClassDefinition = valueObject as ClassDefinition;
@@ -519,6 +527,7 @@ package editor.world {
             case CoreClassIds.ValueType_MultiplePlayerInstance:
             case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
             case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+            case CoreClassIds.ValueType_Advertisement:
                return null;
             case CoreClassIds.ValueType_Class:
                return CodeLibManager.GetClass (scene.GetCodeLibManager (), valueObject.mClassType, valueObject.mValueType);
@@ -575,6 +584,7 @@ package editor.world {
             case CoreClassIds.ValueType_MultiplePlayerInstance:
             case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
             case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+            case CoreClassIds.ValueType_Advertisement:
                return null;
             case CoreClassIds.ValueType_Class:
                var tokens:Array = String (direct_value).split (",");
@@ -660,6 +670,7 @@ package editor.world {
             case CoreClassIds.ValueType_MultiplePlayerInstance:
             case CoreClassIds.ValueType_MultiplePlayerInstanceDefine:
             case CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine:
+            case CoreClassIds.ValueType_Advertisement:
                binFile.writeByte (0); // null
                break;
             case CoreClassIds.ValueType_Class:

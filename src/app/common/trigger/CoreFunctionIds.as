@@ -81,10 +81,12 @@ package common.trigger {
       public static const ID_CopyToClipboard:int                = IdPool.CoreApiId_114; // from v2.04
       public static const ID_GetLanguageCode:int                = IdPool.CoreApiId_116; // from v2.04
 
-   // services
+   // services, high score
 
       public static const ID_SubmitHighScore:int                = IdPool.CoreApiId_579; // from v2.03
       public static const ID_SubmitKeyValue_Number:int          = IdPool.CoreApiId_576; // from v2.03
+
+   // services, multiplayer
       
       //public static const ID_ConnectToMultiplePlayerServer:int           = IdPool.CoreApiId_567;
 
@@ -108,6 +110,24 @@ package common.trigger {
       public static const ID_GetGameInstanceSeatInfo:int          = IdPool.CoreApiId_568; // from v2.06
       public static const ID_GetGameInstanceChannelSeatInfo:int           = IdPool.CoreApiId_575; // from v2.06
       //public static const ID_CanSendChannelMessageNow:int           = IdPool.CoreApiId_569;
+
+   // services, advertisement
+      
+      public static const ID_Advertisement_SetGlobalOptions     :int = IdPool.CoreApiId_1851;
+      public static const ID_Advertisement_ShowAllAds           :int = IdPool.CoreApiId_1852;
+      public static const ID_Advertisement_HideAllAds           :int = IdPool.CoreApiId_1853;
+      public static const ID_Advertisement_DestroyAllAds        :int = IdPool.CoreApiId_1854;
+      public static const ID_Advertisement_IsAdProviderAvailable:int = IdPool.CoreApiId_1855;
+      public static const ID_Advertisement_CreateAd             :int = IdPool.CoreApiId_1856;
+      public static const ID_Advertisement_DestroyAd            :int = IdPool.CoreApiId_1857;
+      public static const ID_Advertisement_CheckAdValidity      :int = IdPool.CoreApiId_1858;
+      public static const ID_Advertisement_PrepareAd            :int = IdPool.CoreApiId_1859;
+      public static const ID_Advertisement_IsAdReady            :int = IdPool.CoreApiId_1860;
+      public static const ID_Advertisement_SetAdPosition        :int = IdPool.CoreApiId_1861;
+      public static const ID_Advertisement_GetAdBoundsInPixels  :int = IdPool.CoreApiId_1862;
+      public static const ID_Advertisement_IsAdVisible          :int = IdPool.CoreApiId_1863;
+      public static const ID_Advertisement_ShowAd               :int = IdPool.CoreApiId_1864;
+      public static const ID_Advertisement_HideAd               :int = IdPool.CoreApiId_1865;
 
    // string
 

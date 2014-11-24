@@ -110,6 +110,8 @@ package common.trigger {
       
       public static const ValueType_Scene:int            = 100;
       
+      public static const ValueType_Advertisement:int            = 110;
+      
       public static const NumCoreClasses:int            = 128;
       
 //=============================================================================

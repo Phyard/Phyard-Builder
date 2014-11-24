@@ -58,7 +58,9 @@ package editor.world {
             var array_element_package:CodePackage   = array_package; // new CodePackage ("Element", array_package);
          var bytearray_package:CodePackage   = new CodePackage ("ByteArray", sGlobalCodePackage);
          var system_package:CodePackage = new CodePackage ("System", sGlobalCodePackage);
-         var services_package:CodePackage = new CodePackage ("Services", sGlobalCodePackage);
+         var services_package_1:CodePackage = new CodePackage ("Services 1", sGlobalCodePackage);
+         var services_package_2:CodePackage = new CodePackage ("Services 2 (Multiplayer)", sGlobalCodePackage);
+         var services_package_3:CodePackage = new CodePackage ("Services 3 (Advertisement)", sGlobalCodePackage);
 
          var world_io_package:CodePackage  = new CodePackage ("IO", sWorldCodePackage);
          var world_scene_package:CodePackage  = new CodePackage ("Scene", sWorldCodePackage);
@@ -399,13 +401,13 @@ package editor.world {
 
       // services
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SubmitHighScore, services_package, "Submit High Score", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SubmitHighScore, services_package_1, "Submit High Score", null, null,
                      [
                              new VariableDefinitionNumber ("Score"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SubmitKeyValue_Number, services_package, "Submit Property Value", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SubmitKeyValue_Number, services_package_1, "Submit Property Value", null, null,
                      [
                              new VariableDefinitionString ("Property Name"),
                              new VariableDefinitionNumber ("Property Value"),
@@ -413,11 +415,11 @@ package editor.world {
                      null
                   );
                   
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ConnectToMultiplePlayerServer, services_package, "Connect To Multiple Player Server", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ConnectToMultiplePlayerServer, services_package_2, "Connect To Multiple Player Server", null, null,
          //            null,
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine, services_package, "Create Multiplayer Instance Define", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceDefine, services_package_2, "Create Multiplayer Instance Define", null, null,
                      [
                              new VariableDefinitionString ("Fingerprint (0-30 chars)", null, {mMaxLength: 30}),
                              new VariableDefinitionNumber ("Number Of Players", null, {mValueLists: Lists.mMultiplePlayerInstanceNumberOfPlayersList}),
@@ -426,7 +428,7 @@ package editor.world {
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Created Multiplayer Instance Define"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package, "Create Instance Channel Define", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateNewGameInstanceChannelDefine, services_package_2, "Create Instance Channel Define", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Mode", null, {mValueLists: Lists.mMultiplePlayerChannelModeList}),
                              new VariableDefinitionNumber ("Turn Timeout (seconds, 0: unlimited)", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxTurnTimeoutInPractice}),
@@ -435,7 +437,7 @@ package editor.world {
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceChannelDefine, "Created Multiplayer Instance Channel Define")
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package, "Modify Channel Define Of Multiplayer Instance Define", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GameInstanceDefineSetChannelDefine, services_package_2, "Modify Channel Define Of Multiplayer Instance Define", null, null,
                      [
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
@@ -443,21 +445,21 @@ package editor.world {
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package, "Create New Multiplayer Instance", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_CreateGameInstance, services_package_2, "Create New Multiplayer Instance", null, null,
          //            [
          //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
          //                    new VariableDefinitionString ("Password (max 30 chars, blank for public)", null, {mMaxLength: 30}),
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package, "Join Multiplayer Instance Randomly", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceRandomly, services_package_2, "Join Multiplayer Instance Randomly", null, null,
                      [
                              new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
                              //new VariableDefinitionBoolean ("Create New If No Availables"),
                      ],
                      null
                   );
-         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package, "Join Multiplayer Instance By Instance ID", null, null,
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_JoinGameInstanceByInstanceID, services_package_2, "Join Multiplayer Instance By Instance ID", null, null,
          //            [
          //                    new VariableDefinitionOthers (CoreClassIds.ValueType_MultiplePlayerInstanceDefine, "Multiplayer Instance Define"),
          //                    new VariableDefinitionString ("Instance ID"),
@@ -465,12 +467,12 @@ package editor.world {
          //            ],
          //            null
          //         );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitGameInstance, services_package, "Exit Current Multiplayer Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitGameInstance, services_package_2, "Exit Current Multiplayer Instance", null, null,
                      null,
                      null
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInMutiplayerPlayerStatus, services_package, "Am I In The Specified Player Status?", "@#0 = (My Multiplayer Status == $0)", "@#0 = (My Multiplayer Status == $0)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInMutiplayerPlayerStatus, services_package_2, "Am I In The Specified Player Status?", "@#0 = (My Multiplayer Status == $0)", "@#0 = (My Multiplayer Status == $0)",
                      [
                              new VariableDefinitionNumber ("The Specified Status", null, {mValueLists: Lists.mMultiplePlayerPlayerStatusList}),
                      ],
@@ -478,7 +480,7 @@ package editor.world {
                              new VariableDefinitionBoolean ("In This Status?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInGameInstancePhase, services_package, "Is Multiplayer Instance In The Specified Phase?", "@#0 = (Game Instance Phase == $0)", "@#0 = (Game Instance Phase == $0)",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsInGameInstancePhase, services_package_2, "Is Multiplayer Instance In The Specified Phase?", "@#0 = (Game Instance Phase == $0)", "@#0 = (Game Instance Phase == $0)",
                      [
                              new VariableDefinitionNumber ("The Specified Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
                      ],
@@ -486,25 +488,25 @@ package editor.world {
                              new VariableDefinitionBoolean ("In This Phase?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceNumberOfSeats, services_package, "Get Number Of Seats In Multiplayer Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceNumberOfSeats, services_package_2, "Get Number Of Seats In Multiplayer Instance", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("Number Of Seats"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetMySeatIndexInGameInstance, services_package, "Get My Seat Index In Multiplayer Instance", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetMySeatIndexInGameInstance, services_package_2, "Get My Seat Index In Multiplayer Instance", null, null,
                      null,
                      [
                              new VariableDefinitionNumber ("My Seat Index"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatInfo, services_package, "Get Multiplayer Instance Seat Info", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceSeatInfo, services_package_2, "Get Multiplayer Instance Seat Info", null, null,
                      null,
                      [
                              new VariableDefinitionString ("Player Name"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo, services_package, "Get Multiplayer Instance Channel Seat Info", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo, services_package_2, "Get Multiplayer Instance Channel Seat Info", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionNumber ("Seat Index", null, {mMinValue: 0, mMaxValue: MultiplePlayerDefine.MaxNumberOfInstanceSeats - 1}),
@@ -513,21 +515,129 @@ package editor.world {
                              new VariableDefinitionBoolean ("Channel Seat Enabled?"),
                      ]
                   );
-                  
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package, "Send Multiplayer Instance Channel Message", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendGameInstanceChannelMessage, services_package_2, "Send Multiplayer Instance Channel Message", null, null,
                      [
                              new VariableDefinitionNumber ("Channel Index", null, {mValueLists: Lists.mMultiplePlayerInstanceChannelList}),
                              new VariableDefinitionOthers (CoreClassIds.ValueType_ByteArray, "Data To Send"),
                      ],
                      null
                   );
-                  
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package, "Send Signal To Change Multiplayer Instance Phase", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SendSignal_ChangeInstancePhase, services_package_2, "Send Signal To Change Multiplayer Instance Phase", null, null,
                      [
                              new VariableDefinitionNumber ("New Phase", null, {mValueLists: Lists.mMultiplePlayerInstancePhaseList}),
                      ],
                      null
                   );
+         
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_SetGlobalOptions, services_package_3, "Set Advertisement Global Options", null, null,
+                     [
+                             new VariableDefinitionString ("Test Device IDs (comma separated)"),
+                             new VariableDefinitionBoolean ("This App is Child-Directed?"),
+                             new VariableDefinitionNumber ("Gender", null, {mValueLists: Lists.mAdvertisementGenderList}),
+                     ],
+                     null
+                  );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_DestroyAllAds, services_package_3, "Destroy All Ads", null, null,
+         //            null,
+         //            null
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_HideAllAds, services_package_3, "Hide All Ads", null, null,
+         //            null,
+         //            null
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_ShowAllAds, services_package_3, "Show All Ads", null, null,
+         //            null,
+         //            null
+         //         );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_IsAdProviderAvailable, services_package_3, "Is Advertisement Provider Available>", null, null,
+         //            [
+         //                    new VariableDefinitionString ("Advertisement Provider"),
+         //            ],
+         //            [
+         //                    new VariableDefinitionBoolean ("Available?"),
+         //            ]
+         //         );
+         
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_CreateAd, services_package_3, "Create New Advertisement", null, null,
+                     [
+                             new VariableDefinitionString ("Advertisement Provider"),
+                             new VariableDefinitionNumber ("Ad Type", null, {mValueLists: Lists.mAdvertisementTypeList}),
+                             new VariableDefinitionString ("Ad Unit ID"),
+                     ],
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ]
+                  );
+         
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_DestroyAd, services_package_3, "Destroy Advertisement", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_CheckAdValidity, services_package_3, "Check Advertisement Validity", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     [
+                             new VariableDefinitionString ("Result (blank means OK)"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_PrepareAd, services_package_3, "Prepare Advertisement", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_IsAdReady, services_package_3, "Is Advertisement Ready", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Ready To Show?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_SetAdPosition, services_package_3, "Set Advertisement Position", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                             new VariableDefinitionNumber ("Position X", null, {mValueLists: Lists.mAdvertisementPositionTypeList}),
+                             new VariableDefinitionNumber ("Position Y", null, {mValueLists: Lists.mAdvertisementPositionTypeList}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_GetAdBoundsInPixels, services_package_3, "Get Advertisement Bounds In Device Pixels", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     [
+                             new VariableDefinitionNumber ("X"),
+                             new VariableDefinitionNumber ("Y"),
+                             new VariableDefinitionNumber ("Width"),
+                             new VariableDefinitionNumber ("Height"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_IsAdVisible, services_package_3, "Is Advertisement Visible", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Is Ad Visible?"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_ShowAd, services_package_3, "Show Advertisement", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Advertisement_HideAd, services_package_3, "Hide Advertisement", null, null,
+                     [
+                             new VariableDefinitionOthers (CoreClassIds.ValueType_Advertisement, "Ad"),
+                     ],
+                     null
+                  );
+
+                  
 
       // string
 

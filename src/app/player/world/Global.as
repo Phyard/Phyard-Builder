@@ -66,7 +66,7 @@ package player.world
       
       //public static var mRandomNumberGenerators:Array;
       
-      private static var mNumTotalModules:int = 0;
+      private /*static*/ var mNumTotalModules:int = 0;
       public /*static*/ var mImageBitmaps:Array; //
       public /*static*/ var mImageBitmapDivisions:Array; //
       public /*static*/ var mAssembledModules:Array;

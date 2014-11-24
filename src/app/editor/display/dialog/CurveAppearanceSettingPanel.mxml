@@ -59,7 +59,7 @@
          
          import common.Define;
          
-         import editor.util.DataUtil;
+         import editor.world.DataUtil;
          import editor.world.Lists;
          
          private var mInputValues:Object;

@@ -54,6 +54,8 @@ package player
                
                /*Global.sTheGlobal*/world.Viewer_mLibServices = params.mLibService; // from v2.03
                
+               world.Viewer_GetRuntimeProxy = params.GetRuntimeProxy as Function; // from v2.08
+               
                break;
             case "GetWorldProperties":
                world = params.mWorld as World;

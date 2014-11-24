@@ -6,11 +6,11 @@ package editor.trigger {
    
    import editor.world.World;
    
+   import editor.world.DataUtil;
+   
    import editor.entity.Scene;
    
    import com.tapirgames.util.TextUtil;
-   
-   import editor.util.DataUtil;
    
    import common.trigger.CoreClassIds;
    

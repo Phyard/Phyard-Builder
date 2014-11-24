@@ -1,4 +1,4 @@
-package editor.util {
+package editor.world {
    
    import flash.ui.Keyboard;
    

@@ -11,6 +11,7 @@ package editor.world {
    import common.Define;
    import common.MultiplePlayerDefine;
    import common.KeyCodes;
+   import common.AdvertisementDefine;
    
    public class Lists
    {
@@ -250,5 +251,29 @@ package editor.world {
          
          return _mShapeCaringAboutEventIdList;
       }
+      
+      public static const mAdvertisementPositionTypeList:Array = [
+            {label:"Left | Top", data:AdvertisementDefine.Position_Overlay_LeftOrTop},
+            {label:"Center | Middle", data:AdvertisementDefine.Position_Overlay_CenterOrMiddle},
+            {label:"Right | Bottom", data:AdvertisementDefine.Position_Overlay_RightOrBottom},
+         ];
+      
+      public static const mAdvertisementGenderList:Array = [
+            {label:"Unknown", data:AdvertisementDefine.Gender_Unknown},
+            {label:"Female", data:AdvertisementDefine.Gender_Female},
+            {label:"Male", data:AdvertisementDefine.Gender_Male},
+         ];
+      
+      public static const mAdvertisementTypeList:Array = [
+            {label:"Invalid", data:AdvertisementDefine.AdType_Invalid},
+            {label:"Full Screen", data:AdvertisementDefine.AdType_Interstitial},
+            {label:"Smart Banner", data:AdvertisementDefine.AdType_SmartBanner},
+            {label:"Small Banner", data:AdvertisementDefine.AdType_Banner},
+            {label:"Full Banner", data:AdvertisementDefine.AdType_FullBanner},
+            {label:"Large Banner", data:AdvertisementDefine.AdType_LargeBanner},
+            {label:"Leadboard", data:AdvertisementDefine.AdType_Leadboard},
+            {label:"Medium Rectangle", data:AdvertisementDefine.AdType_MediumRectangle},
+            {label:"Wide Skyscraper", data:AdvertisementDefine.AdType_WideSkyscraper},
+         ];
    }
 }

@@ -59,7 +59,7 @@
    <mx:Script>
       <![CDATA[       
          
-         import editor.util.DataUtil;
+         import editor.world.DataUtil;
          import editor.world.Lists;
 
          import common.Define;

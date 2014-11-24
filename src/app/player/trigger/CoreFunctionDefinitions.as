@@ -1,6 +1,7 @@
 
 package player.trigger {
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.ui.Mouse;
    import flash.system.Capabilities;
    import flash.system.System;
@@ -25,6 +26,8 @@ package player.trigger {
    //import player.trigger.Parameter_DirectConstant;
    //import player.trigger.CoreClassesHub;
    //import player.trigger.ClassInstance;
+   
+   import player.trigger.data.Ad;
 
    import com.tapirgames.random.RandomNumberGenerator;
    import com.tapirgames.util.TextUtil;
@@ -38,6 +41,7 @@ package player.trigger {
    import common.trigger.CoreEventIds;
    import common.trigger.CoreClassIds;
 
+   import common.AdvertisementDefine;
    import common.SceneDefine;
    import common.Define;
    import common.ValueAdjuster;
@@ -110,6 +114,8 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitHighScore,                     SubmitHighScore);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SubmitKeyValue_Number,               SubmitKeyValue_Number);
          
+         // ..
+         
          //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ConnectToMultiplePlayerServer,        ConnectToMultiplePlayerServer);
          
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_CreateNewGameInstanceDefine,          CreateNewGameInstanceDefine);
@@ -131,6 +137,25 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetMySeatIndexInGameInstance,           GetMySeatIndexInGameInstance);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceSeatInfo,                GetGameInstanceSeatInfo);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetGameInstanceChannelSeatInfo,         GetGameInstanceChannelSeatInfo);
+         
+         // ...
+         
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_SetGlobalOptions,    Advertisement_SetGlobalOptions);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_DestroyAllAds,       Advertisement_DestroyAllAds);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_HideAllAds,          Advertisement_HideAllAds);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_ShowAllAds,          Advertisement_ShowAllAds);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_IsAdProviderAvailable,  Advertisement_IsAdProviderAvailable);
+         
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_CreateAd,            Advertisement_CreateAd);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_DestroyAd,           Advertisement_DestroyAd);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_CheckAdValidity,     Advertisement_CheckAdValidity);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_PrepareAd,           Advertisement_PrepareAd);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_IsAdReady,           Advertisement_IsAdReady);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_SetAdPosition,       Advertisement_SetAdPosition);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_GetAdBoundsInPixels, Advertisement_GetAdBoundsInPixels);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_IsAdVisible,         Advertisement_IsAdVisible);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_ShowAd,              Advertisement_ShowAd);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Advertisement_HideAd,              Advertisement_HideAd);
          
       // string
 
@@ -1132,6 +1157,211 @@ package player.trigger {
          valueTarget.AssignValueObject (channelSeatInfo.mIsEnabled);
          
          //valueTarget = valuvalueTargeteSource.mNextParameter;
+      }
+      
+      public static function Advertisement_SetGlobalOptions (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy == null || adProxy.SetAdGlobalOptions == null)
+            return;
+         
+         var testDeviceIDs:String = String (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var tagForChildDirectedTreatment:Boolean = Boolean (valueSource.EvaluateValueObject ());
+         
+         valueSource = valueSource.mNextParameter;
+         var gender:int = int (valueSource.EvaluateValueObject ());
+         
+         adProxy.SetAdGlobalOptions (testDeviceIDs, tagForChildDirectedTreatment, gender);
+      }
+      
+      /*
+      public static function Advertisement_DestroyAllAds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         // pass * as ad provider to ad rproxy
+      }
+      
+      public static function Advertisement_HideAllAds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         // pass * as ad provider to ad rproxy
+      }
+      
+      public static function Advertisement_ShowAllAds (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         // pass * as ad provider to ad rproxy
+      }
+      
+      public static function Advertisement_IsAdAvailable (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+      }
+      */
+      
+      public static function Advertisement_CreateAd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var returnValue:Ad = null;
+         
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy != null)
+         {
+            var adProvider:String = String (valueSource.EvaluateValueObject ());
+            
+            valueSource = valueSource.mNextParameter;
+            var adType:int = int (valueSource.EvaluateValueObject ());
+            
+            valueSource = valueSource.mNextParameter;
+            var adUnitID:String = String (valueSource.EvaluateValueObject ());
+            
+            var adId:int = int (adProxy.Call (adProvider, AdvertisementDefine.FunctionName_CreateAd, 0, adType, adUnitID));
+
+            if (adId > 0)
+            {
+               returnValue = new Ad (adProvider, adId);
+            }
+         }
+         
+         valueTarget.AssignValueObject (returnValue);
+      }
+      
+      public static function Advertisement_DestroyAd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy == null)
+            return;
+         
+         var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+         if (ad != null)
+         {
+            adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_DestroyAd, undefined, ad.mId);
+         }
+      }
+      
+      public static function Advertisement_CheckAdValidity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var returnValue:String = "";
+         
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy != null)
+         {
+            var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+            if (ad != null)
+               returnValue = adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_CheckAdValidity, returnValue, ad.mId);
+         }
+         
+         valueTarget.AssignValueObject (returnValue);
+      }
+      
+      public static function Advertisement_PrepareAd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy == null)
+            return;
+         
+         var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+         if (ad != null)
+         {
+            adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_PrepareAd, undefined, ad.mId);
+         }
+      }
+      
+      public static function Advertisement_IsAdReady (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var returnValue:Boolean = false;
+         
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy != null)
+         {
+            var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+            if (ad != null)
+               returnValue = adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_IsAdReady, returnValue, ad.mId);
+         }
+         
+         valueTarget.AssignValueObject (returnValue);
+      }
+      
+      public static function Advertisement_SetAdPosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy == null)
+            return;
+         
+         var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+         if (ad != null)
+         {
+            valueSource = valueSource.mNextParameter;
+            var posX:int = int (valueSource.EvaluateValueObject ());
+            
+            valueSource = valueSource.mNextParameter;
+            var posY:int = int (valueSource.EvaluateValueObject ());
+            
+            adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_SetAdPosition, undefined, ad.mId, posX, posY);
+         }
+      }
+      
+      public static function Advertisement_GetAdBoundsInPixels (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var returnValue:Array = null;
+         
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy != null)
+         {
+            var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+            if (ad != null)
+            {
+               returnValue = adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_GetAdBoundsInPixels, returnValue, ad.mId);
+            }
+         }
+         
+         if (returnValue == null)
+            returnValue = new Array (0, 0, 0, 0);
+         
+         valueTarget.AssignValueObject (returnValue [0]);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (returnValue [1]);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (returnValue [2]);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (returnValue [3]);
+      }
+      
+      public static function Advertisement_IsAdVisible (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var returnValue:Boolean = false;
+         
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy != null)
+         {
+            var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+            if (ad != null)
+               returnValue = adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_IsAdVisible, returnValue, ad.mId);
+         }
+         
+         valueTarget.AssignValueObject (returnValue);
+      }
+      
+      public static function Advertisement_ShowAd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy == null)
+            return;
+         
+         var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+         if (ad != null)
+            adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_ShowAd, undefined, ad.mId);
+      }
+      
+      public static function Advertisement_HideAd (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
+         if (adProxy == null)
+            return;
+         
+         var ad:Ad = valueSource.EvaluateValueObject () as Ad;
+         if (ad != null)
+            adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_HideAd, undefined, ad.mId);
       }
 
    //*******************************************************************

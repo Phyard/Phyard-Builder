@@ -1593,7 +1593,8 @@ package viewer {
                               
                               // ...
                               SubmitKeyValue: SubmitKeyValue // v2.00 ?
-                  }
+                  },
+                  GetRuntimeProxy : GetRuntimeProxy // v2.08
                };
             }
             
@@ -2764,6 +2765,24 @@ package viewer {
          
          // from v2.02, sound status info is stored in Viewer instead of world plugin
          //mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
+      }
+
+//===========================================================================
+// interfaces for game template
+//===========================================================================
+      
+      private var mAdvertisementProxy:ProxyAdvertisement = null;
+      private function GetRuntimeProxy (type:String, options:Object = null):Object
+      {
+         if (type == "advertisement")
+         {
+            if (mAdvertisementProxy == null)
+               mAdvertisementProxy = new ProxyAdvertisement (mParamsFromContainer.GetAdvertisementProxy ());
+
+            return mAdvertisementProxy;
+         }
+         
+         return null;
       }
 
 //===========================================================================

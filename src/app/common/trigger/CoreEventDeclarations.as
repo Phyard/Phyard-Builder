@@ -30,6 +30,10 @@ package common.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeRepainting,
                     null
                     );
+         
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldViewportSizeChanged,
+                    null
+                    );
 
       // ...
 

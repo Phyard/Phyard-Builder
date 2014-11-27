@@ -15,6 +15,8 @@ package common.trigger {
       
       public static const ID_OnWorldBeforeRepainting:int = IdPool.EventId_5;
 
+      public static const ID_OnWorldViewportSizeChanged:int = IdPool.EventId_8;
+
    // world (maybe in later versions)
 
       public static const ID_OnWorldBeforeInitializing:int = IdPool.EventId_0;

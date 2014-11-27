@@ -627,6 +627,15 @@
    
    public function OnMouseMove (event:MouseEvent):void
    {
+      //if (Mouse.supportsNativeCursor) // this is for setup custom sprite cursor
+      if (Mouse.supportsCursor)
+      {
+         event.updateAfterEvent(); 
+            // this line will make mouse following more smoothly.
+            // but it also decrease fps, especially on mobile devices.
+            // so this line is only apply on PC with cursor supported.
+      }
+      
       // ...
       if (mCurrentMode != null)
          mCurrentMode.OnMouseMove (event.stageX, event.stageY, event.buttonDown);
@@ -706,47 +715,53 @@
 
    public function OnKeyDown (event:KeyboardEvent):void
    {
-      // event handling can't be run simutaniously with PhysicsEngine.Step ().
-      // in flash, this is not a problem. Be careful when porting to other platforms.
-      
-      if (IsInteractiveEnabledNow ())
+      if (Viewer_mLibAppp.IsCurrentViewer ())
       {
-         var exactKeyCode:int = GetExactKeyCode (event);
+         // event handling can't be run simutaniously with PhysicsEngine.Step ().
+         // in flash, this is not a problem. Be careful when porting to other platforms.
          
-         // now ignore it if the general key is already hold.
-         // "release it then rehold it" is another implementation, 
-         // this is adopted for mouse buttons but not for general keys now.
+         if (IsInteractiveEnabledNow ())
+         {
+            var exactKeyCode:int = GetExactKeyCode (event);
+            
+            // now ignore it if the general key is already hold.
+            // "release it then rehold it" is another implementation, 
+            // this is adopted for mouse buttons but not for general keys now.
+            
+            if (IsKeyHold (exactKeyCode))
+               return;
+            
+            KeyPressed (exactKeyCode, event.charCode);
+            RegisterKeyboardEvent (exactKeyCode, event, mKeyDownEventHandlerLists);
+            //HandleKeyEventByKeyCode (event, true);
+         }
          
-         if (IsKeyHold (exactKeyCode))
-            return;
-         
-         KeyPressed (exactKeyCode, event.charCode);
-         RegisterKeyboardEvent (exactKeyCode, event, mKeyDownEventHandlerLists);
-         //HandleKeyEventByKeyCode (event, true);
+         //trace ("Pressed: " + String.fromCharCode (event.charCode));
       }
-      
-      //trace ("Pressed: " + String.fromCharCode (event.charCode));
    }
    
    public function OnKeyUp (event:KeyboardEvent):void
    {
-      // event handling can't be run simutaniously with PhysicsEngine.Step ().
-      // in flash, this is not a problem. Be careful when porting to other platforms.
-      
-      // unlike keyDown, this "if" is commented off here.
-      // if (IsInteractiveEnabledNow ())
+      if (Viewer_mLibAppp.IsCurrentViewer ())
       {
-         var exactKeyCode:int = GetExactKeyCode (event);
+         // event handling can't be run simutaniously with PhysicsEngine.Step ().
+         // in flash, this is not a problem. Be careful when porting to other platforms.
          
-         if (! IsKeyHold (exactKeyCode))
-            return;
+         // unlike keyDown, this "if" is commented off here.
+         // if (IsInteractiveEnabledNow ())
+         {
+            var exactKeyCode:int = GetExactKeyCode (event);
+            
+            if (! IsKeyHold (exactKeyCode))
+               return;
+            
+            //HandleKeyEventByKeyCode (event, false);
+            RegisterKeyboardEvent (exactKeyCode, event, mKeyUpEventHandlerLists);
+            KeyReleased (exactKeyCode, event.charCode);
+         }
          
-         //HandleKeyEventByKeyCode (event, false);
-         RegisterKeyboardEvent (exactKeyCode, event, mKeyUpEventHandlerLists);
-         KeyReleased (exactKeyCode, event.charCode);
+         //trace ("Released: " + String.fromCharCode (event.charCode));
       }
-      
-      //trace ("Released: " + String.fromCharCode (event.charCode));
    }
    
    private function GetExactKeyCode (event:KeyboardEvent):int

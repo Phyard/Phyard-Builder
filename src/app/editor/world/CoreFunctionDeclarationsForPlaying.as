@@ -2378,7 +2378,7 @@ package editor.world {
          //            ]
          //         );
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportSize, world_camera_package, "Get Viewport Size", "@(#0, #1) = Get Size of Viewport", "GetViewportSize",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportSize, world_camera_package, "Get Viewport Size In World Pixels", "@(#0, #1) = Get Size of Viewport", "GetViewportSize",
                      null,
                      [
                              new VariableDefinitionNumber ("Width"),

@@ -18,11 +18,11 @@ package player.world {
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
-   import flash.ui.Keyboard;
-   import flash.ui.KeyLocation;
    import flash.events.FocusEvent;
 
    import flash.ui.Mouse;
+   import flash.ui.Keyboard;
+   import flash.ui.KeyLocation;
    
    import com.tapirgames.random.RandomNumberGenerator;
    import com.tapirgames.random.MersenneTwisterRNG;
@@ -849,7 +849,7 @@ package player.world {
       //-----------------------------
       // update camera
       //-----------------------------
-
+         
          UpdateCamera ();
 
       //-----------------------------

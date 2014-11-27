@@ -31,6 +31,10 @@ package editor.world {
                     null
                     );
 
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldViewportSizeChanged, "OnWorldViewportSizeChanged", "",
+                    null
+                    );
+
       // ...
 
          RegisterEventDeclaration (CoreEventIds.ID_OnWorldBeforeInitializing, "OnLevelBeginInitialize", "",

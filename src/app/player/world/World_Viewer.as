@@ -51,9 +51,10 @@
                //MultiplePlayer_ExitInstance:Function; // v2.06
                //MultiplePlayer_SendChannelMessage:Function; // v2.06
       
-      public /*static*/ var Viewer_GetRuntimeProxy:Function; // v2.08
-         private /*static*/ var mAdvertisementProxy:Object = null;
-         private /*static*/ var mAdvertisementProxyQueried:Boolean = false;
+      //============================
+      
+      private /*static*/ var mAdvertisementProxy:Object = null;
+      private /*static*/ var mAdvertisementProxyQueried:Boolean = false;
       
       public function GetAdvertisementProxy ():Object
       {
@@ -62,8 +63,8 @@
          
          mAdvertisementProxyQueried = true;
          
-         if (Viewer_GetRuntimeProxy != null)
-            mAdvertisementProxy = Viewer_GetRuntimeProxy ("advertisement", null);
+         if (Viewer_mLibServices.GetAdvertisementProxy != null)
+            mAdvertisementProxy = Viewer_mLibServices.GetAdvertisementProxy ();
          
          return mAdvertisementProxy;
       }

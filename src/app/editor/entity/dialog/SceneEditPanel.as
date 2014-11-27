@@ -273,28 +273,10 @@ package editor.entity.dialog {
                if (ctrlHold && shiftHold)
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting), OnPutCreating, OnCreatingCancelled));
                break;
-            /*
-            case 66: // B
-               if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSystemBack), OnPutCreating, OnCreatingCancelled));
-               break;
-            case 71: // G
-               if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMouseGesture), OnPutCreating, OnCreatingCancelled));
-               break;
-            case 77: // M
-               if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnSequencedModuleLoopToEnd), OnPutCreating, OnCreatingCancelled));
-               break;
-            case 80: // P
-               if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldBeforeRepainting), OnPutCreating, OnCreatingCancelled));
-               break;
             case 87: // W
                if (ctrlHold && shiftHold)
-                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnMultiplePlayerInstanceInfoChanged), OnPutCreating, OnCreatingCancelled));
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldViewportSizeChanged), OnPutCreating, OnCreatingCancelled));
                break;
-            */
             default:
             {
                handled = false;

@@ -42,19 +42,21 @@ package player
                /*Global.sTheGlobal*/world.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
                                                                   // useless since v2.03.
                                                                   // for v2.05 is the main version for v2.00-v2.05,
-                                                                  // this can't be removed safely.
+                                                                  // this can't be removed safely. (edit at 2.08: can't? or can?)
                
                /*Global.sTheGlobal*/world.Viewer_mLibSound = params.mLibSound; // from v2.02
                
                /*Global.sTheGlobal*/world.Viewer_mLibGraphics = params.mLibGraphics; // from v2.03
                
                /*Global.sTheGlobal*/world.Viewer_mLibAppp = params.mLibApp; // v2.03
+                                                        //.IsCurrentViewer      // v2.08
+                                                        //.GetAppWindowBounds    // v2.08
+                                                        //.GetViewportPositionAndScale    // v2.08
                
                /*Global.sTheGlobal*/world.Viewer_mLibCookie = params.mLibCookie; // from v2.03
                
                /*Global.sTheGlobal*/world.Viewer_mLibServices = params.mLibService; // from v2.03
-               
-               world.Viewer_GetRuntimeProxy = params.GetRuntimeProxy as Function; // from v2.08
+                                                        //.GetAdvertisementProxy   // v2.08
                
                break;
             case "GetWorldProperties":
@@ -121,8 +123,6 @@ package player
                   OnMultiplePlayerEvent : world.OnMultiplePlayerEvent, // from v2.06
                   
                   SupportMoreMouseEvents : world.IsSupportMoreMouseEvents, // from v2.08
-                  
-                  SetStageScale : world.SetStageScale,           // from v2.08
                   
                   "" : null
                };

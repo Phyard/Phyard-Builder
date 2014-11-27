@@ -295,6 +295,18 @@ package viewer {
       
       // for editor, multiple player
       
+      private var mIsCurrentViewer:Boolean = true;
+      
+      public function SetAsCurrentViewer (cv:Boolean):void
+      {
+         mIsCurrentViewer = cv;
+      }
+      
+      private function IsCurrentViewer ():Boolean
+      {
+         return mIsCurrentViewer;
+      }
+      
       private var mVisible:Boolean = true;
       
       public function SetVisible (v:Boolean):void
@@ -1315,8 +1327,6 @@ package viewer {
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
          if (mWorldDesignProperties.OnMultiplePlayerServerMessage == undefined)   mWorldDesignProperties.OnMultiplePlayerServerMessage = DummyCallback;
          if (mWorldDesignProperties.SupportMoreMouseEvents == undefined)          mWorldDesignProperties.SupportMoreMouseEvents = DummyCallback_ReturnFalse;
-         if (mWorldDesignProperties.SetStageScale == undefined)                   mWorldDesignProperties.SetStageScale = DummyCallback;
-         
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1549,32 +1559,46 @@ package viewer {
                               IsAccelerometerSupported: IsAccelerometerSupported,
                               GetAcceleration         : GetAcceleration,
                               GetScreenResolution     : GetScreenResolution,
-                              GetScreenDPI            : GetScreenDPI
+                              GetScreenDPI            : GetScreenDPI,
+                              "" : null
                   },
                   mLibSound : {
                               LoadSoundFromBytes  : LoadSoundFromBytes, 
                               PlaySound           : PlaySound,
                               StopAllInLevelSounds: StopAllInLevelSounds,
-                              StopCrossLevelsSound: StopCrossLevelsSound
+                              StopCrossLevelsSound: StopCrossLevelsSound,
                              
                               // SetSoundVolume and SoundEnabled are passed by UI_XXXXX
+                              
+                              "" : null
                   },
                   mLibGraphics : {
                               LoadImageFromBytes: LoadImageFromBytes,
-                              SetRenderQuality  : SetRenderQuality
+                              SetRenderQuality  : SetRenderQuality,
+                              "" : null
                   },
                   mLibApp : {
                               IsNativeApp: IsNativeApp,
                               OnExitApp : ExitLevel,
                               OpenURL : UrlUtil.PopupPage,
-                              GetRealtimeFps : GetRealtimeFps
+                              GetRealtimeFps : GetRealtimeFps,
+                              IsCurrentViewer : IsCurrentViewer,     // since v2.08
+                              GetAppWindowBounds : GetAppWindowBounds, // since v2.08
+                              GetViewportPositionAndScale : GetViewportPositionAndScale, // since v2.088
+                              "" : null
                   },
                   mLibCookie : {
                               LoadCookie : LoadCookie,
                               WriteCookie: WriteCookie,
-                              ClearCookie: ClearCookie
+                              ClearCookie: ClearCookie,
+                              "" : null
                   },
                   mLibService : {
+                              // ...
+                              SubmitKeyValue: SubmitKeyValue, // v2.00 ?
+                              
+                              // ...
+                              
                               //SetMultiplePlayerInstanceInfoShown: SetMultiplePlayerInstanceInfoShown, // v2.06
                               
                               MultiplePlayer_CreateInstanceDefine: MultiplePlayer_CreateInstanceDefine, // v2.06
@@ -1592,9 +1616,15 @@ package viewer {
                               MultiplePlayer_GetGameInstanceChannelSeatInfo: MultiplePlayer_GetGameInstanceChannelSeatInfo, // v2.06
                               
                               // ...
-                              SubmitKeyValue: SubmitKeyValue // v2.00 ?
+                              
+                              GetAdvertisementProxy : GetAdvertisementProxy, // v2.08
+                              
+                              // ...
+                              "" : null
                   },
-                  GetRuntimeProxy : GetRuntimeProxy // v2.08
+                  
+                  // ...
+                  "" : null
                };
             }
             
@@ -2143,12 +2173,17 @@ package viewer {
          
          mSkin.SetShowPlayBar (mShowPlayBar);
          mSkinLayer.addChild (mSkin);
-
-         // mask
-         SetMaskViewerField (mMaskViewerField);
          
          // adjust positions of layers
          OnContainerResized ();
+      }
+      
+      private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
+      {
+         var faddingColor:uint = mWorldDesignProperties == null ? mParamsFromContainer.mBackgroundColor : mWorldDesignProperties.GetBackgroundColor ();
+         var bgColor:uint = (mParamsFromEditor == null ? faddingColor : mParamsFromEditor.mBackgroundColor);
+         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
+         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, faddingColor);
       }
       
       public function OnContainerResized ():void
@@ -2235,14 +2270,12 @@ package viewer {
                   mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale = widthRatio;
                }
                
-               mWorldDesignProperties.SetStageScale (mPlayerWorldLayerScale);
-               
                // position and rebuild viewport mask shape
                
-               var halfContnetSpaceWidth:Number  = 0.5 * contentRegion.width;
+               var halfContentSpaceWidth:Number  = 0.5 * contentRegion.width;
                var halfContentSpaceHeight:Number = 0.5 * contentRegion.height;
                
-               mViewportMaskShape.x = halfContnetSpaceWidth;
+               mViewportMaskShape.x = halfContentSpaceWidth;
                mViewportMaskShape.y = halfContentSpaceHeight;
                
                if (mAdaptiveViewportSize)
@@ -2251,10 +2284,13 @@ package viewer {
                   
                   mViewportMaskShape.scaleX = mViewportMaskShape.scaleY = 1.0;
                   GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
-                                    -halfContnetSpaceWidth, -halfContentSpaceHeight, contentRegion.width, contentRegion.height, 
+                                    -halfContentSpaceWidth, -halfContentSpaceHeight, contentRegion.width, contentRegion.height, 
                                     0x0, -1, true);
                   
                   mWorldDesignProperties.SetRealViewportSize (contentRegion.width / mWorldLayer.scaleX, contentRegion.height / mWorldLayer.scaleY);
+         
+                  // mask
+                  SetMaskViewerField (IsNativeApp () ? null : mMaskViewerField);
                }
                else
                {
@@ -2267,6 +2303,9 @@ package viewer {
                                     0x0, -1, true);
                   
                   mWorldDesignProperties.SetRealViewportSize (mPreferredViewportWidth, mPreferredViewportHeight);
+         
+                  // mask
+                  SetMaskViewerField (mMaskViewerField);
                }
             }
          }
@@ -2283,12 +2322,16 @@ package viewer {
          }
       }
       
-      private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
+      private var mAppWindowBounds:Rectangle = new Rectangle (); // with skin region
+      private function GetAppWindowBounds (includingSkinRegion:Boolean):Rectangle
       {
-         var faddingColor:uint = mWorldDesignProperties == null ? mParamsFromContainer.mBackgroundColor : mWorldDesignProperties.GetBackgroundColor ();
-         var bgColor:uint = (mParamsFromEditor == null ? faddingColor : mParamsFromEditor.mBackgroundColor);
-         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
-         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, faddingColor);
+         return mAppWindowBounds; // player.world should not modify it.
+      }
+      
+      private var mViewportPositionAndScale:Rectangle = new Rectangle (); // with skin region
+      private function GetViewportPositionAndScale (includingSkinRegion:Boolean):Rectangle
+      {
+         return mViewportPositionAndScale; // player.world should not modify it.
       }
 
 //======================================================================
@@ -2765,24 +2808,6 @@ package viewer {
          
          // from v2.02, sound status info is stored in Viewer instead of world plugin
          //mWorldDesignProperties.SetSoundEnabled (mSkin.IsSoundEnabled ());
-      }
-
-//===========================================================================
-// interfaces for game template
-//===========================================================================
-      
-      private var mAdvertisementProxy:ProxyAdvertisement = null;
-      private function GetRuntimeProxy (type:String, options:Object = null):Object
-      {
-         if (type == "advertisement")
-         {
-            if (mAdvertisementProxy == null)
-               mAdvertisementProxy = new ProxyAdvertisement (mParamsFromContainer.GetAdvertisementProxy ());
-
-            return mAdvertisementProxy;
-         }
-         
-         return null;
       }
 
 //===========================================================================

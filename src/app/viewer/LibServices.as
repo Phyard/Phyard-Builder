@@ -19,6 +19,24 @@
                // please see GamePackager.OnlineAPI for detail.
       }
    }
+
+//===========================================================================
+// ads
+//===========================================================================
+      
+      private var mAdvertisementProxy:ProxyAdvertisement = null;
+      private function GetAdvertisementProxy (type:String):Object
+      {
+         if (mAdvertisementProxy == null)
+         {
+            if (mParamsFromContainer.GetAdvertisementProxy == null)
+               mAdvertisementProxy = new ProxyAdvertisement (null);
+            else
+               mAdvertisementProxy = new ProxyAdvertisement (mParamsFromContainer.GetAdvertisementProxy ());
+         }
+
+         return mAdvertisementProxy;
+      }
    
 //==================================================================
 // debug info

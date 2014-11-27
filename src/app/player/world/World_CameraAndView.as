@@ -27,9 +27,10 @@
    private var mPlayBarColor:uint = 0x606060;
    private var mPreferredViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
    private var mPreferredViewportHeight:int = ViewerDefine.DefaultPlayerHeight;
-   private var mRealViewportWidth:Number = ViewerDefine.DefaultPlayerWidth;
-   private var mRealViewportHeight:Number = ViewerDefine.DefaultPlayerHeight;
-   private var mStageScale:Number = 1.0;
+   
+   private var mViewportSizeChanged:Boolean = false;
+   private var mRealViewportWidth:Number = 0; //ViewerDefine.DefaultPlayerWidth;
+   private var mRealViewportHeight:Number = 0; //ViewerDefine.DefaultPlayerHeight;
    
    private var mCameraRotatingEnabled:Boolean = false;
    
@@ -65,24 +66,31 @@
    
    public function SetRealViewportSize (realWidth:Number, realHeight:Number):void
    {
-      mRealViewportWidth  = realWidth;
-      mRealViewportHeight = realHeight;
+      if (mRealViewportWidth != realWidth || mRealViewportHeight != realHeight)
+      {
+         mViewportSizeChanged = true;
+         
+         // world pixels
+         mRealViewportWidth  = realWidth;
+         mRealViewportHeight = realHeight;
+         
+         //mCameraCenterX
+         //mCameraCenterY
       
-      //mCameraCenterX
-      //mCameraCenterY
-   
-      mBackgroundNeedRepaint = true;
+         mBackgroundNeedRepaint = true;
+      }
    }
+   
+   
+
+   private var mStageScale:Number = 1.0;
    
    public function GetStageScale ():Number
    {
-      return mStageScale;
+      return  mStageScale; //Viewer_mLibAppp.;
    }
    
-   public function SetStageScale (ss:Number):void
-   {
-      mStageScale = ss;
-   }
+   
    
    //=====================================================================================
    //
@@ -209,14 +217,18 @@
          // set world sprite rotation
          mCameraAngle = targetDisplayAngle;
          
-         if (targetDisplayX < mWorldLeft)
+         if (mIsInfiniteWorldSize)
+            mCameraCenterX = targetDisplayX;
+         else if (targetDisplayX < mWorldLeft)
             mCameraCenterX = mWorldLeft;
          else if (targetDisplayX > (mWorldLeft + mWorldWidth))
             mCameraCenterX = mWorldLeft + mWorldWidth;
          else
             mCameraCenterX = targetDisplayX;
          
-         if (targetDisplayY < mWorldTop)
+         if (mIsInfiniteWorldSize)
+            mCameraCenterY = targetDisplayY;
+         else if (targetDisplayY < mWorldTop)
             mCameraCenterY = mWorldTop;
          else if (targetDisplayY > (mWorldTop + mWorldHeight))
             mCameraCenterY = mWorldTop + mWorldHeight;
@@ -245,6 +257,8 @@
       {
          var worldViewWidth :Number = mWorldWidth  * mContentLayer.scaleX;
          var worldViewHeight:Number = mWorldHeight * mContentLayer.scaleY;
+         
+         // todo: if mIsInfiniteWorldSize ...
          
          if (worldViewWidth < mRealViewportWidth)
          {
@@ -294,6 +308,12 @@
    
    protected function UpdateCamera ():void
    {
+      if (mViewportSizeChanged)
+      {
+         mViewportSizeChanged = false;
+         HandleEventById (CoreEventIds.ID_OnWorldViewportSizeChanged);
+      }
+      
       var targetX:Number;
       var targetY:Number
       var targetAngle:Number

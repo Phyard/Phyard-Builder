@@ -21,11 +21,16 @@ package viewer {
       {
          mIsOverlay = params.mIsOverlay;
          mIsTouchScreen = params.mIsTouchScreen;
+         
          //mIsPhoneDevice = params.mIsPhoneDevice;
          //if (mIsPhoneDevice)
          //   mIsTouchScreen = true; // forcely
-         if (mIsTouchScreen)
+         
+         if (mIsTouchScreen) {
             mIsOverlay = true; // forcely
+               // this is may be not good.
+               // it may be better to use a higher top bar instead.
+         }
          
          _OnRestart = params.OnRestart;
          _OnStart = params.OnStart;

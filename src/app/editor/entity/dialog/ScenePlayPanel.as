@@ -10,6 +10,7 @@ package editor.entity.dialog {
    import flash.display.InteractiveObject;
    import flash.events.Event;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    
    import flash.events.MouseEvent;
    import flash.events.KeyboardEvent;
@@ -208,7 +209,8 @@ package editor.entity.dialog {
          UpdateBackgroundAndContentMaskSprites ();
       }
       
-      private var mContentMaskSprite:Shape = null;
+      //private var mContentMaskSprite:Shape = null;
+      private var mMaskRect:Rectangle = null;
       private var mContentMaskWidth :Number = 0;
       private var mContentMaskHeight:Number = 0;
       
@@ -219,15 +221,23 @@ package editor.entity.dialog {
             mContentMaskWidth  = parent.width;
             mContentMaskHeight = parent.height;
             
-            if (mContentMaskSprite == null)
+            //if (mContentMaskSprite == null)
+            //{
+            //   mContentMaskSprite = new Shape ();
+            //   addChild (mContentMaskSprite);
+            //   this.mask = mContentMaskSprite;
+            //}
+            if (mMaskRect == null)
             {
-               mContentMaskSprite = new Shape ();
-               addChild (mContentMaskSprite);
-               mask = mContentMaskSprite;
+               mMaskRect = new Rectangle ();
             }
             
             GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true, 0xFFFFFF);
-            GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true);
+            //GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true);
+            mMaskRect.x = mMaskRect.y = 0;
+            mMaskRect.width = mContentMaskWidth;
+            mMaskRect.height = mContentMaskHeight;
+            this.scrollRect = mMaskRect; // must call this to update
             
             //if (mDesignViewer != null)
             //{

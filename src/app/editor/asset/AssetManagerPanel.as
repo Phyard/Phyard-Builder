@@ -311,7 +311,8 @@ package editor.asset {
          return mContentMaskHeight;
       }
       
-      private var mContentMaskSprite:Shape = null;
+      //private var mContentMaskSprite:Shape = null;
+      private var mMaskRect:Rectangle = null;
       private var mContentMaskWidth :Number = 0;
       private var mContentMaskHeight:Number = 0;
       
@@ -330,11 +331,16 @@ package editor.asset {
       
       protected function UpdateBackgroundAndContentMaskSprites (changeColorOnly:Boolean = false):void
       {
-         if (mContentMaskSprite == null)
+         //if (mContentMaskSprite == null)
+         //{
+         //   mContentMaskSprite = new Shape ();
+         //   addChild (mContentMaskSprite);
+         //   this.mask = mContentMaskSprite;
+         //}
+         if (mMaskRect == null)
          {
-            mContentMaskSprite = new Shape ();
-            addChild (mContentMaskSprite);
-            this.mask = mContentMaskSprite;
+            mMaskRect = new Rectangle ();
+            //this.scrollRect = mMaskRect;
          }
          
          if (changeColorOnly)
@@ -350,7 +356,11 @@ package editor.asset {
             mContentMaskHeight = parent.height;
             
             GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true, sBackgroundColor);
-            GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true);
+            //GraphicsUtil.ClearAndDrawRect (mContentMaskSprite, 0, 0, mContentMaskWidth - 1, mContentMaskHeight - 1, 0x0, 1, true);
+            mMaskRect.x = mMaskRect.y = 0;
+            mMaskRect.width = mContentMaskWidth;
+            mMaskRect.height = mContentMaskHeight;
+            this.scrollRect = mMaskRect; // must call this to update
             
             if (mAssetManager != null)
             {

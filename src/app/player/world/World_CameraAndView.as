@@ -308,12 +308,6 @@
    
    protected function UpdateCamera ():void
    {
-      if (mViewportSizeChanged)
-      {
-         mViewportSizeChanged = false;
-         HandleEventById (CoreEventIds.ID_OnWorldViewportSizeChanged);
-      }
-      
       var targetX:Number;
       var targetY:Number
       var targetAngle:Number
@@ -587,6 +581,16 @@
       mCameraMovedOffsetX_ByMouse = 0;
       mCameraMovedOffsetY_ByMouse = 0;
       mCameraMovedOffsetAngle_ByMouse = 0;
+      
+      //===============================================================
+      // 
+      //===============================================================
+      
+      if (mViewportSizeChanged)
+      {
+         mViewportSizeChanged = false;
+         HandleEventById (CoreEventIds.ID_OnWorldViewportSizeChanged);
+      }
    }
    
    //private function UpdateSpriteOffsetAndScale (sprite:Sprite):void

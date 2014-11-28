@@ -137,7 +137,8 @@ package viewer {
       private var mMiddleLayer:Sprite = new Sprite ();
          private var mContentLayer:Sprite = new Sprite ();
             private var mWorldLayer:Sprite = new Sprite ();
-            private var mViewportMaskShape:Sprite = new Sprite ();
+            //private var mViewportMaskShape:Sprite = new Sprite ();
+            private var mViewportMaskRect:Rectangle = new Rectangle ();
          private var mSkinLayer:Sprite = new Sprite ();
       private var mForegroundLayer:Sprite = new Sprite ();
          private var mErrorMessageLayer:Sprite = new Sprite ();
@@ -2248,12 +2249,12 @@ package viewer {
                   
                var widthRatio :Number = contentRegion.width  / mPreferredViewportWidth ;
                var heightRatio:Number = contentRegion.height / mPreferredViewportHeight;
-               
+
+               /*               
                GraphicsUtil.Clear (mContentLayer);
                
                if (widthRatio < heightRatio)
-               {
-                  
+               {  
                   mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale = widthRatio;
                   mWorldLayer.x = 0.0;
                   mWorldLayer.y = mAdaptiveViewportSize ? 0.0 : 0.5 * Number (contentRegion.height - mPreferredViewportHeight * widthRatio);
@@ -2269,44 +2270,81 @@ package viewer {
                   mWorldLayer.x = mWorldLayer.y = 0.0;
                   mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale = widthRatio;
                }
+               */
                
+               mPlayerWorldLayerScale = Math.min (widthRatio, heightRatio);
+               mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale;
+               
+               if (mAdaptiveViewportSize || widthRatio == heightRatio)
+               {
+                  mWorldLayer.x = 0.0;
+                  mWorldLayer.y = 0.0;
+                  
+                  mViewportMaskRect.width = contentRegion.width;
+                  mViewportMaskRect.height = contentRegion.height;
+                  
+                  mWorldDesignProperties.SetRealViewportSize (contentRegion.width / mWorldLayer.scaleX, contentRegion.height / mWorldLayer.scaleY);
+               }
+               else 
+               {
+                  mWorldDesignProperties.SetRealViewportSize (mPreferredViewportWidth, mPreferredViewportHeight);
+                  
+                  mViewportMaskRect.width  = mWorldLayer.scaleX * mPreferredViewportWidth;
+                  mViewportMaskRect.height = mWorldLayer.scaleY * mPreferredViewportHeight;
+                  
+                  if (widthRatio < heightRatio)
+                  {
+                     mWorldLayer.x = 0.0;
+                     mWorldLayer.y = 0.5 * Number (contentRegion.height - mPreferredViewportHeight * widthRatio);
+                  }
+                  else // if (widthRatio > heightRatio)
+                  {
+                     mWorldLayer.x = 0.5 * Number (contentRegion.width - mPreferredViewportWidth * heightRatio);
+                     mWorldLayer.y = 0.0;
+                  }
+               }
+            
+               mViewportMaskRect.x = mWorldLayer.x;
+               mViewportMaskRect.y = mWorldLayer.y;
+               
+               // confirm mask
+               
+               SetMaskViewerField (mMaskViewerField);
+               
+               
+               /*
                // position and rebuild viewport mask shape
                
-               var halfContentSpaceWidth:Number  = 0.5 * contentRegion.width;
+               var halfContentSpaceWidth :Number = 0.5 * contentRegion.width;
                var halfContentSpaceHeight:Number = 0.5 * contentRegion.height;
                
-               mViewportMaskShape.x = halfContentSpaceWidth;
-               mViewportMaskShape.y = halfContentSpaceHeight;
+               //mViewportMaskShape.x = halfContentSpaceWidth;
+               //mViewportMaskShape.y = halfContentSpaceHeight;
                
                if (mAdaptiveViewportSize)
                {
                   // fill the full content space
                   
-                  mViewportMaskShape.scaleX = mViewportMaskShape.scaleY = 1.0;
-                  GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
-                                    -halfContentSpaceWidth, -halfContentSpaceHeight, contentRegion.width, contentRegion.height, 
-                                    0x0, -1, true);
+                  //mViewportMaskShape.scaleX = mViewportMaskShape.scaleY = 1.0;
+                  //GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
+                  //                  -halfContentSpaceWidth, -halfContentSpaceHeight, contentRegion.width, contentRegion.height, 
+                  //                  0x0, -1, true);
                   
                   mWorldDesignProperties.SetRealViewportSize (contentRegion.width / mWorldLayer.scaleX, contentRegion.height / mWorldLayer.scaleY);
-         
-                  // mask
-                  SetMaskViewerField (IsNativeApp () ? null : mMaskViewerField);
                }
                else
                {
                   // overlap the preferred viewport size region
                   
-                  mViewportMaskShape.scaleX = mWorldLayer.scaleX;
-                  mViewportMaskShape.scaleY = mWorldLayer.scaleY;
-                  GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
-                                    - 0.5 * mPreferredViewportWidth, - 0.5 * mPreferredViewportHeight, mPreferredViewportWidth, mPreferredViewportHeight, 
-                                    0x0, -1, true);
+                  //mViewportMaskShape.scaleX = mWorldLayer.scaleX;
+                  //mViewportMaskShape.scaleY = mWorldLayer.scaleY;
+                  //GraphicsUtil.ClearAndDrawRect (mViewportMaskShape, 
+                  //                  - 0.5 * mPreferredViewportWidth, - 0.5 * mPreferredViewportHeight, mPreferredViewportWidth, mPreferredViewportHeight, 
+                  //                  0x0, -1, true);
                   
                   mWorldDesignProperties.SetRealViewportSize (mPreferredViewportWidth, mPreferredViewportHeight);
-         
-                  // mask
-                  SetMaskViewerField (mMaskViewerField);
                }
+               */
             }
          }
          catch (error:Error)
@@ -2319,6 +2357,30 @@ package viewer {
          if (mErrorMessageLayer.visible)
          {
             CenterErrorMessageText ();
+         }
+      }
+
+      public function SetMaskViewerField (mask:Boolean):void
+      {
+         mMaskViewerField = mask;
+
+         if (mMaskViewerField)
+         {
+            //if (! mContentLayer.contains (mViewportMaskShape))
+            //   mContentLayer.addChild (mViewportMaskShape);
+            //
+            //mContentLayer.mask = mViewportMaskShape;
+            
+            mContentLayer.scrollRect = mViewportMaskRect;
+         }
+         else
+         {
+            //if (mContentLayer.contains (mViewportMaskShape))
+            //   mContentLayer.removeChild (mViewportMaskShape);
+            //
+            //mContentLayer.mask = null;
+            
+            mContentLayer.scrollRect = null;
          }
       }
       
@@ -2658,30 +2720,6 @@ package viewer {
       private function OnAbout (event:ContextMenuEvent):void
       {
          UrlUtil.PopupPage (ViewerDefine.AboutUrl);
-      }
-
-//======================================================================
-//
-//======================================================================
-
-      public function SetMaskViewerField (mask:Boolean):void
-      {
-         mMaskViewerField = mask;
-
-         if (mMaskViewerField)
-         {
-            if (! mContentLayer.contains (mViewportMaskShape))
-               mContentLayer.addChild (mViewportMaskShape);
-
-            mContentLayer.mask = mViewportMaskShape;
-         }
-         else
-         {
-            if (mContentLayer.contains (mViewportMaskShape))
-               mContentLayer.removeChild (mViewportMaskShape);
-
-            mContentLayer.mask = null;
-         }
       }
       
 //======================================================================

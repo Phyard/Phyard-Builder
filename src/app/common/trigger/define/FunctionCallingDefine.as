@@ -13,6 +13,8 @@ package common.trigger.define
       public var mFunctionType:int;
       public var mFunctionId:int;
       
+      public var mCommentDepth:int = 0; // from v2.09
+      
       public var mNumInputs:int;
       public var mInputValueSourceDefines:Array;
       
@@ -31,6 +33,8 @@ package common.trigger.define
          
          callingDefine.mFunctionType = mFunctionType;
          callingDefine.mFunctionId = mFunctionId;
+         
+         callingDefine.mCommentDepth = mCommentDepth;
          
          callingDefine.mNumInputs = mNumInputs;
          callingDefine.mInputValueSourceDefines = new Array (mNumInputs);

@@ -128,6 +128,7 @@ package viewer {
       //private var mIsPlaying:Boolean = false;
       //private var mPlayingSpeedX:int = 2;
 
+      private var mWindowPadding:Rectangle = new Rectangle (0, 0, 0, 0);
       private var mPlayerWorldLayerScale:Number = 1.0;
       
       private var mPlayerWorldZoomScale:Number = 1.0;
@@ -229,8 +230,7 @@ package viewer {
 
          ParseParams ();
          
-         var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-         RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
+         RepaintFullScreenLayersWithBackgroundColor ();
       }
 
       private function OnRemovedFromStage (e:Event):void
@@ -1328,8 +1328,12 @@ package viewer {
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
          if (mWorldDesignProperties.OnMultiplePlayerServerMessage == undefined)   mWorldDesignProperties.OnMultiplePlayerServerMessage = DummyCallback;
          if (mWorldDesignProperties.SupportMoreMouseEvents == undefined)          mWorldDesignProperties.SupportMoreMouseEvents = DummyCallback_ReturnFalse;
-         if (mWorldDesignProperties.SetViewportStretchScale == undefined)         mWorldDesignProperties.SetViewportStretchScale = DummyCallback;
+         //>> only for v2.08
+         //if (mWorldDesignProperties.SetViewportStretchScale == undefined)         mWorldDesignProperties.SetViewportStretchScale = DummyCallback;
+         //<<
+         if (mWorldDesignProperties.SetViewportBoundsInDevicePixels == undefined) mWorldDesignProperties.SetViewportBoundsInDevicePixels == DummyCallback;
 
+         // todo: remove the following "mPlayerWorld == null ?"s.
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);
          mPlayBarColor = mPlayerWorld == null ? 0x606060 : mWorldDesignProperties.GetPlayBarColor ();
@@ -1585,6 +1589,8 @@ package viewer {
                               OpenURL : UrlUtil.PopupPage,
                               GetRealtimeFps : GetRealtimeFps,
                               IsCurrentViewer : IsCurrentViewer,     // since v2.08
+                              GetAppWindowPadding : GetAppWindowPadding,  // since v2.08
+                              SetAppWindowPadding : SetAppWindowPadding,  // since v2.08
                               "" : null
                   },
                   mLibCookie : {
@@ -1686,8 +1692,7 @@ package viewer {
             stage.frameRate = mLastPreferredFPS;
             
             // avoid flashing
-            var containerSize:Point = mParamsFromContainer.GetViewportSize ();
-            RepaintFullScreenLayersWithBackgroundColor (containerSize.x, containerSize.y);
+            RepaintFullScreenLayersWithBackgroundColor ();
             
             if (mOldPlayerWorld == null) // first loading
             {
@@ -2178,21 +2183,45 @@ package viewer {
          OnContainerResized ();
       }
       
-      private function RepaintFullScreenLayersWithBackgroundColor (newWidth:Number, newHeight:Number):void
-      {
-         var faddingColor:uint = mWorldDesignProperties == null ? mParamsFromContainer.mBackgroundColor : mWorldDesignProperties.GetBackgroundColor ();
-         var bgColor:uint = (mParamsFromEditor == null ? faddingColor : mParamsFromEditor.mBackgroundColor);
-         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, newWidth, newHeight, 0x0, -1, true, bgColor);
-         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, newWidth, newHeight, 0x0, -1, true, faddingColor);
-      }
-      
-      public function OnContainerResized ():void
+      private function RepaintFullScreenLayersWithBackgroundColor ():void
       {
          var containerSize:Point = mParamsFromContainer.GetViewportSize ();
          var containerWidth :Number = containerSize.x;
          var containerHeight:Number = containerSize.y;
          
-         RepaintFullScreenLayersWithBackgroundColor (containerWidth, containerHeight);
+         var faddingColor:uint = mWorldDesignProperties == null ? mParamsFromContainer.mBackgroundColor : mWorldDesignProperties.GetBackgroundColor ();
+         var bgColor:uint = (mParamsFromEditor == null ? faddingColor : mParamsFromEditor.mBackgroundColor);
+         GraphicsUtil.ClearAndDrawRect (mBackgroundLayer, 0, 0, containerWidth, containerHeight, 0x0, -1, true, bgColor);
+         GraphicsUtil.ClearAndDrawRect (mFadingLayer    , 0, 0, containerWidth, containerHeight, 0x0, -1, true, faddingColor);
+      }
+      
+      private function GetAppWindowPadding ():Rectangle
+      {
+         return mWindowPadding;
+      }
+      
+      private function SetAppWindowPadding (left:Number, top:Number, right:Number, bottom:Number):void
+      {
+         mWindowPadding.left = Math.round (left);
+         mWindowPadding.top = Math.round (top);
+         mWindowPadding.right = Math.round (right);
+         mWindowPadding.bottom = Math.round (bottom);
+         
+         ReLayout ();
+      }
+      
+      public function OnContainerResized ():void
+      {
+         RepaintFullScreenLayersWithBackgroundColor ();
+         
+         ReLayout ();
+      }
+      
+      private function ReLayout ():void
+      {
+         var containerSize:Point = mParamsFromContainer.GetViewportSize ();
+         var containerWidth :Number = containerSize.x;
+         var containerHeight:Number = containerSize.y;
          
          try
          {
@@ -2227,7 +2256,11 @@ package viewer {
                
                // rebuild skin
                
-               mSkin.SetViewerSize (viewerWidth, viewerHeight);
+               //mSkin.SetViewerSize (viewerWidth, viewerHeight);
+               //mSkin.SetPadding (mWindowPadding);
+               mSkin.SetViewerSize (viewerWidth - mWindowPadding.left - mWindowPadding.right, viewerHeight - mWindowPadding.top - mWindowPadding.bottom);
+               mSkin.x = mWindowPadding.left;
+               mSkin.y = mWindowPadding.top;
                
                mSkin.Rebuild ({
                         mPlayBarColor : mPlayBarColor,
@@ -2241,8 +2274,10 @@ package viewer {
                
                var contentRegion:Rectangle = mSkin.GetContentRegion ();
       
-               mContentLayer.x = contentRegion.x;
-               mContentLayer.y = contentRegion.y;
+               //mContentLayer.x = contentRegion.x;
+               //mContentLayer.y = contentRegion.y;
+               mContentLayer.x = contentRegion.x + mWindowPadding.left;
+               mContentLayer.y = contentRegion.y + mWindowPadding.top;
                
                // position world layer
                   
@@ -2274,8 +2309,8 @@ package viewer {
                mPlayerWorldLayerScale = Math.min (widthRatio, heightRatio);
                mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale;
                
-               //>> from v2.08
-               mWorldDesignProperties.SetViewportStretchScale (mWorldLayer.scaleX, mWorldLayer.scaleY);
+               //>> only for v2.08. removed at v2.09. v2.08 is not a main release.
+               //mWorldDesignProperties.SetViewportStretchScale (mWorldLayer.scaleX, mWorldLayer.scaleY);
                //<<
                
                if (mAdaptiveViewportSize || widthRatio == heightRatio) // occupy whole content space
@@ -2309,6 +2344,10 @@ package viewer {
             
                mViewportMaskRect.x = mWorldLayer.x;
                mViewportMaskRect.y = mWorldLayer.y;
+               
+               //>> added in v2.09. Should be called after calling SetRealViewportSize.
+               mWorldDesignProperties.SetViewportBoundsInDevicePixels (mViewportMaskRect.x, mViewportMaskRect.y, mViewportMaskRect.width, mViewportMaskRect.height);
+               //<<
                
                // confirm mask
                

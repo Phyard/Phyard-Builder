@@ -44,6 +44,15 @@ package common.trigger {
                         [CoreClassIds.ValueType_String,       ""],
                      ]
                   );
+
+            RegisterCoreDeclaration (CoreFunctionIds.ID_Trace,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                        [CoreClassIds.ValueType_String,       ""],
+                        //[CoreClassIds.ValueType_Boolean,       true],
+                     ],
+                     null
+                  );
          //}
 
       // special,       some predefineds for internal using
@@ -2139,6 +2148,24 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetAppWindowPadding,
+                     null,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetAppWindowPadding,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ],
+                     null
+                  );
 
       // game / world / physics
 
@@ -2263,6 +2290,15 @@ package common.trigger {
          //            ]
          //         );
 
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCoordinateSytemSettings,
+         //            null,
+         //            [
+         //               [CoreClassIds.ValueType_Boolean,       false],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
+         //            ]
+         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,
                      null,
                      [
@@ -2277,6 +2313,15 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
+         //RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetViewportBoundsInDevicePixels,
+         //            null,
+         //            [
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //               [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+         //            ]
+         //         );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetViewportStretchScale,
                      null,
                      [

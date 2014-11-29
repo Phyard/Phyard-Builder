@@ -5,7 +5,7 @@ package common.trigger.parse {
    
    public class CodeSnippetParser
    {
-      public static function ParseCodeSnippet (callingInfos:Array):int
+      public static function ParseCodeSnippet (callingInfos:Array, keepDebugInfo:Boolean = false):int
       {
          var topBlock:FunctionCallingBlockInfo = new FunctionCallingBlockInfo ();
          topBlock.mIndentLevel = -1;
@@ -46,10 +46,10 @@ package common.trigger.parse {
             
             currentCallingLineInfo.mLineNumber = lineNumber;
             
-            var isCodeBlockStartEndCalling:Boolean = currentCallingLineInfo.mIsCoreDeclaration; // just a possible
+            var isCodeBlockStartEndCalling:Boolean = currentCallingLineInfo.mIsCoreDeclaration && currentCallingLineInfo.mCommentDepth <= 0; 
             
             if (isCodeBlockStartEndCalling)
-            {
+            {  
                switch (currentCallingLineInfo.mFunctionId)
                {
                   case CoreFunctionIds.ID_StartIf:
@@ -200,7 +200,7 @@ package common.trigger.parse {
                   
                   currentBranch.mLastCallingLine = currentCallingLineInfo;
                   
-                  if (currentCallingLineInfo.mIsCoreDeclaration)
+                  if (currentCallingLineInfo.mIsCoreDeclaration && currentCallingLineInfo.mCommentDepth <= 0)
                   {
                      switch (currentCallingLineInfo.mFunctionId)
                      {
@@ -230,10 +230,18 @@ package common.trigger.parse {
                         case CoreFunctionIds.ID_Removed:
                            currentCallingLineInfo.mIsValid = false;
                            break;
+                        case CoreFunctionIds.ID_Trace:
+                           currentCallingLineInfo.mIsValid = keepDebugInfo;
+                           break;
                         default:
                         {
                         }
                      }
+                  }
+                  
+                  if (currentCallingLineInfo.mCommentDepth > 0)
+                  {
+                     currentCallingLineInfo.mIsValid = false;
                   }
                }
             }

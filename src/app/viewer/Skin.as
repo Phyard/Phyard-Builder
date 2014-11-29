@@ -89,6 +89,11 @@ package viewer {
       protected var mViewerWidth :Number;
       protected var mViewerHeight:Number;
       
+      //protected var mPaddingLeft  :Number;
+      //protected var mPaddingTop   :Number;
+      //protected var mPaddingRight :Number;
+      //protected var mPaddingBottom:Number;
+      
       //
       protected var mShowPlayBar:Boolean = true;
 
@@ -109,6 +114,14 @@ package viewer {
          mViewerWidth  = viewerWidth;
          mViewerHeight = viewerHeight;
       }
+      
+      //final public function SetPadding (padding:Rectangle):void
+      //{
+      //   mPaddingLeft   = padding.left;
+      //   mPaddingTop    = padding.top;
+      //   mPaddingRight  = padding.right;
+      //   mPaddingBottom = padding.bottom;
+      //}
       
       // should call after SetViewerSize
       public function GetContentRegion ():Rectangle

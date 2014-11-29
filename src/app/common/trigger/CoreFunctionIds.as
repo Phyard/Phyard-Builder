@@ -8,6 +8,7 @@ package common.trigger {
 
       public static const ID_ForDebug:int                    = IdPool.CoreApiId_0; //
       public static const ID_GetDebugString:int              = IdPool.CoreApiId_1; //
+      public static const ID_Trace:int                       = IdPool.CoreApiId_2; // v2.09
 
    // some specail
 
@@ -373,6 +374,9 @@ package common.trigger {
       public static const ID_Level_SetBorderColor:int                        = IdPool.CoreApiId_624;
       public static const ID_Level_GetBorderColorRGB:int                        = IdPool.CoreApiId_625;
       public static const ID_Level_SetBorderColorRGB:int                        = IdPool.CoreApiId_626;
+      
+      public static const ID_World_GetAppWindowPadding:int        = IdPool.CoreApiId_737;
+      public static const ID_World_SetAppWindowPadding:int        = IdPool.CoreApiId_738;
 
    // game / world / physics
 
@@ -396,7 +400,10 @@ package common.trigger {
       public static const ID_World_GetIntersectedShapesWithLineSegment:int        = IdPool.CoreApiId_732;
       public static const ID_World_GetIntersectionSegmentsWithLineSegment:int        = IdPool.CoreApiId_733;
 
+      //public static const ID_World_GetCoordinateSytemSettings:int            = IdPool.CoreApiId_736; // from v2.09
+      
       public static const ID_World_GetViewportSize:int                               = IdPool.CoreApiId_716; // from v2.03
+      //public static const ID_World_GetViewportBoundsInDevicePixels:int               = IdPool.CoreApiId_729; // from v2.09
       public static const ID_World_GetViewportStretchScale:int                       = IdPool.CoreApiId_728; // from v2.08
       public static const ID_World_SetCurrentCamera:int                              = IdPool.CoreApiId_717;
       public static const ID_World_GetCameraCenter:int                               = IdPool.CoreApiId_719;

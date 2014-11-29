@@ -23,6 +23,8 @@
    //
    //=====================================================================================
    
+   private var mCameraRotatingEnabled:Boolean = false;
+   
    private var mViewerUiFlags:int = ViewerDefine.DefaultPlayerUiFlags;
    private var mPlayBarColor:uint = 0x606060;
    private var mPreferredViewportWidth:int = ViewerDefine.DefaultPlayerWidth;
@@ -33,7 +35,11 @@
    private var mRealViewportHeight:Number = 0; //ViewerDefine.DefaultPlayerHeight;
                                     // the two values are in world unscaled pixels (world.scale = 1.0).
    
-   private var mCameraRotatingEnabled:Boolean = false;
+   private var mViewportBoundsInDevicePixels:Rectangle = new Rectangle ();
+      private var mViewportStretchScaleX:Number;
+      private var mViewportStretchScaleY:Number;
+      private var mViewportCenterX:Number; // in device pixels
+      private var mViewportCenterY:Number; // in device pixels
    
    public function GetViewerUiFlags ():int
    {
@@ -82,14 +88,14 @@
    
    // ...
 
-   private var mViewportStretchScaleX:Number = 1.0;
-   private var mViewportStretchScaleY:Number = 1.0;
-   
-   public function SetViewportStretchScale (sx:Number, sy:Number):void
-   {
-      mViewportStretchScaleX = sx;
-      mViewportStretchScaleY = sy;
-   }
+   //private var mViewportStretchScaleX:Number = 1.0;
+   //private var mViewportStretchScaleY:Number = 1.0;
+   //
+   //public function SetViewportStretchScale (sx:Number, sy:Number):void
+   //{
+   //   mViewportStretchScaleX = sx;
+   //   mViewportStretchScaleY = sy;
+   //}
    
    public function GetViewportStretchScaleX ():Number
    {
@@ -101,13 +107,23 @@
       return mViewportStretchScaleY;
    }
    
-   // the camera center in app content windows
-   public function SetViewportPositionInDevicePixels ():void
+   public function SetViewportBoundsInDevicePixels (bx:Number, by:Number, bw:Number, bh:Number):void
    {
+      mViewportBoundsInDevicePixels.x = bx;
+      mViewportBoundsInDevicePixels.y = by;
+      mViewportBoundsInDevicePixels.width  = bw;
+      mViewportBoundsInDevicePixels.height = bh;
       
+      mViewportCenterX = bx + 0.5 * bw;
+      mViewportCenterY = by + 0.5 * bh;
+      mViewportStretchScaleX = bw / mRealViewportWidth;
+      mViewportStretchScaleY = bh / mRealViewportHeight;
    }
    
-   
+   public function GetViewportBoundsInDevicePixels ():Rectangle
+   {
+      return mViewportBoundsInDevicePixels;
+   }
    
    //=====================================================================================
    //

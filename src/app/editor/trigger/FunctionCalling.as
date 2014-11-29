@@ -22,7 +22,8 @@ package editor.trigger {
       public var mInputValueSources:Array;
       public var mOutputValueTargets:Array;
       
-      protected var mCommentedOff:Boolean = false;
+      //protected var mCommentedOff:Boolean = false;
+      protected var mCommentDepth:int = 0; // v2.09
       
       public function FunctionCalling (/*triggerEngine:TriggerEngine, */functionDeclatation:FunctionDeclaration, createDefaultSourcesAndTargets:Boolean = true)
       {
@@ -131,14 +132,32 @@ package editor.trigger {
          return false; // to override
       }
       
-      public function IsCommentedOff ():Boolean
+      //public function IsCommentedOff ():Boolean
+      //{
+      //   return mCommentedOff;
+      //}
+      //
+      //public function SetCommentedOff (commentedOff:Boolean):void
+      //{
+      //   mCommentedOff = commentedOff;
+      //}
+      
+      public function GetCommentDepth ():int
       {
-         return mCommentedOff;
+         if (mCommentDepth < 0)
+            mCommentDepth = 0;
+         
+         return mCommentDepth;
       }
       
-      public function SetCommentedOff (commentedOff:Boolean):void
+      public function SetCommentDepth (depth:int):void
       {
-         mCommentedOff = commentedOff;
+         if (depth < 0)
+            mCommentDepth = 0;
+         else if (depth > 255)
+            mCommentDepth = 255;
+         else
+            mCommentDepth = depth;
       }
       
 //====================================================================
@@ -179,6 +198,8 @@ package editor.trigger {
          
          //var calling:FunctionCalling = new FunctionCalling (/*mTriggerEngine, */mFunctionDeclaration, false);
          var calling:FunctionCalling = CloneShell ();
+         
+         calling.SetCommentDepth (GetCommentDepth ());
          
          var i:int;
          var vi:VariableInstance;

@@ -10,6 +10,8 @@ package common.trigger.parse {
       public var mFunctionId:int;
       public var mIsCoreDeclaration:Boolean;
       
+      public var mCommentDepth:int = 0;
+      
       private var _mIndentLevel:int = 0;
       
       public var mOwnerBlock:FunctionCallingBlockInfo;

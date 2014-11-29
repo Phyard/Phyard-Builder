@@ -180,6 +180,10 @@ package common {
          var func_calling_define:FunctionCallingDefine = new FunctionCallingDefine ();
          func_calling_define.mFunctionType = func_declaration.GetType ();
          func_calling_define.mFunctionId = func_declaration.GetID ();
+         //if (worldVersion >= 0x0209)
+         //{
+            func_calling_define.mCommentDepth = funcCalling.GetCommentDepth ();
+         //}
          func_calling_define.mNumInputs = num_inputs;
          func_calling_define.mInputValueSourceDefines = value_source_defines;
          func_calling_define.mNumOutputs = num_outputs;
@@ -437,6 +441,11 @@ package common {
                   value_targets [i] = ValueTargetDefine2ValueTarget (scene, outputValueTargetDefines [i], func_declaration.GetInputParamClassType (i), func_declaration.GetOutputParamValueType (i), functionDefinition);
             }
          }
+         
+         //if (worldVersion >= 0x0209)
+         //{
+            func_calling.SetCommentDepth (funcCallingDefine.mCommentDepth);
+         //}
          
          func_calling.AssignInputValueSources (value_sources);
          func_calling.AssignOutputValueTargets (value_targets);
@@ -820,7 +829,7 @@ package common {
 //==============================================================================================
       
       //public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, writeParams:Boolean, writeVariables:Boolean, customFunctionDefines:Array, writeLocalVariables:Boolean = true):void
-      public static function WriteFunctionDefineIntoBinFile (binFile:ByteArray, functionDefine:FunctionDefine, writeParams:Boolean, writeLocalVariables:Boolean, customFunctionDefines:Array, supportCustomClasses:Boolean, customClassDefines:Array):void
+      public static function WriteFunctionDefineIntoBinFile (worldVersion:int, binFile:ByteArray, functionDefine:FunctionDefine, writeParams:Boolean, writeLocalVariables:Boolean, customFunctionDefines:Array, supportCustomClasses:Boolean, customClassDefines:Array):void
       {
          //if (writeVariables)
          //{
@@ -839,19 +848,19 @@ package common {
          
          if (customFunctionDefines != null)
          {
-            WriteCodeSnippetDefineIntoBinFile (binFile, functionDefine.mCodeSnippetDefine, customFunctionDefines);
+            WriteCodeSnippetDefineIntoBinFile (worldVersion, binFile, functionDefine.mCodeSnippetDefine, customFunctionDefines);
          }
       }
       
-      public static function WriteCodeSnippetDefineIntoBinFile (binFile:ByteArray, codeSnippetDefine:CodeSnippetDefine, customFunctionDefines:Array):void
+      public static function WriteCodeSnippetDefineIntoBinFile (worldVersion:int, binFile:ByteArray, codeSnippetDefine:CodeSnippetDefine, customFunctionDefines:Array):void
       {
          binFile.writeUTF (codeSnippetDefine.mName);
          binFile.writeShort (codeSnippetDefine.mNumCallings);
          for (var i:int = 0; i < codeSnippetDefine.mNumCallings; ++ i)
-            WriteFunctionCallingDefineIntoBinFile (binFile, codeSnippetDefine.mFunctionCallingDefines [i], customFunctionDefines);
+            WriteFunctionCallingDefineIntoBinFile (worldVersion, binFile, codeSnippetDefine.mFunctionCallingDefines [i], customFunctionDefines);
       }
       
-      public static function WriteFunctionCallingDefineIntoBinFile (binFile:ByteArray, funcCallingDefine:FunctionCallingDefine, customFunctionDefines:Array):void
+      public static function WriteFunctionCallingDefineIntoBinFile (worldVersion:int, binFile:ByteArray, funcCallingDefine:FunctionCallingDefine, customFunctionDefines:Array):void
       {
          // param number will be packed for easey back-compiliabel later
          
@@ -867,6 +876,11 @@ package common {
          
          binFile.writeByte (func_type);
          binFile.writeShort (func_id);
+         
+         if (worldVersion >= 0x0209)
+         {
+            binFile.writeByte (funcCallingDefine.mCommentDepth & 0xFF);
+         }
          
          binFile.writeByte (num_inputs);
          binFile.writeByte (num_outputs);
@@ -1038,7 +1052,7 @@ package common {
 // xml -> define
 //==============================================================================================
       
-      public static function CondtionListXml2EntityDefineProperties (conditionListElement:XMLList, entityDefine:Object):void
+      public static function ConditionListXml2EntityDefineProperties (conditionListElement:XMLList, entityDefine:Object):void
       {
          var numConditions:int = 0;
          var indexes:Array = new Array ();
@@ -1058,7 +1072,7 @@ package common {
       }
       
       //public static function Xml2FunctionDefine (functionElement:XML, functionDefine:FunctionDefine, parseParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
-      public static function Xml2FunctionDefine (functionElement:XML, functionDefine:FunctionDefine, convertParams:Boolean, convertLocalVariables:Boolean, customFunctionDefines:Array, codeSnippetElement:XML, supportCustomClasses:Boolean, customClassDefines:Array):void
+      public static function Xml2FunctionDefine (worldVersion:int, functionElement:XML, functionDefine:FunctionDefine, convertParams:Boolean, convertLocalVariables:Boolean, customFunctionDefines:Array, codeSnippetElement:XML, supportCustomClasses:Boolean, customClassDefines:Array):void
       {
          //if (convertVariables)
          //{
@@ -1077,18 +1091,18 @@ package common {
          
          if (customFunctionDefines != null)
          {
-            functionDefine.mCodeSnippetDefine = Xml2CodeSnippetDefine (codeSnippetElement == null ? functionElement.CodeSnippet [0] : codeSnippetElement, customFunctionDefines);
+            functionDefine.mCodeSnippetDefine = Xml2CodeSnippetDefine (worldVersion, codeSnippetElement == null ? functionElement.CodeSnippet [0] : codeSnippetElement, customFunctionDefines);
          }
       }
       
-      public static function Xml2CodeSnippetDefine (codeSnippetElement:XML, customFunctionDefines:Array):CodeSnippetDefine
+      public static function Xml2CodeSnippetDefine (worldVersion:int, codeSnippetElement:XML, customFunctionDefines:Array):CodeSnippetDefine
       {
          var func_calling_defines:Array = new Array ();
          
          var elementFunctionCalling:XML;
          for each (elementFunctionCalling in codeSnippetElement.FunctionCalling)
          {
-            func_calling_defines.push (Xml2FunctionCallingDefine (elementFunctionCalling, customFunctionDefines));
+            func_calling_defines.push (Xml2FunctionCallingDefine (worldVersion, elementFunctionCalling, customFunctionDefines));
          }
          
          var code_snippet_define:CodeSnippetDefine = new CodeSnippetDefine ();
@@ -1100,7 +1114,7 @@ package common {
          return code_snippet_define;
       }
       
-      public static function Xml2FunctionCallingDefine (funcCallingElement:XML, customFunctionDefines:Array):FunctionCallingDefine
+      public static function Xml2FunctionCallingDefine (worldVersion:int, funcCallingElement:XML, customFunctionDefines:Array):FunctionCallingDefine
       {
          var func_type:int = parseInt (funcCallingElement.@function_type);
          var func_id  :int = parseInt (funcCallingElement.@function_id);
@@ -1164,6 +1178,12 @@ package common {
          
          func_calling_define.mFunctionType = func_type;
          func_calling_define.mFunctionId = func_id;
+         
+         if (worldVersion >= 0x0209)
+         {
+            func_calling_define.mCommentDepth = parseInt (funcCallingElement.@comment_depth);
+         }
+         
          func_calling_define.mNumInputs = value_source_defines.length;
          func_calling_define.mInputValueSourceDefines = value_source_defines;
          func_calling_define.mNumOutputs = value_target_defines.length;

@@ -163,8 +163,10 @@
             DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"Return\"", OnAddReturn);
             //DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"ReturnIfTrue\"", OnAddReturnIfTrue);
             //DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add \"ReturnIfFalse\"", OnAddReturnIfFalse);
-            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add Comment Line", OnAddCommentLine, true);
-            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add Blank Line", OnAddBlankLine);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add Blank Line", OnAddBlankLine, true);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Add Comment Line", OnAddCommentLine);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Comment In", OnCommentIn);
+            DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Comment Out", OnCommentOut);
 
             mTraditionalFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "Traditional Coding Format", OnSwitchToTraditionalFormat, true);
             //mObjectOrientedFormatMenuItem = DisplayObjectUtil.AppendContextMenuItem (List_Commands, "OO Coding Format (not implemented yet)", OnSwitchToObjectOrientedFormat);
@@ -283,19 +285,19 @@
                MenuBar_Api.dataProvider = mCodeLibManager.GetShorterMenuBarDataProvider (); // TriggerEngine.GetCoreApiFunctionsMenuBarDataProvider_Shorter ();
             }
          }
-
-         private function OnSwitchCodeFormat (codingFormat:int):void
+         
+         private function OnCodeFormatChanged (/*codingFormat:int*/):void
          {
             RetrieveCurrentCommandParameterValuesFromControls (false);
 
-            if (codingFormat == Define.CodingFormat_Poem)
-            {
-               EditorContext.mPoemCodingFormat = true;
-            }
-            else
-            {
-               EditorContext.mPoemCodingFormat = false;
-            }
+            //if (codingFormat == Define.CodingFormat_Poem)
+            //{
+            //   EditorContext.mPoemCodingFormat = true;
+            //}
+            //else
+            //{
+            //   EditorContext.mPoemCodingFormat = false;
+            //}
 
             var numCallings:int = List_Commands.dataProvider.length;
             for (var lineNumber:int = 0; lineNumber < numCallings; ++ lineNumber)
@@ -310,7 +312,9 @@
 
          private function OnSwitchToTraditionalFormat (event:ContextMenuEvent):void
          {
-            OnSwitchCodeFormat (Define.CodingFormat_Traditional);
+            //OnSwitchCodeFormat (Define.CodingFormat_Traditional);
+            EditorContext.mPoemCodingFormat = false;
+            OnCodeFormatChanged ();
          }
 
          private function OnSwitchToObjectOrientedFormat (event:ContextMenuEvent):void
@@ -320,7 +324,9 @@
 
          private function OnSwitchToPoemFormat (event:ContextMenuEvent):void
          {
-            OnSwitchCodeFormat (Define.CodingFormat_Poem);
+            //OnSwitchCodeFormat (Define.CodingFormat_Poem);
+            EditorContext.mPoemCodingFormat = true;
+            OnCodeFormatChanged ();
          }
 
          private function OnMenuBarClick (event:MenuEvent):void
@@ -447,7 +453,7 @@
                callingInfos [lineNumber] = (List_Commands.dataProvider.getItemAt (lineNumber) as FunctionCallingLineData).mInfo;
             }
 
-            CodeSnippetParser.ParseCodeSnippet (callingInfos);
+            CodeSnippetParser.ParseCodeSnippet (callingInfos, true);
 
             var currentCallingLineData:FunctionCallingLineData;
             for (lineNumber = 0; lineNumber < numCallings; ++ lineNumber)
@@ -494,9 +500,9 @@
                if (callingId >= 0 && callingId < count)
                {
                   var item:Object = item_array [callingId];
-
-                  var func_id:int = (item as FunctionCallingLineData).mFunctionId;
-                  var func_declaration:FunctionDeclaration = (item as FunctionCallingLineData).mFuncDeclaration;
+                  var callingData:FunctionCallingLineData = item as FunctionCallingLineData;
+                  var func_id:int = callingData.mFunctionId;
+                  var func_declaration:FunctionDeclaration = callingData.mFuncDeclaration;
 
                   var func_calling:FunctionCalling;
 
@@ -512,9 +518,10 @@
                   {
                      continue;
                   }
-
-                  func_calling.AssignInputValueSources (item.mCurrentValueSources);
-                  func_calling.AssignOutputValueTargets (item.mCurrentValueTargets);
+                  
+                  func_calling.SetCommentDepth (callingData.mCommentDepth);
+                  func_calling.AssignInputValueSources (callingData.mCurrentValueSources);
+                  func_calling.AssignOutputValueTargets (callingData.mCurrentValueTargets);
 
                   func_calling_list.push (func_calling);
                }
@@ -573,16 +580,44 @@
             OnNewCalling (FunctionTypeDefine.FunctionType_Core, CoreFunctionIds.ID_ReturnIfFalse, insertAt, true);
          }
 
+         private function OnAddBlankLine (event:ContextMenuEvent):void
+         {
+            var insertAt:int = List_Commands.selectedIndex + 1;
+            OnNewCalling (FunctionTypeDefine.FunctionType_Core, CoreFunctionIds.ID_Blank, insertAt, true);
+         }
+
          private function OnAddCommentLine (event:ContextMenuEvent):void
          {
             var insertAt:int = List_Commands.selectedIndex + 1;
             OnNewCalling (FunctionTypeDefine.FunctionType_Core, CoreFunctionIds.ID_Comment, insertAt, true);
          }
-
-         private function OnAddBlankLine (event:ContextMenuEvent):void
+         
+         private function OnCommentIn (event:ContextMenuEvent):void
          {
-            var insertAt:int = List_Commands.selectedIndex + 1;
-            OnNewCalling (FunctionTypeDefine.FunctionType_Core, CoreFunctionIds.ID_Blank, insertAt, true);
+            ChangeCommentDepth (1);
+         }
+         
+         private function OnCommentOut (event:ContextMenuEvent):void
+         {
+            ChangeCommentDepth (-1);
+         }
+         
+         private function ChangeCommentDepth (deltaDepth:int):void
+         {
+            var selectedIndices:Array = List_Commands.selectedIndices;
+            var count:int = selectedIndices.length;
+            if (count > 0)
+            {
+               var index:int;
+               for (var i:int = 0; i < count; ++ i)
+               {
+                  index = selectedIndices [i];
+                  
+                  (List_Commands.dataProvider.getItemAt (index) as FunctionCallingLineData).ChangeCommentDepth (deltaDepth);
+               }
+               
+               UpdateCallingIndents (); // to update calling.valid
+            }
          }
 
          private function OnNewCalling (type:int, id:int, insertAt:int = -1, updateUI:Boolean = true):void
@@ -2385,7 +2420,8 @@
             if (mLastModifyTimesOfWorldVariables < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfWorldVariables = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_World);
@@ -2406,7 +2442,8 @@
             if (mLastModifyTimesOfGameSaveVariables < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfGameSaveVariables = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_GameSave);
@@ -2427,7 +2464,8 @@
             if (mLastModifyTimesOfCommonGlobalVariables < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfCommonGlobalVariables = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_CommonGlobal);
@@ -2448,7 +2486,8 @@
             if (mLastModifyTimesOfCommonEntityVariables < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfCommonEntityVariables = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_CommonEntityProperties);
@@ -2470,7 +2509,8 @@
             if (mLastModifyTimesOfSessionVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfSessionVariableSpace = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Session);
@@ -2492,7 +2532,8 @@
             if (mLastModifyTimesOfGlobalVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfGlobalVariableSpace = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Global);
@@ -2514,7 +2555,8 @@
             if (mLastModifyTimesOfEntityVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfEntityVariableSpace = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_EntityProperties);
@@ -2537,7 +2579,8 @@
             if (mLastModifyTimesOfLocalVariableSpace < newModifyTimes)
             {
                OnCurrentCommandChanged ();
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfLocalVariableSpace = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Local);
@@ -2568,7 +2611,8 @@
                ValidateFunctionCallingLineDatas (ownerFuncDefinition.GetFunctionDeclaration ());
 
                OnCurrentCommandChanged (false);
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfInputVariableSpace = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Input);
@@ -2599,7 +2643,8 @@
                ValidateFunctionCallingLineDatas (ownerFuncDefinition.GetFunctionDeclaration ());
 
                OnCurrentCommandChanged (false);
-               OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               //OnSwitchCodeFormat (EditorContext.mPoemCodingFormat ? Define.CodingFormat_Poem : Define.CodingFormat_Traditional);
+               OnCodeFormatChanged ();
                mLastModifyTimesOfOutputVariableSpace = newModifyTimes;
 
                ExternalOnVariableEditingDialogClosedCallback (ValueSpaceTypeDefine.ValueSpace_Output);

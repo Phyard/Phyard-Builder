@@ -1223,7 +1223,7 @@ package common {
                var functionDefine:FunctionDefine = sceneDefine.mFunctionDefines [functionId] as FunctionDefine;
 
                element = <Function />;
-               TriggerFormatHelper2.FunctionDefine2Xml (functionDefine, element, true, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, functionDefine, element, true, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
 
                if (worldDefine.mVersion >= 0x0201)
                {
@@ -1665,9 +1665,9 @@ package common {
             if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
             {
@@ -1733,9 +1733,9 @@ package common {
                            if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                            {
                               var preHandlingCodeSnippetXML:XML = <PreHandlingCodeSnippet/>
-                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPreFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, preHandlingCodeSnippetXML, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                              TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mPreFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, preHandlingCodeSnippetXML, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                               var postHandlingCodeSnippetXML:XML = <PostHandlingCodeSnippet/>
-                              TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mPostFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, postHandlingCodeSnippetXML, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                              TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mPostFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, postHandlingCodeSnippetXML, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                            }
                         }
 
@@ -1755,28 +1755,28 @@ package common {
 
                if (worldDefine.mVersion >= 0x0153)
                {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                else
                {
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
             {
                if (worldDefine.mVersion >= 0x0153)
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                else
-                  TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, false, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             //>>from v1.56
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
             {
-               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
             {
-               TriggerFormatHelper2.FunctionDefine2Xml (entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+               TriggerFormatHelper2.FunctionDefine2Xml (worldDefine.mVersion, entityDefine.mFunctionDefine as FunctionDefine, element, false, true, sceneDefine.mFunctionDefines, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
             //<<
          }
@@ -2531,7 +2531,7 @@ package common {
             {
                functionDefine = new FunctionDefine ();
 
-               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, true, true, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, functionDefine, true, true, null, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
 
                sceneDefine.mFunctionDefines.push (functionDefine);
             }
@@ -2558,7 +2558,7 @@ package common {
                   functionDefine.mPackageIndices = ReadShortArrayFromBinFile (byteArray);
                }
 
-               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, functionDefine, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+               TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, functionDefine, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
             }
          }
 
@@ -2631,9 +2631,9 @@ package common {
                if (entityDefine.mEntityType == Define.EntityType_LogicCondition)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicTask)
                {
@@ -2692,8 +2692,8 @@ package common {
                            {
                               if (entityDefine.mEventId == CoreEventIds.ID_OnEntityTimer || entityDefine.mEventId == CoreEventIds.ID_OnEntityPairTimer)
                               {
-                                 entityDefine.mPreFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
-                                 entityDefine.mPostFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                                 entityDefine.mPreFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                                 entityDefine.mPostFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                               }
                            }
 
@@ -2713,28 +2713,28 @@ package common {
 
                   if (worldDefine.mVersion >= 0x0153)
                   {
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   }
                   else
                   {
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   }
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicAction)
                {
                   if (worldDefine.mVersion >= 0x0153)
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                   else
-                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                     entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, false, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                //>>from v1.56
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityFilter)
                {
-                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                else if (entityDefine.mEntityType == Define.EntityType_LogicInputEntityPairFilter)
                {
-                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
+                  entityDefine.mFunctionDefine = TriggerFormatHelper2.LoadFunctionDefineFromBinFile (worldDefine.mVersion, byteArray, null, false, true, sceneDefine.mFunctionDefines, worldDefine.mVersion >= 0x0205, worldDefine.mVersion < 0x0205? null : sceneDefine.mClassDefines);
                }
                //<<
             }

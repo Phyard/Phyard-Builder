@@ -38,11 +38,6 @@ package editor.display.control {
             mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern1, kReplace1);
             mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern2, kReplace2);
             
-            if (! mInfo.mIsValid)
-            {
-               mInfo.mHtmlText = "<font color='#A0A0A0'>" + mHtmlText + "</font>";
-            }
-            
             mInfo.mIndentChanged = false;
             
             return true;
@@ -57,6 +52,11 @@ package editor.display.control {
          {
             return false;
          }
+      }
+      
+      public function get mIsValid ():Boolean
+      {
+         return mInfo.mIsValid;
       }
       
       public function get mLineNumber ():int
@@ -77,6 +77,23 @@ package editor.display.control {
       public function get mIndentLevel ():int
       {
          return mInfo.mIndentLevel;
+      }
+      
+      public function get mCommentDepth ():int
+      {
+         return mInfo.mCommentDepth;
+      }
+      
+      public function ChangeCommentDepth (deltaDepth:int):void
+      {
+         var newDepth:int = mInfo.mCommentDepth + deltaDepth;
+         
+         if (newDepth < 0)
+            mInfo.mCommentDepth = 0;
+         else if (newDepth > 255)
+            mInfo.mCommentDepth = 255;
+         else
+            mInfo.mCommentDepth = newDepth;
       }
       
       // ...
@@ -162,6 +179,7 @@ package editor.display.control {
       {
          var funcDeclaration:FunctionDeclaration = funcCalling.GetFunctionDeclaration ();
          SetFunctionDeclaration (funcDeclaration);
+         mInfo.mCommentDepth = funcCalling.GetCommentDepth ();
          
          var initialValueSources:Array = new Array ();
          var currentValueSources:Array = new Array ();
@@ -192,6 +210,7 @@ package editor.display.control {
          mCurrentValueSources = currentValueSources;
          mInitialValueTargets = initialReturnTargets;
          mCurrentValueTargets = currentReturnTargets;
+         
          //UpdateCodeLineText ();
       }
       

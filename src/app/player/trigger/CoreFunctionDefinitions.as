@@ -45,6 +45,7 @@ package player.trigger {
    import common.SceneDefine;
    import common.Define;
    import common.ValueAdjuster;
+   import common.CoordinateSystem;
    import common.Transform2D;
    import common.DataFormat3;
    import common.TriggerFormatHelper2;
@@ -64,6 +65,7 @@ package player.trigger {
             RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ForDebug,                     ForDebug);
             RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetDebugString,               GetDebugString);
          //}
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Trace,               TraceString);
 
       // some specail
 
@@ -392,6 +394,9 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Level_GetBorderColorRGB,      GetLevelBorderColorRGB);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Level_SetBorderColorRGB,      SetLevelBorderColorRGB);
 
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetAppWindowPadding,      GetAppWindowPadding);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_SetAppWindowPadding,      SetAppWindowPadding);
+
       // game / world / physics
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_IsPhysicsEngineEnabled,          IsPhysicsEngineEnabled);
@@ -411,6 +416,9 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetFirstOutcomingIntersectionWithLineSegment,         GetFirstOutcomingIntersectionWithLineSegment);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
 
+         // the two are delayed. Wait more core types, such as point and rectangle and transform and matrix and ..., to be added.
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetCoordinateSytemSettings,                        GetWorldCoordinateSytemSettings);
+         //RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetViewportBoundsInDevicePixels,            GetViewportBoundsInDevicePixels);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetViewportSize,                           GetViewportSize);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetViewportStretchScale,                     GetViewportStretchScale);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
@@ -749,6 +757,19 @@ package player.trigger {
          {
             valueTarget.AssignValueObject (/*Global.sTheGlobal*/callingContext.mWorld._GetDebugString ());
          }
+      }
+      
+      public static function TraceString(callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var prefix:String = CoreClassesHub.ToString (valueSource.GetVariableInstance ());
+
+         valueSource = valueSource.mNextParameter;
+         var content:String = CoreClassesHub.ToString (valueSource.GetVariableInstance ());
+
+         //valueSource = valueSource.mNextParameter;
+         //var lb:Boolean = Boolean (valueSource.EvaluateValueObject ());
+         
+         trace (" [Phyard] " + prefix + content);
       }
       
    //*******************************************************************
@@ -3811,6 +3832,38 @@ package player.trigger {
          
          /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetBorderColor ((red << 16) | (green << 8) | (blue));
       }
+      
+      public static function GetAppWindowPadding (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var padding:Rectangle = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.Viewer_mLibAppp.GetAppWindowPadding ();
+         
+         valueTarget.AssignValueObject (padding.left);
+      
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (padding.top);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (padding.right);
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (padding.bottom);
+      }
+      
+      public static function SetAppWindowPadding (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var left:int =  int (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var top:int =  int (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var right:int =  int (valueSource.EvaluateValueObject ());
+
+         valueSource = valueSource.mNextParameter;
+         var bottom:int =  int (valueSource.EvaluateValueObject ());
+         
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.Viewer_mLibAppp.SetAppWindowPadding (left, top, right, bottom);
+      }
 
    //*******************************************************************
    // game / world / physics
@@ -3889,6 +3942,38 @@ package player.trigger {
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentGravityAccelerationY ());
       }
+      
+      //public static function GetWorldCoordinateSytemSettings (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var cs:CoordinateSystem = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCoordinateSystem ();
+      //   
+      //   valueTarget.AssignValueObject (cs.IsRightHand ());
+      //
+      //   valueTarget = valueTarget.mNextParameter;
+      //   valueTarget.AssignValueObject (cs.GetOriginX ());
+      //   
+      //   valueTarget = valueTarget.mNextParameter;
+      //   valueTarget.AssignValueObject (cs.GetOriginY ());
+      //   
+      //   valueTarget = valueTarget.mNextParameter;
+      //   valueTarget.AssignValueObject (cs.GetScale ());
+      //}
+      
+      //public static function GetViewportBoundsInDevicePixels (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      //{
+      //   var bounds:Rectangle = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetViewportBoundsInDevicePixels ();
+      //   
+      //   valueTarget.AssignValueObject (bounds.x);
+      //
+      //   valueTarget = valueTarget.mNextParameter;
+      //   valueTarget.AssignValueObject (bounds.y);
+      //   
+      //   valueTarget = valueTarget.mNextParameter;
+      //   valueTarget.AssignValueObject (bounds.width);
+      //   
+      //   valueTarget = valueTarget.mNextParameter;
+      //   valueTarget.AssignValueObject (bounds.height);
+      //}
       
       public static function GetViewportSize (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {

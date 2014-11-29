@@ -3,6 +3,7 @@ package common {
    
    import flash.utils.ByteArray;
    import flash.utils.Dictionary;
+   import flash.system.Capabilities;
    
    import player.world.Global;
    import player.world.World;
@@ -335,12 +336,18 @@ package common {
                callingInfo.mIsCoreDeclaration = false;
                callingInfo.mFunctionId = callingDefine.mFunctionId + extraInfos.mBeginningCustomFunctionIndex;
             }
-            callingInfo.mFunctionCallingDefine = callingDefine;
+            
+            if (playerWorld.GetVersion () >= 0x0209)
+            {
+               callingInfo.mCommentDepth = callingDefine.mCommentDepth;
+            }
+            
+            callingInfo.mFunctionCallingDefine = callingDefine; // temp ref, for using below
          }
          
          // create valid callings
          
-         var numValidCallings:int = CodeSnippetParser.ParseCodeSnippet (callingInfos);
+         var numValidCallings:int = CodeSnippetParser.ParseCodeSnippet (callingInfos, Capabilities.isDebugger);
          var validCallingInfos:Array = new Array (numValidCallings + 1);
          validCallingInfos [numValidCallings] = null;
          
@@ -353,6 +360,8 @@ package common {
             if (callingInfo.mIsValid)
             {
                callingInfo.mFunctionCallingForPlaying = FunctionCallingDefine2FunctionCalling (lineNumber, customFunctionDefinition, playerWorld, callingInfo.mFunctionCallingDefine, extraInfos);
+               callingInfo.mFunctionCallingDefine = null; // clear ref
+               
                validCallingInfos [numValidCallings ++] = callingInfo;
                
                if (lastCallingInfo != null)
@@ -1093,7 +1102,7 @@ package common {
 //==============================================================================================
       
       //public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, hasParams:Boolean, loadVariables:Boolean, customFunctionDefines:Array, loadLocalVariables:Boolean = true):FunctionDefine
-      public static function LoadFunctionDefineFromBinFile (binFile:ByteArray, functionDefine:FunctionDefine, loadParams:Boolean, loadLocalVariables:Boolean, customFunctionDefines:Array, supportCustomClasses:Boolean, customClassDefines:Array):FunctionDefine
+      public static function LoadFunctionDefineFromBinFile (worldVersion:int, binFile:ByteArray, functionDefine:FunctionDefine, loadParams:Boolean, loadLocalVariables:Boolean, customFunctionDefines:Array, supportCustomClasses:Boolean, customClassDefines:Array):FunctionDefine
       {
          if (functionDefine == null)
             functionDefine = new FunctionDefine ();
@@ -1115,13 +1124,13 @@ package common {
          
          if (customFunctionDefines != null)
          {
-            functionDefine.mCodeSnippetDefine = LoadCodeSnippetDefineFromBinFile (binFile, customFunctionDefines);
+            functionDefine.mCodeSnippetDefine = LoadCodeSnippetDefineFromBinFile (worldVersion, binFile, customFunctionDefines);
          }
          
          return functionDefine;
       }
       
-      public static function LoadCodeSnippetDefineFromBinFile (binFile:ByteArray, customFunctionDefines:Array):CodeSnippetDefine
+      public static function LoadCodeSnippetDefineFromBinFile (worldVersion:int, binFile:ByteArray, customFunctionDefines:Array):CodeSnippetDefine
       {
          var codeSnippetDefine:CodeSnippetDefine = new CodeSnippetDefine ();
          
@@ -1129,12 +1138,12 @@ package common {
          codeSnippetDefine.mNumCallings = binFile.readShort ();
          codeSnippetDefine.mFunctionCallingDefines = new Array (codeSnippetDefine.mNumCallings);
          for (var i:int = 0; i < codeSnippetDefine.mNumCallings; ++ i)
-            codeSnippetDefine.mFunctionCallingDefines [i] = LoadFunctionCallingDefineFromBinFile (binFile, customFunctionDefines);
+            codeSnippetDefine.mFunctionCallingDefines [i] = LoadFunctionCallingDefineFromBinFile (worldVersion, binFile, customFunctionDefines);
          
          return codeSnippetDefine;
       }
       
-      public static function LoadFunctionCallingDefineFromBinFile (binFile:ByteArray, customFunctionDefines:Array):FunctionCallingDefine
+      public static function LoadFunctionCallingDefineFromBinFile (worldVersion:int, binFile:ByteArray, customFunctionDefines:Array):FunctionCallingDefine
       {
          var funcCallingDefine:FunctionCallingDefine = new FunctionCallingDefine ();
          
@@ -1150,6 +1159,11 @@ package common {
          
          funcCallingDefine.mFunctionType = func_type = binFile.readByte ();
          funcCallingDefine.mFunctionId = func_id = binFile.readShort ();
+         
+         if (worldVersion >= 0x0209)
+         {  
+            funcCallingDefine.mCommentDepth = num_inputs = binFile.readByte () & 0xFF;
+         }
          
          funcCallingDefine.mNumInputs = num_inputs = binFile.readByte ();
          funcCallingDefine.mNumOutputs = num_outputs = binFile.readByte ();
@@ -1364,7 +1378,7 @@ package common {
 //==============================================================================================
       
       //public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, hasParams:Boolean, convertVariables:Boolean, customFunctionDefines:Array, convertLocalVariables:Boolean = true, codeSnippetElement:XML = null):void
-      public static function FunctionDefine2Xml (functionDefine:FunctionDefine, functionElement:XML, convertParams:Boolean, convertLocalVariables:Boolean, customFunctionDefines:Array, codeSnippetElement:XML, supportCustomClasses:Boolean, customClassDefines:Array):void
+      public static function FunctionDefine2Xml (worldVersion:int, functionDefine:FunctionDefine, functionElement:XML, convertParams:Boolean, convertLocalVariables:Boolean, customFunctionDefines:Array, codeSnippetElement:XML, supportCustomClasses:Boolean, customClassDefines:Array):void
       {
          //if (convertVariables)
          //{
@@ -1386,11 +1400,11 @@ package common {
          
          if (customFunctionDefines != null)
          {
-            functionElement.appendChild (CodeSnippetDefine2Xml (codeSnippetElement, functionDefine.mCodeSnippetDefine, customFunctionDefines));
+            functionElement.appendChild (CodeSnippetDefine2Xml (worldVersion, codeSnippetElement, functionDefine.mCodeSnippetDefine, customFunctionDefines));
          }
       }
       
-      public static function CodeSnippetDefine2Xml (elementCodeSnippet:XML, codeSnippetDefine:CodeSnippetDefine, customFunctionDefines:Array):XML
+      public static function CodeSnippetDefine2Xml (worldVersion:int, elementCodeSnippet:XML, codeSnippetDefine:CodeSnippetDefine, customFunctionDefines:Array):XML
       {
          if (elementCodeSnippet == null)
          {
@@ -1403,7 +1417,7 @@ package common {
          var functionCallings:Array = codeSnippetDefine.mFunctionCallingDefines;
          for (var i:int = 0; i < num; ++ i)
          {
-            elementCodeSnippet.appendChild (FunctionCallingDefine2Xml (functionCallings[i], customFunctionDefines));
+            elementCodeSnippet.appendChild (FunctionCallingDefine2Xml (worldVersion, functionCallings[i], customFunctionDefines));
          }
          
          //trace ("elementCodeSnippet = " + elementCodeSnippet.toXMLString ());
@@ -1411,7 +1425,7 @@ package common {
          return elementCodeSnippet;
       }
       
-      public static function FunctionCallingDefine2Xml (funcCallingDefine:FunctionCallingDefine, customFunctionDefines:Array):XML
+      public static function FunctionCallingDefine2Xml (worldVersion:int, funcCallingDefine:FunctionCallingDefine, customFunctionDefines:Array):XML
       {
          var func_type:int = funcCallingDefine.mFunctionType;
          var func_id:int = funcCallingDefine.mFunctionId;
@@ -1421,6 +1435,11 @@ package common {
          
          elementFunctionCalling.@function_type = funcCallingDefine.mFunctionType;
          elementFunctionCalling.@function_id = funcCallingDefine.mFunctionId;
+         
+         if (worldVersion >= 0x0209)
+         {
+            elementFunctionCalling.@comment_depth = funcCallingDefine.mCommentDepth;
+         }
          
          var i:int;
          var vd:VariableDefine;

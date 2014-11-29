@@ -99,6 +99,7 @@ package common.trigger {
 
       public static const CoreApiId_0:int = 0; //
       public static const CoreApiId_1:int = 1; //
+      public static const CoreApiId_2:int = 2; //
 
       public static const CoreApiId_10:int = 10; //
       public static const CoreApiId_11:int = 11; //
@@ -407,13 +408,16 @@ package common.trigger {
       public static const CoreApiId_726:int = 726; // world.physics. 
       public static const CoreApiId_727:int = 727; // world.physics. 
       public static const CoreApiId_728:int = 728; // world
-
+      public static const CoreApiId_729:int = 729; // world
       public static const CoreApiId_730:int = 730; // world
       public static const CoreApiId_731:int = 731; // world
       public static const CoreApiId_732:int = 732; // world
       public static const CoreApiId_733:int = 733; // world
       public static const CoreApiId_734:int = 734; // world
       public static const CoreApiId_735:int = 735; // world
+      public static const CoreApiId_736:int = 736; // world
+      public static const CoreApiId_737:int = 737; // world
+      public static const CoreApiId_738:int = 738; // world
 
       public static const CoreApiId_750:int = 750; // world
       public static const CoreApiId_751:int = 751; // world

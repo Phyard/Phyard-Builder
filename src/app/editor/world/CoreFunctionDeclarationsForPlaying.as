@@ -792,6 +792,15 @@ package editor.world {
                              new VariableDefinitionString ("Result String"),
                      ]
                   );
+         
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Trace, string_package, "Trace", null, null,
+                       [
+                          new VariableDefinitionString ("Prefix Text", null, {mAllowVariablesOfOtherClasses: true}),
+                          new VariableDefinitionString ("Content Text", null, {mAllowVariablesOfOtherClasses: true}),
+                          //new VariableDefinitionBoolean ("Line Break?"),
+                       ],
+                       null
+                    );
 
        // bool
 
@@ -2254,6 +2263,24 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetAppWindowPadding, world_appearance_package, "Get App Window Padding In Device Pixels", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Left Pdding"),
+                             new VariableDefinitionNumber ("Top Pdding"),
+                             new VariableDefinitionNumber ("Right Pdding"),
+                             new VariableDefinitionNumber ("Bottom Pdding"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetAppWindowPadding, world_appearance_package, "Set App Window Padding In Device Pixels", null, null,
+                     [
+                             new VariableDefinitionNumber ("Left Pdding"),
+                             new VariableDefinitionNumber ("Top Pdding"),
+                             new VariableDefinitionNumber ("Right Pdding"),
+                             new VariableDefinitionNumber ("Bottom Pdding"),
+                     ],
+                     null                     
+                  );
 
       // game / world / physics
 
@@ -2378,6 +2405,15 @@ package editor.world {
          //            ]
          //         );
 
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCoordinateSytemSettings, world_camera_package, "Get Coordinate Sytem Settings", null, null,
+         //            null,
+         //            [
+         //                    new VariableDefinitionBoolean ("Is Right Hand?"),
+         //                    new VariableDefinitionNumber ("Origin X (pixels)"),
+         //                    new VariableDefinitionNumber ("Origin Y (Pixels)"),
+         //                    new VariableDefinitionNumber ("Scale (pixels/meter)"),
+         //            ]
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraCenter, world_camera_package, "Get Camera Center In World Meters", null, null,
                      null,
                      [
@@ -2385,13 +2421,22 @@ package editor.world {
                              new VariableDefinitionNumber ("Camera Center Y (meters)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportSize, world_camera_package, "Get Viewport Size In World Pixels", "@(#0, #1) = Get Size of Viewport", "GetViewportSize",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportSize, world_camera_package, "Get Viewport Size In World Unscaled Pixels", "@(#0, #1) = Get Size of Viewport", "GetViewportSizeInWorldUnscaledPixels",
                      null,
                      [
                              new VariableDefinitionNumber ("Width"),
                              new VariableDefinitionNumber ("Height"),
                      ]
                   );
+         //RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportBoundsInDevicePixels, world_camera_package, "Get Viewport Bounds In Device Pixels", null, null,
+         //            null,
+         //            [
+         //                    new VariableDefinitionNumber ("Left"),
+         //                    new VariableDefinitionNumber ("Top"),
+         //                    new VariableDefinitionNumber ("Width"),
+         //                    new VariableDefinitionNumber ("Height"),
+         //            ]
+         //         );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportStretchScale, world_camera_package, "Get Viewport Stretch Scale", null, null,
                      null,
                      [

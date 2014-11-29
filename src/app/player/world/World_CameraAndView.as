@@ -31,6 +31,7 @@
    private var mViewportSizeChanged:Boolean = false;
    private var mRealViewportWidth:Number = 0; //ViewerDefine.DefaultPlayerWidth;
    private var mRealViewportHeight:Number = 0; //ViewerDefine.DefaultPlayerHeight;
+                                    // the two values are in world unscaled pixels (world.scale = 1.0).
    
    private var mCameraRotatingEnabled:Boolean = false;
    
@@ -70,24 +71,40 @@
       {
          mViewportSizeChanged = true;
          
-         // world pixels
+         // world unscaled pixels
          mRealViewportWidth  = realWidth;
          mRealViewportHeight = realHeight;
          
-         //mCameraCenterX
-         //mCameraCenterY
-      
+         // ...
          mBackgroundNeedRepaint = true;
       }
    }
    
-   
+   // ...
 
-   private var mStageScale:Number = 1.0;
+   private var mViewportStretchScaleX:Number = 1.0;
+   private var mViewportStretchScaleY:Number = 1.0;
    
-   public function GetStageScale ():Number
+   public function SetViewportStretchScale (sx:Number, sy:Number):void
    {
-      return  mStageScale; //Viewer_mLibAppp.;
+      mViewportStretchScaleX = sx;
+      mViewportStretchScaleY = sy;
+   }
+   
+   public function GetViewportStretchScaleX ():Number
+   {
+      return mViewportStretchScaleX;
+   }
+   
+   public function GetViewportStretchScaleY ():Number
+   {
+      return mViewportStretchScaleY;
+   }
+   
+   // the camera center in app content windows
+   public function SetViewportPositionInDevicePixels ():void
+   {
+      
    }
    
    
@@ -155,10 +172,11 @@
    //
    //=====================================================================================
    
-   // these values are in display world space, pixels, assume scale = 1
+   private var mCameraAngle:Number = 0; // degrees
    private var mCameraCenterX:Number = Define.DefaultWorldWidth * 0.5;
    private var mCameraCenterY:Number = Define.DefaultWorldHeight * 0.5;
-   private var mCameraAngle:Number = 0; // degrees
+               // these two values are in display world space,  in pixels.
+               // The point in world the camera is focusing on.
    
    private var mCameraSpeed:Number = 0; // m/step
    private var mCameraAngularSpeed:Number = 0; // degrees/step

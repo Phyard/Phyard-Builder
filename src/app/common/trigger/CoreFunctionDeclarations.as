@@ -2263,6 +2263,13 @@ package common.trigger {
          //            ]
          //         );
 
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,
+                     null,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetViewportSize,
                      null,
                      [
@@ -2270,10 +2277,11 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
                      ]
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetStageScale,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetViewportStretchScale,
                      null,
                      [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera,
@@ -2281,13 +2289,6 @@ package common.trigger {
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                      ],
                      null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraCenter,
-                     null,
-                     [
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionX,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_PositionY,       0.0],
-                     ]
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees,
                      null,
@@ -3913,8 +3914,10 @@ package common.trigger {
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEclipseSize,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                        //bug: [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                        //bug: [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_Length,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       1.0],
                      ],
                      null
                   );

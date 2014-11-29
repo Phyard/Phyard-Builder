@@ -3907,7 +3907,7 @@ package common {
                sceneDefine.mSettings.mWorldTop  = 0;
                sceneDefine.mSettings.mWorldWidth = 600;
                sceneDefine.mSettings.mWorldHeight = 600;
-               sceneDefine.mSettings.mCameraCenterX = sceneDefine.mSettings.mWorldLeft + 600 * 0.5
+               sceneDefine.mSettings.mCameraCenterX = sceneDefine.mSettings.mWorldLeft + 600 * 0.5;
                sceneDefine.mSettings.mCameraCenterY = sceneDefine.mSettings.mWorldTop + 600 * 0.5;
                sceneDefine.mSettings.mBackgroundColor = 0xDDDDA0;
                sceneDefine.mSettings.mBuildBorder = true;

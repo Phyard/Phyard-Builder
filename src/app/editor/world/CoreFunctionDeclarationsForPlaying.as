@@ -2378,6 +2378,13 @@ package editor.world {
          //            ]
          //         );
 
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraCenter, world_camera_package, "Get Camera Center In World Meters", null, null,
+                     null,
+                     [
+                             new VariableDefinitionNumber ("Camera Center X (meters)"),
+                             new VariableDefinitionNumber ("Camera Center Y (meters)"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportSize, world_camera_package, "Get Viewport Size In World Pixels", "@(#0, #1) = Get Size of Viewport", "GetViewportSize",
                      null,
                      [
@@ -2385,10 +2392,11 @@ package editor.world {
                              new VariableDefinitionNumber ("Height"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetStageScale, world_camera_package, "Get Level Stage Scale Ratio", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetViewportStretchScale, world_camera_package, "Get Viewport Stretch Scale", null, null,
                      null,
                      [
-                             new VariableDefinitionNumber ("Stage Scale"),
+                             new VariableDefinitionNumber ("Viewport Scale X"),
+                             new VariableDefinitionNumber ("Viewport Scale Y"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_SetCurrentCamera, world_camera_package, "Set Current Camera", null, null,
@@ -2396,13 +2404,6 @@ package editor.world {
                              new VariableDefinitionEntity ("The New Camera Entity", null, {mValidClasses: Filters.sCameraEntityClasses}),
                      ],
                      null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraCenter, world_camera_package, "Get Camera Center", null, null,
-                     null,
-                     [
-                             new VariableDefinitionNumber ("Camera Center X"),
-                             new VariableDefinitionNumber ("Camera Center Y"),
-                     ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_World_GetCameraRotationByDegrees, world_camera_package, "Get Camera Rotation By Degrees", "@Degrees (#0) = Get Camera Rotation ()", null,
                      null,
@@ -3981,13 +3982,13 @@ package editor.world {
                              new VariableDefinitionEntity ("The Circle", null, {mValidClasses: Filters.sCircleShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionNumber ("The Radius"),
+                             new VariableDefinitionNumber ("The Radius (meters)"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeCircle_SetRadius, shape_geometry_package, "Set Circle Radius", null, null,
                      [
                              new VariableDefinitionEntity ("The Circle", null, {mValidClasses: Filters.sCircleShapeEntityClasses}),
-                             new VariableDefinitionNumber ("New Radius"),
+                             new VariableDefinitionNumber ("New Radius (meters)"),
                      ],
                      null
                   );
@@ -3999,15 +4000,15 @@ package editor.world {
                              new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionNumber ("Width"),
-                             new VariableDefinitionNumber ("Height"),
+                             new VariableDefinitionNumber ("Width (meters)"),
+                             new VariableDefinitionNumber ("Height (meters)"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetSize, shape_geometry_package, "Set Rectangle Size", null, null,
                      [
                              new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
-                             new VariableDefinitionNumber ("New Width"),
-                             new VariableDefinitionNumber ("new Height"),
+                             new VariableDefinitionNumber ("New Width (meters)"),
+                             new VariableDefinitionNumber ("new Height (meters)"),
                      ],
                      null
                   );
@@ -4018,7 +4019,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEclipseSize, shape_geometry_package, "Set Rectangle Round Corner Eclipse Size", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEclipseSize, shape_geometry_package, "Set Rectangle Round Corner Eclipse Size In World Pixels", null, null,
                      [
                              new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
                              new VariableDefinitionNumber ("Round Corner Eclipse Width (px)"),
@@ -4134,33 +4135,33 @@ package editor.world {
 
       // game / entity / shape / thickness
 
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderThickness, shape_geometry_package, "Get Shape Border Thickness (Physics Unit)", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetBorderThickness, shape_geometry_package, "Get Shape Border Thickness In World Meters", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionNumber ("The Thickness (Physics Unit)"),
+                             new VariableDefinitionNumber ("The Thickness (meters)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness, shape_geometry_package, "Set Shape Border Thickness (Physics Unit)", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetBorderThickness, shape_geometry_package, "Set Shape Border Thickness In World Meters", null, null,
                      [
                              new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sAeraShapeEntityClasses}),
-                             new VariableDefinitionNumber ("New Thickness (Physics Unit)"),
+                             new VariableDefinitionNumber ("New Thickness (meters)"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCurveThickness, shape_geometry_package, "Get Curve Thickness", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_GetCurveThickness, shape_geometry_package, "Get Curve Thickness In World Meters", null, null,
                      [
                              new VariableDefinitionEntity ("The Curve", null, {mValidClasses: Filters.sCurveShapeEntityClasses}),
                      ],
                      [
-                             new VariableDefinitionNumber ("The Thickness"),
+                             new VariableDefinitionNumber ("The Thickness (meters)"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCurveThickness, shape_geometry_package, "Set Curve Thickness", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetCurveThickness, shape_geometry_package, "Set Curve Thickness In World Meters", null, null,
                      [
                              new VariableDefinitionEntity ("The Curve", null, {mValidClasses: Filters.sCurveShapeEntityClasses}),
-                             new VariableDefinitionNumber ("New Thickness"),
+                             new VariableDefinitionNumber ("New Thickness (meters)"),
                      ],
                      null
                   );

@@ -412,7 +412,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetIntersectedShapesWithLineSegment,         GetIntersectedShapesWithLineSegment);
 
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetViewportSize,                           GetViewportSize);
-         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetStageScale,                             GetStageScale);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetViewportStretchScale,                     GetViewportStretchScale);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_SetCurrentCamera,                           SetCurrentCamera);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetCameraCenter,                           GetCameraCenter);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_World_GetCameraRotationByDegrees,                GetCameraRotation_Degrees);
@@ -3898,9 +3898,12 @@ package player.trigger {
          valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetRealViewportHeight ());
       }
       
-      public static function GetStageScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      public static function GetViewportStretchScale (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetStageScale ());
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetViewportStretchScaleX ());
+         
+         valueTarget = valueTarget.mNextParameter;
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetViewportStretchScaleY ());
       }
 
       public static function SetCurrentCamera (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

@@ -50,8 +50,6 @@ package player
                
                /*Global.sTheGlobal*/world.Viewer_mLibAppp = params.mLibApp; // v2.03
                                                         //.IsCurrentViewer      // v2.08
-                                                        //.GetAppWindowBounds    // v2.08
-                                                        //.GetViewportPositionAndScale    // v2.08
                
                /*Global.sTheGlobal*/world.Viewer_mLibCookie = params.mLibCookie; // from v2.03
                
@@ -123,6 +121,8 @@ package player
                   OnMultiplePlayerEvent : world.OnMultiplePlayerEvent, // from v2.06
                   
                   SupportMoreMouseEvents : world.IsSupportMoreMouseEvents, // from v2.08
+                  
+                  SetViewportStretchScale : world.SetViewportStretchScale, // from v2.08
                   
                   "" : null
                };

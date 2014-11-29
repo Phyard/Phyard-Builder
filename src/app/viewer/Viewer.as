@@ -1328,6 +1328,7 @@ package viewer {
          if (mWorldDesignProperties.GetWorldCrossStagesData == undefined)         mWorldDesignProperties.GetWorldCrossStagesData = DummyCallback_ReturnNull;
          if (mWorldDesignProperties.OnMultiplePlayerServerMessage == undefined)   mWorldDesignProperties.OnMultiplePlayerServerMessage = DummyCallback;
          if (mWorldDesignProperties.SupportMoreMouseEvents == undefined)          mWorldDesignProperties.SupportMoreMouseEvents = DummyCallback_ReturnFalse;
+         if (mWorldDesignProperties.SetViewportStretchScale == undefined)         mWorldDesignProperties.SetViewportStretchScale = DummyCallback;
 
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);
          mUseOverlaySkin = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseOverlaySkin) != 0);
@@ -1584,8 +1585,6 @@ package viewer {
                               OpenURL : UrlUtil.PopupPage,
                               GetRealtimeFps : GetRealtimeFps,
                               IsCurrentViewer : IsCurrentViewer,     // since v2.08
-                              GetAppWindowBounds : GetAppWindowBounds, // since v2.08
-                              GetViewportPositionAndScale : GetViewportPositionAndScale, // since v2.088
                               "" : null
                   },
                   mLibCookie : {
@@ -2275,7 +2274,11 @@ package viewer {
                mPlayerWorldLayerScale = Math.min (widthRatio, heightRatio);
                mWorldLayer.scaleX = mWorldLayer.scaleY = mPlayerWorldLayerScale;
                
-               if (mAdaptiveViewportSize || widthRatio == heightRatio)
+               //>> from v2.08
+               mWorldDesignProperties.SetViewportStretchScale (mWorldLayer.scaleX, mWorldLayer.scaleY);
+               //<<
+               
+               if (mAdaptiveViewportSize || widthRatio == heightRatio) // occupy whole content space
                {
                   mWorldLayer.x = 0.0;
                   mWorldLayer.y = 0.0;
@@ -2382,18 +2385,6 @@ package viewer {
             
             mContentLayer.scrollRect = null;
          }
-      }
-      
-      private var mAppWindowBounds:Rectangle = new Rectangle (); // with skin region
-      private function GetAppWindowBounds (includingSkinRegion:Boolean):Rectangle
-      {
-         return mAppWindowBounds; // player.world should not modify it.
-      }
-      
-      private var mViewportPositionAndScale:Rectangle = new Rectangle (); // with skin region
-      private function GetViewportPositionAndScale (includingSkinRegion:Boolean):Rectangle
-      {
-         return mViewportPositionAndScale; // player.world should not modify it.
       }
 
 //======================================================================

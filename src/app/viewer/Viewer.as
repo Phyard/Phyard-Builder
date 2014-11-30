@@ -1331,7 +1331,7 @@ package viewer {
          //>> only for v2.08
          //if (mWorldDesignProperties.SetViewportStretchScale == undefined)         mWorldDesignProperties.SetViewportStretchScale = DummyCallback;
          //<<
-         if (mWorldDesignProperties.SetViewportBoundsInDevicePixels == undefined) mWorldDesignProperties.SetViewportBoundsInDevicePixels == DummyCallback;
+         if (mWorldDesignProperties.SetViewportBoundsInDevicePixels == undefined) mWorldDesignProperties.SetViewportBoundsInDevicePixels = DummyCallback;
 
          // todo: remove the following "mPlayerWorld == null ?"s.
          mShowPlayBar = mPlayerWorld == null ? false : ((mWorldDesignProperties.GetViewerUiFlags () & ViewerDefine.PlayerUiFlag_UseDefaultSkin) != 0);

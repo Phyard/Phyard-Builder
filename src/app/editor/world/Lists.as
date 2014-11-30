@@ -253,9 +253,9 @@ package editor.world {
       }
       
       public static const mAdvertisementPositionTypeList:Array = [
-            {label:"Left | Top", data:AdvertisementDefine.Position_Overlay_LeftOrTop},
-            {label:"Center | Middle", data:AdvertisementDefine.Position_Overlay_CenterOrMiddle},
-            {label:"Right | Bottom", data:AdvertisementDefine.Position_Overlay_RightOrBottom},
+            {label:"Left | Top", data:AdvertisementDefine.Position_LeftOrTop},
+            {label:"Center | Middle", data:AdvertisementDefine.Position_CenterOrMiddle},
+            {label:"Right | Bottom", data:AdvertisementDefine.Position_RightOrBottom},
          ];
       
       public static const mAdvertisementGenderList:Array = [

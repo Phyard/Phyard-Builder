@@ -8,9 +8,14 @@ package common {
       public static const Gender_Male   :int = 1;
       public static const Gender_Female :int = 2;
       
-      public static const  Position_Overlay_CenterOrMiddle:int = 0x40000000;
-      public static const  Position_Overlay_LeftOrTop     :int = 0x40000001;
-      public static const  Position_Overlay_RightOrBottom :int = 0x40000002;   
+      public static const  Position_CenterOrMiddle:int = 0x40000000;
+      public static const  Position_LeftOrTop     :int = 0x40000001;
+      public static const  Position_RightOrBottom :int = 0x40000002;
+      
+      //public static const  Position_Sibling_Left   :int = 0x40000003;
+      //public static const  Position_Sibling_Top    :int = 0x40000004;
+      //public static const  Position_Sibling_Right  :int = 0x40000005;  
+      //public static const  Position_Sibling_Bottom :int = 0x40000006;  
       
       public static const AdType_Invalid        :int = 0;
       public static const AdType_Interstitial   :int = 1;

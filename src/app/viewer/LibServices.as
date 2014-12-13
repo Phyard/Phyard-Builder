@@ -25,7 +25,7 @@
 //===========================================================================
       
       private var mAdvertisementProxy:ProxyAdvertisement = null;
-      private function GetAdvertisementProxy (type:String):Object
+      private function GetAdvertisementProxy (params:Object = null):Object
       {
          if (mAdvertisementProxy == null)
          {
@@ -321,7 +321,7 @@
             var messagesLength:int = mMultiplePlayerInstanceInfo.mCachedServerMessages.readInt ();
             var numPendingBytes:int = messagesLength - mMultiplePlayerInstanceInfo.mCachedServerMessages.length;
             
-trace (">>> ************ [OnInstanceServerSocketData]: messagesLength = " + messagesLength + ", numPendingBytes = " + numPendingBytes);
+//trace (">>> ************ [OnInstanceServerSocketData]: messagesLength = " + messagesLength + ", numPendingBytes = " + numPendingBytes);
             
             if (numPendingBytes <= 0)
             {
@@ -329,7 +329,7 @@ trace (">>> ************ [OnInstanceServerSocketData]: messagesLength = " + mess
                break;
             }
             
-trace (">>> ************ : numPendingBytes = " + numPendingBytes + ", mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable = " + mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
+//trace (">>> ************ : numPendingBytes = " + numPendingBytes + ", mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable = " + mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
             
             var numBytesToRead:int = Math.min (numPendingBytes, mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
             mMultiplePlayerInstanceInfo.mServerSocket.readBytes (mMultiplePlayerInstanceInfo.mCachedServerMessages,
@@ -337,7 +337,7 @@ trace (">>> ************ : numPendingBytes = " + numPendingBytes + ", mMultipleP
                                                                  numBytesToRead
                                                                  );
             
-trace (">>> ************ : numBytesToRead = " + numBytesToRead + ", mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable = " + mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
+//trace (">>> ************ : numBytesToRead = " + numBytesToRead + ", mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable = " + mMultiplePlayerInstanceInfo.mServerSocket.bytesAvailable);
             if (numPendingBytes == numBytesToRead)
             {
                mMultiplePlayerInstanceInfo.mCachedServerMessages.position = 0;
@@ -1341,16 +1341,21 @@ trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverP
    // so that mobile app players can play games with pc players. 
    private function GetDesignPhyardKey ():String
    {
-      if (mParamsFromContainer.mDesignKey != null)
+      if (mParamsFromContainer.mDesignKey != null) // pass from game container with design/authorForURL/slotId format. 
+      {  
          return mParamsFromContainer.mDesignKey; // passed from game packager
+      }
       
       if (mDesignAuthorSlotRevision != null)
       {
-         var key:String = mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID;
+         var key:String = "design/" + mDesignAuthorSlotRevision.mAuthorForURL + "/" + mDesignAuthorSlotRevision.mSlotID;
+               // try to make it same as mParamsFromContainer.mDesignKey, so that web player can connect with mobile players.
          
-         // half-published playing and revision viewing, append the revision into key.
          if (mDesignAuthorSlotRevision.mIsUniPlayer == false || mDesignAuthorSlotRevision.mWorldUUID != null)
+         {
+            // for half-published playing and revision viewing, append the revision into key, to avoid messing up unmature functions and published functions.
             key = key + "/" + mDesignAuthorSlotRevision.mRevision;
+         }
          
          return key;
       }

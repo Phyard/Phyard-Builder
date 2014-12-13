@@ -7,6 +7,7 @@ package editor.display.control {
    
    import mx.events.FlexEvent;
    import mx.containers.HBox;
+   import mx.core.ScrollPolicy;
    import mx.controls.Label;
    
    public class TextForFunctionCallingLine extends HBox 
@@ -18,6 +19,12 @@ package editor.display.control {
       {
          setStyle ("width", "100%");
          setStyle ("horizontalGap", 0);
+         setStyle ("borderStyle", "none");
+         setStyle ("borderThickness", 0);
+         //setStyle ("horizontalScrollPolicy", "off");
+         //setStyle ("verticalScrollPolicy", "off");
+         horizontalScrollPolicy = ScrollPolicy.OFF;
+         verticalScrollPolicy = ScrollPolicy.OFF;
          
          mLineNumberLabel = new Label ();
          mLineNumberLabel.width = 39;
@@ -94,9 +101,12 @@ package editor.display.control {
             //{
             //   mCallingLabel.mHtmlText = "<font color='#A0A0A0'>" + labelText + "</font>";
             //}
+            
+            toolTip = labelText;
+            
             mCallingLabel.text = labelText;
             mCallingLabel.enabled = callingData.mIsValid;// && callingData.mCommentDepth <= 0;
-
+            
             mLineNumberLabel.text = callingData.mLineNumber + ":";
          }
       }

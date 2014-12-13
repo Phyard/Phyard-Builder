@@ -12,11 +12,6 @@ package common {
       public static const  Position_LeftOrTop     :int = 0x40000001;
       public static const  Position_RightOrBottom :int = 0x40000002;
       
-      //public static const  Position_Sibling_Left   :int = 0x40000003;
-      //public static const  Position_Sibling_Top    :int = 0x40000004;
-      //public static const  Position_Sibling_Right  :int = 0x40000005;  
-      //public static const  Position_Sibling_Bottom :int = 0x40000006;  
-      
       public static const AdType_Invalid        :int = 0;
       public static const AdType_Interstitial   :int = 1;
       public static const AdType_SmartBanner    :int = 2;
@@ -31,8 +26,8 @@ package common {
       public static const FunctionName_Pause                :String = "Pause";
       public static const FunctionName_Resume               :String = "Resume";
       public static const FunctionName_DestroyAllAds        :String = "DestroyAllAds";
-      public static const FunctionName_GetWindowSizeInPixels:String = "GetWindowSizeInPixels";
       public static const FunctionName_HideAllAds           :String = "HideAllAds";
+      public static const FunctionName_SetAppWindowPadding  :String = "SetAppWindowPadding";
    
       public static const FunctionName_CreateAd             :String = "CreateAd";
       public static const FunctionName_DestroyAd            :String = "DestroyAd";

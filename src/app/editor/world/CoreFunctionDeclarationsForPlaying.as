@@ -187,7 +187,7 @@ package editor.world {
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Comment, code_flow_package, "Comment Line", "@// $0", "@// $0",
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Comment, code_flow_package, "Comment Line", "@/* $0 */", "@/* $0 */",
                      [
                              new VariableDefinitionString ("Comment Text"),
                      ],

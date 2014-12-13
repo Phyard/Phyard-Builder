@@ -1259,7 +1259,7 @@ package player.trigger {
       
       public static function Advertisement_CheckAdValidity (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         var returnValue:String = "";
+         var returnValue:String = "not supported";
          
          var adProxy:Object = /*Global*/callingContext.mWorld.GetAdvertisementProxy ();
          if (adProxy != null)
@@ -1310,10 +1310,10 @@ package player.trigger {
          if (ad != null)
          {
             valueSource = valueSource.mNextParameter;
-            var posX:int = int (valueSource.EvaluateValueObject ());
+            var posX:Number = Number (valueSource.EvaluateValueObject ());
             
             valueSource = valueSource.mNextParameter;
-            var posY:int = int (valueSource.EvaluateValueObject ());
+            var posY:Number = Number (valueSource.EvaluateValueObject ());
             
             adProxy.Call (ad.mProvider, AdvertisementDefine.FunctionName_SetAdPosition, undefined, ad.mId, posX, posY);
          }
@@ -1334,7 +1334,7 @@ package player.trigger {
          }
          
          if (returnValue == null)
-            returnValue = new Array (0, 0, 0, 0);
+            returnValue = new Array (0.0, 0.0, 0.0, 0.0);
          
          valueTarget.AssignValueObject (returnValue [0]);
          

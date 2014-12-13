@@ -8,6 +8,8 @@ package player.trigger {
    import player.world.CollisionCategory;
    
    import player.entity.Entity;
+   
+   import player.trigger.data.Ad;
 
    import common.trigger.ClassTypeDefine;
    import common.trigger.CoreClassIds;
@@ -110,6 +112,7 @@ package player.trigger {
          GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory).mToStringFunc = CCat2String;
          GetCoreClassDefinition (CoreClassIds.ValueType_Array).mToStringFunc = Array2String;
          GetCoreClassDefinition (CoreClassIds.ValueType_ByteArray).mToStringFunc = ByteArray2String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_Advertisement).mToStringFunc = Advertisement2String;
          
          for each (var primitiveClassId:int in [CoreClassIds.ValueType_Boolean, 
                                                 CoreClassIds.ValueType_Number, 
@@ -135,7 +138,7 @@ package player.trigger {
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToBooleanFunc = String2Boolean;
          GetCoreClassDefinition (CoreClassIds.ValueType_String).mToStringFunc = DoNothing;
          //GetCoreClassDefinition (CoreClassIds.ValueType_String).mGetNullFunc = GetNullObjectValue; // set above
-         GetCoreClassDefinition (CoreClassIds.ValueType_String).mValueConvertOrder = ClassDefinition.ValueConvertOrder_String;
+         GetCoreClassDefinition (CoreClassIds.ValueType_String).mValueConvertOrder = ClassDefinition.ValueConvertOrder_String;         
          
          // ...
          
@@ -382,6 +385,13 @@ package player.trigger {
          var byteArray:ByteArray = valueObject as ByteArray; // not null for sure
             
          return className + "#<" + byteArray.length + ">";
+      }
+      
+      public static function Advertisement2String (valueObject:Object, className:String, extraInfos:Object):String
+      {
+         var ad:Ad = valueObject as Ad; // not null for sure
+            
+         return className + "{" + ad.mProvider + "}#<" + ad.mId + ">";
       }
 
       private static function ConvertArrayToString (values:Array, convertedArrays:Dictionary = null):String

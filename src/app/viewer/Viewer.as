@@ -519,21 +519,31 @@ package viewer {
          mAccelerationZ = event.accelerationZ;
       }
       
-      private static function GetDebugString ():String
+      private static var _DebugString:String = "";
+      private function GetDebugString ():String
       {
-         if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Accelerometer"))
-         {
-            var accelerometerClass:Object = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Accelerometer") as Class;
-            var info:String = "acc class: " + accelerometerClass;
-            if (accelerometerClass != null)
-            {
-               info = info + "\nsupported: " + mAccelerometerClass.isSupported;
-            }
-            
-            return info;
-         }
-                  
-         return "null";
+         //if (ApplicationDomain.currentDomain.hasDefinition ("flash.sensors.Accelerometer"))
+         //{
+         //   var accelerometerClass:Object = ApplicationDomain.currentDomain.getDefinition ("flash.sensors.Accelerometer") as Class;
+         //   var info:String = "acc class: " + accelerometerClass;
+         //   if (accelerometerClass != null)
+         //   {
+         //      info = info + "\nsupported: " + mAccelerometerClass.isSupported;
+         //   }
+         //   
+         //   return info;
+         //}
+         //         
+         //return "null";
+         return _DebugString;
+         //+ "\nmMiddleLayer"
+         //+ "\nmMiddleLayer.y=" + mMiddleLayer.y
+         //+ "\nmContentLayer.y=" + mContentLayer.y
+         //+ "\nmWorldLayer.y=" + mWorldLayer.y
+         //+ "\nmPlayerWorld.y=" + mPlayerWorld.y
+         //+ "\nmViewportMaskRect=" + mViewportMaskRect
+         //;
+         
       }
       
       private function IsNativeApp ():Boolean
@@ -2281,7 +2291,7 @@ package viewer {
                
                // position world layer
                   
-               var widthRatio :Number = contentRegion.width  / mPreferredViewportWidth ;
+               var widthRatio :Number = contentRegion.width  / mPreferredViewportWidth;
                var heightRatio:Number = contentRegion.height / mPreferredViewportHeight;
 
                /*               
@@ -2318,8 +2328,10 @@ package viewer {
                   mWorldLayer.x = 0.0;
                   mWorldLayer.y = 0.0;
                   
-                  mViewportMaskRect.width = contentRegion.width;
-                  mViewportMaskRect.height = contentRegion.height;
+                  //mViewportMaskRect.width = contentRegion.width;
+                  //mViewportMaskRect.height = contentRegion.height;
+                  mViewportMaskRect.width = contentRegion.width / mWorldLayer.scaleX;
+                  mViewportMaskRect.height = contentRegion.height / mWorldLayer.scaleY;
                   
                   mWorldDesignProperties.SetRealViewportSize (contentRegion.width / mWorldLayer.scaleX, contentRegion.height / mWorldLayer.scaleY);
                }
@@ -2327,8 +2339,10 @@ package viewer {
                {
                   mWorldDesignProperties.SetRealViewportSize (mPreferredViewportWidth, mPreferredViewportHeight);
                   
-                  mViewportMaskRect.width  = mWorldLayer.scaleX * mPreferredViewportWidth;
-                  mViewportMaskRect.height = mWorldLayer.scaleY * mPreferredViewportHeight;
+                  //mViewportMaskRect.width  = mWorldLayer.scaleX * mPreferredViewportWidth;
+                  //mViewportMaskRect.height = mWorldLayer.scaleY * mPreferredViewportHeight;
+                  mViewportMaskRect.width  = mPreferredViewportWidth;
+                  mViewportMaskRect.height = mPreferredViewportHeight;
                   
                   if (widthRatio < heightRatio)
                   {
@@ -2342,8 +2356,10 @@ package viewer {
                   }
                }
             
-               mViewportMaskRect.x = mWorldLayer.x;
-               mViewportMaskRect.y = mWorldLayer.y;
+               //mViewportMaskRect.x = mWorldLayer.x;
+               //mViewportMaskRect.y = mWorldLayer.y;
+               mViewportMaskRect.x = 0;
+               mViewportMaskRect.y = 0;
                
                //>> added in v2.09. Should be called after calling SetRealViewportSize.
                mWorldDesignProperties.SetViewportBoundsInDevicePixels (mViewportMaskRect.x, mViewportMaskRect.y, mViewportMaskRect.width, mViewportMaskRect.height);
@@ -2413,7 +2429,8 @@ package viewer {
             //
             //mContentLayer.mask = mViewportMaskShape;
             
-            mContentLayer.scrollRect = mViewportMaskRect;
+            //mContentLayer.scrollRect = mViewportMaskRect;
+            mWorldLayer.scrollRect = mViewportMaskRect;
          }
          else
          {
@@ -2422,7 +2439,8 @@ package viewer {
             //
             //mContentLayer.mask = null;
             
-            mContentLayer.scrollRect = null;
+            //mContentLayer.scrollRect = null;
+            mWorldLayer.scrollRect = null;
          }
       }
 

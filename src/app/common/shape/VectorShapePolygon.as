@@ -26,6 +26,26 @@ package common.shape
       }
 
 //==============================================
+// for editing
+//==============================================
+
+      public function GetLocalLinkPoint ():Point
+      {
+         if (mLocalVertexPoints.length == 0)
+            return new Point (0, 0);
+         
+         if (mLocalVertexPoints.length == 1)
+         {
+            var point:Point = mLocalVertexPoints [0] as Point;
+            return new Point (point.x, point.y);
+        }
+        
+        var point0:Point = mLocalVertexPoints [0] as Point;
+        var point1:Point = mLocalVertexPoints [1] as Point;
+        return new Point (0.5 * (point0.x + point1.x), 0.5 * (point0.y + point1.y));
+      }
+
+//==============================================
 // for playing
 //==============================================
 

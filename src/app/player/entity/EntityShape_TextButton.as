@@ -54,6 +54,10 @@ package player.entity {
          mSimpleButton.overState = mMouseOverSprite;
          mSimpleButton.downState = mMouseDownSprite;
          
+         mNormalSprite.mouseChildren = false;
+         mMouseOverSprite.mouseChildren = false;
+         mMouseDownSprite.mouseChildren = false;
+         
          mSimpleButton.enabled = IsEnabled ();
          mSimpleButton.useHandCursor = true;
       }

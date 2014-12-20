@@ -164,6 +164,17 @@ package editor.entity {
       }
 
 //====================================================================
+//   appearacne and selection proxy
+//====================================================================
+      
+      override public function UpdateSelectionProxy ():void
+      {
+         super.UpdateSelectionProxy ();
+         
+         UpdateLinkPoint ();
+      }
+
+//====================================================================
 //   clone
 //====================================================================
 
@@ -185,6 +196,29 @@ package editor.entity {
          polygon.SetLocalVertexPoints (GetLocalVertexPoints ());
 
          //polygon.SynchronizeWithLocalPoints ();
+      }
+
+//====================================================================
+//   entity links
+//====================================================================
+
+      private var mLinkPoint:Point = new Point (); // in scene coordinate
+
+      private function UpdateLinkPoint ():void
+      {
+         var localLinkPoint:Point = mVectorShapePolygon.GetLocalLinkPoint ();
+         
+         mTransform.TransformPoint (localLinkPoint, mLinkPoint);
+      }
+
+      override public function GetLinkPointX ():Number
+      {
+         return mLinkPoint.x;
+      }
+
+      override public function GetLinkPointY ():Number
+      {
+         return mLinkPoint.y;
       }
 
    }

@@ -1134,7 +1134,7 @@ package player.world {
 //=============================================================
 //   paint
 //=============================================================
-
+      
       public function Repaint ():void
       {
          if (mBackgroundNeedRepaint)
@@ -1145,10 +1145,22 @@ package player.world {
 
          // mouse visibity
 
-         if (mMouseVisible || mBackgroundSprite.mouseX < 0 || mBackgroundSprite.mouseY < 0 || mBackgroundSprite.mouseX > mRealViewportWidth || mBackgroundSprite.mouseY > mRealViewportHeight)
-            Mouse.show ();
+         if (mMouseShouldBeVisible || mBackgroundSprite.mouseX < 0 || mBackgroundSprite.mouseY < 0 || mBackgroundSprite.mouseX > mRealViewportWidth || mBackgroundSprite.mouseY > mRealViewportHeight)
+         {
+            if (! mMouseReallyIsVisible)
+            {
+               Mouse.show ();
+               mMouseReallyIsVisible = true;
+            }
+         }
          else
-            Mouse.hide ();
+         {
+            if (mMouseReallyIsVisible)
+            {
+               Mouse.hide ();
+               mMouseReallyIsVisible = false;
+            }
+         }
 
          // ...
 
@@ -1244,15 +1256,19 @@ package player.world {
          sprite.graphics.endFill ();
       }
 
-      private var mMouseVisible:Boolean = true;
-      public function SetMouseVisible (mouseVisible:Boolean):void
+      private var mMouseReallyIsVisible:Boolean = true;
+      private var mMouseShouldBeVisible:Boolean = true;
+      
+      public function SetMouseShouleBeVisible (mouseVisible:Boolean):void
       {
-         mMouseVisible = mouseVisible;
+         mMouseShouldBeVisible = mouseVisible;
       }
 
       private function OnBackgroundRemovedFromStage (e:Event):void
       {
          Mouse.show ();
+         mMouseReallyIsVisible = true;
+         
          mBackgroundSprite.removeEventListener(Event.REMOVED_FROM_STAGE, OnBackgroundRemovedFromStage)
       }
 

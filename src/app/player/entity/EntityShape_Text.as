@@ -539,7 +539,7 @@ package player.entity {
          mTextField.visible = ! showBitmap; 
          if (mTextField.visible)
          {
-            mAppearanceObjectsContainer.mouseChildren = true;
+            mAppearanceObjectsContainer.mouseChildren = false; // true; // why true? "true" will make text button stays in over state even if mouse is out.
             mAppearanceObjectsContainer.addChild (mTextField);
          }
          

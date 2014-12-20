@@ -2,7 +2,6 @@
 package player.trigger {
    import flash.geom.Point;
    import flash.geom.Rectangle;
-   import flash.ui.Mouse;
    import flash.system.Capabilities;
    import flash.system.System;
    import flash.utils.Dictionary;
@@ -903,7 +902,7 @@ package player.trigger {
       {
          var visible:Boolean = Boolean (valueSource.EvaluateValueObject ());
 
-         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetMouseVisible (visible);
+         /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.SetMouseShouleBeVisible (visible);
       }
 
       public static function IsAccelerometerSupported (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

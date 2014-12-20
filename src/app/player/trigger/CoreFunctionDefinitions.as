@@ -102,6 +102,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_SetMouseVisible,                  SetMouseVisible);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsAccelerometerSupported,                  IsAccelerometerSupported);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetAppFileURL,                     GetAppFileURL);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsNativeApp,                     IsNativeApp);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ExitApp,                     ExitApp);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetScreenResolution,         GetScreenResolution);
@@ -921,6 +922,11 @@ package player.trigger {
 
          valueTarget = valueTarget.mNextParameter;
          valueTarget.AssignValueObject (vector3d [2] as Number);
+      }
+      
+      public static function GetAppFileURL (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_mLibAppp.GetAppRootURL ());
       }
 
       public static function IsNativeApp (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

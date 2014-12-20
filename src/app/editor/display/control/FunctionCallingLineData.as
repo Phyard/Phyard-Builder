@@ -35,8 +35,8 @@ package editor.display.control {
          {
             mInfo.mHtmlText = mFuncDeclaration.CreateFormattedCallingText (mCurrentValueSources, mCurrentValueTargets);
             
-            mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern1, kReplace1);
-            mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern2, kReplace2);
+            //mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern1, kReplace1);
+            //mInfo.mHtmlText = mInfo.mHtmlText.replace (kPattern2, kReplace2);
             
             mInfo.mIndentChanged = false;
             

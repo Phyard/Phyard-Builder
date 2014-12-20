@@ -349,6 +349,12 @@ package editor.world {
                         new VariableDefinitionNumber ("Acceleration Z"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetAppFileURL, system_package, "Get App File URL", null, null,
+                     null,
+                     [
+                        new VariableDefinitionString ("App File URL"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_IsNativeApp, system_package, "Is Native App", null, null,
                      null,
                      [

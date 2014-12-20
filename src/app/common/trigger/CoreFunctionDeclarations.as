@@ -259,6 +259,12 @@ package common.trigger {
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetAppFileURL,
+                     null,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_IsNativeApp,
                      null,
                      [

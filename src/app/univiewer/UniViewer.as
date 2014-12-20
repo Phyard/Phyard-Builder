@@ -253,6 +253,7 @@ package univiewer
          paramsFromUniViewer.mWorldPluginFileSize = mDesignInfoStream.readInt ();
          paramsFromUniViewer.mWorldUUID = mDesignInfoStream.readUTF ();
          
+         paramsFromUniViewer.mAppRootURL = LoaderInfo(this.loaderInfo).url;
          paramsFromUniViewer.mFlashVars = LoaderInfo(this.loaderInfo).parameters;
          paramsFromUniViewer.mLoadingProgress = EndLoadingViewerPercent;
          paramsFromUniViewer.SetLoadingText = SetInfoText;

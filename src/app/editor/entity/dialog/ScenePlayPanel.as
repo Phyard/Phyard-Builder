@@ -101,6 +101,9 @@ package editor.entity.dialog {
                                          mBackgroundColor: surroudingBackgroundColor, 
                                          OnExitLevel: callbackStopPlaying,
                                          
+                                         //mFlashVars
+                                         //mAppRootURL
+                                         
                                          //...
                                          OnMultiplePlayerClientMessagesToSchedulerServer : OnMultiplePlayerClientMessagesToSchedulerServer,
                                          OnMultiplePlayerClientMessagesToInstanceServer  : OnMultiplePlayerClientMessagesToInstanceServer

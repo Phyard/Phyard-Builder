@@ -38,6 +38,8 @@ package editor.asset {
    import editor.display.sprite.EffectMessagePopup;
    import editor.display.sprite.GridSprite;
    
+   import editor.world.DataUtil;
+   
    import editor.EditorContext;
    
    import common.Define;
@@ -118,6 +120,7 @@ package editor.asset {
             addChildAt (mAssetManager, getChildIndex (mAssetIDsLayer));
             
             mAssetManager.SetAssetLinksChangedCallback (NotifyAsstLinksChanged);
+            mAssetManager.SetLinkLineColor (sLinkLineColor);
             
             RepaintAllAssetLinks ();
             
@@ -319,6 +322,9 @@ package editor.asset {
       private static var sBackgroundColor:uint = 0xFFFFFF;
       private var mLastBackgroundColor:uint = 0xFFFFFF;
       
+      private static var sLinkLineColor:uint = 0x000000;
+      private var mLastLinkLineColor:uint = 0x000000;
+      
       public function GetSurroundingBackgroundColor ():uint
       {
          return sBackgroundColor;
@@ -327,6 +333,23 @@ package editor.asset {
       public function SetSurroundingBackgroundColor (color:uint):void
       {
          sBackgroundColor = color;
+         
+         SetLinkLineColor (GraphicsUtil.GetInvertColor_b (sBackgroundColor));
+      }
+      
+      public function GetLinkLineColor ():uint
+      {
+         return sLinkLineColor;
+      }
+      
+      public function SetLinkLineColor (color:uint):void
+      {
+         sLinkLineColor = color;
+         
+         if (mAssetManager != null)
+         {
+            mAssetManager.SetLinkLineColor (sLinkLineColor);
+         }
       }
       
       protected function UpdateBackgroundAndContentMaskSprites (changeColorOnly:Boolean = false):void
@@ -453,6 +476,7 @@ package editor.asset {
       }
       
       private var mChangeBackgroundColorMenuItem:ContextMenuItem = null;
+      private var mChangeLinkLineColorMenuItem:ContextMenuItem = null;
       
       // used in panel and assets
       public function BuildContextMenuInternal (customMenuItemsStack:Array):void
@@ -462,8 +486,16 @@ package editor.asset {
             mChangeBackgroundColorMenuItem = new ContextMenuItem ("Change Panel Background Color (Globally) ...", true);
             mChangeBackgroundColorMenuItem.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnChangeBackgroundColor);
          }
+         
+         if (mChangeLinkLineColorMenuItem == null)
+         {  
+            mChangeLinkLineColorMenuItem = new ContextMenuItem ("Change Link Line Color (Globally) ...", false);
+            mChangeLinkLineColorMenuItem.addEventListener (ContextMenuEvent.MENU_ITEM_SELECT, OnChangeLinkLineColor);
+         }
 
          customMenuItemsStack.push (mChangeBackgroundColorMenuItem);
+
+         customMenuItemsStack.push (mChangeLinkLineColorMenuItem);
          
          // to override
       }
@@ -482,14 +514,26 @@ package editor.asset {
       private function ChangeBackgroundColor (params:Object):void
       {
          var colorText:String = params.mName;
-         if (colorText.length > 2 && colorText.substr (0, 2).toLowerCase() == "0x")
-         {
-            SetSurroundingBackgroundColor (parseInt (colorText.substr (2), 16));
-         }
-         else
-         {
-            SetSurroundingBackgroundColor (parseInt (colorText));
-         }
+         
+         SetSurroundingBackgroundColor (DataUtil.ParseColor (colorText));
+      }
+      
+      private function OnChangeLinkLineColor (event:ContextMenuEvent):void
+      {
+         EditorContext.OpenSettingsDialog (NameSettingDialog, 
+                                       ChangeLinkLineColor, 
+                                       {   mName: "0x" + sLinkLineColor.toString (16), 
+                                           mLabel: "New Line Line Color",
+                                           mTitle: "Change Link Line Color"
+                                       }
+                                       );
+      }
+      
+      private function ChangeLinkLineColor (params:Object):void
+      {
+         var colorText:String = params.mName;
+         
+         SetLinkLineColor (DataUtil.ParseColor (colorText));
       }
       
       private var mMoveSelectionsAccuratelyMenuItem:ContextMenuItem = null;
@@ -1974,9 +2018,10 @@ package editor.asset {
          
          mAssetLinksLayer.visible = true;
          
-         if (mAssetLinksNeedRepaint)
+         if (mAssetLinksNeedRepaint || mLastLinkLineColor != sLinkLineColor)
          {
             mAssetLinksNeedRepaint = false;
+            mLastLinkLineColor = sLinkLineColor;
             
             mAssetLinksLayer.graphics.clear ();
             mAssetManager.DrawAssetLinks (mAssetLinksLayer, mShowAllAssetLinks);

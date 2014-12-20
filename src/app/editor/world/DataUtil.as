@@ -46,5 +46,25 @@ package editor.world {
       //   
       //   DataFormat3.EncodeByteArray2String ();
       //}
+      
+      public static function ParseColor (colorText:String):uint
+      {
+         if (colorText == null)
+            return 0x000000;
+         
+         if (colorText.length > 1 && colorText.substr (0, 1).toLowerCase() == "#")
+         {
+            return parseInt (colorText.substr (1), 16);
+         }
+         else if (colorText.length > 2 && colorText.substr (0, 2).toLowerCase() == "0x")
+         {
+            return parseInt (colorText.substr (2), 16);
+         }
+         else
+         {
+            return parseInt (colorText);
+         }
+      }
+      
    }
 }

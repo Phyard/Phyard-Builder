@@ -546,6 +546,11 @@ package viewer {
          
       }
       
+      private function GetAppRootURL ():String
+      {
+         return mParamsFromContainer.mAppRootURL == undefined ? "" : mParamsFromContainer.mAppRootURL;
+      }
+      
       private function IsNativeApp ():Boolean
       {
          return mParamsFromContainer.mIsNativeApp != undefined && (mParamsFromContainer.mIsNativeApp as Boolean);
@@ -1599,8 +1604,9 @@ package viewer {
                               OpenURL : UrlUtil.PopupPage,
                               GetRealtimeFps : GetRealtimeFps,
                               IsCurrentViewer : IsCurrentViewer,     // since v2.08
-                              GetAppWindowPadding : GetAppWindowPadding,  // since v2.08
-                              SetAppWindowPadding : SetAppWindowPadding,  // since v2.08
+                              GetAppWindowPadding : GetAppWindowPadding,  // since v2.09
+                              SetAppWindowPadding : SetAppWindowPadding,  // since v2.09
+                              GetAppRootURL : GetAppRootURL,  // since v2.09
                               "" : null
                   },
                   mLibCookie : {

@@ -357,7 +357,7 @@ package editor.trigger.entity {
             //if (IsSelected () || (mExternalCondition.mConditionEntity as Entity).IsSelected ())
             {
                var point:Point = mExternalCondition.mConditionEntity.GetTargetValueZoneWorldCenter (mExternalCondition.mTargetValue);
-               GraphicsUtil.DrawLine (canvasSprite, GetPositionX () - mHalfWidth, GetPositionY (), point.x, point.y, 0x0, 0);
+               GraphicsUtil.DrawLine (canvasSprite, GetPositionX () - mHalfWidth, GetPositionY (), point.x, point.y, GetAssetManager ().GetLinkLineColor (), 0);
             }
          }
          
@@ -371,7 +371,7 @@ package editor.trigger.entity {
                
                //if (IsSelected () || entity.IsSelected ())
                {
-                  GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY (), 0x0, 0);
+                  GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY (), GetAssetManager ().GetLinkLineColor (), 0);
                }
                
                if ((! forceDraw) && IsSelected ())
@@ -385,7 +385,7 @@ package editor.trigger.entity {
          {
             //if (IsSelected () || mExternalActionEntity.IsSelected ())
             {
-               GraphicsUtil.DrawLine (canvasSprite, GetPositionX () + mHalfWidth, GetPositionY (), mExternalActionEntity.GetPositionX (), mExternalActionEntity.GetPositionY (), 0x0, 0);
+               GraphicsUtil.DrawLine (canvasSprite, GetPositionX () + mHalfWidth, GetPositionY (), mExternalActionEntity.GetPositionX (), mExternalActionEntity.GetPositionY (), GetAssetManager ().GetLinkLineColor (), 0);
             }
          }
       }

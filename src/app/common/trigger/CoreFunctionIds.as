@@ -70,6 +70,7 @@ package common.trigger {
       public static const ID_GetAcceleration:int                                 = IdPool.CoreApiId_77; // from v1.60
       public static const ID_Design_SetMouseGestureEnabled:int            = IdPool.CoreApiId_615; // from v1.60
       
+      public static const ID_GetAppFileURL:int           = IdPool.CoreApiId_176; // from v2.09
       public static const ID_IsNativeApp:int            = IdPool.CoreApiId_109; // from v2.03
       public static const ID_ExitApp:int                             = IdPool.CoreApiId_592; //
 

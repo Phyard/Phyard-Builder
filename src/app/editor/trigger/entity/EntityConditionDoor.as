@@ -431,7 +431,7 @@ package editor.trigger.entity {
                //if (IsSelected () || (condition_target.mConditionEntity as Entity).IsSelected ())
                {
                   var point2:Point = condition_target.mConditionEntity.GetTargetValueZoneWorldCenter (condition_target.mTargetValue);
-                  GraphicsUtil.DrawLine (canvasSprite, point1.x, point1.y, point2.x, point2.y, 0x0, 0);
+                  GraphicsUtil.DrawLine (canvasSprite, point1.x, point1.y, point2.x, point2.y, GetAssetManager ().GetLinkLineColor (), 0);
                }
             }
          }

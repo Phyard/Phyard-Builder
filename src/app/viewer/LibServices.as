@@ -115,8 +115,7 @@
    
    private static const kUseRealServersForcely                :Boolean = Capabilities.isDebugger; // true; // for editor mode only
    private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.6.132:1618/api/design/instance";
-   private static const kGetInstanceServerInfoURL             :String  = "http://128.199.226.247:1618/api/design/instance";
-                                                                      // "http://mpserver.phyard.com:1618/api/design/instance";
+   private static const kGetInstanceServerInfoURL             :String  = "http://mpserver.phyard.com:1618/api/design/instance";
                                                                       // "http://www.phyard.com/api/design/instance";
                                                                       // http://mpserver.phyard.com/api/design/instance
    
@@ -469,7 +468,7 @@
    //private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:String, connectionId:String):void
    private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:ByteArray, connectionId:ByteArray):void
    {
-trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instanceDefineDigest = <" + instanceDefineDigest.length + ">, connectionId = <" + connectionId.length + ">");
+//trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instanceDefineDigest = <" + instanceDefineDigest.length + ">, connectionId = <" + connectionId.length + ">");
 
       mMultiplePlayerInstanceInfo.mServerAddress = serverAddress;
       mMultiplePlayerInstanceInfo.mServerPort = serverPort;
@@ -1102,7 +1101,7 @@ trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverP
                                                        mChannelMode: MultiplePlayerDefine.InstanceChannelMode_Free,
                                                        mTurnTimeoutSeconds: 0 // MultiplePlayerDefine.MaxTurnTimeoutInPractice
                                                     }).mChannelDefine
-                                                  })
+                                                  });
       
       // ...
       return {mInstanceDefine: instanceDefine};
@@ -1445,14 +1444,14 @@ trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverP
             //if (numMessages > )
             //   ...
             
-trace (">>>>>>>>>>>>>>>>> get server messages, method = " + method + ", dataLength = " + dataLength + ", numMessages = " + numMessages);
+//trace (">>>>>>>>>>>>>>>>> get server messages, method = " + method + ", dataLength = " + dataLength + ", numMessages = " + numMessages);
             for (var msgIndex:int = 0; msgIndex < numMessages; ++ msgIndex)
             {
-trace (">>>> msgIndex = " + msgIndex + ", messagesData.position = " + messagesData.position + " / " + messagesData.length);
+//trace (">>>> msgIndex = " + msgIndex + ", messagesData.position = " + messagesData.position + " / " + messagesData.length);
 
                var serverMessageType:int = messagesData.readShort () & 0xFFFF;
             
-trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
+//trace (">> serverMessageType = 0x" + serverMessageType.toString (16));
                switch (serverMessageType)
                {
                // ...

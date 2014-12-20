@@ -52,6 +52,7 @@ package player
                                                         //.IsCurrentViewer      // v2.08
                                                         //.GetAppWindowPadding  // v2.09
                                                         //.SetAppWindowPadding  // v2.09
+                                                        //.GetAppRootURL        // v2.09
                
                /*Global.sTheGlobal*/world.Viewer_mLibCookie = params.mLibCookie; // from v2.03
                

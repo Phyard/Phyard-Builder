@@ -1690,11 +1690,22 @@ package editor.asset {
 //====================================================================
       
       protected var mAssetLinksChangedCallback:Function = null;
+      protected var mLinkLineColor:uint = 0x000000;
       
       public function SetAssetLinksChangedCallback (assetLinksChangedCallback:Function):void
       {
          mAssetLinksChangedCallback = assetLinksChangedCallback;
-      } 
+      }
+      
+      public function SetLinkLineColor (color:uint):void
+      {
+         mLinkLineColor = color;
+      }
+      
+      public function GetLinkLineColor ():uint
+      {
+         return mLinkLineColor;
+      }
       
       public function GetAssetLinksChangedCallback ():Function
       {

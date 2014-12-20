@@ -154,7 +154,7 @@ package editor.ccat.dialog {
             point1 = ManagerToPanel (new Point (friend1.x, friend1.y) );
             point2 = ManagerToPanel (new Point (friend2.x, friend2.y) );
             
-            GraphicsUtil.DrawLine (mAssetLinksLayer, point1.x, point1.y, point2.x, point2.y, 0x0000FF, 2);
+            GraphicsUtil.DrawLine (mAssetLinksLayer, point1.x, point1.y, point2.x, point2.y, GetLinkLineColor (), 2);
          }
       }
       

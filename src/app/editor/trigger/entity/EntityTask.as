@@ -231,7 +231,7 @@ package editor.trigger.entity {
                
                //if (IsSelected () || entity.IsSelected ())
                {
-                  GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY (), 0x0, 0);
+                  GraphicsUtil.DrawLine (canvasSprite, GetPositionX (), GetPositionY (), entity.GetPositionX (), entity.GetPositionY (), GetAssetManager ().GetLinkLineColor (), 0);
                }
                
                if ((! forceDraw) && IsSelected ())

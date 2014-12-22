@@ -52,7 +52,8 @@ package editor.trigger {
                //str = str.replace(pattern, "\\\"");
             }
             
-            return "\"" + str + "\"";
+            //return "\"" + str + "\"";
+            return "{{{" + str + "}}}";
          }
          else if (vd is VariableDefinitionNumber)
          {

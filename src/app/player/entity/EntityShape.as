@@ -886,13 +886,13 @@ package player.entity {
       
       protected function OnMouseEnter (event:MouseEvent):void
       {
-trace (">>>>> Enter,    target = " + event.target + ", relatedObject = " + event.relatedObject);
+//trace (">>>>> Enter,    target = " + event.target + ", relatedObject = " + event.relatedObject);
          HandleMouseEvent (event, mMouseEnterEventHandlerList);
       }
       
       protected function OnMouseOut(event:MouseEvent):void
       {
-trace ("<<<<< Out,    target = " + event.target + ", relatedObject = " + event.relatedObject);
+//trace ("<<<<< Out,    target = " + event.target + ", relatedObject = " + event.relatedObject);
          HandleMouseEvent (event, mMouseOutEventHandlerList);
       }
       

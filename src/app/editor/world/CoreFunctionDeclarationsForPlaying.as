@@ -4059,7 +4059,7 @@ package editor.world {
                      [
                              new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
                              new VariableDefinitionNumber ("New Width (meters)"),
-                             new VariableDefinitionNumber ("new Height (meters)"),
+                             new VariableDefinitionNumber ("New Height (meters)"),
                      ],
                      null
                   );

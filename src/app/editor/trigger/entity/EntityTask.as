@@ -189,11 +189,11 @@ package editor.trigger.entity {
       {
          var toEntity:Entity = toAsset as Entity;
          
-         if (toEntity is IEntityLimiter)
+         if (toEntity is IEntitySelector)
          {
-            var limitor:IEntityLimiter = toEntity as IEntityLimiter;
+            var limitor:IEntitySelector = toEntity as IEntitySelector;
             
-            if (! limitor.IsPairLimiter ())
+            if (! limitor.IsPairSelector ())
             {
                var index:int = mEntityAssignerList.indexOf (toEntity);
                if (index >= 0)

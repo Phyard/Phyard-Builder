@@ -27,7 +27,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityInputEntityRegionSelector extends EntityIconInsider implements IEntityLimiter 
+   public class EntityInputEntityRegionSelector extends EntityIconInsider implements IEntitySelector 
    {
       public function EntityInputEntityRegionSelector (container:Scene)
       {
@@ -63,10 +63,10 @@ package editor.trigger.entity {
       }
       
 //====================================================================
-//   as IEntityLimiter
+//   as IEntitySelector
 //====================================================================
       
-      public function IsPairLimiter ():Boolean
+      public function IsPairSelector ():Boolean
       {
          return false;
       }

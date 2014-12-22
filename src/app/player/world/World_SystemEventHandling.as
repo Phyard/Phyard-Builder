@@ -4,13 +4,14 @@
    public function SetInteractiveEnabledWhenPaused (enable:Boolean):void
    {
       mEnabledInteractiveWhenPaused = enable;
+         // this is 
    }
    
    public function IsInteractiveEnabledNow ():Boolean
    {
       // not a good ideas:
-      // assume: mouse down before fading, release mosue when fading, then make some confused.
-      // it is best provide a function IsCameraFading () for user convienience.
+      // assume: mouse down before fading, release mouse when fading, then make some confused.
+      // it is best provide a function IsCameraFading () for user convenience.
       
       if (mIsPaused)
          return mEnabledInteractiveWhenPaused;
@@ -497,7 +498,7 @@
       
       // ...
       
-      // unlike mouseDown, this "if" is commented off here.
+      // unlike mouseDown, this "if" is commented off here to avoid event losing.
       //if (IsInteractiveEnabledNow ())
       {
          var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;

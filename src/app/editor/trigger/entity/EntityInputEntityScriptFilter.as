@@ -31,7 +31,7 @@ package editor.trigger.entity {
    
    import common.trigger.ValueDefine;
    
-   public class EntityInputEntityScriptFilter extends EntityCodeSnippetHolder implements IEntityLimiter 
+   public class EntityInputEntityScriptFilter extends EntityCodeSnippetHolder implements IEntitySelector 
    {
       public function EntityInputEntityScriptFilter (container:Scene)
       {
@@ -70,10 +70,10 @@ package editor.trigger.entity {
       }
       
 //====================================================================
-//   as IEntityLimiter
+//   as IEntitySelector
 //====================================================================
       
-      public function IsPairLimiter ():Boolean
+      public function IsPairSelector ():Boolean
       {
          return false;
       }

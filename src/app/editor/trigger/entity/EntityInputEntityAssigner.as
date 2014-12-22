@@ -30,7 +30,7 @@ package editor.trigger.entity {
    
    import common.Define;
    
-   public class EntityInputEntityAssigner extends EntityLogic implements IEntityLimiter 
+   public class EntityInputEntityAssigner extends EntityLogic implements IEntitySelector 
    {
       public static const kRadius:Number = 6;
       public static const kRadius2:Number = 12;
@@ -39,7 +39,7 @@ package editor.trigger.entity {
       public var mBorderThickness:Number = 1;
       
       protected var mSelectorLayer:Sprite;
-      protected var mInputEntitySelector:InputEntitySelector;
+      protected var mInputEntityAssigner:InputEntityAssigner;
       
       // ...
       protected var mEntityAssignerType:int = Define.EntityAssignerType_Many;
@@ -132,7 +132,7 @@ package editor.trigger.entity {
       {
          if (mEntityAssignerType == Define.EntityAssignerType_Single)
          {
-            InputEntitySelector_Single.ValidateSingleEntity (mInputEntities);
+            InputEntityAssigner_Single.ValidateSingleEntity (mInputEntities);
          }
          else if (mEntityAssignerType == Define.EntityAssignerType_Any)
          {
@@ -140,7 +140,7 @@ package editor.trigger.entity {
          }
          else
          {
-            InputEntitySelector_Many.ValidateLinkedEntities (mInputEntities);
+            InputEntityAssigner_Many.ValidateLinkedEntities (mInputEntities);
          }
       }
       
@@ -256,12 +256,12 @@ package editor.trigger.entity {
             mSelectorLayer.visible = false;
          }
          
-         if (! visible && mInputEntitySelector != null)
+         if (! visible && mInputEntityAssigner != null)
          {
             DestroyInternalComponents ();
          }
          
-         if (visible && mInputEntitySelector == null)
+         if (visible && mInputEntityAssigner == null)
          {
             CreateInternalComponents ();
          }
@@ -289,38 +289,39 @@ package editor.trigger.entity {
          DestroyInternalComponents ();
          
          if (mEntityAssignerType == Define.EntityAssignerType_Single)
-            mInputEntitySelector = new InputEntitySelector_Single (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
+            mInputEntityAssigner = new InputEntityAssigner_Single (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
          else if (mEntityAssignerType == Define.EntityAssignerType_Any)
-            mInputEntitySelector = new InputEntitySelector_Any (mEntityContainer, this);
+            mInputEntityAssigner = new InputEntityAssigner_Any (mEntityContainer, this);
          else
-            mInputEntitySelector = new InputEntitySelector_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
+            mInputEntityAssigner = new InputEntityAssigner_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
             
-         mInputEntitySelector.UpdateAppearance ();
-         mSelectorLayer.addChild (mInputEntitySelector);
-         mInputEntitySelector.UpdateSelectionProxy ();
+         mInputEntityAssigner.UpdateAppearance ();
+         mSelectorLayer.addChild (mInputEntityAssigner);
+         mInputEntityAssigner.UpdateSelectionProxy ();
          
-         // ...
+         // note: mSelectorLayer.y = - kOffsetY;
          GraphicsUtil.DrawLine (mSelectorLayer, 0, (kOffsetY - kRadius2), 0, 0, 0x0, 0);
       }
       
       protected function DestroyInternalComponents ():void
       {
-         if (mInputEntitySelector != null)
+         if (mInputEntityAssigner != null)
          {
-            mInputEntitySelector.Destroy ();
-            mInputEntitySelector = null;
+            mInputEntityAssigner.Destroy ();
+            mInputEntityAssigner = null;
          }
          
-         GraphicsUtil.Clear (mSelectorLayer);
          while (mSelectorLayer.numChildren > 0)
             mSelectorLayer.removeChildAt (0);
+         
+         GraphicsUtil.Clear (mSelectorLayer);
       }
       
       protected function UpdateInternalComponents ():void
       {
-         if (mInputEntitySelector != null)
+         if (mInputEntityAssigner != null)
          {
-            mInputEntitySelector.UpdateSelectionProxy ();
+            mInputEntityAssigner.UpdateSelectionProxy ();
          }
       }
       
@@ -422,22 +423,22 @@ package editor.trigger.entity {
          
          if (mInputEntities.length > 0)
          {
-            if (mInputEntitySelector is InputEntitySelector_Many)
+            if (mInputEntityAssigner is InputEntityAssigner_Many)
             {
-               (mInputEntitySelector as InputEntitySelector_Many).DrawLinks (canvasSprite, mInputEntities);
+               (mInputEntityAssigner as InputEntityAssigner_Many).DrawLinks (canvasSprite, mInputEntities);
             }
-            else if (mInputEntitySelector is InputEntitySelector_Single)
+            else if (mInputEntityAssigner is InputEntityAssigner_Single)
             {
-               (mInputEntitySelector as InputEntitySelector_Single).DrawLink (canvasSprite, mInputEntities [0]);
+               (mInputEntityAssigner as InputEntityAssigner_Single).DrawLink (canvasSprite, mInputEntities [0]);
             }
          }
       }
       
 //====================================================================
-//   as IEntityLimiter
+//   as IEntitySelector
 //====================================================================
       
-      public function IsPairLimiter ():Boolean
+      public function IsPairSelector ():Boolean
       {
          return false;
       }

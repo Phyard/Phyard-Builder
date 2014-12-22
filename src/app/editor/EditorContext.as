@@ -44,8 +44,6 @@ package editor {
    import editor.trigger.FunctionDefinition;
    import editor.trigger.VariableSpace;
    
-   import editor.trigger.entity.InputEntitySelector;
-   
    import common.ViewerDefine;
    import common.Define;
    import common.Version;

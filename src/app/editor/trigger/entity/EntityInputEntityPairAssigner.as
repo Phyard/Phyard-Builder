@@ -28,7 +28,7 @@ package editor.trigger.entity {
    
    import common.Define;
    
-   public class EntityInputEntityPairAssigner extends EntityLogic implements IEntityLimiter 
+   public class EntityInputEntityPairAssigner extends EntityLogic implements IEntitySelector 
    {
       public static const kRadius:Number = 6;
       public static const kRadius2:Number = 12;
@@ -40,7 +40,7 @@ package editor.trigger.entity {
       
       public var mBorderThickness:Number = 1;
       protected var mSelectorLayer:Sprite;
-      public var mInputEntitySelectors:Array = null;
+      public var mInputEntityAssigners:Array = null;
       
       //
       protected var mEntityPairAssignerType:int = Define.EntityPairAssignerType_OneToOne;
@@ -251,12 +251,12 @@ package editor.trigger.entity {
       {
          if (mEntityPairAssignerType == Define.EntityPairAssignerType_OneToOne)
          {
-            InputEntitySelector_Single.ValidateLinkedEntities (mInputEntities1, mInputEntities2);
+            InputEntityAssigner_Single.ValidateLinkedEntities (mInputEntities1, mInputEntities2);
          }
          else 
          {
-            InputEntitySelector_Many.ValidateLinkedEntities (mInputEntities1);
-            InputEntitySelector_Many.ValidateLinkedEntities (mInputEntities2);
+            InputEntityAssigner_Many.ValidateLinkedEntities (mInputEntities1);
+            InputEntityAssigner_Many.ValidateLinkedEntities (mInputEntities2);
          }
       }
       
@@ -421,12 +421,12 @@ package editor.trigger.entity {
          }
          
          
-         if (! visible && mInputEntitySelectors != null)
+         if (! visible && mInputEntityAssigners != null)
          {
             DestroyInternalComponents ();
          }
          
-         if (visible && mInputEntitySelectors == null)
+         if (visible && mInputEntityAssigners == null)
          {
             CreateInternalComponents ();
          }
@@ -457,7 +457,7 @@ package editor.trigger.entity {
          DestroyInternalComponents ();
          
          var i:int;
-         var selector:InputEntitySelector;
+         var selector:InputEntityAssigner;
          var line:Shape;
          
          var offset_x:Number = kOffsetX2 / mEntityContainer.GetZoomScale ();
@@ -467,29 +467,29 @@ package editor.trigger.entity {
          {
             case Define.EntityPairAssignerType_OneToOne:
             {
-               //mInputEntitySelectors = new Array (2 * Define.MaxEntityPairesCountEachOneToOnePairAssigner);
+               //mInputEntityAssigners = new Array (2 * Define.MaxEntityPairesCountEachOneToOnePairAssigner);
                var num_selector_pairs:int;
                if (mInputEntities1.length < Define.MaxEntityPairesCountEachOneToOnePairAssigner)
                   num_selector_pairs = mInputEntities1.length + 1;
                else
                   num_selector_pairs = mInputEntities1.length;
                   
-               mInputEntitySelectors = new Array (2 * num_selector_pairs);
+               mInputEntityAssigners = new Array (2 * num_selector_pairs);
                
                var pair_y:Number = 0;
                var selectorId:int = 0;
-               for (i = 0; i < mInputEntitySelectors.length; i += 2)
+               for (i = 0; i < mInputEntityAssigners.length; i += 2)
                {
-                  selector = new InputEntitySelector_Single (mEntityContainer, this, 0, selectorId, OnSelectEntity, OnClearEntities);
-                  mInputEntitySelectors [i] = selector;
+                  selector = new InputEntityAssigner_Single (mEntityContainer, this, 0, selectorId, OnSelectEntity, OnClearEntities);
+                  mInputEntityAssigners [i] = selector;
                   selector.x = - offset_x;
                   selector.y = pair_y;
                   mSelectorLayer.addChild (selector);
                   selector.UpdateAppearance ();
                   selector.UpdateSelectionProxy ();
                   
-                  selector = new InputEntitySelector_Single (mEntityContainer, this, 1, selectorId, OnSelectEntity, OnClearEntities);
-                  mInputEntitySelectors [i+1] = selector;
+                  selector = new InputEntityAssigner_Single (mEntityContainer, this, 1, selectorId, OnSelectEntity, OnClearEntities);
+                  mInputEntityAssigners [i+1] = selector;
                   selector.x = offset_x;
                   selector.y = pair_y;
                   mSelectorLayer.addChild (selector);
@@ -509,18 +509,18 @@ package editor.trigger.entity {
             case Define.EntityPairAssignerType_AnyToMany:
             case Define.EntityPairAssignerType_AnyToAny:
             {
-               mInputEntitySelectors = new Array (2);
+               mInputEntityAssigners = new Array (2);
                
                if (mEntityPairAssignerType == Define.EntityPairAssignerType_ManyToMany || mEntityPairAssignerType == Define.EntityPairAssignerType_ManyToAny)
                {
-                  selector = new InputEntitySelector_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
+                  selector = new InputEntityAssigner_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
                }
                else
                {
-                  selector = new InputEntitySelector_Any (mEntityContainer, this);
+                  selector = new InputEntityAssigner_Any (mEntityContainer, this);
                }
                
-               mInputEntitySelectors [0] = selector;
+               mInputEntityAssigners [0] = selector;
                selector.x = - offset_x;
                selector.y = 0;
                mSelectorLayer.addChild (selector);
@@ -529,14 +529,14 @@ package editor.trigger.entity {
                
                if (mEntityPairAssignerType == Define.EntityPairAssignerType_ManyToMany || mEntityPairAssignerType == Define.EntityPairAssignerType_AnyToMany)
                {
-                  selector = new InputEntitySelector_Many (mEntityContainer, this, 1, 0, OnSelectEntity, OnClearEntities);
+                  selector = new InputEntityAssigner_Many (mEntityContainer, this, 1, 0, OnSelectEntity, OnClearEntities);
                }
                else
                {
-                  selector = new InputEntitySelector_Any (mEntityContainer, this);
+                  selector = new InputEntityAssigner_Any (mEntityContainer, this);
                }
                
-               mInputEntitySelectors [1] = selector;
+               mInputEntityAssigners [1] = selector;
                selector.x = offset_x;
                selector.y = 0;
                mSelectorLayer.addChild (selector);
@@ -550,9 +550,9 @@ package editor.trigger.entity {
             case Define.EntityPairAssignerType_EitherInMany:
             case Define.EntityPairAssignerType_BothInMany:
             {
-               mInputEntitySelectors = new Array (1);
-               selector = new InputEntitySelector_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
-               mInputEntitySelectors [0] = selector;
+               mInputEntityAssigners = new Array (1);
+               selector = new InputEntityAssigner_Many (mEntityContainer, this, 0, 0, OnSelectEntity, OnClearEntities);
+               mInputEntityAssigners [0] = selector;
                selector.x = 0;
                selector.y = 0;
                mSelectorLayer.addChild (selector);
@@ -567,9 +567,10 @@ package editor.trigger.entity {
          
       // 
          
-         if (mInputEntitySelectors != null)
+         if (mInputEntityAssigners != null)
          {
-            GraphicsUtil.DrawLine (mSelectorLayer, 0, (kOffsetY - kRadius2), 0, - ( (mInputEntitySelectors.length - 1) >> 1) * offset_y, 0x0, 0);
+            // note: mSelectorLayer.y = - kOffsetY;
+            GraphicsUtil.DrawLine (mSelectorLayer, 0, (kOffsetY - kRadius2), 0, - ( (mInputEntityAssigners.length - 1) >> 1) * offset_y, 0x0, 0);
             UpdateInternalComponents ();
          }
       }
@@ -577,13 +578,13 @@ package editor.trigger.entity {
       protected function DestroyInternalComponents ():void
       {
          var i:int;
-         var selector:InputEntitySelector;
+         var selector:InputEntityAssigner;
          
-         if (mInputEntitySelectors != null)
+         if (mInputEntityAssigners != null)
          {
-            for (i = 0; i < mInputEntitySelectors.length; ++ i)
+            for (i = 0; i < mInputEntityAssigners.length; ++ i)
             {
-               selector = mInputEntitySelectors [i] as InputEntitySelector;
+               selector = mInputEntityAssigners [i] as InputEntityAssigner;
                if (selector != null)
                {
                   selector.Destroy ();
@@ -591,7 +592,7 @@ package editor.trigger.entity {
             }
          }
          
-         mInputEntitySelectors = null;
+         mInputEntityAssigners = null;
          
          GraphicsUtil.Clear (mSelectorLayer);
          while (mSelectorLayer.numChildren > 0)
@@ -600,12 +601,12 @@ package editor.trigger.entity {
       
       protected function UpdateInternalComponents ():void
       {
-         if (mInputEntitySelectors != null)
+         if (mInputEntityAssigners != null)
          {
-            var selector:InputEntitySelector;
-            for (var i:int = 0; i < mInputEntitySelectors.length; ++ i)
+            var selector:InputEntityAssigner;
+            for (var i:int = 0; i < mInputEntityAssigners.length; ++ i)
             {
-               selector = mInputEntitySelectors [i] as InputEntitySelector;
+               selector = mInputEntityAssigners [i] as InputEntityAssigner;
                if (selector != null)
                   selector.UpdateSelectionProxy ();
             }
@@ -784,7 +785,7 @@ package editor.trigger.entity {
             else
                num_selector_pairs = mInputEntities1.length;
             
-            if (num_selector_pairs + num_selector_pairs != mInputEntitySelectors.length)
+            if (num_selector_pairs + num_selector_pairs != mInputEntityAssigners.length)
             {
                DestroyInternalComponents ();
                CreateInternalComponents ();
@@ -797,12 +798,12 @@ package editor.trigger.entity {
             var index:int = 0;
             for (i = 0; i < mInputEntities1.length; ++ i)
             {
-               if (mInputEntities1 [i] != null && mInputEntitySelectors [index] != null)
-                  (mInputEntitySelectors [index] as InputEntitySelector_Single).DrawLink (canvasSprite, mInputEntities1 [i]);
+               if (mInputEntities1 [i] != null && mInputEntityAssigners [index] != null)
+                  (mInputEntityAssigners [index] as InputEntityAssigner_Single).DrawLink (canvasSprite, mInputEntities1 [i]);
                ++ index;
                
-               if (mInputEntities2 [i] != null && mInputEntitySelectors [index] != null)
-                  (mInputEntitySelectors [index] as InputEntitySelector_Single).DrawLink (canvasSprite, mInputEntities2 [i]);
+               if (mInputEntities2 [i] != null && mInputEntityAssigners [index] != null)
+                  (mInputEntityAssigners [index] as InputEntityAssigner_Single).DrawLink (canvasSprite, mInputEntities2 [i]);
                ++ index;
             }
          }
@@ -810,21 +811,21 @@ package editor.trigger.entity {
          {
             if (mInputEntities1 != null && mInputEntities1.length > 0)
             {
-               (mInputEntitySelectors [0] as InputEntitySelector_Many).DrawLinks (canvasSprite, mInputEntities1);
+               (mInputEntityAssigners [0] as InputEntityAssigner_Many).DrawLinks (canvasSprite, mInputEntities1);
             }
             
             if (mInputEntities2 != null && mInputEntities2.length > 0)
             {
-               (mInputEntitySelectors [1] as InputEntitySelector_Many).DrawLinks (canvasSprite, mInputEntities2);
+               (mInputEntityAssigners [1] as InputEntityAssigner_Many).DrawLinks (canvasSprite, mInputEntities2);
             }
          }
       }
       
 //====================================================================
-//   as IEntityLimiter
+//   as IEntitySelector
 //====================================================================
       
-      public function IsPairLimiter ():Boolean
+      public function IsPairSelector ():Boolean
       {
          return true;
       }

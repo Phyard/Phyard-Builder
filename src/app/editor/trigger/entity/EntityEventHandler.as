@@ -258,8 +258,6 @@ package editor.trigger.entity {
 //
 //==========================================================================================
       
-     // private var mInputEntitySelector:
-      
       private function OnMouseDoubleClick (e:MouseEvent):void
       {
          
@@ -302,15 +300,15 @@ package editor.trigger.entity {
             
             return true;
          }
-         else if (toEntity is IEntityLimiter)
+         else if (toEntity is IEntitySelector)
          {
-            var limitor:IEntityLimiter = toEntity as IEntityLimiter;
+            var limitor:IEntitySelector = toEntity as IEntitySelector;
             
             var index:int;
             
             if (mNumEntityParams == 1)
             {
-               if (! limitor.IsPairLimiter ())
+               if (! limitor.IsPairSelector ())
                {
                   index = mEntityAssignerList.indexOf (toEntity);
                   if (index >= 0)
@@ -323,7 +321,7 @@ package editor.trigger.entity {
             }
             else if (mNumEntityParams == 2)
             {
-               if (limitor.IsPairLimiter ())
+               if (limitor.IsPairSelector ())
                {
                   index = mEntityAssignerList.indexOf (toEntity);
                   if (index >= 0)

@@ -38,6 +38,25 @@ package com.tapirgames.util {
          return (color & 0xFF000000) | ((255 - r) << 16) | ((255 - g) << 8) | ((255 - b));
       }
       
+      public static function GetColorLightnessDiff (color1:uint, color2:uint):Number
+      {
+         return Math.abs (GetColorLightness (color1) - GetColorLightness (color2));
+      }
+      
+      public static function GetColorLightness (color:uint):Number
+      {
+         var r:Number = (color >> 16) & 0xFF;
+         var g:Number = (color >>  8) & 0xFF;
+         var b:Number = (color >>  0) & 0xFF;
+         
+         return GetColorRgbLightness (r, g, b);
+      }
+      
+      public static function GetColorRgbLightness (r:uint, g:uint, b:uint):Number
+      {
+         return (0.30 * r + 0.59 * g + 0.11 * b) / 256.0;
+      }
+      
       // return black or white
       public static function GetInvertColor_b (color:uint):uint
       {
@@ -52,13 +71,7 @@ package com.tapirgames.util {
             return (color & 0xFF000000) | 0xFFFFFF;
          */
          
-         var r:Number = (color >> 16) & 0xFF;
-         var g:Number = (color >>  8) & 0xFF;
-         var b:Number = (color >>  0) & 0xFF;
-         
-         var lightness:Number = 0.30 * r + 0.59 * g + 0.11 * b;
-         
-         if (lightness > 128)
+         if (GetColorLightness (color) > 0.5)
             return (color & 0xFF000000) | 0x0;
          else
             return (color & 0xFF000000) | 0xFFFFFF;

@@ -334,7 +334,10 @@ package editor.asset {
       {
          sBackgroundColor = color;
          
-         SetLinkLineColor (GraphicsUtil.GetInvertColor_b (sBackgroundColor));
+         //if (GraphicsUtil.GetColorLightnessDiff (sBackgroundColor, sLinkLineColor) < 0.5)
+         //{
+         //   SetLinkLineColor (GraphicsUtil.GetInvertColor_b (sBackgroundColor));
+         //}
       }
       
       public function GetLinkLineColor ():uint

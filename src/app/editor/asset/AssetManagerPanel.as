@@ -1624,7 +1624,8 @@ package editor.asset {
       private function OnMoveTransformRingAccurately (event:ContextMenuEvent):void
       {
          //EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mIsMoveTo: true});
-         EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mLabelTextX: "Move Target X:", mLabelTextY: "Move Target Y:"});
+         var managerPoint:Point = PanelToManager (new Point (mScaleRotateFlipHandlersContainer.x, mScaleRotateFlipHandlersContainer.y));
+         EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveTransformRingAccurately, {mLabelTextX: "Move Target X:", mLabelTextY: "Move Target Y:", mX: managerPoint.x, mY: managerPoint.y});
       }
       
       private function MoveTransformRingAccurately (params:Object):void

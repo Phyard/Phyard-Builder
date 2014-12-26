@@ -313,13 +313,13 @@ package editor.world {
                              new VariableDefinitionNumber ("The Key", null, {mValueLists: Lists.mKeyCodeList}),
                      ],
                      [
-                             new VariableDefinitionBoolean ("Is Hold?"),
+                             new VariableDefinitionBoolean ("Is Held?"),
                      ]
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold, system_package, "Is Mouse Button Hold?", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Design_IsMouseButtonHold, system_package, "Is Left Mouse Button Held?", null, null,
                      null,
                      [
-                        new VariableDefinitionBoolean ("Hold?"),
+                        new VariableDefinitionBoolean ("Held?"),
                      ]
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_SetMouseVisible, system_package, "Set Mouse Visible", null, null,

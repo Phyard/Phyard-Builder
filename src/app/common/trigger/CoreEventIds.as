@@ -23,6 +23,7 @@ package common.trigger {
       public static const ID_OnWorldAfterInitialized:int = IdPool.EventId_1;
       public static const ID_OnWorldBeforeUpdating:int = IdPool.EventId_2;
       public static const ID_OnWorldAfterUpdated:int = IdPool.EventId_3;
+      public static const ID_OnWorldBeforeExiting:int = IdPool.EventId_4; // v2.09
 
       public static const ID_OnWorldTimer:int = IdPool.EventId_50;
       public static const ID_OnWorldPreTimer:int = IdPool.EventId_51;

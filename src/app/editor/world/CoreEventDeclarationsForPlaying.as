@@ -49,6 +49,10 @@ package editor.world {
          RegisterEventDeclaration (CoreEventIds.ID_OnWorldAfterUpdated, "OnLevelEndUpdate", "",
                     null
                     );
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldBeforeExiting, "OnLevelBeforeExiting", "",
+                    null
+                    );
+                    
          RegisterEventDeclaration (CoreEventIds.ID_OnWorldTimer, "OnWorldTimer", "OnWorldTimer",
                     [
                      new VariableDefinitionNumber ("Calling Times"),

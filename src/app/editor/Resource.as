@@ -94,6 +94,8 @@ package editor {
       public static const IconOnBeforeLevelUpdatingEvent:Class;
       [Embed("../res/create/event_on_level_after_updated.png")]
       public static const IconOnAfterLevelUpdatedEvent:Class;
+      [Embed("../res/create/event_on_level_before_exiting.png")]
+      public static const IconOnBeforeLevelExitingEvent:Class;
       
       // shape contact
       
@@ -232,6 +234,7 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnWorldAfterInitialized  ] = IconOnAfterLevelInitializedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeUpdating    ] = IconOnBeforeLevelUpdatingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldAfterUpdated      ] = IconOnAfterLevelUpdatedEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldBeforeExiting     ] = IconOnBeforeLevelExitingEvent;
             
             sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting] = IconOnShapeStartContactingEvent;
             sEventId2IconClass [CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting ] = IconOnShapeKeepContactingEvent;

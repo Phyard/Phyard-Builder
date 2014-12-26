@@ -196,7 +196,7 @@ package viewer {
          if (mTouchEventClass != null)
          {
             // mMultitouchClass must not null
-            mMultitouchClass.inputMode = "touchPoint"; // mMultitouchClass.TOUCH_POINT;
+            mMultitouchClass.inputMode = "touchPoint"; // mMultitouchClass.TOUCH_POINT; // MultitouchInputMode.TOUCH_POINT
             
             addEventListener (/*mTouchEventClass.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
             addEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
@@ -870,7 +870,14 @@ package viewer {
             // so pass the origial event instead.
             // only its stageX and stageY properites are used.
             
-            mWorldDesignProperties.OnViewerEvent (event);
+            var stagePoint:Point = new Point (event.stageX, event.stageY);
+            var worldPoint:Point = mWorldLayer.globalToLocal (stagePoint);
+            
+            // this "if" may cause a little incompatibility
+            if (worldPoint.x >= 0 && worldPoint.y >= 0 && worldPoint.x < mViewportMaskRect.width && worldPoint.y < mViewportMaskRect.height)
+            {
+               mWorldDesignProperties.OnViewerEvent (event);
+            }
          }
       }
 
@@ -1519,6 +1526,9 @@ package viewer {
                // delay to remove old data for scene switching
                mOldWorldDesignProperties = mWorldDesignProperties;
                mOldPlayerWorld = mPlayerWorld;
+               
+               if (mOldWorldDesignProperties != null) // should not be null
+                  mOldWorldDesignProperties.Destroy (); // move from blow since v2.09.
 
                // .
                mWorldDesignProperties = null;
@@ -1981,7 +1991,9 @@ package viewer {
                if (mWorldLayer.contains (mOldPlayerWorld as Sprite))
                   mWorldLayer.removeChild (mOldPlayerWorld as Sprite);
                
-               mOldWorldDesignProperties.Destroy ();
+               //mOldWorldDesignProperties.Destroy ();
+                  // (moved above sine v2.09) 
+                  // should call before creating the new one.
                
                mOldPlayerWorld = null;
                mOldWorldDesignProperties = null;

@@ -5,11 +5,17 @@ package editor.asset {
    
    import flash.geom.Point;
    
+   import flash.events.ContextMenuEvent;
+   
    import com.tapirgames.util.GraphicsUtil;
    import com.tapirgames.util.DisplayObjectUtil;
    
    import editor.selection.SelectionEngine;
    import editor.selection.SelectionProxy;
+   
+   import editor.display.dialog.AccurateMoveDialog;
+   
+   import editor.EditorContext;
    
    import common.Transform2D;
    import common.Define;
@@ -33,6 +39,10 @@ package editor.asset {
          
          mOwnerAsset.GetControlPointContainer ().addChild (this);
          //RebuildAppearance ();
+         
+         // don;t why context menu doesn;t work
+         //DisplayObjectUtil.AppendContextMenuItem (this, "Move Control Point Accurately ...", OnMoveControlPointAccurately);
+         //DisplayObjectUtil.AppendContextMenuItem (this, "Move Control Point Accurately (By Offset) ...", OnMoveControlPointAccuratelyByOffset);
       }
       
       public function GetOwnerAsset ():Asset
@@ -149,5 +159,39 @@ package editor.asset {
          if (mSelectionProxy != null)
             mSelectionProxy.Destroy ();
       }
+      
+//==============================================================
+// 
+//==============================================================
+      
+      /*
+      private function OnMoveControlPointAccurately (event:ContextMenuEvent):void
+      {  
+         EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveControlPointAccurately, {mLabelTextX: "Move Target X:", mLabelTextY: "Move Target Y:", mX: mPosX, mY: mPosY});
+      }
+      
+      private function MoveControlPointAccurately (params:Object):void
+      {
+         //var panelPoint:Point = ManagerToPanel (new Point (params.mTargetX, params.mTargetY));
+         //var panelPoint:Point = ManagerToPanel (new Point (params.mX, params.mY));
+         
+         //MoveScaleRotateFlipHandlers (panelPoint.x - mScaleRotateFlipHandlersContainer.x, panelPoint.y - mScaleRotateFlipHandlersContainer.y);
+      }
+      
+      private function OnMoveControlPointAccuratelyByOffset (event:ContextMenuEvent):void
+      {
+         //EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveControlPointAccurately, {mIsMoveTo: true});
+         EditorContext.OpenSettingsDialog (AccurateMoveDialog, MoveControlPointAccuratelyByOffset, null);
+      }
+      
+      private function MoveControlPointAccuratelyByOffset (params:Object):void
+      {
+         //var panelPoint:Point = ManagerToPanel (new Point (params.mTargetX, params.mTargetY));
+         //var panelPoint:Point = ManagerToPanel (new Point (params.mX, params.mY));
+         //var oriPoint:Point = ManagerToPanel (new Point (0, 0));
+         
+         //MoveScaleRotateFlipHandlers (panelPoint.x - oriPoint.x, panelPoint.y - oriPoint.y);
+      }
+      */
    }
 }

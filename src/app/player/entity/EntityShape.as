@@ -5,7 +5,7 @@ package player.entity {
    
    import flash.display.Sprite;
    
-   import flash.events.MouseEvent;
+   import flash.events.MouseEvent; 
    
    import flash.utils.Dictionary;
    
@@ -24,6 +24,8 @@ package player.entity {
    import player.trigger.ClassInstance;
    import player.trigger.CoreClassesHub;
    import player.trigger.ClassDefinition;
+   
+   import player.display.EntitySprite;
    
    import common.trigger.CoreEventIds;
    import common.trigger.CoreClassIds;
@@ -67,6 +69,7 @@ package player.entity {
          
          mPhysicsShapePotentially = false; // to override
          
+         mAppearanceObjectsContainer = new EntitySprite (this);
          mWorld.AddChildToEntityLayer (mAppearanceObjectsContainer);
          mAppearanceObject = mAppearanceObjectsContainer;
          
@@ -849,17 +852,17 @@ package player.entity {
       
    // for all shape, called by flex framework
       
-      protected function OnMouseClick (event:MouseEvent):void
+      public function OnMouseClick (event:MouseEvent):void
       {
          HandleMouseEvent (event, mMouseClickEventHandlerList);
       }
       
-      protected function OnMouseDown(event:MouseEvent):void
+      public function OnMouseDown (event:MouseEvent):void
       {
          HandleMouseEvent (event, mMouseDownEventHandlerList);
       }
       
-      protected function OnMouseUp(event:MouseEvent):void
+      public function OnMouseUp (event:MouseEvent):void
       {
          HandleMouseEvent (event, mMouseUpEventHandlerList);
       }
@@ -869,17 +872,17 @@ package player.entity {
          HandleMouseEvent (event, mMouseRightClickEventHandlerList);
       }
       
-      protected function OnMouseRightDown(event:MouseEvent):void
+      protected function OnMouseRightDown (event:MouseEvent):void
       {
          HandleMouseEvent (event, mMouseRightDownEventHandlerList);
       }
       
-      protected function OnMouseRightUp(event:MouseEvent):void
+      protected function OnMouseRightUp (event:MouseEvent):void
       {
          HandleMouseEvent (event, mMouseRightUpEventHandlerList);
       }
       
-      protected function OnMouseMove(event:MouseEvent):void
+      public function OnMouseMove (event:MouseEvent):void
       {
          HandleMouseEvent (event, mMouseMoveEventHandlerList);
       }
@@ -890,7 +893,7 @@ package player.entity {
          HandleMouseEvent (event, mMouseEnterEventHandlerList);
       }
       
-      protected function OnMouseOut(event:MouseEvent):void
+      protected function OnMouseOut (event:MouseEvent):void
       {
 //trace ("<<<<< Out,    target = " + event.target + ", relatedObject = " + event.relatedObject);
          HandleMouseEvent (event, mMouseOutEventHandlerList);
@@ -998,10 +1001,17 @@ package player.entity {
             mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_UP, GetMouseUpListener ());
          if (GetMouseMoveListener () != null)
             mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_MOVE, GetMouseMoveListener ());
+         // by using ROLL_OVER/ROLL_OUT, mAppearanceObjectsContainer.mouseChildren can be true
+         // otherwise by using MOUSE_OVER/MOUSE_OUT, mAppearanceObjectsContainer.mouseChildren can be false, which may bring some problems.
+         // but trying to use "mouseChildren = false" can get better performance
+         //if (GetMouseEnterListener () != null)
+         //   mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
+         //if  (GetMouseOutListener () != null)
+         //   mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
          if (GetMouseEnterListener () != null)
-            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.ROLL_OVER, GetMouseEnterListener ());
          if  (GetMouseOutListener () != null)
-            mAppearanceObjectsContainer.addEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
+            mAppearanceObjectsContainer.addEventListener (MouseEvent.ROLL_OUT, GetMouseOutListener ());
          
          if (mWorld.IsSupportMoreMouseEvents ())
          {
@@ -1077,10 +1087,17 @@ package player.entity {
             mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_UP, GetMouseUpListener ());
          if (GetMouseMoveListener () != null)
             mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_MOVE, GetMouseMoveListener ());
+         //if (GetMouseEnterListener () != null)
+         //   mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
+         //if  (GetMouseOutListener () != null)
+         //   mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
+         // by using ROLL_OVER/ROLL_OUT, mAppearanceObjectsContainer.mouseChildren can be true
+         // otherwise by using MOUSE_OVER/MOUSE_OUT, mAppearanceObjectsContainer.mouseChildren can be false, which may bring some problems.
+         // but trying to use "mouseChildren = false" can get better performance
          if (GetMouseEnterListener () != null)
-            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OVER, GetMouseEnterListener ());
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.ROLL_OVER, GetMouseEnterListener ());
          if  (GetMouseOutListener () != null)
-            mAppearanceObjectsContainer.removeEventListener (MouseEvent.MOUSE_OUT, GetMouseOutListener ());
+            mAppearanceObjectsContainer.removeEventListener (MouseEvent.ROLL_OUT, GetMouseOutListener ());
       }
       
       // for border shapes, this fucntions need to be overrode
@@ -1418,7 +1435,8 @@ package player.entity {
       protected var mNeedUpdateAppearanceProperties:Boolean = true;
       protected var mNeedRebuildAppearanceObjects:Boolean = true;
       
-      protected var mAppearanceObjectsContainer:Sprite = new Sprite ();
+      protected var mAppearanceObjectsContainer:Sprite; // = new Sprite ();
+                      // now put in constructor. (= new EntitySprite (this))
       
 //=============================================================
 //   body

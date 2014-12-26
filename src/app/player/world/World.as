@@ -32,6 +32,8 @@ package player.world {
    import player.physics.PhysicsProxyBody;
    import player.physics.PhysicsProxyShape;
    import player.physics.PhysicsProxyJoint;
+   
+   import player.display.EntitySprite;
 
    import player.entity.Entity;
    import player.entity.EntityVoid;
@@ -1492,6 +1494,8 @@ package player.world {
       //
       public function Destroy ():void
       {
+         HandleEventById (CoreEventIds.ID_OnWorldBeforeExiting);
+         
          mDestroyed = true;
       }
 

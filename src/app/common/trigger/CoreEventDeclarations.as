@@ -49,6 +49,10 @@ package common.trigger {
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldAfterUpdated,
                     null
                     );
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldBeforeExiting,
+                    null
+                    );
+                    
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldTimer,
                     [
                         [CoreClassIds.ValueType_Number,       0],

@@ -369,6 +369,8 @@ package editor {
             
             if (centerDialog)
                PopUpManager.centerPopUp (modalDialog);
+            
+            GetEditorApp ().stage.focus = modalDialog as InteractiveObject;
          }
          
          //SetHasSettingDialogOpened (true);
@@ -389,8 +391,6 @@ package editor {
          
          var modalDialogInfo:Object = mModalDialogStack [-- mModalDialogLevels];
          mModalDialogStack [mModalDialogLevels] = null;
-//trace ("-- mModalDialogLevels = " + mModalDialogLevels);
-//trace (new Error ().getStackTrace ());
          
          if (modalDialogInfo.mCurrentModalDialog != null && modalDialogInfo.mCurrentModalDialog.parent != null)
          {

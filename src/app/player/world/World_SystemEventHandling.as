@@ -237,6 +237,13 @@
       //addEventListener (MouseEvent.ROLL_OUT, OnOtherMouseEvents);
       //addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
       
+      // todo: MouseEvent.RIGHT_UP may be not fired. Now
+      //       use Event.MOUSE_LEAVE to fix this problem.
+      // addEventListener (Event.MOUSE_LEAVE, );
+      
+      // useless tips: get the context menu popup point: 
+      // > http://stackoverflow.com/questions/18017675/action-script-3-getting-click-location-when-context-menu-opens
+      
       if (IsSupportMoreMouseEvents ())
       {
          AddMoreMouseEventHandlers ();
@@ -300,6 +307,12 @@
 //   They are all caused by some descendants of the world sprite. 
 //   So every mouse event will not be triggered twice.
 //=============================================================
+   
+   private var mLastMouseDownEntity:Entity = null;
+   public function SetLastMouseDownEntity(entity:Entity):void
+   {
+      mLastMouseDownEntity = entity;
+   }
 
    public function OnViewerEvent (event:Event):void
    {
@@ -307,11 +320,140 @@
       if (mouseEvent == null) // only support mouse events now
          return;
       
+      // fix for entity event
+      
+      // although the fix will get back mouse down/up/click for entities, but move/enter/out are still missed,
+      
+      // this is not a perfect fix.
+      // todo: try to use DisplayObjectContianer.getObjectsUnderPoint and dispatchEvent instead
+
+      // for unknown reason, the result of mEntityLayer.getObjectsUnderPoint is always blank.
+      // so this fix doesn't work for entities.
+      
+      /*
+      var stagePoint:Point = new Point (mouseEvent.stageX, mouseEvent.stageY);
+      //var locaPoint:Point = StageToContentLayer (stagePoint);
+      //var childrenUnderPoint:Array = mContentLayer.getObjectsUnderPoint (locaPoint); // bug
+      var childrenUnderPoint:Array;
+      var count:int;
+      var layerContainer:DisplayObjectContainer;
+      if (mIsBorderAtTopLayer)
+      {
+         childrenUnderPoint = mBorderLayer.getObjectsUnderPoint (stagePoint);
+         count = childrenUnderPoint == null ? 0 : childrenUnderPoint.length;
+trace ("aaa childrenUnderPoint = " + childrenUnderPoint);
+         if (count != 0)
+         {
+            layerContainer = mBorderLayer;
+         }
+         else
+         {
+            layerContainer = mEntityLayer;
+            childrenUnderPoint = mEntityLayer.getObjectsUnderPoint (stagePoint);
+            count = childrenUnderPoint == null ? 0 : childrenUnderPoint.length;
+trace ("bbb count = " + count + ", childrenUnderPoint = " + childrenUnderPoint);
+         }
+      }
+      else
+      {
+         childrenUnderPoint = mEntityLayer.getObjectsUnderPoint (stagePoint);
+         count = childrenUnderPoint == null ? 0 : childrenUnderPoint.length;
+trace ("ccc count = " + count);
+         if (count != 0)
+         {
+            layerContainer = mEntityLayer;
+         }
+         else
+         {
+            layerContainer = mBorderLayer;
+            childrenUnderPoint = mBorderLayer.getObjectsUnderPoint (stagePoint);
+            count = childrenUnderPoint == null ? 0 : childrenUnderPoint.length;
+         }
+trace ("ddd count = " + count);
+      }
+      
+      var child:DisplayObject;
+      var childIndex:int;
+      var toppestChild:EntitySprite = null;
+      var toppestChildIndex:int = -1;
+      var p:DisplayObjectContainer;
+      var entitySprite:EntitySprite;
+      for (var i:int = count - 1; i >= 0; -- i)
+      {
+trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
+
+         child = childrenUnderPoint [i] as DisplayObject;
+         p = child;
+         entitySprite = null;
+         while (p != layerContainer)
+         {
+            entitySprite = p as EntitySprite;
+            if (entitySprite != null)
+               break;
+         }
+         
+         if (entitySprite != null)
+         {
+            childIndex = mContentLayer.getChildIndex (entitySprite);
+            if (childIndex > toppestChildIndex)
+            {
+               toppestChild = entitySprite;
+            }
+         }
+      }
+      
+      if (toppestChild != null)
+      {
+         //locaPoint = toppestChild.globalToLocal (stagePoint);
+         //
+         //var newMouseEvent:MouseEvent = new MouseEvent (mouseEvent.type, mouseEvent.bubbles, mouseEvent.cancelable, 
+         //                                               locaPoint.x, locaPoint.y, toppestChild as InteractiveObject,
+         //                                               mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
+         //                                               mouseEvent.buttonDown, mouseEvent.delta);
+         //toppestChild.dispatchEvent (newMouseEvent);
+         
+         // no needs to calculate the locaPoint, it is never used.
+         
+         var toppestShape:EntityShape = toppestChild.GetEntity () as EntityShape;
+         
+         if (toppestShape != null)
+         {
+            switch (mouseEvent.type)
+            {
+               //case MouseEvent.CLICK: // will fire in the following MOUSE_UP case block.
+               //   toppestShape.OnMouseClick (mouseEvent);
+               //   break;
+               case MouseEvent.MOUSE_DOWN:
+                  toppestShape.OnMouseDown (mouseEvent);
+                  break;
+               case MouseEvent.MOUSE_MOVE:
+                  toppestShape.OnMouseMove (mouseEvent);
+                  break;
+               case MouseEvent.MOUSE_UP:
+               {
+                  var isMouseDownEntity:Boolean = toppestChild.GetEntity () == mLastMouseDownEntity;
+                  
+                  toppestShape.OnMouseUp (mouseEvent);
+                  
+                  if (isMouseDownEntity)
+                  {
+                     toppestShape.OnMouseClick (mouseEvent);
+                  }
+                  
+                  break;
+               }
+            }
+         }
+      }
+      */
+      
+      // fix for world events
+      
       switch (mouseEvent.type)
       {
-         case MouseEvent.CLICK:
-            OnMouseLeftClick (mouseEvent);
-            break;
+         //case MouseEvent.CLICK: // will fire in the following MOUSE_UP case block.
+         //   OnMouseLeftClick (mouseEvent);
+         //   break;
          case MouseEvent.MOUSE_DOWN:
             OnMouseLeftDown (mouseEvent);
             break;
@@ -319,54 +461,29 @@
             OnMouseMove (mouseEvent);
             break;
          case MouseEvent.MOUSE_UP:
-            OnMouseLeftUp (mouseEvent);
-            break;
-      }
-      
-      // this is not a perfect fix.
-      // todo: try to use DisplayObjectContianer.getObjectsUnderPoint and dispatchEvent instead
-      // the following is also not good.
-      
-      /*
-      var stagePoint:Point = new Point (mouseEvent.stageX, mouseEvent.stageY);
-      var locaPoint:Point = StageToContentLayer (stagePoint);
-      var childrenUnderPoint:Array = mContentLayer.getObjectsUnderPoint (locaPoint);
-      if (childrenUnderPoint == null || childrenUnderPoint.length == 0)
-         return;
-      
-      var child:DisplayObject;
-      var childIndex:int;
-      var toppestChild:DisplayObject = null;
-      var toppestChildIndex:int = -1;
-      for (var i:int = childrenUnderPoint.length - 1; i >= 0; -- i)
-      {
-         child = childrenUnderPoint [i] as DisplayObject;
-         if (child is InteractiveObject)
          {
-            childIndex = mContentLayer.getChildIndex (child);
-            if (childIndex > toppestChildIndex)
+            var isMouseDown:Boolean = IsKeyHold (KeyCodes.LeftMouseButton); 
+                  // should NOT use mouseEvent.buttonDown.
+                  // the two values may be different.
+            
+            OnMouseLeftUp (mouseEvent);
+            
+            if (isMouseDown)
             {
-               toppestChild = child;
+               // this "if" may cause a little incompatibility. Old version has not this line.
+               OnMouseLeftClick (mouseEvent);
             }
+            
+            break;
          }
       }
-      
-      if (toppestChild == null)
-         return;
-      
-      locaPoint = (toppestChild as DisplayObject).globalToLocal (stagePoint);
-      
-      var newMouseEvent:MouseEvent = new MouseEvent (mouseEvent.type, mouseEvent.bubbles, mouseEvent.cancelable, 
-                                                     locaPoint.x, locaPoint.y, toppestChild as InteractiveObject,
-                                                     mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
-                                                     mouseEvent.buttonDown, mouseEvent.delta);
-      toppestChild.dispatchEvent (newMouseEvent);
-      */
    }
    
    public function OnMouseLeftClick (event:MouseEvent):void
    {
       OnMouseClick (event, true);
+      
+      SetLastMouseDownEntity (null);
    }
    
    public function OnMouseRightClick (event:MouseEvent):void
@@ -484,6 +601,9 @@
    
    public function OnMouseUp (event:MouseEvent, isLeft:Boolean):void
    {
+      // currently, mouse up events will not be fired if mouse down events are not registered.
+      // (key events also). 
+   
       // ...
       if (isLeft)
       {

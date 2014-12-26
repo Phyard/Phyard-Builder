@@ -128,6 +128,9 @@ package editor.entity {
             
          if (AreControlPointsVisible ())
          {
+            //mControlPointsContainer.mouseChildren = true; 
+               // important, to make context menu of control point show custom items
+               // still not work. (don't konw why)
             addChild (mControlPointsContainer);
          }
       }

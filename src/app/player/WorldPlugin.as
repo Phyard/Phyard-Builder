@@ -37,7 +37,6 @@ package player
                            //GetAcceleration:Function; // from v1.60
                            //GetScreenResolution:Function; // from v2.03
                            //GetScreenDPI:Function; // from v2.03
-                           //OpenURL:Function; // from v2.03
                
                /*Global.sTheGlobal*/world.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
                                                                   // useless since v2.03.
@@ -49,6 +48,7 @@ package player
                /*Global.sTheGlobal*/world.Viewer_mLibGraphics = params.mLibGraphics; // from v2.03
                
                /*Global.sTheGlobal*/world.Viewer_mLibAppp = params.mLibApp; // v2.03
+                                                        //.OpenURL              // v2.03
                                                         //.IsCurrentViewer      // v2.08
                                                         //.GetAppWindowPadding  // v2.09
                                                         //.SetAppWindowPadding  // v2.09

@@ -283,6 +283,11 @@ package editor.entity {
       private var mSupportMoreMouseEvents:Boolean = false;
       //<<
       
+      //>>2.10
+      private var mSupportMultipleTouchEvents:Boolean = false;
+      private var mDontDelayUserInputEvents:Boolean = false;
+      //<<
+      
       //>>v2.00
       private var mName:String = "";
       //<<
@@ -749,6 +754,26 @@ package editor.entity {
       public function SetSupportMoreMouseEvents (supportMoreMouseEvents:Boolean):void
       {
          mSupportMoreMouseEvents = supportMoreMouseEvents;
+      }
+      
+      public function IsSupportMultipleTouchEvents ():Boolean
+      {
+         return mSupportMultipleTouchEvents;
+      }
+      
+      public function SetSupportMultipleTouchEvents (supportMultipleTouchEvents:Boolean):void
+      {
+         mSupportMultipleTouchEvents = supportMultipleTouchEvents;
+      }
+      
+      public function IsDontDelayUserInputEvents ():Boolean
+      {
+         return mDontDelayUserInputEvents;
+      }
+      
+      public function SetDontDelayUserInputEvents (dontDelayUserInputEvents:Boolean):void
+      {
+         mDontDelayUserInputEvents = dontDelayUserInputEvents;
       }
       
 //=================================================================================

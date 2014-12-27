@@ -884,6 +884,8 @@ package editor.entity.dialog {
          info.mIsCiRulesEnabled = mScene.IsCiRulesEnabled ();
          info.mRemovePinksOnMouseDown = mScene.IsRemovePinksOnMouseDown ();
          info.mSupportMoreMouseEvents = mScene.IsSupportMoreMouseEvents ();
+         info.mSupportMultipleTouchEvents = mScene.IsSupportMultipleTouchEvents ();
+         info.mDontDelayUserInputEvents = mScene.IsDontDelayUserInputEvents ();
          
          EditorContext.OpenSettingsDialog (WorldLevelRulesSettingDialog, SetLevelRulesInfo, info);
       }
@@ -894,6 +896,8 @@ package editor.entity.dialog {
          mScene.SetCiRulesEnabled (info.mIsCiRulesEnabled);
          mScene.SetRemovePinksOnMouseDown (info.mRemovePinksOnMouseDown);
          mScene.SetSupportMoreMouseEvents (info.mSupportMoreMouseEvents);
+         mScene.SetSupportMultipleTouchEvents (info.mSupportMultipleTouchEvents);
+         mScene.SetDontDelayUserInputEvents (info.mDontDelayUserInputEvents);
          
          CreateUndoPoint ("World rules are changed");
       }

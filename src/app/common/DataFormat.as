@@ -166,6 +166,10 @@ package common {
             worldDefine.mPreferences.mAppBackgroundColor = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetSurroundingBackgroundColor ();
             worldDefine.mPreferences.mGridCellWidth = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellWidth ();
             worldDefine.mPreferences.mGridCellHeight = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetGridCellHeight ();
+            
+            //>> from v2.10
+            worldDefine.mPreferences.mLinkLineColor = EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().GetLinkLineColor ();
+            //<<
          }
          //<<
 
@@ -434,6 +438,11 @@ package common {
             //>>from v2.08
             sceneDefine.mSettings.mSupportMoreMouseEvents = scene.IsSupportMoreMouseEvents ();
             sceneDefine.mSettings.mRemovePinksOnMouseDown = scene.IsRemovePinksOnMouseDown ();
+            //<<
+            
+            //>>from v2.10
+            sceneDefine.mSettings.mSupportMultipleTouchEvents = scene.IsSupportMultipleTouchEvents ();
+            sceneDefine.mSettings.mDontDelayUserInputEvents = scene.IsDontDelayUserInputEvents ();
             //<<
          }
          
@@ -1565,6 +1574,10 @@ package common {
             //{
                EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetSurroundingBackgroundColor (worldDefine.mPreferences.mAppBackgroundColor);
                EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetGridCellSize (worldDefine.mPreferences.mGridCellWidth, worldDefine.mPreferences.mGridCellHeight);
+               
+               //>> from v.10
+               EditorContext.GetEditorApp ().GetSceneEditDialog ().GetSceneEditPanel ().SetLinkLineColor (worldDefine.mPreferences.mLinkLineColor);
+               //<<
             //}
             //<<
          }
@@ -2217,6 +2230,11 @@ package common {
                //>>from v2.08
                scene.SetSupportMoreMouseEvents (sceneDefine.mSettings.mSupportMoreMouseEvents);
                scene.SetRemovePinksOnMouseDown (sceneDefine.mSettings.mRemovePinksOnMouseDown);
+               //<<
+               
+               //>>from v2.10
+               scene.SetSupportMultipleTouchEvents (sceneDefine.mSettings.mSupportMultipleTouchEvents);
+               scene.SetDontDelayUserInputEvents (sceneDefine.mSettings.mDontDelayUserInputEvents);
                //<<
             }
          }
@@ -3545,6 +3563,10 @@ package common {
                   worldDefine.mPreferences.mGridCellWidth = parseInt (prefElement.@value);
                else if (prefElement.@name == "scene_grid_cell_height")
                   worldDefine.mPreferences.mGridCellHeight =  parseInt (prefElement.@value);
+               //>> from v2.10
+               else if (prefElement.@name == "link_line_color")
+                  worldDefine.mPreferences.mLinkLineColor = parseInt (prefElement.@value);
+               //<<
             }
          }
          
@@ -3834,6 +3856,13 @@ package common {
                   sceneDefine.mSettings.mSupportMoreMouseEvents = parseInt (element.@value) != 0;
                else if (element.@name == "remove_pinks_on_mouse_down")
                   sceneDefine.mSettings.mRemovePinksOnMouseDown = parseInt (element.@value) != 0;
+               //<<
+               
+               //>>from v2.10
+               else if (element.@name == "support_multi_touch_events")
+                  sceneDefine.mSettings.mSupportMultipleTouchEvents = parseInt (element.@value) != 0;
+               else if (element.@name == "dont_delay_user_input_events")
+                  sceneDefine.mSettings.mDontDelayUserInputEvents = parseInt (element.@value) != 0;
                //<<
                
                else
@@ -4789,6 +4818,10 @@ package common {
             byteArray.writeShort (worldDefine.mPreferences.mGridCellWidth);
             byteArray.writeShort (worldDefine.mPreferences.mGridCellHeight);
          }
+         if (worldDefine.mVersion >= 0x0210)
+         {
+            byteArray.writeUnsignedInt (worldDefine.mPreferences.mLinkLineColor);
+         }
          
          // scenes
 
@@ -5029,7 +5062,13 @@ package common {
                {
                   if (sceneDefine.mSettings.mSupportMoreMouseEvents) generalSeetingFlag |= 0x02;
                }
+               if (worldDefine.mVersion >= 0x0210)
+               {
+                  if (sceneDefine.mSettings.mSupportMultipleTouchEvents) generalSeetingFlag |= 0x04;
+                  if (sceneDefine.mSettings.mDontDelayUserInputEvents) generalSeetingFlag |= 0x08;
+               }
                byteArray.writeByte (generalSeetingFlag);
+               
                
                byteArray.writeByte (sceneDefine.mSettings.mPhysicsSimulationEnabled ? 1 : 0);
                byteArray.writeFloat (sceneDefine.mSettings.mPhysicsSimulationStepTimeLength);

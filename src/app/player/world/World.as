@@ -164,6 +164,8 @@ package player.world {
 
       public function World (worldDefine:Object)
       {
+         CheckMultitouchClasses ();
+         
          // basic
          //
          //mVersion          = worldDefine.mVersion;
@@ -183,7 +185,10 @@ package player.world {
          mPreferredFPS = worldDefine.mSettings.mPreferredFPS;
          mPauseOnFocusLost = worldDefine.mSettings.mPauseOnFocusLost;
          mSupportMoreMouseEvents = worldDefine.mSettings.mSupportMoreMouseEvents;
-         
+         mSupportMultipleTouchEvents = worldDefine.mSettings.mSupportMultipleTouchEvents;
+         mDontDelayUserInputEvents = worldDefine.mSettings.mDontDelayUserInputEvents;
+         SetCacheSystemEvent (true); //mDontDelayUserInputEvents);
+                  
          mPhysicsSimulationEnabled = worldDefine.mSettings.mPhysicsSimulationEnabled;
          mPhysicsSimulationQuality = worldDefine.mSettings.mPhysicsSimulationQuality;
          mCheckTimeOfImpact = worldDefine.mSettings.mCheckTimeOfImpact;
@@ -708,6 +713,8 @@ package player.world {
       private var mPreferredFPS:Number;
       private var mPauseOnFocusLost:Boolean;    
       private var mSupportMoreMouseEvents:Boolean = false;
+      private var mSupportMultipleTouchEvents:Boolean = false;
+      private var mDontDelayUserInputEvents:Boolean = false;
       
       public function GetInitialSpeedX ():int
       {
@@ -732,6 +739,21 @@ package player.world {
       public function IsSupportMoreMouseEvents ():Boolean
       {
          return mSupportMoreMouseEvents;
+      }
+      
+      public function SetSupportMultipleTouchEvents (support:Boolean):void
+      {
+         mSupportMultipleTouchEvents = support && Multitouch.supportsTouchEvents;
+      }
+      
+      public function IsSupportMultipleTouchEvents ():Boolean
+      {
+         return mSupportMultipleTouchEvents;
+      }
+      
+      public function IsDontDelayUserInputEvents ():Boolean
+      {
+         return mDontDelayUserInputEvents;
       }
 
 //=============================================================

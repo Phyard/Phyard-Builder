@@ -354,7 +354,7 @@ package common {
             //Global.sTheGlobal.UpdateCoreClassDefaultInitialValues ();
             //Global.sTheGlobal.CreateOrResetCoreFunctionDefinitions ();
             
-            // not needs to use plugin interface, but don't want to change it.
+            // not needs to use plugin interface, but don't want to change it now.
             worldDefine.mViewerParams.mWorld = playerWorld;
             WorldPlugin.Call ("SetViewerParams", worldDefine.mViewerParams);
             worldDefine.mViewerParams = null;
@@ -805,6 +805,11 @@ package common {
             prefElement = IntSetting2XmlElement ("scene_grid_cell_height", worldDefine.mPreferences.mGridCellHeight, false, "Preference");
             xml.Preferences.appendChild (prefElement);
          }
+         if (worldDefine.mVersion >= 0x0210)
+         {
+            prefElement = IntSetting2XmlElement ("link_line_color", worldDefine.mPreferences.mLinkLineColor, true, "Preference");
+            xml.Preferences.appendChild (prefElement); 
+         }
          
          // scenes
 
@@ -1131,6 +1136,13 @@ package common {
             element = BoolSetting2XmlElement ("support_all_mouse_events", sceneDefine.mSettings.mSupportMoreMouseEvents);
             xml.Settings.appendChild (element);
             element = BoolSetting2XmlElement ("remove_pinks_on_mouse_down", sceneDefine.mSettings.mRemovePinksOnMouseDown);
+            xml.Settings.appendChild (element);
+         }
+         if (worldDefine.mVersion >= 0x0210)
+         {
+            element = BoolSetting2XmlElement ("support_multi_touch_events", sceneDefine.mSettings.mSupportMultipleTouchEvents);
+            xml.Settings.appendChild (element);
+            element = BoolSetting2XmlElement ("dont_delay_user_input_events", sceneDefine.mSettings.mDontDelayUserInputEvents);
             xml.Settings.appendChild (element);
          }
 
@@ -2166,6 +2178,10 @@ package common {
             worldDefine.mPreferences.mGridCellWidth  = byteArray.readShort ();
             worldDefine.mPreferences.mGridCellHeight  = byteArray.readShort ();
          }
+         if (worldDefine.mVersion >= 0x0210)
+         {
+            worldDefine.mPreferences.mLinkLineColor = byteArray.readUnsignedInt ();
+         }
          
          // scenes
 
@@ -2416,6 +2432,11 @@ package common {
                if (worldDefine.mVersion >= 0x0208)
                {
                   sceneDefine.mSettings.mSupportMoreMouseEvents = ((generalSeetingFlag & 0x02) != 0);
+               }
+               if (worldDefine.mVersion >= 0x0210)
+               {
+                  sceneDefine.mSettings.mSupportMultipleTouchEvents = ((generalSeetingFlag & 0x04) != 0);
+                  sceneDefine.mSettings.mDontDelayUserInputEvents = ((generalSeetingFlag & 0x08) != 0);
                }
                
                sceneDefine.mSettings.mPhysicsSimulationEnabled = byteArray.readByte () != 0;
@@ -3850,6 +3871,10 @@ package common {
                worldDefine.mPreferences.mGridCellWidth  = 50;
                worldDefine.mPreferences.mGridCellHeight  = 50;
             }
+            if (worldDefine.mVersion < 0x0210)
+            {
+               worldDefine.mPreferences.mLinkLineColor = 0x000000;
+            }
             
             // modules
             if (worldDefine.mVersion >= 0x0158)
@@ -3978,6 +4003,11 @@ package common {
             {
                sceneDefine.mSettings.mSupportMoreMouseEvents = false;
                sceneDefine.mSettings.mRemovePinksOnMouseDown = false;
+            }
+            if (worldDefine.mVersion < 0x0210)
+            {
+               sceneDefine.mSettings.mSupportMultipleTouchEvents = false;
+               sceneDefine.mSettings.mDontDelayUserInputEvents = false;
             }
    
             // collision category

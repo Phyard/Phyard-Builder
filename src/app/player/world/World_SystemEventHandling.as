@@ -59,6 +59,12 @@
    
    public function SetCacheSystemEvent (cache:Boolean):void
    {
+      if (IsDontDelayUserInputEvents ())
+      {
+         mCacheSystemEvents = false;
+         return;
+      }
+      
       mCacheSystemEvents = cache;
       
       if (! mCacheSystemEvents)
@@ -194,6 +200,12 @@
 //   
 //=============================================================
 
+   // for unknown reason, "import flash.ui.Multitouch;" brings compiling error.
+   // so get it dynamically.
+   private function CheckMultitouchClasses ():void
+   {
+   }
+
    private var mIsMoreEventHandlersAdded:Boolean = false;
    private function AddMoreMouseEventHandlers ():void
    {
@@ -227,6 +239,9 @@
    {
       addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
       
+      if (IsSupportMultipleTouchEvents ())
+      {
+      }
       addEventListener (MouseEvent.CLICK, OnMouseLeftClick);
       addEventListener (MouseEvent.MOUSE_DOWN, OnMouseLeftDown);
       addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);

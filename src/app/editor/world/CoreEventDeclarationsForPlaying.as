@@ -166,6 +166,70 @@ package editor.world {
 
       // ...
 
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityTouchTap, "On Shape Touch Tap", "Touch tap on a shape",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityTouchBegin, "On Shape Touch Begin", "Begin touching on a shape",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityTouchEnd, "On Shape Touch End", "End touching on a shape",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityTouchMove, "On Shape Touch Move", "Touch move on a shape",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityTouchEnter, "On Shape Touch Enter", "Touch enter a shape",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnEntityTouchOut, "On Shape Touch Out", "Touch out a shape",
+                    [
+                        new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                    ]);
+
+
+      // ...
+
          RegisterEventDeclaration (CoreEventIds.ID_OnPhysicsShapeMouseDown, "OnPhysicsShapeMouseDown", "Presss mouse on a physics shape",
                     [
                         new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
@@ -303,6 +367,49 @@ package editor.world {
                     [
                         new VariableDefinitionEntity ("The Mobule Shape", null, {mValidClasses: Filters.sModuleShapeEntityClasses}),
                         new VariableDefinitionModule ("The Mobule"),
+                    ]);
+
+      // ...
+
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldTouchTap, "On World Touch Tap", "Touch tap on a shape",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldTouchBegin, "On World Touch Begin", "Begin touching a shape",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldTouchEnd, "On World Touch End", "End touching a shape",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
+                    ]);
+         RegisterEventDeclaration (CoreEventIds.ID_OnWorldTouchMove, "On World Touch Move", "Touch move on a shape",
+                    [
+                        new VariableDefinitionNumber ("World X"),
+                        new VariableDefinitionNumber ("World Y"),
+                        new VariableDefinitionNumber ("Touch Point ID"),
+                        new VariableDefinitionBoolean ("Is Primary Touch Point"),
+                        new VariableDefinitionNumber ("Pressure"),
+                        new VariableDefinitionString ("Intent"),
+                        new VariableDefinitionBoolean ("Is Overlapped by Some Entities"),
                     ]);
 
       // ...

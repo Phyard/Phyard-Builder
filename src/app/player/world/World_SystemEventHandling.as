@@ -1,10 +1,60 @@
+   
+   // [2013.10.14 v2.05]:
+   // seems this function was added from v1.50.
+   // for viewer calling only, not exposed as an API.
+   // the viewer will call world.SetCacheSystemEvent (world.mShowPlayBar).
+   // maybe doing this will be helpful for some cases I forgot now.
+   //    (maybe for Flash security, for example, Flash only call ClipBoard.paste in system event handlers)
+   // it will bring lags when synchronizing shape visual and physics.
+   // to keep the compatibility:
+   // - to add a UpdateShapeAppearance API for synchronizing shape visual immediately
+   // - in viewer, for v2.xx, don't call world.SetCacheSystemEvent (world.mShowPlayBar)
+   // - to add a SetCacheSystemEvent API
+   
+   // [2014.12.28 v2.10]
+   // the forgot reason above mentioned should be like such:
+   // some designs has disable all default skin ui, so there is no way to resume it when it is paused.
+   // (for generally, in paused status, all user input will be ignored.)
+   // so to give such designs a chance to resume, SetInteractiveEnabledWhenPaused and SetCacheSystemEvent
+   // will be called from viewer.
+   // 
+   // but this solution is the result of not thinking deeply. It brings many negative effects, the most negative one is
+   // the cached mouse event point, which is in physics unit, may change into invalid when the event is delay handled.
+   //  
+   // so from v2.10, the following new solution is used:
+   // 1. never cache events again
+   // 2. IsInteractiveEnabledWhenPaused will always return false
+   // 3. if default skin UI is disabled, then when pauses, design will be deactivated (a big play button will show in center).
+   //
+   // This new solution breaks a little compatibility, but the affect is expected to be small.
+   
 
+
+   public static const CachedEventType_General:int = 0;
+   public static const CachedEventType_RemoveBombsAndRemovableShapes:int = 1;
+   
+   //private var mCacheSystemEvents:Boolean = true;
+   private var mCacheSystemEvents:Boolean = false; // since v2.10, never cache events.
+   
+   public function SetCacheSystemEvent (cache:Boolean):void
+   {
+      //mCacheSystemEvents = cache;
+      mCacheSystemEvents = false; // since v2.10, never cache events.
+      
+      if (! mCacheSystemEvents)
+      {
+         HandleAllCachedSystemEvents ();
+         ClearAllCachedSystemEvents ();
+      }
+   }
+   
    private var mEnabledInteractiveWhenPaused:Boolean = false;
    
    public function SetInteractiveEnabledWhenPaused (enable:Boolean):void
    {
-      mEnabledInteractiveWhenPaused = enable;
-         // this is 
+      // mEnabledInteractiveWhenPaused = enable;
+         // this line is commented off since v2.10,
+         // which means interactive is always forbidden when paused.
    }
    
    public function IsInteractiveEnabledNow ():Boolean
@@ -22,57 +72,9 @@
 //=============================================================
 //   
 //=============================================================
-
-   private var mCurrentMode:Mode = null;
    
-   public function SetCurrentMode (mode:Mode):void
-   {
-      if (mCurrentMode != null)
-         mCurrentMode.Destroy ();
-      
-      mCurrentMode = mode;
-      
-      if (mCurrentMode != null)
-         mCurrentMode.Initialize ();
-   }
-
-//=============================================================
-//   
-//=============================================================
-
-   public static const CachedEventType_General:int = 0;
-   public static const CachedEventType_RemoveBombsAndRemovableShapes:int = 1;
-   
-   private var mCacheSystemEvents:Boolean = true;
-   
-   // [2013.10.14 v2.05]:
-   // seems this function was added from v1.50.
-   // for viewer calling only, not exposed as an API.
-   // the viewer will call world.SetCacheSystemEvent (world.mShowPlayBar).
-   // maybe doing this will be helpful for some cases I forget now.
-   //    (maybe for Flash security, for example, Flash only only call ClipBoard.paste in system event handlers)
-   // it will bring lags when synchronizing shape visual and physics.
-   // to keep the compatibility:
-   // - to add a UpdateShapeAppearance API for synchronizing shape visual immediately
-   // - in viewer, for v2.xx, don't call world.SetCacheSystemEvent (world.mShowPlayBar)
-   // - to add a SetCacheSystemEvent API
-   
-   public function SetCacheSystemEvent (cache:Boolean):void
-   {
-      if (IsDontDelayUserInputEvents ())
-      {
-         mCacheSystemEvents = false;
-         return;
-      }
-      
-      mCacheSystemEvents = cache;
-      
-      if (! mCacheSystemEvents)
-      {
-         HandleAllCachedSystemEvents ();
-         ClearAllCachedSystemEvents ();
-      }
-   }
+   // todo: remove the RegisterCachedSystemEvent function, replace all its refs with HandleCachedSystemEvent instead.
+   //       many local Parameter_DirectConstant chains can also change into member variables.
    
    private var mCachedSystemEvents:Array = new Array ();
    
@@ -136,23 +138,47 @@
 //   
 //=============================================================
 
+   private var mCurrentMode:Mode = null;
+   
+   public function SetCurrentMode (mode:Mode):void
+   {
+      if (mCurrentMode != null)
+         mCurrentMode.Destroy ();
+      
+      mCurrentMode = mode;
+      
+      if (mCurrentMode != null)
+         mCurrentMode.Initialize ();
+   }
+
+//=============================================================
+//   
+//=============================================================
+
    private var mCachedMousePoint:Point = null;
    private var mCurrentMouseX:Number = 0; // generally, use GetCurrentMouseX ()
    private var mCurrentMouseY:Number = 0; // generally, use GetCurrentMouseY ()
    private var mIsMouseButtonDown:Boolean = false;
    
-   public function GetCurrentMouseX ():Number
-   {
-      UpdateMousePosition ();
-      
-      return mCurrentMouseX;
-   }
+   //public function GetCurrentMouseX ():Number
+   //{
+   //   UpdateMousePosition ();
+   //   
+   //   return mCurrentMouseX;
+   //}
+   //
+   //public function GetCurrentMouseY ():Number
+   //{
+   //   UpdateMousePosition ();
+   //   
+   //   return mCurrentMouseY;
+   //}
    
-   public function GetCurrentMouseY ():Number
+   public function GetCurrentMousePosition ():Point // in physics unit
    {
       UpdateMousePosition ();
       
-      return mCurrentMouseY;
+      return new Point (mCurrentMouseX, mCurrentMouseY);
    }
    
    private function UpdateMousePosition ():void
@@ -173,7 +199,7 @@
       
       var point:Point = mCoordinateSystem.DisplayPoint2PhysicsPosition (mCachedMousePoint.x, mCachedMousePoint.y);
       
-      mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12); // why do this?
+      mCurrentMouseX = ValueAdjuster.Number2Precision (point.x, 12); // why do this? forgot
       mCurrentMouseY = ValueAdjuster.Number2Precision (point.y, 12);
    }
    
@@ -199,12 +225,6 @@
 //=============================================================
 //   
 //=============================================================
-
-   // for unknown reason, "import flash.ui.Multitouch;" brings compiling error.
-   // so get it dynamically.
-   private function CheckMultitouchClasses ():void
-   {
-   }
 
    private var mIsMoreEventHandlersAdded:Boolean = false;
    private function AddMoreMouseEventHandlers ():void
@@ -235,13 +255,37 @@
       }
    }
    
+   private var mIsTouchEventHandlersAdded:Boolean = false;
+   private function AddTouchEventHandlers ():void
+   {
+      if (mIsTouchEventHandlersAdded)
+         return;
+      
+      addEventListener (/*TOUCH_BEGIN.TOUCH_TAP*/"touchTap", OnTouchTap);
+      addEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
+      addEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove);
+      addEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd);
+      
+      mIsTouchEventHandlersAdded = true;
+   }
+   
+   private function RemoveTouchEventHandlers ():void
+   {
+      if (mIsTouchEventHandlersAdded)
+      {
+         removeEventListener (/*TOUCH_BEGIN.TOUCH_TAP*/"touchTap", OnTouchTap);
+         removeEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
+         removeEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove);
+         removeEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd);
+         
+         mIsTouchEventHandlersAdded = false;
+      }
+   }
+   
    private function OnAddedToStage (event:Event):void 
    {
       addEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
       
-      if (IsSupportMultipleTouchEvents ())
-      {
-      }
       addEventListener (MouseEvent.CLICK, OnMouseLeftClick);
       addEventListener (MouseEvent.MOUSE_DOWN, OnMouseLeftDown);
       addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
@@ -251,6 +295,11 @@
       //addEventListener (MouseEvent.ROLL_OVER, OnOtherMouseEvents);
       //addEventListener (MouseEvent.ROLL_OUT, OnOtherMouseEvents);
       //addEventListener (MouseEvent.MOUSE_WHEEL, OnMouseWheel);
+      
+      if (Viewer_mLibCapabilities.IsMultitouchSupported ())
+      {
+         AddTouchEventHandlers ();
+      }
       
       // todo: MouseEvent.RIGHT_UP may be not fired. Now
       //       use Event.MOUSE_LEAVE to fix this problem.
@@ -291,6 +340,8 @@
       removeEventListener (Event.ADDED_TO_STAGE , OnAddedToStage);
       removeEventListener (Event.REMOVED_FROM_STAGE , OnRemovedFromStage);
       
+      RemoveTouchEventHandlers ();
+      
       removeEventListener (MouseEvent.CLICK, OnMouseLeftClick);
       removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseLeftDown);
       removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
@@ -301,10 +352,15 @@
       //removeEventListener (MouseEvent.ROLL_OVER, OnRollOver);
       //removeEventListener (MouseEvent.ROLL_OUT, OnRollOut);
       
-      if (IsSupportMoreMouseEvents ())
-      {
+      //if (Viewer_mLibCapabilities.IsMultitouchSupported ())
+      //{
+         RemoveTouchEventHandlers ();
+      //}
+      
+      //if (IsSupportMoreMouseEvents ())
+      //{
          RemoveMoreMouseEventHandlers ();
-      }
+      //}
       
       // !!! don't forget to unregister corresponding event on Viewer.mGesgureSprite
       
@@ -323,11 +379,13 @@
 //   So every mouse event will not be triggered twice.
 //=============================================================
    
-   private var mLastMouseDownEntity:Entity = null;
+   //private var mLastMouseDownEntity:Entity = null;
    public function SetLastMouseDownEntity(entity:Entity):void
    {
-      mLastMouseDownEntity = entity;
+      //mLastMouseDownEntity = entity;
    }
+   
+   // !!!!!!! since v2.10, this fix is cancelled.
 
    public function OnViewerEvent (event:Event):void
    {
@@ -409,7 +467,7 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          
          if (entitySprite != null)
          {
-            childIndex = mContentLayer.getChildIndex (entitySprite);
+            childIndex = layerContainer.getChildIndex (entitySprite);
             if (childIndex > toppestChildIndex)
             {
                toppestChild = entitySprite;
@@ -464,6 +522,8 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
       
       // fix for world events
       
+      // (since v2.10, this function including the following will not be called)
+      
       switch (mouseEvent.type)
       {
          //case MouseEvent.CLICK: // will fire in the following MOUSE_UP case block.
@@ -477,7 +537,7 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
             break;
          case MouseEvent.MOUSE_UP:
          {
-            var isMouseDown:Boolean = IsKeyHold (KeyCodes.LeftMouseButton); 
+            var isMouseDown:Boolean = IsKeyHold (KeyCodes.LeftMouseButton);
                   // should NOT use mouseEvent.buttonDown.
                   // the two values may be different.
             
@@ -536,10 +596,11 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          RegisterMouseEvent (event, mEventHandlersByTypes [isLeft ? CoreEventIds.ID_OnWorldMouseClick : CoreEventIds.ID_OnWorldMouseRightClick]);
       }
       
-      if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
-      {
-         event.stopPropagation ();
-      }
+      // cancelled in viewer, so no needs to handle it now.
+      //if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+      //{
+      //   event.stopPropagation ();
+      //}
    }
    
    private var _KeyboardDownEvent:KeyboardEvent = new KeyboardEvent (KeyboardEvent.KEY_DOWN);
@@ -608,10 +669,11 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          HandlePhysicsShapeMouseEvents (event, true, isLeft);
       }
       
-      if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
-      {
-         event.stopPropagation ();
-      }
+      // cancelled in viewer, so no needs to handle it now.
+      //if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+      //{
+      //   event.stopPropagation ();
+      //}
    }
    
    public function OnMouseUp (event:MouseEvent, isLeft:Boolean):void
@@ -638,7 +700,7 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
       {
          var mouseButtonKeyCode:int = isLeft ? KeyCodes.LeftMouseButton : KeyCodes.RightMouseButton;
          
-         if (IsKeyHold (mouseButtonKeyCode))
+         if (IsKeyHold (mouseButtonKeyCode)) // should this line  be commented off? Flash Player 11.3 introduces RELEASE_OUTSIDE. So keeep this line temp now.
          {
             // moved to bottom
             //KeyReleased (mouseButtonKeyCode, 0);
@@ -670,10 +732,11 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          }
       }
       
-      if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
-      {
-         event.stopPropagation ();
-      }
+      // cancelled in viewer, so no needs to handle it now.
+      //if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+      //{
+      //   event.stopPropagation ();
+      //}
    }
    
    private function HandlePhysicsShapeMouseEvents (event:MouseEvent, isMouseDown:Boolean, isLeft:Boolean):void
@@ -784,10 +847,11 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseMove]);
       }
       
-      if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
-      {
-         event.stopPropagation ();
-      }
+      // cancelled in viewer, so no needs to handle it now.
+      //if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+      //{
+      //   event.stopPropagation ();
+      //}
    }
    
    //public function OnMouseReleaseOutside (event:MouseEvent):void
@@ -806,10 +870,11 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
       {
       }
       
-      if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
-      {
-         event.stopPropagation ();
-      }
+      // cancelled in viewer, so no needs to handle it now.
+      //if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
+      //{
+      //   event.stopPropagation ();
+      //}
    }
    
    public function RegisterMouseEvent (event:MouseEvent, handlerList:ListElement_EventHandler, shape:EntityShape = null):void
@@ -825,8 +890,11 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
       var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource3); // world physics y
       var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource2); // world physics x
       
-      valueSource1.mValueObject = GetCurrentMouseX ();
-      valueSource2.mValueObject = GetCurrentMouseY ();
+      //valueSource1.mValueObject = GetCurrentMouseX ();
+      //valueSource2.mValueObject = GetCurrentMouseY ();
+      UpdateMousePosition (); // must call this first before getting mCurrentMouseX and mCurrentMouseY
+      valueSource1.mValueObject = mCurrentMouseX;
+      valueSource2.mValueObject = mCurrentMouseY;
       valueSource3.mValueObject = event.buttonDown;
       valueSource4.mValueObject = event.ctrlKey;
       valueSource5.mValueObject = event.shiftKey;
@@ -842,6 +910,77 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, null, valueSource1); // entity
          valueSource0.mValueObject = shape;
          RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
+      }
+   }
+
+//=============================================================
+//   touch events
+//=============================================================
+   
+   public function RegisterTouchEvent (touchEvent:Object, handlerList:ListElement_EventHandler, shape:EntityShape = null):void
+   {
+      if (handlerList == null)
+         return;
+      
+      var valueSource7:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, null); // is overlapped by some entities
+      var valueSource6:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kStringClassDefinition, null, valueSource7); // touchIntent
+      var valueSource5:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, false, valueSource6); // pressure
+      var valueSource4:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kBooleanClassDefinition, false, valueSource5); // isPrimaryTouchPoint
+      var valueSource3:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource4); // touchPointID
+      var valueSource2:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource3); // world physics y
+      var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, 0, valueSource2); // world physics x
+      
+      var point:Point = StageToWorldPhysics (new Point (touchEvent.stageX, touchEvent.stageY));
+      valueSource1.mValueObject = point.x;
+      valueSource2.mValueObject = point.y;
+      valueSource3.mValueObject = touchEvent.touchPointID;
+      valueSource4.mValueObject = touchEvent.isPrimaryTouchPoint;
+      valueSource5.mValueObject = touchEvent.pressure;
+      valueSource6.mValueObject = touchEvent.hasOwnProperty ("touchIntent") ? "unknown" : (touchEvent as Object).touchIntent; 
+                        // touchIntent is for air only
+      
+      if (shape == null)
+      {
+         valueSource7.mValueObject = IsContentLayerContains (touchEvent.target as DisplayObject); // for world event only
+         RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource1]);
+      }
+      else
+      {
+         var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kEntityClassDefinition, null, valueSource1); // entity
+         valueSource0.mValueObject = shape;
+         RegisterCachedSystemEvent ([CachedEventType_General, handlerList, valueSource0]);
+      }
+   }
+   
+   private function OnTouchTap (touchEvent:Object):void
+   {  
+      if (IsInteractiveEnabledNow ())
+      {
+         RegisterTouchEvent (touchEvent, mEventHandlersByTypes [CoreEventIds.ID_OnWorldTouchTap]);
+      }
+   }
+   
+   private function OnTouchBegin (touchEvent:Object):void
+   {
+      if (IsInteractiveEnabledNow ())
+      {
+         RegisterTouchEvent (touchEvent, mEventHandlersByTypes [CoreEventIds.ID_OnWorldTouchBegin]);
+      }
+   }
+   
+   private function OnTouchMove (touchEvent:Object):void
+   {
+      if (IsInteractiveEnabledNow ())
+      {
+         RegisterTouchEvent (touchEvent, mEventHandlersByTypes [CoreEventIds.ID_OnWorldTouchEnd]);
+      }
+   }
+   
+   private function OnTouchEnd (touchEvent:Object):void
+   {
+      if (IsInteractiveEnabledNow ())
+      {
+         RegisterTouchEvent (touchEvent, mEventHandlersByTypes [CoreEventIds.ID_OnWorldTouchMove]);
       }
    }
 
@@ -888,7 +1027,7 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          {
             var exactKeyCode:int = GetExactKeyCode (event);
             
-            if (! IsKeyHold (exactKeyCode))
+            if (! IsKeyHold (exactKeyCode)) // unlike mouse releae, considering the case of multi-keys keyboard event handler, it is best not to comment off this line. 
                return;
             
             //HandleKeyEventByKeyCode (event, false);

@@ -267,19 +267,45 @@ package editor.entity.dialog {
                break;
             case 69: // E
                if (ctrlHold && shiftHold)
+               {
+                  SetCurrentIntent (null);
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldBeforeExiting), OnPutCreating, OnCreatingCancelled));
+               }
                break;
             case 79: // O
                if (ctrlHold && shiftHold)
+               {
+                  SetCurrentIntent (null);
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnTwoPhysicsShapesPostSolveContacting), OnPutCreating, OnCreatingCancelled));
+               }
+               break;
+            case 82: // R
+               if (ctrlHold && shiftHold)
+               {
+                  SetCurrentIntent (null);
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnEntityTouchBegin), OnPutCreating, OnCreatingCancelled));
+               }
+               break;
+            case 84: // T
+               if (ctrlHold && shiftHold)
+               {
+                  SetCurrentIntent (null);
+                  SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldTouchBegin), OnPutCreating, OnCreatingCancelled));
+               }
                break;
             case 80: // P
                if (ctrlHold && shiftHold)
+               {
+                  SetCurrentIntent (null);
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnTwoPhysicsShapesPreSolveContacting), OnPutCreating, OnCreatingCancelled));
+               }
                break;
             case 87: // W
                if (ctrlHold && shiftHold)
+               {
+                  SetCurrentIntent (null);
                   SetCurrentIntent (new IntentPutAsset (CreateNewEventHandler (CoreEventIds.ID_OnWorldViewportSizeChanged), OnPutCreating, OnCreatingCancelled));
+               }
                break;
             default:
             {
@@ -488,6 +514,18 @@ package editor.entity.dialog {
             case CoreEventIds.ID_OnWorldMouseRightUp:
             case CoreEventIds.ID_OnWorldMouseMove:
                handler = mScene.CreateEntityEventHandler_Mouse (eventId, null, true);
+               break;
+            case CoreEventIds.ID_OnWorldTouchTap:
+            case CoreEventIds.ID_OnWorldTouchBegin:
+            case CoreEventIds.ID_OnWorldTouchEnd:
+            case CoreEventIds.ID_OnWorldTouchMove:
+            case CoreEventIds.ID_OnEntityTouchTap:
+            case CoreEventIds.ID_OnEntityTouchBegin:
+            case CoreEventIds.ID_OnEntityTouchEnd:
+            case CoreEventIds.ID_OnEntityTouchMove:
+            case CoreEventIds.ID_OnEntityTouchEnter:
+            case CoreEventIds.ID_OnEntityTouchOut:
+               handler = mScene.CreateEntityEventHandler_Touch (eventId, null, true);
                break;
             case CoreEventIds.ID_OnWorldKeyDown:
             case CoreEventIds.ID_OnWorldKeyUp:
@@ -884,8 +922,7 @@ package editor.entity.dialog {
          info.mIsCiRulesEnabled = mScene.IsCiRulesEnabled ();
          info.mRemovePinksOnMouseDown = mScene.IsRemovePinksOnMouseDown ();
          info.mSupportMoreMouseEvents = mScene.IsSupportMoreMouseEvents ();
-         info.mSupportMultipleTouchEvents = mScene.IsSupportMultipleTouchEvents ();
-         info.mDontDelayUserInputEvents = mScene.IsDontDelayUserInputEvents ();
+         //info.mFireMouseEventOnPrimaryTouchEvent = mScene.IsFireMouseEventOnPrimaryTouchEvent ();
          
          EditorContext.OpenSettingsDialog (WorldLevelRulesSettingDialog, SetLevelRulesInfo, info);
       }
@@ -896,8 +933,7 @@ package editor.entity.dialog {
          mScene.SetCiRulesEnabled (info.mIsCiRulesEnabled);
          mScene.SetRemovePinksOnMouseDown (info.mRemovePinksOnMouseDown);
          mScene.SetSupportMoreMouseEvents (info.mSupportMoreMouseEvents);
-         mScene.SetSupportMultipleTouchEvents (info.mSupportMultipleTouchEvents);
-         mScene.SetDontDelayUserInputEvents (info.mDontDelayUserInputEvents);
+         //mScene.SetFireMouseEventOnPrimaryTouchEvent (info.mFireMouseEventOnPrimaryTouchEvent);
          
          CreateUndoPoint ("World rules are changed");
       }
@@ -1227,6 +1263,10 @@ package editor.entity.dialog {
                   values.mGestureIDs = gesture_event_handler.GetGestureIDs ();
                   
                   EditorContext.OpenSettingsDialog (LogicGestureEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
+               }
+               else if (entity is EntityEventHandler_Touch)
+               {
+                  EditorContext.OpenSettingsDialog (LogicTouchEventHandlerEditDialog, ConfirmSettingEntityProperties, values);
                }
                else if (entity is EntityEventHandler_Mouse)
                {
@@ -1749,11 +1789,17 @@ package editor.entity.dialog {
                   
                   gesture_event_handler.SetGestureIDs (params.mGestureIDs);
                }
-               else if (entity is EntityEventHandler_Mouse)
+               else if (entity is EntityEventHandler_Touch)
                {
-                  var mouse_event_handler:EntityEventHandler_Mouse = entity as EntityEventHandler_Mouse;
+                  var mouse_event_handler:EntityEventHandler_Touch = entity as EntityEventHandler_Touch;
                   
                   //mouse_event_handler.ChangeMouseEventId (params.mEventId);
+               }
+               else if (entity is EntityEventHandler_Mouse)
+               {
+                  var touch_event_handler:EntityEventHandler_Mouse = entity as EntityEventHandler_Mouse;
+                  
+                  //touch_event_handler.ChangeMouseEventId (params.mEventId);
                }
                else if (entity is EntityEventHandler_Contact)
                {

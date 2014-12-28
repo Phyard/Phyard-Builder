@@ -163,7 +163,8 @@ package player.entity {
       
       override protected function GetMouseMoveListener ():Function
       {
-         return mInteractiveZones != 0 ? OnMouseMove_GC : super.GetMouseDownListener ();
+         //return mInteractiveZones != 0 ? OnMouseMove_GC : super.GetMouseDownListener (); // bug? fixed in v2.10
+         return mInteractiveZones != 0 ? OnMouseMove_GC : super.GetMouseMoveListener ();
       }
 
 //=============================================================

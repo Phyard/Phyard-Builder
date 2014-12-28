@@ -764,10 +764,18 @@ package player.entity {
 //   mouse event handlers
 //=============================================================
       
+      private var mTouchTapEventHandlerList:ListElement_EventHandler = null;
+      private var mTouchBeginEventHandlerList:ListElement_EventHandler = null;
+      private var mTouchEndEventHandlerList:ListElement_EventHandler = null;
+      private var mTouchMoveEventHandlerList:ListElement_EventHandler = null;
+      private var mTouchEnterEventHandlerList:ListElement_EventHandler = null;
+      private var mTouchOutEventHandlerList:ListElement_EventHandler = null;
+      
       private var mPhyicsShapeMouseDownEventHandlerList:ListElement_EventHandler = null;
       private var mPhyicsShapeMouseUpEventHandlerList:ListElement_EventHandler = null;
       private var mPhyicsShapeMouseRightDownEventHandlerList:ListElement_EventHandler = null;
       private var mPhyicsShapeMouseRightUpEventHandlerList:ListElement_EventHandler = null;
+
       private var mMouseClickEventHandlerList:ListElement_EventHandler = null;
       private var mMouseDownEventHandlerList:ListElement_EventHandler = null;
       private var mMouseUpEventHandlerList:ListElement_EventHandler = null;
@@ -784,6 +792,25 @@ package player.entity {
          
          switch (eventId)
          {
+            case CoreEventIds.ID_OnEntityTouchTap:
+               mTouchTapEventHandlerList = RegisterEventHandlerToList (mTouchTapEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityTouchBegin:
+               mTouchBeginEventHandlerList = RegisterEventHandlerToList (mTouchBeginEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityTouchEnd:
+               mTouchEndEventHandlerList = RegisterEventHandlerToList (mTouchEndEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityTouchMove:
+               mTouchMoveEventHandlerList = RegisterEventHandlerToList (mTouchMoveEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityTouchEnter:
+               mTouchEnterEventHandlerList = RegisterEventHandlerToList (mTouchEnterEventHandlerList, eventHandler);
+               break;
+            case CoreEventIds.ID_OnEntityTouchOut:
+               mTouchOutEventHandlerList = RegisterEventHandlerToList (mTouchOutEventHandlerList, eventHandler);
+               break;
+         
             case CoreEventIds.ID_OnPhysicsShapeMouseDown:
                mPhyicsShapeMouseDownEventHandlerList = RegisterEventHandlerToList (mPhyicsShapeMouseDownEventHandlerList, eventHandler);
                break;
@@ -796,6 +823,7 @@ package player.entity {
             case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
                mPhyicsShapeMouseRightUpEventHandlerList = RegisterEventHandlerToList (mPhyicsShapeMouseRightUpEventHandlerList, eventHandler);
                break;
+            
             case CoreEventIds.ID_OnEntityMouseClick:
                mMouseClickEventHandlerList = RegisterEventHandlerToList (mMouseClickEventHandlerList, eventHandler);
                break;
@@ -850,7 +878,41 @@ package player.entity {
          HandleMouseEvent (event, mPhyicsShapeMouseRightUpEventHandlerList, false);
       }
       
-   // for all shape, called by flex framework
+   // for all shape, called by fp
+      
+      // touch
+      
+      public function OnTouchTap (touchEvent:Object):void
+      {
+         HandleTouchEvent (touchEvent, mTouchTapEventHandlerList);
+      }
+      
+      public function OnTouchBegin (touchEvent:Object):void
+      {
+         HandleTouchEvent (touchEvent, mTouchBeginEventHandlerList);
+      }
+      
+      public function OnTouchEnd (touchEvent:Object):void
+      {
+         HandleTouchEvent (touchEvent, mTouchEndEventHandlerList);
+      }
+      
+      public function OnTouchMove (touchEvent:Object):void
+      {
+         HandleTouchEvent (touchEvent, mTouchMoveEventHandlerList);
+      }
+      
+      protected function OnTouchEnter (touchEvent:Object):void
+      {
+         HandleTouchEvent (touchEvent, mTouchEnterEventHandlerList);
+      }
+      
+      protected function OnTouchOut (touchEvent:Object):void
+      {
+         HandleTouchEvent (touchEvent, mTouchOutEventHandlerList);
+      }
+      
+      // mouse
       
       public function OnMouseClick (event:MouseEvent):void
       {
@@ -889,14 +951,22 @@ package player.entity {
       
       protected function OnMouseEnter (event:MouseEvent):void
       {
-//trace (">>>>> Enter,    target = " + event.target + ", relatedObject = " + event.relatedObject);
          HandleMouseEvent (event, mMouseEnterEventHandlerList);
       }
       
       protected function OnMouseOut (event:MouseEvent):void
       {
-//trace ("<<<<< Out,    target = " + event.target + ", relatedObject = " + event.relatedObject);
          HandleMouseEvent (event, mMouseOutEventHandlerList);
+      }
+      
+      // ...
+      
+      private function HandleTouchEvent (touchEvent:Object, listElement:ListElement_EventHandler):void
+      {  
+         if (mWorld.IsInteractiveEnabledNow ())
+         {
+            mWorld.RegisterTouchEvent (touchEvent, listElement, this);
+         }
       }
       
       private function HandleMouseEvent (event:MouseEvent, listElement:ListElement_EventHandler, updateWorldMouseInfo:Boolean = true):void
@@ -913,6 +983,40 @@ package player.entity {
       }
       
    // these function will be override by some subclasses. Subclasses should call add/removeEventListener in their class body.
+   
+      // touch
+
+      protected function GetTouchTapListener ():Function
+      {
+         return mTouchTapEventHandlerList == null ? null : OnTouchTap;
+      }
+      
+      protected function GetTouchBeginListener ():Function
+      {
+         return mTouchBeginEventHandlerList == null ? null : OnTouchBegin;
+      }
+      
+      protected function GetTouchEndListener ():Function
+      {
+         return mTouchEndEventHandlerList == null ? null : OnTouchEnd;
+      }
+      
+      protected function GetTouchMoveListener ():Function
+      {
+         return mTouchMoveEventHandlerList == null ? null : OnTouchMove;
+      }
+      
+      protected function GetTouchEnterListener ():Function
+      {
+         return mTouchEnterEventHandlerList == null ? null : OnTouchEnter;
+      }
+      
+      protected function GetTouchOutListener ():Function
+      {
+         return mTouchOutEventHandlerList == null ? null : OnTouchOut;
+      }
+      
+      // mouse
       
       protected function GetMouseClickListener ():Function
       {
@@ -993,6 +1097,20 @@ package player.entity {
          DelayUpdateAppearance ();
          
          mAppearanceObjectsContainer.mouseChildren = false; // import, otherwise sometimes a mouse event will be triggered twice.
+         
+         if (GetTouchTapListener () != null)
+            mAppearanceObjectsContainer.addEventListener (/*TOUCH_BEGIN.TOUCH_TAP*/"touchTap", GetTouchTapListener ());
+         if (GetTouchBeginListener () != null)
+            mAppearanceObjectsContainer.addEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", GetTouchBeginListener ());
+         if (GetTouchEndListener () != null)
+            mAppearanceObjectsContainer.addEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", GetTouchEndListener ());
+         if (GetTouchMoveListener () != null)
+            mAppearanceObjectsContainer.addEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", GetTouchMoveListener ());
+         if (GetTouchEnterListener () != null)
+            mAppearanceObjectsContainer.addEventListener (/*TOUCH_BEGIN.TOUCH_ROLL_OVER*/"touchRollOver", GetTouchEnterListener ());
+         if  (GetTouchOutListener () != null)
+            mAppearanceObjectsContainer.addEventListener (/*TOUCH_BEGIN.TOUCH_ROLL_OUT*/"touchRollOut", GetTouchOutListener ());
+         
          if (GetMouseClickListener () != null)
             mAppearanceObjectsContainer.addEventListener (MouseEvent.CLICK, GetMouseClickListener ());
          if (GetMouseDownListener () != null)
@@ -1077,7 +1195,20 @@ package player.entity {
          
          SetBody (null);
          
-         mWorld.ReleaseContactProxyId (mContactProxyId);         
+         mWorld.ReleaseContactProxyId (mContactProxyId);
+         
+         if (GetTouchTapListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (/*TOUCH_BEGIN.TOUCH_TAP*/"touchTap", GetTouchTapListener ());
+         if (GetTouchBeginListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", GetTouchBeginListener ());
+         if (GetTouchEndListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", GetTouchEndListener ());
+         if (GetTouchMoveListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", GetTouchMoveListener ());
+         if (GetTouchEnterListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (/*TOUCH_BEGIN.TOUCH_ROLL_OVER*/"touchRollOver", GetTouchEnterListener ());
+         if  (GetTouchOutListener () != null)
+            mAppearanceObjectsContainer.removeEventListener (/*TOUCH_BEGIN.TOUCH_ROLL_OUT*/"touchRollOut", GetTouchOutListener ());
          
          if (GetMouseClickListener () != null)
             mAppearanceObjectsContainer.removeEventListener (MouseEvent.CLICK, GetMouseClickListener ());

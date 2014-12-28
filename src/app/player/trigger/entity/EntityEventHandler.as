@@ -155,10 +155,18 @@ package player.trigger.entity
             // text
             case CoreEventIds.ID_OnTextChanged:
             // shape
+            case CoreEventIds.ID_OnEntityTouchTap:
+            case CoreEventIds.ID_OnEntityTouchBegin:
+            case CoreEventIds.ID_OnEntityTouchEnd:
+            case CoreEventIds.ID_OnEntityTouchMove:
+            case CoreEventIds.ID_OnEntityTouchEnter:
+            case CoreEventIds.ID_OnEntityTouchOut:
+               
             case CoreEventIds.ID_OnPhysicsShapeMouseDown:
             case CoreEventIds.ID_OnPhysicsShapeMouseRightDown:
             case CoreEventIds.ID_OnPhysicsShapeMouseUp:
             case CoreEventIds.ID_OnPhysicsShapeMouseRightUp:
+            
             case CoreEventIds.ID_OnEntityMouseClick:
             case CoreEventIds.ID_OnEntityMouseRightClick:
             case CoreEventIds.ID_OnEntityMouseDown:

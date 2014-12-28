@@ -169,6 +169,69 @@ package common.trigger {
 
      // ...
 
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTouchTap,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTouchBegin,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTouchEnd,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTouchMove,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTouchEnter,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnEntityTouchOut,
+                    [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                    ]);
+
+     // ...
+
          RegisterEventDeclatation (CoreEventIds.ID_OnPhysicsShapeMouseRightDown,
                     [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
@@ -301,12 +364,57 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,      false],
                     ]);
 
+     // ...
+
          RegisterEventDeclatation (CoreEventIds.ID_OnSequencedModuleLoopToEnd,
                     [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                         [CoreClassIds.ValueType_Module,       -1],
                     ]);
 
+     // ...
+
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldTouchTap,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldTouchBegin,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldTouchEnd,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+         RegisterEventDeclatation (CoreEventIds.ID_OnWorldTouchMove,
+                    [
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                        [CoreClassIds.ValueType_Number,       0],
+                        [CoreClassIds.ValueType_String,       null],
+                        [CoreClassIds.ValueType_Boolean,      false],
+                    ]);
+                    
      // ...
      
          RegisterEventDeclatation (CoreEventIds.ID_OnWorldMouseRightClick,

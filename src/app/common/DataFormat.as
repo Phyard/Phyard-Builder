@@ -440,9 +440,8 @@ package common {
             sceneDefine.mSettings.mRemovePinksOnMouseDown = scene.IsRemovePinksOnMouseDown ();
             //<<
             
-            //>>from v2.10
-            sceneDefine.mSettings.mSupportMultipleTouchEvents = scene.IsSupportMultipleTouchEvents ();
-            sceneDefine.mSettings.mDontDelayUserInputEvents = scene.IsDontDelayUserInputEvents ();
+            //>>from v2.xx
+            //sceneDefine.mSettings.mFireMouseEventOnPrimaryTouchEvent = scene.IsFireMouseEventOnPrimaryTouchEvent ();
             //<<
          }
          
@@ -2232,9 +2231,8 @@ package common {
                scene.SetRemovePinksOnMouseDown (sceneDefine.mSettings.mRemovePinksOnMouseDown);
                //<<
                
-               //>>from v2.10
-               scene.SetSupportMultipleTouchEvents (sceneDefine.mSettings.mSupportMultipleTouchEvents);
-               scene.SetDontDelayUserInputEvents (sceneDefine.mSettings.mDontDelayUserInputEvents);
+               //>>from v2.xx
+               //scene.SetFireMouseEventOnPrimaryTouchEvent (sceneDefine.mSettings.mFireMouseEventOnPrimaryTouchEvent);
                //<<
             }
          }
@@ -2457,6 +2455,18 @@ package common {
                      case CoreEventIds.ID_OnWorldMouseRightUp:
                      case CoreEventIds.ID_OnWorldMouseMove:
                         entity = logic = scene.CreateEntityEventHandler_Mouse (entityDefine.mEventId);
+                        break;
+                     case CoreEventIds.ID_OnWorldTouchTap:
+                     case CoreEventIds.ID_OnWorldTouchBegin:
+                     case CoreEventIds.ID_OnWorldTouchEnd:
+                     case CoreEventIds.ID_OnWorldTouchMove:
+                     case CoreEventIds.ID_OnEntityTouchTap:
+                     case CoreEventIds.ID_OnEntityTouchBegin:
+                     case CoreEventIds.ID_OnEntityTouchEnd:
+                     case CoreEventIds.ID_OnEntityTouchMove:
+                     case CoreEventIds.ID_OnEntityTouchEnter:
+                     case CoreEventIds.ID_OnEntityTouchOut:
+                        entity = logic = scene.CreateEntityEventHandler_Touch (entityDefine.mEventId);
                         break;
                      case CoreEventIds.ID_OnTwoPhysicsShapesBeginContacting:
                      case CoreEventIds.ID_OnTwoPhysicsShapesKeepContacting:
@@ -3858,11 +3868,9 @@ package common {
                   sceneDefine.mSettings.mRemovePinksOnMouseDown = parseInt (element.@value) != 0;
                //<<
                
-               //>>from v2.10
-               else if (element.@name == "support_multi_touch_events")
-                  sceneDefine.mSettings.mSupportMultipleTouchEvents = parseInt (element.@value) != 0;
-               else if (element.@name == "dont_delay_user_input_events")
-                  sceneDefine.mSettings.mDontDelayUserInputEvents = parseInt (element.@value) != 0;
+               //>>from v2.xx
+               //else if (element.@name == "fire_mouse_event_on_primary_touch_event")
+               //   sceneDefine.mSettings.mFireMouseEventOnPrimaryTouchEvent = parseInt (element.@value) != 0;
                //<<
                
                else
@@ -5062,11 +5070,10 @@ package common {
                {
                   if (sceneDefine.mSettings.mSupportMoreMouseEvents) generalSeetingFlag |= 0x02;
                }
-               if (worldDefine.mVersion >= 0x0210)
-               {
-                  if (sceneDefine.mSettings.mSupportMultipleTouchEvents) generalSeetingFlag |= 0x04;
-                  if (sceneDefine.mSettings.mDontDelayUserInputEvents) generalSeetingFlag |= 0x08;
-               }
+               //if (worldDefine.mVersion >= 0x02xx)
+               //{
+               //   if (sceneDefine.mSettings.mFireMouseEventOnPrimaryTouchEvent) generalSeetingFlag |= 0x04;
+               //}
                byteArray.writeByte (generalSeetingFlag);
                
                

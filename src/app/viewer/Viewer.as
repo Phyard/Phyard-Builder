@@ -198,9 +198,9 @@ package viewer {
             // mMultitouchClass must not null
             mMultitouchClass.inputMode = "touchPoint"; // mMultitouchClass.TOUCH_POINT; // MultitouchInputMode.TOUCH_POINT
             
-            addEventListener (/*mTouchEventClass.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
-            addEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
-            addEventListener (/*mTouchEventClass.TOUCH_END*/"touchEnd", OnTouchEnd);
+            addEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
+            addEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove);
+            addEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd);
          }
          else
          {
@@ -254,9 +254,9 @@ package viewer {
          
          if (mTouchEventClass != null)
          {
-            removeEventListener (/*mTouchEventClass.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
-            removeEventListener (/*mTouchEventClass.TOUCH_MOVE*/"touchMove", OnTouchMove);
-            removeEventListener (/*mTouchEventClass.TOUCH_END*/"touchEnd", OnTouchEnd);
+            removeEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
+            removeEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove);
+            removeEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd);
          }
          else
          {
@@ -852,6 +852,15 @@ package viewer {
       // ref: http://stackoverflow.com/questions/4924558/listen-to-click-event-on-overlapped-sprites
       // todo: still not a good fix! See player.World.OnViewerEvent for more.
       
+      // [update at v2.10]: now the fix is cancelled, for follwoing reasons:
+      // 1. designers shoud be aware that when gesture shapes are painted, world events lossing is just normal.
+      // 2. the fix is never implemented perfectly.
+      // 3. with incroducing the multitouch events, keeping this fix will bring many complexisties:
+      //    > a. world should maintain a hastable to record if a touch point is down on the world
+      //    > b. when a tocuh point ends, viewer should notify world, eitehr the end point is in world or not.
+      // 4. even if the fix is implemented well, for potiential skin overlapping world cases later.
+      //    there is no a safe method to judge if the touch end point is in world or not.
+      
       private function OnMouseEvent_GesturePaintLayer (event:MouseEvent):void
       {
          //if (mPlayerWorld != null)
@@ -860,6 +869,9 @@ package viewer {
          //   clonedEvent.delta = 0x7FFFFFFF; // indicate mPlayerWorld this event is sent from here
          //   mPlayerWorld.dispatchEvent(clonedEvent);
          //}
+         
+         if (mWorldPluginProperties == null || mWorldPluginProperties.mWorldVersion >= 0x0210)
+            return;
          
          if (mWorldDesignProperties != null) // && mWorldDesignProperties.OnViewerEvent != null)
          {
@@ -1591,6 +1603,7 @@ package viewer {
                               GetAcceleration         : GetAcceleration,
                               GetScreenResolution     : GetScreenResolution,
                               GetScreenDPI            : GetScreenDPI,
+                              IsMultitouchSupported   : IsMultitouchSupported, // v2.10
                               "" : null
                   },
                   mLibSound : {
@@ -1670,7 +1683,10 @@ package viewer {
             RetrieveWorldDesignProperties ();
 
             mWorldDesignProperties.SetCacheSystemEvent (mShowPlayBar);
-            mWorldDesignProperties.SetInteractiveEnabledWhenPaused ((! mShowPlayBar) ||  mParamsFromEditor != null);
+            //mWorldDesignProperties.SetInteractiveEnabledWhenPaused ((! mShowPlayBar) ||  mParamsFromEditor != null); // before v2.10
+            mWorldDesignProperties.SetInteractiveEnabledWhenPaused ((! mShowPlayBar)); 
+                                 // since v2.10. In fact, this above two callings are useless since v2.10.
+                                 // they are still called just to keep compatibility for old world plugins.
 
             mWorldLayer.addChild (mPlayerWorld as Sprite);
 
@@ -2840,6 +2856,12 @@ package viewer {
       {
          if (_onPlayStatusChanged != null)
             _onPlayStatusChanged ();
+         
+         // since v2.10, if skin UI is disabled, deactivate desgin on paused.
+         if (! mShowPlayBar)
+         {
+            if (mSkin != null) mSkin.OnDeactivate ();
+         }
       }
 
       public function IsPlaying ():Boolean
@@ -3006,6 +3028,13 @@ package viewer {
       //}
       
       //
+      
+      public static function IsMultitouchSupported ():Boolean
+      {
+         // todo: some devices may enable/disable multi-touch at runtime.
+         
+         return IsTouchScreen ();
+      }
 
       public static function IsTouchScreen ():Boolean
       {

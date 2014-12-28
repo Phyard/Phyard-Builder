@@ -1138,13 +1138,11 @@ package common {
             element = BoolSetting2XmlElement ("remove_pinks_on_mouse_down", sceneDefine.mSettings.mRemovePinksOnMouseDown);
             xml.Settings.appendChild (element);
          }
-         if (worldDefine.mVersion >= 0x0210)
-         {
-            element = BoolSetting2XmlElement ("support_multi_touch_events", sceneDefine.mSettings.mSupportMultipleTouchEvents);
-            xml.Settings.appendChild (element);
-            element = BoolSetting2XmlElement ("dont_delay_user_input_events", sceneDefine.mSettings.mDontDelayUserInputEvents);
-            xml.Settings.appendChild (element);
-         }
+         //if (worldDefine.mVersion >= 0x02xx)
+         //{
+         //   element = BoolSetting2XmlElement ("fire_mouse_event_on_primary_touch_event", sceneDefine.mSettings.mFireMouseEventOnPrimaryTouchEvent);
+         //   xml.Settings.appendChild (element);
+         //}
 
          // precreate some nodes
 
@@ -2433,11 +2431,10 @@ package common {
                {
                   sceneDefine.mSettings.mSupportMoreMouseEvents = ((generalSeetingFlag & 0x02) != 0);
                }
-               if (worldDefine.mVersion >= 0x0210)
-               {
-                  sceneDefine.mSettings.mSupportMultipleTouchEvents = ((generalSeetingFlag & 0x04) != 0);
-                  sceneDefine.mSettings.mDontDelayUserInputEvents = ((generalSeetingFlag & 0x08) != 0);
-               }
+               //if (worldDefine.mVersion >= 0x02xx)
+               //{
+               //   sceneDefine.mSettings.mFireMouseEventOnPrimaryTouchEvent = ((generalSeetingFlag & 0x04) != 0);
+               //}
                
                sceneDefine.mSettings.mPhysicsSimulationEnabled = byteArray.readByte () != 0;
                sceneDefine.mSettings.mPhysicsSimulationStepTimeLength = byteArray.readFloat ();
@@ -4004,11 +4001,10 @@ package common {
                sceneDefine.mSettings.mSupportMoreMouseEvents = false;
                sceneDefine.mSettings.mRemovePinksOnMouseDown = false;
             }
-            if (worldDefine.mVersion < 0x0210)
-            {
-               sceneDefine.mSettings.mSupportMultipleTouchEvents = false;
-               sceneDefine.mSettings.mDontDelayUserInputEvents = false;
-            }
+            //if (worldDefine.mVersion < 0x02xx)
+            //{
+            //   sceneDefine.mSettings.mFireMouseEventOnPrimaryTouchEvent = true;
+            //}
    
             // collision category
    

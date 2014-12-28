@@ -23,7 +23,7 @@
           </mx:HBox>
           <mx:Spacer height="7" />
           <mx:HBox>
-               <mx:Label text="Others:" doubleClickEnabled="true" doubleClick="if (Box_DontDelayUserInputEvents.parent == null) {Box_Container.addChild (Box_DontDelayUserInputEvents);}"/>
+               <mx:Label text="Others:"/>
           </mx:HBox>
           <mx:HBox>
                <mx:Spacer width="28" />
@@ -33,14 +33,12 @@
                <mx:Spacer width="28" />
                <mx:CheckBox id="CheckBox_SupportMoreMouseEvents" label="Support Right Mouse Events"/>
           </mx:HBox>
+          <!--
           <mx:HBox>
                <mx:Spacer width="28" />
-               <mx:CheckBox id="CheckBox_SupportMultipleTouchEvents" label="Support Multi-Touch Events"/>
+               <mx:CheckBox id="CheckBox_FireMouseEventOnPrimaryTouchEvent" label="Fire Mouse Event On Primary Touch Event"/>
           </mx:HBox>
-          <mx:HBox id="Box_DontDelayUserInputEvents">
-               <mx:Spacer width="28" />
-               <mx:CheckBox id="CheckBox_DontDelayUserInputEvents" label="Don't Delay User Input Events"/>
-          </mx:HBox>
+          -->
        </mx:VBox>
        
        <mx:Spacer width="100%" />
@@ -88,10 +86,7 @@
             CheckBox_CiRulesEnabled.selected = mParams.mIsCiRulesEnabled;
             CheckBox_RemovePinksOnMouseDown.selected = mParams.mRemovePinksOnMouseDown;
             CheckBox_SupportMoreMouseEvents.selected = mParams.mSupportMoreMouseEvents;
-            CheckBox_SupportMultipleTouchEvents.selected = mParams.mSupportMultipleTouchEvents;
-            CheckBox_DontDelayUserInputEvents.selected = mParams.mDontDelayUserInputEvents;
-            
-            Box_Container.removeChild (Box_DontDelayUserInputEvents);
+            //CheckBox_FireMouseEventOnPrimaryTouchEvent.selected = mParams.mFireMouseEventOnPrimaryTouchEvent;
          }
 
          public function SetConfirmFunc (onConfirm:Function):void
@@ -110,8 +105,7 @@
             mParams.mIsCiRulesEnabled = CheckBox_CiRulesEnabled.selected;
             mParams.mRemovePinksOnMouseDown = CheckBox_RemovePinksOnMouseDown.selected;
             mParams.mSupportMoreMouseEvents = CheckBox_SupportMoreMouseEvents.selected;
-            mParams.mSupportMultipleTouchEvents = CheckBox_SupportMultipleTouchEvents.selected;
-            mParams.mDontDelayUserInputEvents = CheckBox_DontDelayUserInputEvents.selected;
+            //mParams.mFireMouseEventOnPrimaryTouchEvent = CheckBox_FireMouseEventOnPrimaryTouchEvent.selected;
 
             //PopUpManager.removePopUp(this);
 

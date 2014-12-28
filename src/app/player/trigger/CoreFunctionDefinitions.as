@@ -3670,10 +3670,12 @@ package player.trigger {
 
       public static function GetWorldMousePosition (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
-         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseX ());
+         var pos:Point = /*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMousePosition ();
+         
+         valueTarget.AssignValueObject (pos.x);
 
          valueTarget = valueTarget.mNextParameter;
-         valueTarget.AssignValueObject (/*Global.sTheGlobal.GetCurrentWorld ()*/callingContext.mWorld.GetCurrentMouseY ());
+         valueTarget.AssignValueObject (pos.y);
       }
 
       public static function GetNumEntitiesPlacedInEditor (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

@@ -70,6 +70,15 @@ package common.trigger {
 
       public static const ID_OnEntityPairTimer:int = IdPool.EventId_150;
 
+   // touch event (entity)
+   
+      public static const ID_OnEntityTouchTap:int       = IdPool.EventId_170;
+      public static const ID_OnEntityTouchBegin:int     = IdPool.EventId_171;
+      public static const ID_OnEntityTouchEnd:int       = IdPool.EventId_172;
+      public static const ID_OnEntityTouchMove:int = IdPool.EventId_173;
+      public static const ID_OnEntityTouchEnter:int     = IdPool.EventId_174;
+      public static const ID_OnEntityTouchOut:int       = IdPool.EventId_175;
+
    // mouse event (entity)
       
       public static const ID_OnPhysicsShapeMouseRightDown:int = IdPool.EventId_195;
@@ -84,15 +93,24 @@ package common.trigger {
       public static const ID_OnEntityMouseDown:int = IdPool.EventId_203;
       public static const ID_OnEntityMouseUp:int = IdPool.EventId_204;
       public static const ID_OnEntityMouseMove:int = IdPool.EventId_205;
-      public static const ID_OnEntityMouseEnter:int = IdPool.EventId_206; // mouse_over with mouseChildren == false
+      public static const ID_OnEntityMouseEnter:int = IdPool.EventId_206;
       public static const ID_OnEntityMouseOut:int = IdPool.EventId_207;
 
 
       public static const MaxEntityMouseEventId:int = ID_OnEntityMouseOut;
 
+   // touch event (world)
+
+      public static const ID_OnWorldTouchTap:int   = IdPool.EventId_230; // must be the smallest touch evetn id
+      public static const ID_OnWorldTouchBegin:int = IdPool.EventId_231;
+      public static const ID_OnWorldTouchEnd:int   = IdPool.EventId_232;
+      public static const ID_OnWorldTouchMove:int  = IdPool.EventId_233;
+
+      public static const MaxWorldTouchEventId:int = ID_OnWorldTouchMove;
+
    // mouse event (world)
 
-      public static const ID_OnWorldMouseClick:int = IdPool.EventId_210;
+      public static const ID_OnWorldMouseClick:int = IdPool.EventId_210; // must be smallest mouse event id
       public static const ID_OnWorldMouseDown:int = IdPool.EventId_211;
       public static const ID_OnWorldMouseUp:int = IdPool.EventId_212;
       public static const ID_OnWorldMouseMove:int = IdPool.EventId_213;
@@ -131,10 +149,11 @@ package common.trigger {
       //public static const ID_OnPlayerLeavedInstance:int = IdPool.EventId_169;
       //public static const ID_OnInstanceCreated:int = IdPool.EventId_169;
       
-      
       //public static const ID_OnInstanceRestarted:int = IdPool.EventId_169;
       
       //public static const ID_OnInstanceEnterPlayingPhase:int = IdPool.EventId_169;
+      
+      
       
       public static const ID_OnMultiplePlayerInstanceInfoChanged      :int = IdPool.EventId_167; //       
       

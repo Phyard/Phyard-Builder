@@ -125,6 +125,30 @@ package editor {
       [Embed("../res/create/event_on_key_hold.png")]
       public static const IconOnKeyHoldEvent:Class;
       
+      // touch
+      
+      [Embed("../res/create/event_on_world_touch_tap.png")]
+      public static const IconOnWorldTouchTapEvent:Class;
+      [Embed("../res/create/event_on_world_touch_move.png")]
+      public static const IconOnWorldTouchMoveEvent:Class;
+      [Embed("../res/create/event_on_world_touch_begin.png")]
+      public static const IconOnWorldTouchBeginEvent:Class;
+      [Embed("../res/create/event_on_world_touch_end.png")]
+      public static const IconOnWorldTouchEndEvent:Class;
+      
+      [Embed("../res/create/event_on_shape_touch_tap.png")]
+      public static const IconOnEntityTouchTapEvent:Class;
+      [Embed("../res/create/event_on_shape_touch_move.png")]
+      public static const IconOnEntityTouchMoveEvent:Class;
+      [Embed("../res/create/event_on_shape_touch_begin.png")]
+      public static const IconOnEntityTouchBeginEvent:Class;
+      [Embed("../res/create/event_on_shape_touch_end.png")]
+      public static const IconOnEntityTouchEndEvent:Class;
+      [Embed("../res/create/event_on_shape_touch_enter.png")]
+      public static const IconOnEntityTouchEnterEvent:Class;
+      [Embed("../res/create/event_on_shape_touch_out.png")]
+      public static const IconOnEntityTouchOutEvent:Class;
+      
       // mouse
       
       [Embed("../res/create/event_on_world_mouse_right_clicked.png")]
@@ -247,6 +271,18 @@ package editor {
             sEventId2IconClass [CoreEventIds.ID_OnWorldKeyUp  ] = IconOnKeyUpEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldKeyHold] = IconOnKeyHoldEvent;
             
+            sEventId2IconClass [CoreEventIds.ID_OnWorldTouchTap   ] = IconOnWorldTouchTapEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldTouchBegin ] = IconOnWorldTouchBeginEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldTouchEnd   ] = IconOnWorldTouchEndEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnWorldTouchMove  ] = IconOnWorldTouchMoveEvent;
+            
+            sEventId2IconClass [CoreEventIds.ID_OnEntityTouchTap     ] = IconOnEntityTouchTapEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityTouchBegin   ] = IconOnEntityTouchBeginEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityTouchEnd     ] = IconOnEntityTouchEndEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityTouchMove    ] = IconOnEntityTouchMoveEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityTouchEnter   ] = IconOnEntityTouchEnterEvent;
+            sEventId2IconClass [CoreEventIds.ID_OnEntityTouchOut     ] = IconOnEntityTouchOutEvent;
+            
             sEventId2IconClass [CoreEventIds.ID_OnWorldMouseRightClick] = IconOnWorldMouseRightClickedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldMouseRightDown ] = IconOnWorldMouseRightDownEvent;
             sEventId2IconClass [CoreEventIds.ID_OnWorldMouseRightUp   ] = IconOnWorldMouseRightUpEvent;
@@ -264,6 +300,7 @@ package editor {
             
             sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseDown] = IconOnPhysicsEntityMouseDownEvent;
             sEventId2IconClass [CoreEventIds.ID_OnPhysicsShapeMouseUp  ] = IconOnPhysicsEntityMouseUpEvent;
+            
             sEventId2IconClass [CoreEventIds.ID_OnEntityMouseClick     ] = IconOnEntityMouseClickedEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityMouseDown      ] = IconOnEntityMouseDownEvent;
             sEventId2IconClass [CoreEventIds.ID_OnEntityMouseUp        ] = IconOnEntityMouseUpEvent;

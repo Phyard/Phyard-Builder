@@ -53,6 +53,7 @@ package editor.entity {
    import editor.trigger.entity.EntityEventHandler_Timer;
    import editor.trigger.entity.EntityEventHandler_TimerWithPrePostHandling;
    import editor.trigger.entity.EntityEventHandler_Keyboard;
+   import editor.trigger.entity.EntityEventHandler_Touch;
    import editor.trigger.entity.EntityEventHandler_Mouse;
    import editor.trigger.entity.EntityEventHandler_Contact;
    import editor.trigger.entity.EntityEventHandler_JointReachLimit;
@@ -283,9 +284,8 @@ package editor.entity {
       private var mSupportMoreMouseEvents:Boolean = false;
       //<<
       
-      //>>2.10
-      private var mSupportMultipleTouchEvents:Boolean = false;
-      private var mDontDelayUserInputEvents:Boolean = false;
+      //>>2.xx
+      //private var mFireMouseEventOnPrimaryTouchEvent:Boolean = true;
       //<<
       
       //>>v2.00
@@ -756,25 +756,15 @@ package editor.entity {
          mSupportMoreMouseEvents = supportMoreMouseEvents;
       }
       
-      public function IsSupportMultipleTouchEvents ():Boolean
-      {
-         return mSupportMultipleTouchEvents;
-      }
+      //public function IsFireMouseEventOnPrimaryTouchEvent ():Boolean
+      //{
+      //   return mFireMouseEventOnPrimaryTouchEvent;
+      //}
       
-      public function SetSupportMultipleTouchEvents (supportMultipleTouchEvents:Boolean):void
-      {
-         mSupportMultipleTouchEvents = supportMultipleTouchEvents;
-      }
-      
-      public function IsDontDelayUserInputEvents ():Boolean
-      {
-         return mDontDelayUserInputEvents;
-      }
-      
-      public function SetDontDelayUserInputEvents (dontDelayUserInputEvents:Boolean):void
-      {
-         mDontDelayUserInputEvents = dontDelayUserInputEvents;
-      }
+      //public function SetFireMouseEventOnPrimaryTouchEvent (supportMultipleTouchEvents:Boolean):void
+      //{
+      //   mFireMouseEventOnPrimaryTouchEvent = supportMultipleTouchEvents;
+      //}
       
 //=================================================================================
 //   create and destroy entities
@@ -1285,6 +1275,23 @@ package editor.entity {
             return null;
 
          var handler:EntityEventHandler_Keyboard = new EntityEventHandler_Keyboard (this, defaultEventId, potientialEventIds);
+         addChild (handler);
+         
+         if (selectIt)
+         {
+            handler.SetPosition (mouseX, mouseY);
+            SetSelectedAsset (handler);
+         }
+
+         return handler;
+      }
+      
+      public function CreateEntityEventHandler_Touch (defaultEventId:int, potientialEventIds:Array = null, selectIt:Boolean = false):EntityEventHandler_Touch
+      {
+         if (numChildren >= Define.MaxEntitiesCount)
+            return null;
+
+         var handler:EntityEventHandler_Touch = new EntityEventHandler_Touch (this, defaultEventId, potientialEventIds);
          addChild (handler);
          
          if (selectIt)

@@ -19,6 +19,18 @@
       return globalToLocal (mContentLayer.localToGlobal (point));
    }
    
+   public function StageToWorldPhysics (point:Point):Point
+   {
+      var worldDisplayPoint:Point = StageToContentLayer (point);
+      return mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+   }
+   
+   public function ThisToWorldPhysics (point:Point):Point
+   {
+      var worldDisplayPoint:Point = ThisToContentLayer (point);
+      return mCoordinateSystem.DisplayPoint2PhysicsPosition (worldDisplayPoint.x, worldDisplayPoint.y);
+   }
+   
    //=====================================================================================
    //
    //=====================================================================================

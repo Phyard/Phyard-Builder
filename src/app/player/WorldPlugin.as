@@ -37,6 +37,7 @@ package player
                            //GetAcceleration:Function; // from v1.60
                            //GetScreenResolution:Function; // from v2.03
                            //GetScreenDPI:Function; // from v2.03
+                           //IsMultitouchSupported:Function; // from v2.10
                
                /*Global.sTheGlobal*/world.Viewer_OnLoadScene = params.OnLoadScene as Function; // from v2.00
                                                                   // useless since v2.03.

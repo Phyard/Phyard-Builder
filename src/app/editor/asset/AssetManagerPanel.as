@@ -526,7 +526,7 @@ package editor.asset {
          EditorContext.OpenSettingsDialog (NameSettingDialog, 
                                        ChangeLinkLineColor, 
                                        {   mName: "0x" + sLinkLineColor.toString (16), 
-                                           mLabel: "New Line Line Color",
+                                           mLabel: "New Link Line Color",
                                            mTitle: "Change Link Line Color"
                                        }
                                        );

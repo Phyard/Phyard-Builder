@@ -1836,7 +1836,7 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.5],
                      ],
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
@@ -1846,7 +1846,7 @@ package common.trigger {
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.5],
                      ],
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
@@ -3872,10 +3872,24 @@ package common.trigger {
                      ],
                      null
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseDown,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
+                     ],
+                     null
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseOver,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
+                     ],
+                     null
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseDown,
+                     [
+                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
@@ -3895,21 +3909,14 @@ package common.trigger {
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseDown,
-                     [
-                        [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
-                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       15.0],
-                     ],
-                     null
-                  );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseDown,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],
                      ],
                      null
                   );
-         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown,
+         RegisterCoreDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseOver,
                      [
                         [CoreClassIds.ValueType_Entity,       Define.EntityId_None],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,       0.0],

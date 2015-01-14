@@ -656,6 +656,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityText_SetSize_MouseDown,                  SetTextDefaultSize_MouseDown);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityText_SetColor_MouseDown,                 SetTextDefaultColor_MouseDown);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown,       SetTextBackgroundColor_MouseDown);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseOver,       SetTextBackgroundColor_MouseOver);
 
       // game / entity / shape / circle
 
@@ -1822,7 +1823,7 @@ package player.trigger {
          var value2:Number = valueSource.EvaluateValueObject () as Number;
 
          var dv:Number = value1 - value2;
-
+         
          valueTarget.AssignValueObject (- Number.MIN_VALUE <= dv && dv <= Number.MIN_VALUE); // todo maybe the tolerance value is too small
       }
 
@@ -6915,6 +6916,18 @@ package player.trigger {
          var color:uint = uint (valueSource.EvaluateValueObject ());
 
          entity_text.SetTextBackgroundColor_MouseDown (color);
+      }
+      
+      public static function SetTextBackgroundColor_MouseOver (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var entity_text:EntityShape_TextButton = valueSource.EvaluateValueObject () as EntityShape_TextButton;
+         if (entity_text == null || entity_text.IsDestroyedAlready ())
+            return;
+
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
+
+         entity_text.SetTextBackgroundColor_MouseOver (color);
       }
 
    //*******************************************************************

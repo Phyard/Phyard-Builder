@@ -26,7 +26,9 @@
    // 2. IsInteractiveEnabledWhenPaused will always return false
    // 3. if default skin UI is disabled, then when pauses, design will be deactivated (a big play button will show in center).
    //
-   // This new solution breaks a little compatibility, but the affect is expected to be small.
+   // This new solution breaks a little compatibility, but the impact is expected to be small.
+   //
+   // (!!! multiplayer events are still cached.)
    
 
 
@@ -38,14 +40,20 @@
    
    public function SetCacheSystemEvent (cache:Boolean):void
    {
-      //mCacheSystemEvents = cache;
       mCacheSystemEvents = false; // since v2.10, never cache events.
       
-      if (! mCacheSystemEvents)
-      {
-         HandleAllCachedSystemEvents ();
-         ClearAllCachedSystemEvents ();
-      }
+      // since v2.10, user input events are not cached any more.
+      // multiplayer events are still cached.
+      
+      //>> before v2.10
+      //mCacheSystemEvents = cache;
+      //
+      //if (! mCacheSystemEvents)
+      //{
+      //   HandleAllCachedSystemEvents ();
+      //   ClearAllCachedSystemEvents ();
+      //}
+      //<<      
    }
    
    private var mEnabledInteractiveWhenPaused:Boolean = false;
@@ -78,12 +86,13 @@
    
    private var mCachedSystemEvents:Array = new Array ();
    
-   private function RegisterCachedSystemEvent (eventInfo:Array):void
+   // forceCache is for multiplayer events now.
+   private function RegisterCachedSystemEvent (eventInfo:Array, forceCache:Boolean = false):void
    {
       if (! mInitialized)
          return;
          
-      if (mCacheSystemEvents)
+      if (mCacheSystemEvents || forceCache)
       {
          mCachedSystemEvents.push (eventInfo);
       }
@@ -249,7 +258,7 @@
          removeEventListener (/*MouseEvent.RIGHT_DOWN*/"rightMouseDown", OnMouseRightDown);
          removeEventListener (/*MouseEvent.RIGHT_UP*/"rightMouseUp", OnMouseRightUp);
          
-         //removeEventListener (MouseEvent.RELEASE_OUTSIDE, OnMouseReleaseOutside);
+         //removeEventListener (MouseEvent.RELEASE_OUTSIDE, OnMouseReleaseOutside); // since fp 11.3
          
          mIsMoreEventHandlersAdded = false;
       }

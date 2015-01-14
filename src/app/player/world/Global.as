@@ -254,6 +254,8 @@ package player.world
          //Viewer_mLibServices = null;
          
          //>>>>>>>>>>>>> moved into world
+         // [update at v2.10]: this block was expected to move into world at v2.00, but not.
+         //                    fixed at v2.10.
          // no needs to call this now 
          //Entity.sLastSpecialId = -0x7FFFFFFF - 1; // maybe 0x80000000 is ok 
          //

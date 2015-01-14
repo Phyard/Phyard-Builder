@@ -71,7 +71,7 @@
             var valueSource1:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kNumberClassDefinition, params.mChannelIndex, valueSource2);
             var valueSource0:Parameter_DirectConstant = new Parameter_DirectConstant (CoreClassesHub.kMultiplePlayerInstanceClassDefinition, null, valueSource1);
             
-            RegisterCachedSystemEvent ([CachedEventType_General, mEventHandlersByTypes [CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage], valueSource0]);
+            RegisterCachedSystemEvent ([CachedEventType_General, mEventHandlersByTypes [CoreEventIds.ID_OnMultiplePlayerInstanceChannelMessage], valueSource0], true);
             
             break;
          }

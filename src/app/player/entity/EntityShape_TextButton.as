@@ -254,6 +254,15 @@ package player.entity {
          DelayUpdateAppearance ();
       }
       
+      public function SetTextBackgroundColor_MouseOver (color:uint):void
+      {
+         mBackgroundColor_MouseOver = color;
+         
+         mNeedRebuildTextSprite = true;
+         // mNeedRebuildAppearanceObjects = true; // put in DelayUpdateAppearanceInternal now
+         DelayUpdateAppearance ();
+      }
+      
 //=============================================================
 //   down (not defined in editor, initial values are clone from over state. Can be changed by API)
 //=============================================================

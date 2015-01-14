@@ -110,6 +110,7 @@
       }
       
       // playerWorld is only useful for switch or merge levels.
+      // in fact, playerWorld is this.
       public /*static*/ function InitWorldCustomVariables (playerWorld:World, worldVarialbeSpaceDefines:Array, gameSaveVarialbeSpaceDefines:Array):void
       {
          if (mWorldVariableSpace == null)
@@ -133,6 +134,18 @@
          }
       }
       
+      // in fact, playerWorld is this.
+      public /*static*/ function InitSceneRegisterVariables (playerWorld:World):void
+      {
+         mRegisterVariableSpace_Boolean           = CreateRegisterVariableSpace (false, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Boolean));
+         mRegisterVariableSpace_String            = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_String));
+         mRegisterVariableSpace_Number            = CreateRegisterVariableSpace (0, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Number));
+         mRegisterVariableSpace_Entity            = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Entity));
+         mRegisterVariableSpace_CollisionCategory = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_CollisionCategory));
+         mRegisterVariableSpace_Array             = CreateRegisterVariableSpace (null, CoreClassesHub.GetCoreClassDefinition (CoreClassIds.ValueType_Array));
+      }
+      
+      // in fact, playerWorld is this.
       //public /*static*/ function InitSceneCustomVariables (globalVarialbeSpaceDefines:Array, entityVarialbeSpaceDefines:Array):void // v1.52 only
       public /*static*/ function InitSceneCustomVariables (playerWorld:World, 
                                                       globalVarialbeDefines:Array, commonGlobalVarialbeDefines:Array, entityVarialbeDefines:Array, commonEntityVarialbeDefines:Array, 

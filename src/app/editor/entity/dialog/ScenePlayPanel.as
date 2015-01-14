@@ -102,7 +102,7 @@ package editor.entity.dialog {
                                          OnExitLevel: callbackStopPlaying,
                                          
                                          //mFlashVars
-                                         //mAppRootURL
+                                         mAppRootURL: "memory:///app.phd",
                                          
                                          //...
                                          OnMultiplePlayerClientMessagesToSchedulerServer : OnMultiplePlayerClientMessagesToSchedulerServer,

@@ -501,10 +501,24 @@ package common {
                extraInfos.mBeinningGlobalVariableIndex = /*Global*/playerWorld.GetGlobalVariableSpace ().GetNumVariables ();
                extraInfos.mBeinningCustomEntityVariableIndex = /*Global*/playerWorld.GetCustomEntityVariableSpace ().GetNumVariables ();
             }
+            else
+            {
+               //>>> this block is missed from v?.?? t0 v2.09. ?.?? may be 2.00
+               //    this makes many callings with register variable parameters don't work.
+               //    fixed in v2.10
+               /*Global*/
+               playerWorld.InitSceneRegisterVariables (playerWorld);
+               //<<<
+            }
             
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableSpaceDefines, worldDefine.mEntityPropertySpaceDefines); // v1.52 only
             //Global.InitSceneCustomVariables (worldDefine.mGlobalVariableDefines, worldDefine.mEntityPropertyDefines, worldDefine.mSessionVariableDefines); // before v2.00
-            extraInfos.mSessionVariableMappingTable = /*Global*/playerWorld.InitSceneCustomVariables (playerWorld, 
+            //>>> this line is commented off in v2.10.
+            //    looks it is never used anyelsewhere.
+            //    looks mxmlc doesn't report warning for "variable = void"; 
+            //extraInfos.mSessionVariableMappingTable = /*Global*/
+            //<<<
+            playerWorld.InitSceneCustomVariables (playerWorld, 
                                         sceneDefine.mGlobalVariableDefines, worldDefine.mCommonGlobalVariableDefines, 
                                         sceneDefine.mEntityPropertyDefines, worldDefine.mCommonEntityPropertyDefines, 
                                         sceneDefine.mSessionVariableDefines, extraInfos.mSessionVariableIdMappingTable,

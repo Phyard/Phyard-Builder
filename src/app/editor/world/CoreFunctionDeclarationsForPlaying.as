@@ -97,6 +97,7 @@ package editor.world {
              var entity_shape_connections_package:CodePackage = new CodePackage ("Connections", entity_shape_package);
              var entity_shape_contaction_package:CodePackage = new CodePackage ("Contacts", entity_shape_package);
              var shape_text_package:CodePackage  = new CodePackage ("Text Shape", entity_shape_package);
+                var shape_text_button_package:CodePackage  = new CodePackage ("Button", shape_text_package);
              var shape_module_package:CodePackage  = new CodePackage ("Module Shape", entity_shape_package);
          var entity_joint_package:CodePackage  = new CodePackage ("Joint", sEntityCodePackage);
          var entity_trigger_package:CodePackage  = new CodePackage ("Trigger", sEntityCodePackage);
@@ -3908,6 +3909,31 @@ package editor.world {
                      ],
                      null
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize, shape_text_package, "Set Font Size", null, null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionNumber ("New Font Size"),
+                     ],
+                     null
+                  );
+                  
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor, shape_text_package, "Set Text Color", "@Set Text Color ($0, Color ($1))", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionNumber ("New Color", null, {mIsColorValue: true}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB, shape_text_package, "Set Text Color By RGB", "@RGB (#0, #1, #2) = Set Text Color ($0)", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
+                             new VariableDefinitionNumber ("Red"),
+                             new VariableDefinitionNumber ("Green"),
+                             new VariableDefinitionNumber ("Blue"),
+                     ],
+                     null,
+                     false
+                  );
                   
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_GetHorizontalScrollPosition, shape_text_package, "Get Horizontal Scroll Position", null, null,
                      [
@@ -3956,45 +3982,35 @@ package editor.world {
                      ]
                   );
                   
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize, shape_text_package, "Set Font Size", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseDown, shape_text_button_package, "Set Font Size For Mouse Down", null, null,
                      [
-                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
-                             new VariableDefinitionNumber ("New Font Size"),
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("New Font Size For Mouse Down"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor, shape_text_package, "Set Text Color", "@Set Text Color ($0, Color ($1))", null,
-                     [
-                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
-                             new VariableDefinitionNumber ("New Color", null, {mIsColorValue: true}),
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB, shape_text_package, "Set Text Color By RGB", "@RGB (#0, #1, #2) = Set Text Color ($0)", null,
-                     [
-                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextEntityClasses}),
-                             new VariableDefinitionNumber ("Red"),
-                             new VariableDefinitionNumber ("Green"),
-                             new VariableDefinitionNumber ("Blue"),
-                     ],
-                     null,
-                     false
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseOver, shape_text_package, "Set Font Size For Mouse Over", null, null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseOver, shape_text_button_package, "Set Font Size For Mouse Over", null, null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
                              new VariableDefinitionNumber ("New Font Size For Mouse Over"),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseOver, shape_text_package, "Set Text Color For Mouse Over", "@Set Text Color ($0, Color ($1))", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseDown, shape_text_button_package, "Set Text Color For Mouse Down", "@Set Text Color ($0, Color ($1)) For Mouse Down", null,
+                     [
+                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
+                             new VariableDefinitionNumber ("New Color For Mouse Down", null, {mIsColorValue: true}),
+                     ],
+                     null
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseOver, shape_text_button_package, "Set Text Color For Mouse Over", "@Set Text Color ($0, Color ($1))", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
                              new VariableDefinitionNumber ("New Color For Mouse Over", null, {mIsColorValue: true}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver, shape_text_package, "Set Text Color By RGB For Mouse Over", "@RGB (#0, #1, #2) = Set Text Color ($0)", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColorByRGB_MouseOver, shape_text_button_package, "Set Text Color By RGB For Mouse Over", "@RGB (#0, #1, #2) = Set Text Color ($0)", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
                              new VariableDefinitionNumber ("Red For Mouse Over"),
@@ -4004,24 +4020,17 @@ package editor.world {
                      null,
                      false
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetSize_MouseDown, shape_text_package, "Set Font Size For Mouse Down", null, null,
-                     [
-                             new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
-                             new VariableDefinitionNumber ("New Font Size For Mouse Down"),
-                     ],
-                     null
-                  );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetColor_MouseDown, shape_text_package, "Set Text Color For Mouse Down", "@Set Text Color ($0, Color ($1)) For Mouse Down", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown, shape_text_button_package, "Set Text Background Color For Mouse Down", "@Set Text Background Color ($0, Color ($1)) For Mouse Down", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
                              new VariableDefinitionNumber ("New Color For Mouse Down", null, {mIsColorValue: true}),
                      ],
                      null
                   );
-         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseDown, shape_text_package, "Set Text Background Color For Mouse Down", "@Set Text Background Color ($0, Color ($1)) For Mouse Down", null,
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityText_SetBackgroundColor_MouseOver, shape_text_button_package, "Set Text Background Color For Mouse Over", "@Set Text Background Color ($0, Color ($1)) For Mouse Over", null,
                      [
                              new VariableDefinitionEntity ("The Text Entity", null, {mValidClasses: Filters.sTextButtonEntityClasses}),
-                             new VariableDefinitionNumber ("New Color For Mouse Down", null, {mIsColorValue: true}),
+                             new VariableDefinitionNumber ("New Color For Mouse Over", null, {mIsColorValue: true}),
                      ],
                      null
                   );

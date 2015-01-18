@@ -539,9 +539,12 @@ package player.entity {
          mTextField.visible = ! showBitmap; 
          if (mTextField.visible)
          {
-            mAppearanceObjectsContainer.mouseChildren = false; // true; // why true? "true" will make text button stays in over state even if mouse is out.
+            //mAppearanceObjectsContainer.mouseChildren = true; // why true? "true" will make text button stays in over state even if mouse is out.
+            //mAppearanceObjectsContainer.mouseChildren = false; // but false will make editable text not editable
+                                                                 // so fix as below (not a perfect fix).
             mAppearanceObjectsContainer.addChild (mTextField);
          }
+         mAppearanceObjectsContainer.mouseChildren = mTextField.visible && (IsEditable () || IsSelectable ());
          
          if (mTextBitmap != null)
          {

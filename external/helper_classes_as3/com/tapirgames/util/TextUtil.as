@@ -9,6 +9,8 @@ package com.tapirgames.util {
    {
       public static const TextPadding:Number = 5;
       
+      // don't change this values, them are used in editor
+      //>>>>>>
       public static const TextAlign_Left:int = 0;
       public static const TextAlign_Center:int = 1;
       public static const TextAlign_Right:int = 2;
@@ -31,6 +33,7 @@ package com.tapirgames.util {
       public static const TextFormat_Plain:int = 0;
       public static const TextFormat_Wiki:int = 1;
       public static const TextFormat_Html:int = 2;
+      //<<<<<<<<<<<<<
 
       public static function GetTextAlignText (hAlign:int):String
       {

@@ -181,7 +181,7 @@ package common {
          var length:int = dataContent.length;
          
          var b0:int = length & Mask_LengthValueInFirstByte;
-         length >>= Mask_LengthValueInFirstByte;
+         length >>= Shift_MoreBytes;
          var b1:int = length & 0xFF;
          length >>= 8;
          var b2:int = length & 0xFF;
@@ -213,7 +213,7 @@ package common {
             }
          }
          
-//trace (">>> write, dataContent.length = " + dataContent.length + ", b0 = " + b0 + ", b1 = " + b1 + ", b2 = " + b2 + ", b3 = " + b3);
+//trace (">>> write, dataContent.length = " + dataContent.length + ", numMoreBytes = " + numMoreBytes + ", b0 = " + b0 + ", b1 = " + b1 + ", b2 = " + b2 + ", b3 = " + b3);
          
          buffer.writeBytes (dataContent, 0, dataContent.length);
       }
@@ -257,7 +257,7 @@ package common {
             
             var length:int = (b0 & Mask_LengthValueInFirstByte) | (((((b3 << 8) | b2) << 8) | b1) << Shift_MoreBytes);
             
-//trace ("<<<<<<< read length = " + length + ", b0 = " + b0 + ", b1 = " + b1 + ", b2 = " + b2 + ", b3 = " + b3);
+//trace ("<<<<<<< read length = " + length + ", numMoreBytes = " + numMoreBytes + ", b0 = " + b0 + ", b1 = " + b1 + ", b2 = " + b2 + ", b3 = " + b3);
             
             dataContent = new ByteArray ();
             buffer.readBytes (dataContent, 0, length);

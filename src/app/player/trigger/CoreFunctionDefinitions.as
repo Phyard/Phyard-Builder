@@ -103,6 +103,7 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetAcceleration,                     GetAccelerationVector);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetAppFileURL,                     GetAppFileURL);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_IsNativeApp,                     IsNativeApp);
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetAppID,                     GetAppID);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_ExitApp,                     ExitApp);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetScreenResolution,         GetScreenResolution);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_GetScreenDPI,                GetScreenDPI);
@@ -262,7 +263,8 @@ package player.trigger {
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_ConditionAssign,      ConditionAssignNumber);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_SwapValues,           SwapNumberValues);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_Equals,               EqualsWith_Numbers);
-
+         RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_NotEqual,             NotEqualWith_Numbers);
+         
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_IsNaN,               IsNaN);
          RegisterCoreFunction (/*playerWorld:World*//*toClearRefs,*/ CoreFunctionIds.ID_Number_IsInfinity,          IsInfinity);
 
@@ -933,6 +935,11 @@ package player.trigger {
       {
          valueTarget.AssignValueObject (/*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_mLibAppp.IsNativeApp ());
       }
+      
+      public static function GetAppID (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         valueTarget.AssignValueObject (/*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_mLibAppp.GetAppID ());
+      }
 
       public static function ExitApp (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
       {
@@ -1201,6 +1208,8 @@ package player.trigger {
          var gender:int = int (valueSource.EvaluateValueObject ());
          
          adProxy.SetAdGlobalOptions (testDeviceIDs, tagForChildDirectedTreatment, gender);
+         
+         adProxy.Call ("*", AdvertisementDefine.FunctionName_SetAdGlobalOptions, undefined, testDeviceIDs, tagForChildDirectedTreatment, gender);
       }
       
       /*
@@ -1825,6 +1834,18 @@ package player.trigger {
          var dv:Number = value1 - value2;
          
          valueTarget.AssignValueObject (- Number.MIN_VALUE <= dv && dv <= Number.MIN_VALUE); // todo maybe the tolerance value is too small
+      }
+
+      public static function NotEqualWith_Numbers (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void
+      {
+         var value1:Number = valueSource.EvaluateValueObject () as Number;
+
+         valueSource = valueSource.mNextParameter;
+         var value2:Number = valueSource.EvaluateValueObject () as Number;
+
+         var dv:Number = value1 - value2;
+         
+         valueTarget.AssignValueObject (- Number.MIN_VALUE > dv || dv > Number.MIN_VALUE); // todo maybe the tolerance value is too small
       }
 
       public static function EqualsWith_Booleans (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

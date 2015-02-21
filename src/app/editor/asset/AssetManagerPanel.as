@@ -1975,7 +1975,7 @@ package editor.asset {
          
          // second round, link general entity with a linkable
          
-         for (i = 0; i < assetArray.length; ++ i)
+         for (i = 0; !created && i < assetArray.length; ++ i)
          {
             asset = (assetArray [i] as Asset).GetMainAsset () as Asset;
             if (! (asset is Linkable) )

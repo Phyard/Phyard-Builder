@@ -17,6 +17,9 @@ package editor.entity.dialog {
    import flash.ui.Keyboard;
    import flash.events.EventPhase;
    
+   import flash.media.SoundMixer;
+   import flash.media.SoundTransform;
+   
    import mx.utils.SHA256;
    
    import mx.core.UIComponent;
@@ -90,6 +93,7 @@ package editor.entity.dialog {
          if (mRestoreValues == null)
             mRestoreValues = new Object ();
          mRestoreValues.mRenderQuality = stage.quality;
+         mRestoreValues.mSoundVolume = SoundMixer.soundTransform.volume;
          
          mViewerParamsFromEditor = {mParamsFromEditor: {
                                          mWorldDomain: ApplicationDomain.currentDomain,  
@@ -131,6 +135,7 @@ package editor.entity.dialog {
          if (mRestoreValues != null)
          {
             stage.quality = mRestoreValues.mRenderQuality;
+            SoundMixer.soundTransform = new SoundTransform (mRestoreValues.mSoundVolume);
          }
       }
       

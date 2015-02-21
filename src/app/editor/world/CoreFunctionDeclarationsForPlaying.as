@@ -362,6 +362,12 @@ package editor.world {
                         new VariableDefinitionBoolean ("Native App?"),
                      ]
                   );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_GetAppID, system_package, "Get App ID", null, null,
+                     null,
+                     [
+                        new VariableDefinitionString ("App ID"),
+                     ]
+                  );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_ExitApp, system_package, "Exit App", null, null,
                      null,
                      null
@@ -1417,6 +1423,15 @@ package editor.world {
                      null
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_Equals, number_general_package, "Number == Number?", "@#0 = Number: ($0 == $1)", "@#0 = Number: ($0 == $1)",
+                     [
+                             new VariableDefinitionNumber ("Number 1"),
+                             new VariableDefinitionNumber ("Number 2"),
+                     ],
+                     [
+                             new VariableDefinitionBoolean ("Result"),
+                     ]
+                  );
+         RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_Number_NotEqual, number_general_package, "Number != Number?", "@#0 = Number: ($0 != $1)", "@#0 = Number: ($0 != $1)",
                      [
                              new VariableDefinitionNumber ("Number 1"),
                              new VariableDefinitionNumber ("Number 2"),

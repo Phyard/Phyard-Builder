@@ -271,6 +271,12 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       false],
                      ]
                   );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_GetAppID,
+                     null,
+                     [
+                        [CoreClassIds.ValueType_String,       ""],
+                     ]
+                  );
          RegisterCoreDeclaration (CoreFunctionIds.ID_ExitApp,
                      null,
                      null
@@ -1299,6 +1305,15 @@ package common.trigger {
                      null
                   );
          RegisterCoreDeclaration (CoreFunctionIds.ID_Number_Equals,
+                     [
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
+                     ],
+                     [
+                        [CoreClassIds.ValueType_Boolean,       false],
+                     ]
+                  );
+         RegisterCoreDeclaration (CoreFunctionIds.ID_Number_NotEqual,
                      [
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Double | CoreClassIds.NumberTypeUsage_General,       0.0],

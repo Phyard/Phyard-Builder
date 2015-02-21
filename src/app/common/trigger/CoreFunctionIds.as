@@ -72,6 +72,7 @@ package common.trigger {
       
       public static const ID_GetAppFileURL:int           = IdPool.CoreApiId_176; // from v2.09
       public static const ID_IsNativeApp:int            = IdPool.CoreApiId_109; // from v2.03
+      public static const ID_GetAppID:int             = IdPool.CoreApiId_119; // from v2.10
       public static const ID_ExitApp:int                             = IdPool.CoreApiId_592; //
 
       public static const ID_GetScreenResolution:int    = IdPool.CoreApiId_110; // from v2.03
@@ -236,6 +237,7 @@ package common.trigger {
       public static const ID_Number_Negative:int                    = IdPool.CoreApiId_301; //
       public static const ID_Number_ConditionAssign:int             = IdPool.CoreApiId_302; //
       public static const ID_Number_SwapValues:int                  = IdPool.CoreApiId_299; //
+      public static const ID_Number_NotEqual:int                    = IdPool.CoreApiId_179; // v2.10
       public static const ID_Number_Equals:int                      = IdPool.CoreApiId_180; //
       public static const ID_Number_LargerThan:int                  = IdPool.CoreApiId_210; //
       public static const ID_Number_NotLessThan:int                  = IdPool.CoreApiId_208; // v2.08

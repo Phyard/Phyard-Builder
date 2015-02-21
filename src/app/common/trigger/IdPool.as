@@ -200,7 +200,7 @@ package common.trigger {
       public static const CoreApiId_116:int = 116; //
       public static const CoreApiId_117:int = 117; //
       public static const CoreApiId_118:int = 118; //
-      
+      public static const CoreApiId_119:int = 119; //
       public static const CoreApiId_120:int = 120; //
       public static const CoreApiId_121:int = 121; //
       public static const CoreApiId_122:int = 122; //
@@ -249,6 +249,7 @@ package common.trigger {
       public static const CoreApiId_175:int = 175; //
       public static const CoreApiId_176:int = 176; //
 
+      public static const CoreApiId_179:int = 179; //
       public static const CoreApiId_180:int = 180; //
       public static const CoreApiId_181:int = 181; //
       public static const CoreApiId_182:int = 182; //

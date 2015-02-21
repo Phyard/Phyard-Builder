@@ -589,6 +589,9 @@ package player.trigger {
          }
       }
       
+      // todo: from a later version, like golang, start to forbit null string, only "" blank string is possible.
+      //       how to avoid break compatibility?
+      
       // compare with auto convert
       public static function CompareEquals (ci_1:ClassInstance, ci_2:ClassInstance):Boolean
       {

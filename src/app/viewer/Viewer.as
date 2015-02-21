@@ -546,6 +546,20 @@ package viewer {
          
       }
       
+      private function GetAppID ():String
+      {
+         if (ApplicationDomain.currentDomain.hasDefinition ("flash.desktop.NativeApplication"))
+         {
+            var NativeAppClass:Object = ApplicationDomain.currentDomain.getDefinition ("flash.desktop.NativeApplication") as Class;
+            if (NativeAppClass != null)
+            {
+               return NativeAppClass.nativeApplication.applicationID;
+            }
+         }
+         
+         return "";
+      }
+      
       private function GetAppRootURL ():String
       {
          return mParamsFromContainer.mAppRootURL == undefined ? "" : mParamsFromContainer.mAppRootURL;
@@ -607,7 +621,8 @@ package viewer {
          var gestureInfo:Object = {
                      mTouchID        : touchId,
                      mGestureAnalyzer: CreateGestureAnalyzer (),
-                     mGestureSprite  : null
+                     mGestureSprite  : null,
+                     mIsEnd          : false
                   };
          
          //if (mDrawdMouseGesture)
@@ -669,7 +684,7 @@ package viewer {
                gestureInfo = mGestureInfos [i];
                done = gestureInfo.mGestureSprite == null;
 
-               if (! done)
+               if ((! done) && gestureInfo.mIsEnd)
                {
                   gestureInfo.mGestureSprite.alpha -= deltaAlpha;
                   if (gestureInfo.mGestureSprite.alpha <= 0.0)
@@ -759,9 +774,10 @@ package viewer {
          
          if (gestureInfo != null)
          {
+            gestureInfo.mIsEnd = true;
             if (mEnabledMouseGesture)
             {
-               RegisterGesturePoint (gestureInfo, eventStageX, eventStageY);
+               //RegisterGesturePoint (gestureInfo, eventStageX, eventStageY); // the release point oftern is bad point.
 
                var result:Object = gestureInfo.mGestureAnalyzer.Analyze ();
                
@@ -1630,6 +1646,7 @@ package viewer {
                               GetAppWindowPadding : GetAppWindowPadding,  // since v2.09
                               SetAppWindowPadding : SetAppWindowPadding,  // since v2.09
                               GetAppRootURL : GetAppRootURL,  // since v2.09
+                              GetAppID      : GetAppID,       // since v2.10
                               "" : null
                   },
                   mLibCookie : {
@@ -2362,6 +2379,8 @@ package viewer {
                   mWorldLayer.x = 0.0;
                   mWorldLayer.y = 0.0;
                   
+                  // mWorldLayer.scaleX == mWorldLayer.scaleY == mPlayerWorldLayerScale
+                  
                   //mViewportMaskRect.width = contentRegion.width;
                   //mViewportMaskRect.height = contentRegion.height;
                   mViewportMaskRect.width = contentRegion.width / mWorldLayer.scaleX;
@@ -2396,7 +2415,9 @@ package viewer {
                mViewportMaskRect.y = 0;
                
                //>> added in v2.09. Should be called after calling SetRealViewportSize.
-               mWorldDesignProperties.SetViewportBoundsInDevicePixels (mViewportMaskRect.x, mViewportMaskRect.y, mViewportMaskRect.width, mViewportMaskRect.height);
+               //mWorldDesignProperties.SetViewportBoundsInDevicePixels (mViewportMaskRect.x, mViewportMaskRect.y, mViewportMaskRect.width, mViewportMaskRect.height);
+               // bug fixed in v2.10
+               mWorldDesignProperties.SetViewportBoundsInDevicePixels (mWorldLayer.x, mWorldLayer.y, mViewportMaskRect.width * mWorldLayer.scaleX, mViewportMaskRect.height * mWorldLayer.scaleY);
                //<<
                
                // confirm mask

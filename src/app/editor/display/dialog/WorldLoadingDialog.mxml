@@ -113,7 +113,7 @@
             fileReference.data.clear ();
          }
          
-         private function OnClickOkButton():void 
+         private function OnClickOkButton ():void 
          {
             //PopUpManager.removePopUp(this);
             
@@ -138,12 +138,24 @@
             EditorContext.GetSingleton ().SetRecommandDesignFilename (mLocalFilename);
          }
          
-         private function OnClickCancelButton():void 
+         private function OnClickCancelButton ():void 
          {
              //PopUpManager.removePopUp(this);
              
              if (OnClose != null)
                OnClose ();
+         }
+         
+      //============================================================
+      // 
+      //============================================================
+         
+         public function StartLocalDiskLoading (onConfirm:Function):void
+         {
+            SetConfirmFunc (onConfirm);
+            
+            OnClickNoteLabel ();
+            OnClickLoadFromLocalDisk ();
          }
          
          

@@ -40,6 +40,7 @@
       <root>
          <menuitem label="Save Online ..." data="save_online" for_online="true"/>
          <menuitem label="Save Offline (xml) ..." data="save_offline"/>
+         <menuitem label="Save To Local Disk (xml) ..." data="save_localdisk"/>
          <menuitem label="Export Current Scene To System Clipboard (xml)" data="export_current_scene"/>
          <menuitem label="Export Current Scene (only selection part) To System Clipboard (xml)" data="export_current_scene_selections"/>
          <!--menuitem label="Save Local ..." data="save_local"/-->
@@ -49,8 +50,9 @@
          
          <menuitem label="Load Online ..." data="load_online" for_online="true"/>
          <menuitem label="Load Offline (xml) ..." data="load_offline"/>
-         <menuitem label="Import Scenes (xml) ..." data="import_scenes"/>
-         <menuitem label="Merge The First Scene To Be Loaded Into Current Scene (xml) ..." data="merge_scene"/>
+         <menuitem label="Load From Local Disk (xml) ..." data="load_localdisk"/>
+         <menuitem label="Import Scenes From System Clipboard (xml) ..." data="import_scenes"/>
+         <menuitem label="Merge The First Scene In System Clipboard (xml) Into Current Scene (xml) ..." data="merge_scene"/>
          <!--menuitem label="Load Local ..." data="load_local"/-->
          <!--menuitem label="Quick Load ..." data="load_quick"/-->
          
@@ -396,6 +398,10 @@
          {
             OnStartOfflineLoading ();
          }
+         else if (itemData == "load_localdisk")
+         {
+            OnStartLocalDiskLoading ();
+         }
          else if (itemData == "import_scenes")
          {
             OnImportScenes ();
@@ -419,6 +425,10 @@
          else if (itemData == "save_offline")
          {
             OnStartOfflineSaving ();
+         }
+         else if (itemData == "save_localdisk")
+         {
+            OnStartLocalDiskSaving ();
          }
          else if (itemData == "export_current_scene")
          {
@@ -457,9 +467,19 @@
          EditorContext.OpenAlertDialog ("Confirm Offline Loading", "All your current works will be lost. Continue?", true, ConfirmOfflineLoading);
       }
       
+      private function OnStartLocalDiskLoading ():void
+      {
+         EditorContext.OpenAlertDialog ("Confirm Local Disk Loading", "All your current works will be lost. Continue?", true, ConfirmLocalDiskLoading);
+      }
+      
       private function ConfirmOfflineLoading ():void
       {
          EditorContext.OpenSettingsDialog (WorldLoadingDialog, OfflineLoad);
+      }
+      
+      private function ConfirmLocalDiskLoading ():void
+      {
+         new WorldLoadingDialog ().StartLocalDiskLoading (OfflineLoad);
       }
       
       public function OnStartOfflineImporting ():void
@@ -482,10 +502,19 @@
       
       public function OnStartOfflineSaving ():void
       {
-         var offlineSaveData:Object = GetOfflineSaveData ();
+         var offlineSaveData:Object = GetOfflineSaveData (false);
          if (offlineSaveData != null)
          {
             EditorContext.OpenSettingsDialog (WorldSavingDialog, null, offlineSaveData);
+         }
+      }
+      
+      public function OnStartLocalDiskSaving ():void
+      {
+         var offlineSaveData:Object = GetOfflineSaveData (true);
+         if (offlineSaveData != null)
+         {
+            new WorldSavingDialog ().StartLocalDiskSaving (offlineSaveData);
          }
       }
       
@@ -1197,7 +1226,7 @@
          return null;
       }
       
-      public function GetOfflineSaveData ():Object
+      public function GetOfflineSaveData (createXmlStringOnly:Boolean = false):Object
       {
          try
          {
@@ -1215,6 +1244,9 @@
             //========== source code ========== 
          
             values.mXmlString = DataFormat2.WorldDefine2Xml (DataFormat.EditorWorld2WorldDefine (mWorld)).toXMLString ();
+            
+            if (createXmlStringOnly)
+               return values;
             
             //=========== play code ========== 
          

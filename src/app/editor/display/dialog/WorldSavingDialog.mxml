@@ -151,6 +151,16 @@
          
          private function GetValidatedSourceCode ():String
          {
+            // TextArea_SourceCode == null is for local disk saving
+            if (TextArea_SourceCode == null)
+               return mInputValues.mXmlString;
+            
+            if (mInputValues.mXmlString.length < kMaxSourceCodeLenghtToShow)
+               return TextArea_SourceCode.text;
+            else
+               return mInputValues.mXmlString;
+            
+            /*
             var pattern:RegExp = />\r([\s]*)</g;
             var newStr:String = ">\n$1<";
             
@@ -158,6 +168,7 @@
                return TextArea_SourceCode.text.replace(pattern, newStr);
             else
                return mInputValues.mXmlString.replace(pattern, newStr);
+            */
          }
          
          private function OnClickCopyEmbedCode ():void
@@ -193,6 +204,16 @@
          private function OnClickTutorialLink (event:TextEvent):void
          {
             UrlUtil.PopupPage (Define.EmbedTutorialUrl);
+         }
+         
+      //====================================================
+      // 
+      //====================================================
+      
+         public function StartLocalDiskSaving (values:Object):void
+         {
+            SetValues (values);
+            OnClickSaveToLocalDisk ();
          }
          
          

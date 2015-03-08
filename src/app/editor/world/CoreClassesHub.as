@@ -493,6 +493,7 @@ package editor.world {
                   return null;
                
                var moduleIndex:int = valueObject as int;
+               
                return scene.GetWorld ().GetImageModuleByIndex (moduleIndex);
             }
             case CoreClassIds.ValueType_Sound:

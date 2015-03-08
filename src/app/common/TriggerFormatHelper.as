@@ -1450,7 +1450,7 @@ package common {
                {
                   var moduleIndex:int = int (directSourceDefine.mValueObject);
                   
-                  if (ccatIndex >= 0 && ccatIndex < correctionTables.mImageModuleRefIndex_CorrectionTable.length)
+                  if (moduleIndex >= 0 && moduleIndex < correctionTables.mImageModuleRefIndex_CorrectionTable.length)
                      directSourceDefine.mValueObject = correctionTables.mImageModuleRefIndex_CorrectionTable [moduleIndex];
                   else
                      directSourceDefine.mValueObject = -1;

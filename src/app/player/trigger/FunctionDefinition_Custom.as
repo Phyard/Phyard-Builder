@@ -132,7 +132,7 @@ package player.trigger
       // general calling
       override public function DoCall (callingContext:FunctionCallingContext, inputParamList:Parameter, outputParamList:Parameter):void
       {
-         // 1. push 
+         // 1. push
          
          if (mCurrentFunctionInstance == null) // first level dream space
          {
@@ -171,6 +171,11 @@ package player.trigger
          }
       }
       
+      // [2015.03.12, v2.10]: bug found: there may be also two simultaneous event handler instances for one event handler define. 
+      // The found case is: Cloned Shapes in OnEntityInitilzied event handler, OnEntityInitilzied will also apply on the cloned shapes.
+      // So this ExcuteEventHandler is really not safe. From now on, DoCall will be used for all cases.
+      
+      /*
       // special for event handlers, a little faster than DoCall. Maybe it is not worthy to create this function.
       // NOTICE: DON'T call this function in iteration functions.
       // as event handler, no returns ([edit]: some new event handlers such as ID_OnSystemBack, have returns)
@@ -189,5 +194,6 @@ package player.trigger
             mPrimaryFunctionInstance.mOutputVariableSpace.SetValuesToParameters (outputParamList);
          }
       }
+      */
    }
 }

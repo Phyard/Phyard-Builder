@@ -93,21 +93,21 @@ package editor.world {
                             "aModule",
                             null,
                             ValidateValueObject_Module
-                         ).SetSceneDataDependent (true);
+                         ).SetSceneDataDependent (false);
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Sound, 
                             "aSound",
                             null,
                             ValidateValueObject_Sound
-                         ).SetSceneDataDependent (true);
+                         ).SetSceneDataDependent (false);
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Scene, 
                             "aScene",
                             null,
                             ValidateValueObject_Scene
-                         ).SetSceneDataDependent (true);
+                         ).SetSceneDataDependent (false);
                                    
          RegisterCoreClass (sCoreCodePackage,
                             CoreClassIds.ValueType_Array, 

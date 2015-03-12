@@ -244,7 +244,8 @@ package player.trigger.entity
          if (mEnabledChangedStep < mWorld.GetSimulatedSteps () || mEnabledChangedStepStage < mWorld.GetStepStage ())
          {
             //mEventHandlerDefinition.DoCall (valueSourceList, null);
-            mEventHandlerDefinition.ExcuteEventHandler (mWorld.GetFunctionCallingContext (), valueSourceList, valueTargetList);
+            //mEventHandlerDefinition.ExcuteEventHandler (mWorld.GetFunctionCallingContext (), valueSourceList, valueTargetList);
+            mEventHandlerDefinition.DoCall (mWorld.GetFunctionCallingContext (), valueSourceList, valueTargetList);
 
             if (mExternalAction != null)
             {

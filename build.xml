@@ -28,7 +28,6 @@
 
    <property name="dir.build"      value="${basedir}/.build" />
    <property name="dir.build.res"      value="${dir.build}/res" />
-   <property name="dir.build.res-compiled"      value="${dir.build}/res-compiled" />
    <property name="dir.build.src"      value="${dir.build}/src" />
    
    <property name="dir.release"        value="${basedir}/##release" />
@@ -58,25 +57,18 @@
       <os family="windows" />
    </condition>
 
-   <target name="cleanup">
+   <target name="clean">
       <delete dir="${dir.build}" quiet="true" />
    </target>
 
-   <target name="compile-resource" depends="cleanup">
-      <mkdir dir="${dir.build.res}" />
+   <target name="compile-resource" depends="clean">
       <copy todir="${dir.build.res}" overwrite="true">
          <fileset dir="${dir.res}">
             <exclude name="**/.svn/**"/>
-         </fileset>
-      </copy>
-
-      <mkdir dir="${dir.build.res-compiled}" />
-      <copy todir="${dir.build.res-compiled}" overwrite="true">
-         <fileset dir="${dir.build.res}">
-             <include name="**/*.bin" />
-             <include name="**/*.png" />
-             <include name="**/*.jpg" />
-             <include name="**/*.template" />
+            <include name="**/*.bin" />
+            <include name="**/*.png" />
+            <include name="**/*.jpg" />
+            <include name="**/*.template" />
          </fileset>
       </copy>
    </target>
@@ -84,18 +76,12 @@
    <target name="--pre-compile">
       <delete dir="${dir.build.src}" quiet="true" />
       <mkdir dir="${dir.build.src}" />
-      <copy todir="${dir.build.src}/game/${ant.project.name}" overwrite="true">
-         <fileset dir="${dir.build.res-compiled}" />
-      </copy>
       <copy todir="${dir.build.src}" overwrite="true">
          <fileset dir="${dir.src}/app" />
          <fileset dir="${dir.external}/helper_classes_as3" />
          <fileset dir="${dir.external}/box2d_as3_v210" />
          <fileset dir="${dir.external}/box2dex_v210" />
          <fileset dir="${dir.external}/adobe" />
-      </copy>
-      <copy todir="${dir.build.src}/res" overwrite="true">
-         <fileset dir="${dir.build.res-compiled}" />
       </copy>
    </target>
 

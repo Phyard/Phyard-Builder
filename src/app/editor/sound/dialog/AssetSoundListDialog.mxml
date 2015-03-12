@@ -19,7 +19,7 @@
             horizontalGap="0" verticalGap="0" borderThickness="0"
             >
       <mx:HBox width="100%" paddingTop="3" paddingLeft="3" paddingRight="3" paddingBottom="3" verticalAlign="middle">
-         <mx:Button id="ButtonStopAll" click="StopAllSounds ()" toolTip="Stop All" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../res/play/play-stop-disabled.png')" />
+         <mx:Button id="ButtonStopAll" click="StopAllSounds ()" toolTip="Stop All" fontSize="8"  width="27" height="27" toggle="false" cornerRadius="0" icon="@Embed('../../../../res/play/play-stop.png')" disabledIcon="@Embed('../../../../res/play/play-stop-disabled.png')" />
          <mx:Spacer width="100%" />
          <mx:HSlider id="SliderVolume" change="AdjustVolume ()"  width="137" toolTip="Volume" minimum="0.0" maximum="1.0" snapInterval="0.01" value="0.5" allowTrackClick="true" liveDragging="true" />
       </mx:HBox>

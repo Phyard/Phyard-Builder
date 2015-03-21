@@ -178,6 +178,11 @@ package player.entity {
          super.InitializeInternal ();
          
          mAppearanceObjectsContainer.mouseChildren = true; // !!! important
+         
+         if (! mWorld.mEnableButtonOverState)
+         {
+            mSimpleButton.overState = mNormalSprite;
+         }
       }
       
 //=============================================================

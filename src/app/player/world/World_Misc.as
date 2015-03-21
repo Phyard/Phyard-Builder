@@ -14,6 +14,7 @@
       public var mCiUninfectedColor:uint = Define.ColorUninfectedObject;
       public var mCiDontInfectColor:uint = Define.ColorDontInfectObject;
       public var mInColorBlindMode:Boolean = false;
+      public var mEnableButtonOverState:Boolean = true;
       
       public function SetLevelProperty (property:int, value:Object):void
       {
@@ -53,6 +54,9 @@
                break;
             case Define.LevelProperty_RenderQuality:
                /*Global.sTheGlobal.*/Viewer_mLibGraphics.SetRenderQuality (value as String);
+               break;
+            case Define.LevelProperty_EnableButtonOverState: // must be called before Entity.Init
+               mEnableButtonOverState = Boolean (value); 
                break;
          }
       }

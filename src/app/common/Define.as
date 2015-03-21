@@ -99,6 +99,7 @@ package common {
       public static const LevelProperty_CiDontInfectColor:int = 105;
       public static const LevelProperty_ColorBlindMode:int = 1000;
       public static const LevelProperty_RenderQuality:int = 1001;
+      public static const LevelProperty_EnableButtonOverState:int = 1002;
       
       // DOPN"T change these values. They are must same as the values in Viewer.
       public static const SceneSwitchingStyle_None:int = 0;

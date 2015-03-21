@@ -29,6 +29,7 @@ package editor.world {
       public static const mLevelBooleanPropertyList:Array = [
             {label:"Invalid", data:Define.LevelProperty_Invalid},
             {label:"Color Blind Mode Enabled?", data:Define.LevelProperty_ColorBlindMode},
+            {label:"Enable Button Over State?", data:Define.LevelProperty_EnableButtonOverState},
          ];
       public static const mLevelNumberPropertyList:Array = [
             {label:"Invalid", data:Define.LevelProperty_Invalid},

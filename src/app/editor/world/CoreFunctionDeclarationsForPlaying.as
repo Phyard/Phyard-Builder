@@ -4090,7 +4090,7 @@ package editor.world {
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShapeRectangle_SetRoundCornerEnabled, shape_geometry_package, "Set Rectangle Round Corner Enabled", null, null,
                      [
                              new VariableDefinitionEntity ("The Rectangle", null, {mValidClasses: Filters.sRectangleShapeEntityClasses}),
-                             new VariableDefinitionBoolean ("Enable Round Color?"),
+                             new VariableDefinitionBoolean ("Enable Round Corner?"),
                      ],
                      null
                   );

@@ -255,10 +255,12 @@ package player.entity {
                mModuleSpriteOver.removeChildAt (0);
          }
          
-         if (mModuleIndexOver >= 0)
+         if (mWorld.mEnableButtonOverState && mModuleIndexOver >= 0)
          {
             if (mModuleSpriteOver == null)
+            {
                mSimpleButton.overState = mModuleSpriteOver = new ModuleSprite ();
+            }
             
             mModuleInstanceOver.RebuildAppearance (mModuleSpriteOver, null);
          }

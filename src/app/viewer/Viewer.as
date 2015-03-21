@@ -585,19 +585,23 @@ package viewer {
 //======================================================================
 
       // for game template
-      public static function CreateGestureAnalyzer ():GestureAnalyzer
+      public static function CreateGestureAnalyzer (minGestureSize:Number):GestureAnalyzer
       {
-         return new GestureAnalyzer (Capabilities.screenDPI * 0.2, Capabilities.screenDPI * 0.02);
+         return new GestureAnalyzer (Capabilities.screenDPI * minGestureSize, Capabilities.screenDPI * 0.02);
       }
       
       // for world
       private var mEnabledMouseGesture:Boolean = false;
       private var mDrawdMouseGesture:Boolean = false;
+      private var mMinGestureSize:Number = 0.2;
       
-      private function SetMouseGestureSupported (supported:Boolean, draw:Boolean):void
+      private function SetMouseGestureSupported (supported:Boolean, draw:Boolean,
+                                                minGestureSize:Number = 0.2 // this parameter is added from v2.10
+                                                ):void
       {
          mEnabledMouseGesture = supported;
          mDrawdMouseGesture = supported && draw;
+         mMinGestureSize = Math.max (0, minGestureSize);
          
          mGesturePaintLayer.visible = mDrawdMouseGesture; // mEnabledMouseGesture && mDrawdMouseGesture;
          
@@ -620,7 +624,7 @@ package viewer {
       {
          var gestureInfo:Object = {
                      mTouchID        : touchId,
-                     mGestureAnalyzer: CreateGestureAnalyzer (),
+                     mGestureAnalyzer: CreateGestureAnalyzer (mMinGestureSize),
                      mGestureSprite  : null,
                      mIsEnd          : false
                   };
@@ -1781,7 +1785,13 @@ package viewer {
       {
       //trace ("InitPlayerWorld");
          try
-         {
+         {  
+            // ...
+            
+            stage.focus = stage; // avoid losing focus after restart.
+            
+            // ...
+            
             var worldPluginProperties:Object = mWorldDesignProperties;
 
             mWorldDesignProperties.Initialize (); // may Load New Scene so that mWorldDesignProperties is changed.
@@ -1811,10 +1821,6 @@ package viewer {
             mSkin.SetPlaying (mStartRightNow);
             
             mStartRightNow = true; // for following restarts
-            
-            // ...
-            
-            stage.focus = stage; // avoid losing focus after restart.
             
             // ...
             

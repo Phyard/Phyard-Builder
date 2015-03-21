@@ -181,7 +181,8 @@ package editor.entity.dialog {
             addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
             addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
             
-            addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
+            //addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown); // this needs set staget.focus == this, which iwll conflicts with player.world.
+            stage.addEventListener (KeyboardEvent.KEY_DOWN, OnKeyDown);
          }
       }
       
@@ -191,6 +192,8 @@ package editor.entity.dialog {
          //if (mDesignViewer != null)
          //   stage.focus = this;
          
+         // since v2.10
+         /*
          // since v2.04
          //if (mDesignViewer != null)
          // sicne v2.06
@@ -201,11 +204,13 @@ package editor.entity.dialog {
             {
                io = io.parent;
             }
+            
             if (io != this)
             {
                stage.focus = this;
             }
          }
+         */
          
          UpdateSimulatedServers ();
          

@@ -61,6 +61,11 @@ package player.entity {
          mSimpleButton.enabled = IsEnabled ();
          mSimpleButton.useHandCursor = true;
       }
+   
+      override public function CanBeFocused ():Boolean
+      {
+         return false;
+      }
       
 //=============================================================
 //   create

@@ -921,6 +921,8 @@ package player.entity {
       
       public function OnMouseDown (event:MouseEvent):void
       {
+         mWorld.mMouseDownEntityAtLastStep = this;
+      
          HandleMouseEvent (event, mMouseDownEventHandlerList);
       }
       

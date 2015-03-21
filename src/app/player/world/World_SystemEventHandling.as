@@ -621,6 +621,8 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
       //if ((stage.focus is TextField) && (! (event.target is TextField)) && (stage.focus != stage))
       //   stage.focus = stage;
       
+      mIsWorldMouseDownedAtLastStep = true;
+      
       // ...
       
       // todo: add scene option: support moving scene with mouse.

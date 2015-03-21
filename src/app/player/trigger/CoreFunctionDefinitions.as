@@ -3745,7 +3745,12 @@ package player.trigger {
          valueSource = valueSource.mNextParameter;
          var drawGesture:Boolean = valueSource.EvaluateValueObject () as Boolean;
 
-         /*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_SetMouseGestureSupported (enableGesture, drawGesture);
+         //>> added from v2.10
+         valueSource = valueSource.mNextParameter;
+         var minGestureSize:Number = valueSource.EvaluateValueObject () as Number;
+         //<<
+
+         /*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_SetMouseGestureSupported (enableGesture, drawGesture, minGestureSize);
       }
       
       public static function SetLevelProperty_Boolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

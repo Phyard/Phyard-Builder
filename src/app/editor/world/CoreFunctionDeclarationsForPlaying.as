@@ -333,6 +333,7 @@ package editor.world {
                      [
                         new VariableDefinitionBoolean ("Enable Gesture Events?"),
                         new VariableDefinitionBoolean ("Draw Gesture?"),
+                        new VariableDefinitionNumber ("Minimum Gesture Size (inches)"),
                      ],
                      null
                   );

@@ -938,14 +938,35 @@ package player.world {
 //=============================================================
 
       private var mFunc_StepUpdate:Function = null;
+      
+      private var mIsWorldMouseDownedAtLastStep:Boolean = false;
+      public var mMouseDownEntityAtLastStep:Entity = null;
 
       public function Update (escapedTime:Number, speedX:int):void
       {
          if (mDestroyed)
             return;
+         
+         //if ((! (stage.focus is TextField)) && (stage.focus != stage))
+         //   stage.focus = stage;
 
-         if ((! (stage.focus is TextField)) && (stage.focus != stage))
+         if (stage.focus is TextField)
+         {
+            if (mIsWorldMouseDownedAtLastStep)
+            {
+               if (mMouseDownEntityAtLastStep == null || (! mMouseDownEntityAtLastStep.CanBeFocused ()))
+               {
+                  stage.focus = stage;
+               }
+            }
+         }
+         else if (stage.focus != stage)
+         {
             stage.focus = stage;
+         }
+         
+         mIsWorldMouseDownedAtLastStep = false;
+         mMouseDownEntityAtLastStep = null;
          
       //------------------------------------
       // reset calling context

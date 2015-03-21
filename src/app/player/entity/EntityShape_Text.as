@@ -36,6 +36,11 @@ package player.entity {
          
          //mAppearanceObjectsContainer.addChild (mTextBitmap);
       }
+   
+      override public function CanBeFocused ():Boolean
+      {
+         return IsEditable ();
+      }
       
 //=============================================================
 //   create

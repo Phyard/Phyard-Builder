@@ -25,7 +25,7 @@
             <mx:VBox>
                <mx:RadioButton groupName="EventType" id="RadioButton_TouchBegin" value="Down" label="Touch Begin" />
                <mx:RadioButton groupName="EventType" id="RadioButton_TouchEnd" value="Up" label="Touch End" />
-               <mx:RadioButton groupName="EventType" id="RadioButton_TouchTap" value="Click" label="Mouse Click" />
+               <mx:RadioButton groupName="EventType" id="RadioButton_TouchTap" value="Click" label="Touch Click (Tap)" />
             </mx:VBox>
             <mx:Spacer width="20"/>
             <mx:VBox>

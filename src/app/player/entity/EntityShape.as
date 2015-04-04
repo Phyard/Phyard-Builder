@@ -922,8 +922,13 @@ package player.entity {
       public function OnMouseDown (event:MouseEvent):void
       {
          mWorld.mMouseDownEntityAtLastStep = this;
-      
-         HandleMouseEvent (event, mMouseDownEventHandlerList);
+         
+         // here the mouse down and mouse right down is some different with events
+         
+         if (mMouseDownEventHandlerList != null)
+         {
+            HandleMouseEvent (event, mMouseDownEventHandlerList);
+         }
       }
       
       public function OnMouseUp (event:MouseEvent):void
@@ -938,7 +943,14 @@ package player.entity {
       
       protected function OnMouseRightDown (event:MouseEvent):void
       {
-         HandleMouseEvent (event, mMouseRightDownEventHandlerList);
+         mWorld.mMouseDownEntityAtLastStep = this;
+         
+         // here the mouse down and mouse right down is some different with events
+         
+         if (mMouseRightDownEventHandlerList != null)
+         {
+            HandleMouseEvent (event, mMouseRightDownEventHandlerList);
+         }
       }
       
       protected function OnMouseRightUp (event:MouseEvent):void
@@ -1027,7 +1039,8 @@ package player.entity {
       
       protected function GetMouseDownListener ():Function
       {
-         return mMouseDownEventHandlerList == null ? null : OnMouseDown;
+         //return mMouseDownEventHandlerList == null ? null : OnMouseDown;
+         return OnMouseDown;
       }
       
       protected function GetMouseUpListener ():Function
@@ -1042,7 +1055,8 @@ package player.entity {
       
       protected function GetMouseRightDownListener ():Function
       {
-         return mMouseRightDownEventHandlerList == null ? null : OnMouseRightDown;
+         //return mMouseRightDownEventHandlerList == null ? null : OnMouseRightDown;
+         return OnMouseRightDown;
       }
       
       protected function GetMouseRightUpListener ():Function

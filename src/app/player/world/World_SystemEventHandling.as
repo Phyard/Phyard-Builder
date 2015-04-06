@@ -120,6 +120,7 @@
       }
       else
       {
+
          var handlerElement:ListElement_EventHandler = eventInfo [1] as ListElement_EventHandler;
          var valueSourceList:Parameter = eventInfo [2] as Parameter;
          
@@ -835,8 +836,13 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
       }
    }
    
+//public var me:MouseEvent;
    public function OnMouseMove (event:MouseEvent):void
    {
+//if (event.buttonDown){
+//trace (">>>>>>>>> event.stageX = " + event.stageX + ", event.stageY = " + event.stageY);
+//me = event;
+//}
       //if (Mouse.supportsNativeCursor) // this is for setup custom sprite cursor
       if (Mouse.supportsCursor)
       {
@@ -857,7 +863,12 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
          //
          RegisterMouseEvent (event, mEventHandlersByTypes [CoreEventIds.ID_OnWorldMouseMove]);
       }
-      
+  
+//WEIRD: if shape.Translate api is called on event.target in above line, the event.stageX and event.stageY may change.
+//if (event.buttonDown)
+//trace ("          event.stageX = " + event.stageX + ", event.stageY = " + event.stageY);
+//me = event;
+
       // cancelled in viewer, so no needs to handle it now.
       //if (event.delta == 0x7FFFFFFF) // this event is sent from viewer
       //{

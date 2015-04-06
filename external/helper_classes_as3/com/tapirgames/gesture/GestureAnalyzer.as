@@ -115,6 +115,7 @@ package com.tapirgames.gesture {
 
             var distanceValueIndex:int = newPoint.mDistanceValuesFromIndex;
             var aPoint:GesturePoint = mStartPoint;
+            
             while (aPoint != newPoint)
             {
                dx = aPoint.mX - newPoint.mX;
@@ -126,6 +127,7 @@ package com.tapirgames.gesture {
                aPoint = aPoint.mNextPoint;
             }
          }
+//trace (">> new point: " + newPoint.mX + ", " + newPoint.mY);
 
          // ...
          
@@ -193,10 +195,14 @@ package com.tapirgames.gesture {
          var diffIndex:int = pointB.mIndex - pointA.mIndex;
          
          if (pointA.mIndex < pointB.mIndex)
+         {
             return mPointDistances [pointB.mDistanceValuesFromIndex + pointA.mIndex];
+         }
          
          if (pointA.mIndex > pointB.mIndex)
+         {
             return mPointDistances [pointA.mDistanceValuesFromIndex + pointB.mIndex];
+         }
          
          return 0;
       }
@@ -386,6 +392,8 @@ package com.tapirgames.gesture {
          }
          
          // use Levenshtein algorithm to judge
+         
+//trace ("&&&&&&&&&&&&&&&&&&&&&&&&&& mObbWidth = " + mObbWidth + ", mObbDiagLength = " + mObbDiagLength + ", mObbWidth / mObbDiagLength = " + (mObbWidth / mObbDiagLength) + ", mAllAnglesAreSharp = " + mAllAnglesAreSharp);
             
          if (mObbWidth / mObbDiagLength < 0.2 && mAllAnglesAreSharp)
          {
@@ -496,6 +504,8 @@ package com.tapirgames.gesture {
          var prevSegment:GestureSegment = null;
          var segment:GestureSegment;
          
+         
+//trace ("============================================ start FindAllSegments");
          while (startPoint != mEndPoint)
          {
             segment = FindSegmentFromPoint (startPoint, minSegmentLength, prevSegment);
@@ -596,8 +606,12 @@ package com.tapirgames.gesture {
                   ++ mNumPositiveDeltaAngleSegments;
                if (segment.mDeltaAngle < -5)
                   ++ mNumNegativeDeltaAngleSegments;
-               if (Math.abs (segment.mDeltaAngle) < 160)
+               //if (Math.abs (segment.mDeltaAngle) < 160)
+               if (Math.abs (segment.mDeltaAngle) < 160 && Math.abs (segment.mDeltaAngle) > 20)
+               {
+//trace ("&&&&&&&&&&&&&& mAllAnglesAreSharp = false, segment.mDeltaAngle = " + segment.mDeltaAngle);
                   mAllAnglesAreSharp = false;
+               }
             }
             
             //startPoint = segment.mStartPoint;
@@ -613,7 +627,7 @@ package com.tapirgames.gesture {
             //   point = point.mNextPoint;
             //}
             
-//trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle + ", acc angle: " + segment.mAccumulatedAngle + ", distance: " + GetPointDistance (segment.mStartPoint, segment.mEndPoint)  + ", acc length: " + (segment.mEndPoint.mAccumulatedLength - segment.mStartPoint.mAccumulatedLength));
+//trace (">> segment@" + segment.mIndex + "> delta angle: " + segment.mDeltaAngle + ", acc angle: " + segment.mAccumulatedAngle + ", dx: " + segment.mDx + ", dy: " + segment.mDy + ", distance: " + GetPointDistance (segment.mStartPoint, segment.mEndPoint)  + ", acc length: " + (segment.mEndPoint.mAccumulatedLength - segment.mStartPoint.mAccumulatedLength));
             
             segment = segment.mNextSegment;
          }
@@ -628,15 +642,19 @@ package com.tapirgames.gesture {
          var firstPointAfterMinSegmentLength:GesturePoint = null;
          var kneePoint:GesturePoint;
          
+//trace (">> FindSegmentFromPoint, startPoint.mIndex = " + startPoint.mIndex + ", kLengthToAccLengthRatioToFindSegment = " + kLengthToAccLengthRatioToFindSegment);
          while (true)
          {
             gesturePoint = gesturePoint.mNextPoint;
             
             var diffAccLength:Number = gesturePoint.mAccumulatedLength - startPoint.mAccumulatedLength;
+            
+//trace ("       diffAccLength = " + diffAccLength + ", GetPointDistance (gesturePoint.mPrevPoint, gesturePoint) = " + GetPointDistance (gesturePoint.mPrevPoint, gesturePoint));
             if (diffAccLength >= minSegmentLength)
             {
                //if (firstPointAfterMinSegmentLength != null)
                //{
+//trace ("    gesturePoint.mIndex = " + gesturePoint.mIndex + ", GetPointDistance (startPoint, gesturePoint) / diffAccLength = " + GetPointDistance (startPoint, gesturePoint) + " / " + diffAccLength + " = " + (GetPointDistance (startPoint, gesturePoint) / diffAccLength));
                   if (GetPointDistance (startPoint, gesturePoint) / diffAccLength < kLengthToAccLengthRatioToFindSegment)
                   {
                      kneePoint = FindKneePointBetweenTwoPoints (startPoint, gesturePoint); //, firstPointAfterMinSegmentLength); // should be not null
@@ -860,6 +878,7 @@ trace (segment.mIndex + "> start index: " + segment.mStartPoint.mIndex + ", end 
             
 //trace ("Error to standard '" + standard.mType + "'(" + standard.mInfo + "): delta error: " + deltaError + ", accError: " + accError + ", sumError: " + sumError);
          }
+//trace ("********** the best type is: " + bestType);
          
          return NewAnalyzeResult (bestType, 0, "fitted with standard", bestTypeIsCW); // angle is temp
       }

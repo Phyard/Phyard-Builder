@@ -243,6 +243,7 @@ package common.trigger {
                         [CoreClassIds.ValueType_Boolean,       false],
                         [CoreClassIds.ValueType_Boolean,       true],
                         [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Single | CoreClassIds.NumberTypeUsage_General,       0.2],
+                        [CoreClassIds.ValueType_Number | CoreClassIds.NumberTypeDetailBit_Integer | CoreClassIds.NumberTypeUsage_General,      0x00ff00],
                      ],
                      null
                   );

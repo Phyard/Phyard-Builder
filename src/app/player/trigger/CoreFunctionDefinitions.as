@@ -3748,9 +3748,12 @@ package player.trigger {
          //>> added from v2.10
          valueSource = valueSource.mNextParameter;
          var minGestureSize:Number = valueSource.EvaluateValueObject () as Number;
+         
+         valueSource = valueSource.mNextParameter;
+         var color:uint = uint (valueSource.EvaluateValueObject ());
          //<<
 
-         /*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_SetMouseGestureSupported (enableGesture, drawGesture, minGestureSize);
+         /*Global.sTheGlobal.Viewer_*/callingContext.mWorld.Viewer_SetMouseGestureSupported (enableGesture, drawGesture, minGestureSize, color);
       }
       
       public static function SetLevelProperty_Boolean (callingContext:FunctionCallingContext, valueSource:Parameter, valueTarget:Parameter):void

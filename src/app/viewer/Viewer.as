@@ -198,15 +198,15 @@ package viewer {
             // mMultitouchClass must not null
             mMultitouchClass.inputMode = "touchPoint"; // mMultitouchClass.TOUCH_POINT; // MultitouchInputMode.TOUCH_POINT
             
-            addEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
-            addEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove);
-            addEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd);
+            addEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
+            addEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
+            addEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
          }
          else
          {
-            addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
-            addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-            addEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+            addEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
+            addEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
+            addEventListener (MouseEvent.MOUSE_UP, OnMouseUp, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
             
             TryToRegisterToggleInfoShowingKey ();
          }
@@ -254,15 +254,15 @@ package viewer {
          
          if (mTouchEventClass != null)
          {
-            removeEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin);
-            removeEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove);
-            removeEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd);
+            removeEventListener (/*TOUCH_BEGIN.TOUCH_BEGIN*/"touchBegin", OnTouchBegin, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
+            removeEventListener (/*TOUCH_BEGIN.TOUCH_MOVE*/"touchMove", OnTouchMove, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ();
+            removeEventListener (/*TOUCH_BEGIN.TOUCH_END*/"touchEnd", OnTouchEnd, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
          }
          else
          {
-            removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown);
-            removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove);
-            removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp);
+            removeEventListener (MouseEvent.MOUSE_DOWN, OnMouseDown, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
+            removeEventListener (MouseEvent.MOUSE_MOVE, OnMouseMove, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ();
+            removeEventListener (MouseEvent.MOUSE_UP, OnMouseUp, true); // must useCapture, otherwise MouseMoveEvent.stageX/Y may be changed by MouseMoveEvent.target.transform ()
             
             TryToUnregisterToggleInfoShowingKey ();
          }
@@ -594,14 +594,17 @@ package viewer {
       private var mEnabledMouseGesture:Boolean = false;
       private var mDrawdMouseGesture:Boolean = false;
       private var mMinGestureSize:Number = 0.2;
+      private var mGestureColor:uint = 0x00FF00;
       
       private function SetMouseGestureSupported (supported:Boolean, draw:Boolean,
-                                                minGestureSize:Number = 0.2 // this parameter is added from v2.10
+                                                minGestureSize:Number = 0.2, // this parameter is added from v2.10
+                                                gestureColor:uint = 0x00FF00 // this parameter is added from v2.10
                                                 ):void
       {
          mEnabledMouseGesture = supported;
          mDrawdMouseGesture = supported && draw;
-         mMinGestureSize = Math.max (0, minGestureSize);
+         mMinGestureSize = Math.max (0.1, minGestureSize);
+         mGestureColor = gestureColor;
          
          mGesturePaintLayer.visible = mDrawdMouseGesture; // mEnabledMouseGesture && mDrawdMouseGesture;
          
@@ -849,13 +852,13 @@ package viewer {
             if (gesturePoint.mPrevPoint == null)
             {
                gestureInfo.mGestureSprite.graphics.lineStyle ();
-               gestureInfo.mGestureSprite.graphics.beginFill (0x00FF00);
+               gestureInfo.mGestureSprite.graphics.beginFill (mGestureColor);
                gestureInfo.mGestureSprite.graphics.drawCircle (point.x, point.y, 9);
                gestureInfo.mGestureSprite.graphics.endFill ();
             }
             else
             {
-               gestureInfo.mGestureSprite.graphics.lineStyle(9, 0x00FF00);
+               gestureInfo.mGestureSprite.graphics.lineStyle(9, mGestureColor);
                gestureInfo.mGestureSprite.graphics.moveTo (point.x, point.y);
 
                point = globalToLocal (new Point (gesturePoint.mPrevPoint.mX * stage.scaleX, gesturePoint.mPrevPoint.mY * stage.scaleY));

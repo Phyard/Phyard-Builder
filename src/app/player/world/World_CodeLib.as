@@ -577,6 +577,7 @@
                //variableInstance.SetValueObject (savedVariable.mClassInstance.mValueObject);
                var classInstance:ClassInstance = savedVariable.mClassInstance as ClassInstance;
                //variableInstance.Assign (classInstance.GetRealClassDefinition (), classInstance.GetValueObject ());
+               
                CoreClassesHub.AssignValue (classInstance, variableInstance);
             //}
          } // for

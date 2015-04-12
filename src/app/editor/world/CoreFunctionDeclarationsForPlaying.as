@@ -3355,7 +3355,7 @@ package editor.world {
                   );
          RegisterCoreFunctionDeclaration (CoreFunctionIds.ID_EntityShape_SetStatic, shape_physics_properties_package_1, "Set Static", null, null,
                      [
-                             new VariableDefinitionEntity ("One Brother Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
+                             new VariableDefinitionEntity ("The Shape", null, {mValidClasses: Filters.sShapeEntityClasses}),
                              new VariableDefinitionBoolean ("Static?"),
                      ],
                      null

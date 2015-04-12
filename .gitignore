@@ -4,6 +4,7 @@ local.properties*
 \##release/**/*
 \##release/*
 \#output**
+-*
 .build
 .classpath
 .project

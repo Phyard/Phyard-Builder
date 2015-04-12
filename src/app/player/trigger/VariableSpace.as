@@ -158,7 +158,8 @@ package player.trigger
          if (mVariableKeyMappings == null)
             return VariableInstanceConstant.kVoidVariableInstance; // null;
          
-         return mVariableKeyMappings [key] as VariableInstance;
+         var vi:VariableInstance = mVariableKeyMappings [key] as VariableInstance;
+         return vi != null ? vi : VariableInstanceConstant.kVoidVariableInstance;
       }
       
       public function GetValuesFromParameters (inputParamList:Parameter):void

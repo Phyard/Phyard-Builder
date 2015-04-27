@@ -846,7 +846,8 @@ trace ("eee childrenUnderPoint [" + i + "] = " + childrenUnderPoint [i]);
       //if (Mouse.supportsNativeCursor) // this is for setup custom sprite cursor
       if (Mouse.supportsCursor)
       {
-         event.updateAfterEvent(); 
+            // shit! snake feet.
+         //event.updateAfterEvent(); 
             // this line will make mouse following more smoothly.
             // but it also decrease fps, especially on mobile devices.
             // so this line is only apply on PC with cursor supported.

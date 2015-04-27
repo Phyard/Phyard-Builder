@@ -1,7 +1,5 @@
 package editor.trigger {
    
-   import mx.core.UIComponent;
-   
    import editor.world.World;
    
    import common.trigger.ClassTypeDefine;

@@ -785,7 +785,8 @@ package viewer {
             if (mEnabledMouseGesture)
             {
                //RegisterGesturePoint (gestureInfo, eventStageX, eventStageY); // the release point oftern is bad point.
-
+               
+               gestureInfo.mGestureAnalyzer.Finish ();
                var result:Object = gestureInfo.mGestureAnalyzer.Analyze ();
                
                if (mPlayerWorld != null && result.mGestureType != null)
@@ -845,6 +846,7 @@ package viewer {
             return;
          
          //var gesturePoint:GesturePoint = mGestureAnalyzer.RegisterPoint (event.stageX / stage.scaleX, event.stageY / stage.scaleY, getTimer ());
+         // todo: bug? should be eventStageX * stage.scaleX, eventStgeY * stage.scaleY?
          var gesturePoint:GesturePoint = gestureInfo.mGestureAnalyzer.RegisterPoint (eventStageX / stage.scaleX, eventStgeY / stage.scaleY, getTimer ());
          if (gesturePoint != null && gestureInfo.mGestureSprite != null)
          {

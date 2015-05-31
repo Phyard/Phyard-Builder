@@ -1,7 +1,5 @@
 package player.trigger
 {
-   import player.entity.Entity;
-   
    public class Parameter_ObjectProperty extends Parameter_Variable
    {
       protected var mPropertyId:int;

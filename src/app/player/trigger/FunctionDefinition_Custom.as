@@ -132,7 +132,7 @@ package player.trigger
       // general calling
       override public function DoCall (callingContext:FunctionCallingContext, inputParamList:Parameter, outputParamList:Parameter):void
       {
-         // 1. push
+         // !!! the current implementation only supports single thread
          
          if (mCurrentFunctionInstance == null) // first level dream space
          {

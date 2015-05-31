@@ -49,9 +49,9 @@ package player.trigger
          return ClassTypeDefine.ClassType_Custom;
       }
       
-      override public function IsCustomClass ():Boolean
-      {
-         return true;
-      }
+      //override public function IsCustomClass ():Boolean
+      //{
+      //   return true;
+      //}
    }
 }

@@ -4,7 +4,7 @@ package player.trigger
    
    public class ClassDefinition
    {
-      // these static values are defined in CoreClassesHub.as,
+      // these static values were defined in CoreClassesHub.as,
       // no errors in compiling.
       // but flash player reports runtime errors.
       // so move them here.
@@ -88,10 +88,10 @@ package player.trigger
          return ClassTypeDefine.ClassType_Unknown;
       }
       
-      public function IsCustomClass ():Boolean
-      {
-         return false;
-      }
+      //public function IsCustomClass ():Boolean
+      //{
+      //   return false;
+      //}
       
       public function CreateDefaultInitialValue ():Object
       {

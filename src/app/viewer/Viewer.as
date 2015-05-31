@@ -786,7 +786,7 @@ package viewer {
             {
                //RegisterGesturePoint (gestureInfo, eventStageX, eventStageY); // the release point oftern is bad point.
                
-               gestureInfo.mGestureAnalyzer.Finish ();
+               gestureInfo.mGestureAnalyzer.Finish (getTimer ());
                var result:Object = gestureInfo.mGestureAnalyzer.Analyze ();
                
                if (mPlayerWorld != null && result.mGestureType != null)

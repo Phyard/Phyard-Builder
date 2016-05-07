@@ -63,7 +63,7 @@
    //}
    
 //==================================================================
-// 
+// mp update
 //==================================================================
 
    private var mJoinInstanceFrequencyStat:FrequencyStat = new FrequencyStat (3, 60000); // most 3 times in one minute
@@ -113,11 +113,17 @@
 //======================================================
    
    
-   private static const kUseRealServersForcely                :Boolean = false; // Capabilities.isDebugger; // true; // for editor mode only
-   private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.6.132:1618/api/design/instance";
+   private static const kUseRealServersForcely                :Boolean = Capabilities.isDebugger; // true; // for editor mode only
+   private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.59.130:1618/api/design/instance";
    private static const kGetInstanceServerInfoURL             :String  = "http://mpserver.phyard.com:1618/api/design/instance";
-                                                                      // "http://www.phyard.com/api/design/instance";
-                                                                      // http://mpserver.phyard.com/api/design/instance
+   //                                                                   // "http://www.phyard.com/api/design/instance";
+   //                                                                   // http://mpserver.phyard.com/api/design/instance
+   
+   //private static const kUseRealServersForcely                :Boolean = Capabilities.isDebugger; // true; // for editor mode only
+   //private static const kGetInstanceServerInfoURL_LocalServer :String  = "http://192.168.59.129:1618/mp/get_queue_server";
+   //private static const kGetInstanceServerInfoURL             :String  = "http://mpserver.phyard.com:1618/mp/get_queue_server";
+                                                                      // "http://www.phyard.com/mp/get_queue_server";
+                                                                      // http://mpserver.phyard.com/mp/get_queue_server
    
    private var mIsGettingInstanceServerInfo:Boolean = false;
    
@@ -366,6 +372,7 @@
             mServerSocket : null,  // step 1
             mServerAddress : null,
             mServerPort : 0,
+            
             mIsServerSocketConnected : false, // step 2
             
             mInstanceDefineDigest : "", // must be a length-64 hex number string
@@ -468,7 +475,7 @@
    //private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:String, connectionId:String):void
    private function SetInstanceServerInfo (serverAddress:String, serverPort:int, instanceDefineDigest:ByteArray, connectionId:ByteArray):void
    {
-//trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ", instanceDefineDigest = <" + instanceDefineDigest.length + ">, connectionId = <" + connectionId.length + ">");
+trace ("SetInstanceServerInfo, serverAddress = " + serverAddress + ":" + serverPort + ":" + serverPort + ", instanceDefineDigest = <" + instanceDefineDigest.length + ">, connectionId = <" + connectionId.length + ">");
 
       mMultiplePlayerInstanceInfo.mServerAddress = serverAddress;
       mMultiplePlayerInstanceInfo.mServerPort = serverPort;
@@ -1038,7 +1045,7 @@
       return {
          mPlayerStatus     : mMultiplePlayerInstanceInfo.mPlayerStatus,
          mInstancePhase    : mMultiplePlayerInstanceInfo.mPlayerStatus == MultiplePlayerDefine.PlayerStatus_Joined ? 
-                             mMultiplePlayerInstanceInfo.mCurrentPhase : MultiplePlayerDefine.InstancePhase_Inactive,
+                                  mMultiplePlayerInstanceInfo.mCurrentPhase : MultiplePlayerDefine.InstancePhase_Inactive,
          mNumSeats         : mMultiplePlayerInstanceInfo.mNumSeats, 
          mMySeatIndex      : mMultiplePlayerInstanceInfo.mMySeatIndex
       };

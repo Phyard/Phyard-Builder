@@ -1576,7 +1576,7 @@ package player.trigger {
 
                if (texts != null)
                {
-                  substrings = texts.concat ();
+                  substrings = texts.concat (); // why? History problem? No need at all.
                   CoreClassesHub.CovertArrayElementsToClassInstances (substrings, CoreClassesHub.kStringClassDefinition);
                }
             }

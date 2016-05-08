@@ -1,4 +1,4 @@
-﻿package Box2D.Collision.Shapes {
+package Box2D.Collision.Shapes {
 	
 	/**
 	* ...

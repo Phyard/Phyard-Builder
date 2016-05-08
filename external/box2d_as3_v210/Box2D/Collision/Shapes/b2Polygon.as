@@ -1,4 +1,4 @@
-﻿package Box2D.Collision.Shapes 
+package Box2D.Collision.Shapes 
 {
 	import Box2D.Common.b2Settings;
 	import Box2D.Common.b2Vec2;

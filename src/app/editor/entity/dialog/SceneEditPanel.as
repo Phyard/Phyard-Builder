@@ -243,9 +243,12 @@ package editor.entity.dialog {
                   CloneSelectedEntities ();
                
                break;
-            case 68: // D
-               DeleteSelectedEntities ();
-               break;
+            //case 68: // D
+            //   DeleteSelectedEntities ();
+            //   break;
+            case 71: // G
+               MakeBrothers();
+               break
             case 187:// +
             case Keyboard.NUMPAD_ADD:
                if (ctrlHold)

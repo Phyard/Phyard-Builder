@@ -254,7 +254,7 @@ package player.trigger.entity
                      return PairContainingResult_True;
                   
                   if (ignorePairOrder)
-                  {
+                  {
                      if (mEntitiesIndexes2.indexOf (entityIndex1) < 0)
                         return PairContainingResult_False;
                      

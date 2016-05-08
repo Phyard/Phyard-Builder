@@ -112,12 +112,18 @@ package com.tapirgames.util {
             else
                shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
-         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
+         if (borderSize >= 0)
+            shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
+         else
+            shape.graphics.lineStyle ();
          if (roundCorners)
             shape.graphics.drawRoundRect(x, y, w, h, cornerEslipseWidth, cornerEslipseHeight);
          else
             shape.graphics.drawRect(x, y, w, h);
-         if (filled) shape.graphics.endFill();
+         if (filled)
+            shape.graphics.endFill();
+         if (borderSize >= 0)
+            shape.graphics.lineStyle ();
       }
       
       // roundCorners is only useful when drawing border
@@ -130,12 +136,18 @@ package com.tapirgames.util {
             else
                shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
-         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
+         if (borderSize >= 0)
+            shape.graphics.lineStyle(borderSize, borderColor, 1.0, true, LineScaleMode.NORMAL, roundJoints ? CapsStyle.ROUND: CapsStyle.SQUARE, roundJoints ? JointStyle.ROUND : JointStyle.MITER, 255);
+         else
+            shape.graphics.lineStyle ();
          if (roundCorners)
             shape.graphics.drawRoundRect(x, y, w, h, cornerEslipseWidth, cornerEslipseHeight);
          else
             shape.graphics.drawRect(x, y, w, h);
-         if (filled) shape.graphics.endFill();
+         if (filled)
+            shape.graphics.endFill();
+         if (borderSize >= 0)
+            shape.graphics.lineStyle ();
       }
       
       //public static function DrawRoundRect (shape:Object, x:Number, y:Number, w:Number, h:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFFF):void
@@ -174,9 +186,15 @@ package com.tapirgames.util {
             else
                shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
-         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0)
+            shape.graphics.lineStyle(borderSize, borderColor);
+         else
+            shape.graphics.lineStyle ();
          shape.graphics.drawCircle(x, y, radius);
-         if (filled) shape.graphics.endFill();
+         if (filled)
+            shape.graphics.endFill();
+         if (borderSize >= 0)
+            shape.graphics.lineStyle ();
       }
       
       public static function DrawCircle (shape:Object, x:Number, y:Number, radius:Number, borderColor:uint = 0x0, borderSize:Number = 1, filled:Boolean = false, fillColor:uint = 0xFFFFFF, fillTexture:BitmapData = null, fillTextureMatrix:Matrix = null):void
@@ -188,9 +206,15 @@ package com.tapirgames.util {
             else
                shape.graphics.beginBitmapFill (fillTexture, fillTextureMatrix);
          }
-         if (borderSize >= 0) shape.graphics.lineStyle(borderSize, borderColor);
+         if (borderSize >= 0)
+            shape.graphics.lineStyle(borderSize, borderColor);
+         else
+            shape.graphics.lineStyle ();
          shape.graphics.drawCircle(x, y, radius);
-         if (filled) shape.graphics.endFill();
+         if (filled)
+            shape.graphics.endFill();
+         if (borderSize >= 0)
+            shape.graphics.lineStyle ();
       }
       
       public static function ClearAndDrawLine (shape:Object, x1:Number, y1:Number, x2:Number, y2:Number, color:uint = 0x0, thickness:Number = 1):void
@@ -306,7 +330,7 @@ package com.tapirgames.util {
          else
             shape.graphics.lineStyle ();
          shape.graphics.moveTo( points [0].x, points [0].y );
-         for (var i:uint = 0; i < vertexCount; ++ i)
+         for (var i:uint = 1; i < vertexCount; ++ i)
             shape.graphics.lineTo (points[i].x, points[i].y);
          shape.graphics.lineTo( points [0].x, points [0].y );
          if (borderSize >= 0) 

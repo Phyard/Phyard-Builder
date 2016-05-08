@@ -367,6 +367,10 @@ package viewer {
       
       private static var mPlatformCapabilitiesChecked:Boolean = false;
       
+      private static var mIsIOS:Boolean = false;
+      private static var mIsIOS_7Plus:Boolean = false;
+      private static var mIsIPad:Boolean = false;
+      
       private static function CheckPlatformCapabilities ():void
       {
          if (mPlatformCapabilitiesChecked)
@@ -376,6 +380,35 @@ package viewer {
          
          try
          {
+         
+            var os:String = Capabilities.os;
+            
+            if (os != null)
+            {
+               os = os.toLowerCase ();
+               mIsIOS = os.indexOf ("iphone") >= 0;
+               mIsIPad = os.indexOf ("ipad") >= 0;
+               
+               var text:String = " os ";
+               var index:int = os.indexOf (text)
+               if (index >= 0)
+               {
+                  var index1:int = index + text.length;
+                  if (index1 < os.length - 1)
+                  {
+                     var index2:int = os.indexOf (".", index1);
+                     var osversion:Number = parseInt (os.substring (index1, index2));
+                     if (! isNaN (osversion))
+                     {
+                        mIsIOS_7Plus = osversion >= 7;
+                     }
+                  }
+               }
+               
+               // iPhone OS 8.1.3 iPad2,1
+               // iPhone OS 8.1.3 iPhone5,2
+            }
+             
             //Capabilities.pixelAspectRatio;
             //Capabilities.language // en, zh-TW, zh-CN, ru, pt, fr, de, es, ar, ...
             //Capabilities.isDebugger
@@ -568,6 +601,11 @@ package viewer {
       private function IsNativeApp ():Boolean
       {
          return mParamsFromContainer.mIsNativeApp != undefined && (mParamsFromContainer.mIsNativeApp as Boolean);
+      }
+      
+      private function IsFullScreen ():Boolean
+      {
+         return mParamsFromContainer.mIsFullScreen != undefined && (mParamsFromContainer.mIsFullScreen as Boolean);
       }
       
       private static function GetScreenResolution ():Point
@@ -786,7 +824,7 @@ package viewer {
             {
                //RegisterGesturePoint (gestureInfo, eventStageX, eventStageY); // the release point oftern is bad point.
                
-               gestureInfo.mGestureAnalyzer.Finish ();
+               gestureInfo.mGestureAnalyzer.Finish (getTimer ());
                var result:Object = gestureInfo.mGestureAnalyzer.Analyze ();
                
                if (mPlayerWorld != null && result.mGestureType != null)
@@ -2206,9 +2244,66 @@ package viewer {
       }
       
 //======================================================================
-// skin and background
+// on ios 7+, stataus bar overlay problem
 //======================================================================
 
+      private function GetExtraTopMargin ():Number
+      {
+         if (IsFullScreen ())
+            return 0;
+         
+         if (! IsNativeApp ())
+            return 0;
+         
+         // mobile app showing status bar
+         
+         if (mIsIOS && mIsIOS_7Plus)
+         {
+            var padding_top:int;
+            
+            var screenWidth:int = Math.min (Capabilities.screenResolutionX, Capabilities.screenResolutionY);
+            
+            if (screenWidth == 768) // iPad
+            {
+               padding_top = 20;
+            }
+            else if (screenWidth == 1536) // iPad large
+            {
+               padding_top = 40;
+            }
+            else if (screenWidth == 2048) // iPad pro
+            {
+               // not sure, just a guess
+               padding_top = 60;
+            }
+            else if (screenWidth == 640) // iPhone 4, iPhone 4s, iPhone 5, iPhone 5c, iPhone 5s
+            {
+               padding_top = 40;
+            }
+            else if (screenWidth == 750) // iPhone 6, iPhone 6s
+            {
+               padding_top = 40;
+            }
+            else if (screenWidth == 1080 || screenWidth == 1242) // iPhone 6 plus, iPhone 6s plus
+            {
+               // not sure it is 1080 or 1242
+               padding_top = 60;
+            }
+            else
+            {
+               padding_top = 60;
+            }
+            
+            return padding_top;
+         }
+         
+         return 0;
+      }
+      
+//======================================================================
+// skin and background
+//======================================================================
+      
       private var mSkin:Skin = null;
 
       private function RebuildSkin ():void
@@ -2330,9 +2425,10 @@ package viewer {
                
                //mSkin.SetViewerSize (viewerWidth, viewerHeight);
                //mSkin.SetPadding (mWindowPadding);
-               mSkin.SetViewerSize (viewerWidth - mWindowPadding.left - mWindowPadding.right, viewerHeight - mWindowPadding.top - mWindowPadding.bottom);
+               var extra_top_margin:Number = GetExtraTopMargin (); // iOS7+ status bar will overlay app content area 
+               mSkin.SetViewerSize (viewerWidth - mWindowPadding.left - mWindowPadding.right, viewerHeight - mWindowPadding.top - mWindowPadding.bottom - extra_top_margin);
                mSkin.x = mWindowPadding.left;
-               mSkin.y = mWindowPadding.top;
+               mSkin.y = mWindowPadding.top + extra_top_margin;
                
                mSkin.Rebuild ({
                         mPlayBarColor : mPlayBarColor,

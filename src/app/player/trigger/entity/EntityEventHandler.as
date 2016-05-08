@@ -256,6 +256,6 @@ package player.trigger.entity
          }
 
          return false;
-      }
+      }
    }
 }

@@ -13,7 +13,7 @@ package player.trigger
       protected var mOutputVariableSpace:VariableSpace; // since v2.05
       
       //public function FunctionDefinition (inputValueSourceDefines:Array, outputParamValueTypes:Array):void
-      public function FunctionDefinition (inputVariableSpace:VariableSpace, outputVariableSpace:VariableSpace):void
+      public function FunctionDefinition (inputVariableSpace:VariableSpace, outputVariableSpace:VariableSpace)
       {
          //mNumInputParams = inputValueSourceDefines == null ? 0 : inputValueSourceDefines.length;
          //mDefaultInputValueSourceDefines = inputValueSourceDefines == null ? [] : inputValueSourceDefines;

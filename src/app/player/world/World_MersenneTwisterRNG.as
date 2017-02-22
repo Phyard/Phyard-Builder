@@ -1,6 +1,8 @@
 
       // todo: move this part into Viewer
 
+      // todo: in editing mode, each player will get 4 slots ... (hold, already!)
+
       protected /*static*/ var mRandomNumberGenerators:Array = new Array (Define.NumRngSlots);
       
       public /*static*/ function CreateRandomNumberGenerator (rngSlot:int, rngMethod:int):void

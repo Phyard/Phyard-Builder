@@ -16,8 +16,8 @@ package com.tapirgames.random {
    public class MersenneTwisterRNG extends RandomNumberGenerator
    {
       //Mersenne Twister variables
-      public static var MT:Array;
-      public static var indexMT:int;;
+      public var MT:Array;
+      public var indexMT:int;;
 
       public function MersenneTwisterRNG ()
       {
@@ -60,7 +60,7 @@ package com.tapirgames.random {
           return y;
       }
 
-      private static function generateRands():void
+      private function generateRands():void
       {
           var i:int;
           var y:uint;
